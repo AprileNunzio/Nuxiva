@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Awaitable, Callable, Dict, Tuple
 
-from agenti.update_center import native
+from agenti.update_center import native, notes
 from agenti.update_center.progress import UpdateProgress
 
 Git = Callable[..., Awaitable[Tuple[int, str]]]
@@ -33,6 +33,7 @@ async def integrity(git: Git, root: Path, target: str) -> Dict[str, Any]:
 
 
 async def preflight(git: Git, tracker: UpdateProgress, base: str, target: str, ci_gated: bool) -> bool:
+    tracker.attach("notes", await notes.collect(git, base, target))
     tracker.step("check", "done")
     tracker.step("fetch", "done", target=target[:7])
     tracker.step("verify_ci", "done" if ci_gated else "skipped")

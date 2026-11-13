@@ -56,6 +56,13 @@ pub fn update_changelog(log: &str) -> PyResult<String> {
 }
 
 #[pyfunction]
+pub fn update_release_notes(files_json: &str) -> PyResult<String> {
+    let files: Vec<(String, String)> = serde_json::from_str(bounded(files_json)?)
+        .map_err(|e| PyValueError::new_err(e.to_string()))?;
+    to_json(&nuxiva_update_core::release_notes::digest(&files))
+}
+
+#[pyfunction]
 #[pyo3(signature = (state, stage, status, now))]
 pub fn update_pipeline_advance(
     state: Option<&str>,

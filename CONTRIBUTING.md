@@ -128,6 +128,9 @@ harder.
 - **Sign off** your commits (`git commit -s`) to certify the
   [Developer Certificate of Origin](https://developercertificate.org/): that you wrote the change or have the
   right to submit it under the project license.
+- **Release note**: every commit adds one new file in [`changelog/`](changelog/README.md) with its new features and
+  bug fixes in Italian, English, French and Spanish. CI fails without it, and the system updater shows these notes
+  to the people installing the update.
 
 ## Pull requests
 
@@ -204,7 +207,8 @@ parte del contributo.
 5. **Test**: ogni comportamento nuovo ha test (`unittest`, offline, senza dispositivi reali); esegui in locale gli
    stessi controlli della CI (comandi nella sezione *Testing and checks*), compreso il controllo delle 500 righe.
 6. **Commit**: piccoli, nello stile Conventional Commits (`feat(music): …`), firmati con `git commit -s`
-   (Developer Certificate of Origin); inglese o italiano.
+   (Developer Certificate of Origin); inglese o italiano. Ogni commit aggiunge una nota di rilascio in
+   [`changelog/`](changelog/README.md) con Novità e Bugfix nelle quattro lingue: senza, la CI fallisce.
 7. **Pull request**: da un fork verso `main`, con il modello compilato (problema, progettazione, impatto su
    sicurezza e privacy, come hai verificato); si fonde con CI verde, approvazione e checklist completa.
 8. **Documentazione**: aggiorna i tre README (e `installer_wizard/MCP.md`) nella stessa pull request quando cambiano

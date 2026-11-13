@@ -20,7 +20,7 @@ export const View: React.FC = () => {
   if (!status) return <ApplicationLayout sections={{}} loading={!unreachable} error={unreachable ? t('status_unreachable') : undefined} onRetry={refresh}/>;
   return <ApplicationLayout parameters={{count:status.nodes.length}} contentClassName="update-workbench" sections={{
     overview:<OverviewPanel status={status} telemetry={telemetry} applying={applying} unreachable={unreachable} onStatus={setStatus} onApplying={markApplying}/>,
-    releases:<ChangelogPanel entries={telemetry?.changelog ?? []}/>,
+    releases:<ChangelogPanel entries={telemetry?.changelog ?? []} notes={telemetry?.release_notes}/>,
     nodes:<RolloutPanel nodes={status.nodes} onChanged={refresh}/>,
     diagnostics:<CollaudoPanel/>,
     policy:<PolicyPanel status={status} onStatus={setStatus}/>,

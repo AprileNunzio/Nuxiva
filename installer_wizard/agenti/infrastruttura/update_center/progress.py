@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional
 
 from config import STATE_DIR
 
-from agenti.update_center import native
+from agenti.update_center import native, notes
 
 log = logging.getLogger(__name__)
 
@@ -72,7 +72,7 @@ class UpdateProgress:
     def begin(self, from_rev: str, to_rev: str, reason: str) -> None:
         self.state["run"] = {"id": secrets.token_hex(6), "from": str(from_rev)[:64], "to": str(to_rev)[:64],
                              "reason": str(reason)[:48], "started_at": time.time(), "pipeline": None,
-                             "signature": None, "integrity": None, "impact": None}
+                             "signature": None, "integrity": None, "impact": None, "notes": None}
         self.log("run_begin", "info", None, source=str(from_rev)[:7], target=str(to_rev)[:7], reason=reason)
 
     def step(self, stage: str, status: str, level: Optional[str] = None, **args: Any) -> None:
@@ -90,7 +90,7 @@ class UpdateProgress:
 
     def attach(self, key: str, value: Dict[str, Any]) -> None:
         run = self.state.get("run")
-        if run is not None and key in ("signature", "integrity", "impact"):
+        if run is not None and key in ("signature", "integrity", "impact", "notes"):
             run[key] = value
             self._save()
 
@@ -109,6 +109,7 @@ class UpdateProgress:
         view["percent"] = pipeline.get("percent", 0)
         view["active"] = pipeline.get("active")
         view["outcome"] = pipeline.get("outcome")
+        view["notes"] = notes.compact(run.get("notes"))
         view["console"] = [{k: e.get(k) for k in ("t", "level", "code", "stage")} for e in self.state["console"][-8:]]
         return view
 

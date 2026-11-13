@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 from typing import Any, Awaitable, Callable, Dict, Optional, Tuple
 
-from agenti.update_center import guard, native
+from agenti.update_center import guard, native, notes
 from agenti.update_center.progress import UpdateProgress
 
 Shell = Callable[..., Awaitable[Tuple[int, str]]]
@@ -23,7 +23,7 @@ HEALTH_STATES = {"healthy": "active", "starting": "activating", "unhealthy": "fa
 INSPECT_FORMAT = "{{.State.Status}} {{if .State.Health}}{{.State.Health.Status}}{{end}}"
 
 _services: Dict[str, Any] = {"at": 0.0, "runtime": None, "items": []}
-_pending: Dict[str, Any] = {"key": None, "signature": None, "impact": None}
+_pending: Dict[str, Any] = {"key": None, "signature": None, "impact": None, "notes": None}
 
 
 def container_state(code: int, out: str) -> str:
@@ -55,12 +55,13 @@ async def services(sh: Shell, runtime: str = "native") -> list:
 
 async def pending_analysis(git: guard.Git, local: Optional[str], target: Optional[str]) -> Dict[str, Any]:
     if not local or not target or local == target or not native.valid_rev(local) or not native.valid_rev(target):
-        return {"signature": None, "impact": None}
+        return {"signature": None, "impact": None, "notes": None}
     key = f"{local}:{target}"
     if _pending["key"] != key:
-        signature, impact = await asyncio.gather(guard.signature(git, target), guard.impact(git, local, target))
-        _pending.update(key=key, signature=signature, impact=impact)
-    return {"signature": _pending["signature"], "impact": _pending["impact"]}
+        signature, impact, release = await asyncio.gather(guard.signature(git, target), guard.impact(git, local, target),
+                                                          notes.collect(git, local, target))
+        _pending.update(key=key, signature=signature, impact=impact, notes=release)
+    return {"signature": _pending["signature"], "impact": _pending["impact"], "notes": _pending["notes"]}
 
 
 async def build(git: guard.Git, sh: Shell, info: Dict[str, Any], tracker: UpdateProgress, root: Path,
@@ -77,6 +78,7 @@ async def build(git: guard.Git, sh: Shell, info: Dict[str, Any], tracker: Update
         "console": view["console"],
         "changelog": native.changelog("\n".join(info.get("changelog") or [])),
         "pending": analysis,
+        "release_notes": analysis["notes"] or (view["run"] or {}).get("notes") or notes.empty(),
         "services": units,
         "stages": [stage for stage, _ in native.STAGES],
     }

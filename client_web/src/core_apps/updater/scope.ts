@@ -14,6 +14,11 @@ export function formatDateTime(value: string | number | null, locale: string): s
     : new Intl.DateTimeFormat(locale, { dateStyle: 'short', timeStyle: 'short' }).format(date);
 }
 
+export function formatDay(isoDate: string, locale: string): string {
+  const date = new Date(`${isoDate}T12:00:00`);
+  return Number.isNaN(date.getTime()) ? isoDate : new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(date);
+}
+
 export const shortRev = (rev: string | null): string | null => (rev ? rev.slice(0, 7) : null);
 
 export const panelClass = 'os-card p-5 border border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container)] text-[var(--md-sys-color-on-surface)] rounded-2xl shadow-sm';

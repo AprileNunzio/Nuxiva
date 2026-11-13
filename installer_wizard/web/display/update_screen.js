@@ -5,7 +5,11 @@
   const STATUSES = Object.freeze(["pending", "running", "done", "skipped", "failed"]);
   const GLYPH = Object.freeze({ pending: "·", running: "›", done: "✓", skipped: "–", failed: "✕" });
   const REV = /^[0-9a-f]{7}$/;
+  const LANGS = Object.freeze(["it", "en", "fr", "es"]);
+  const NOTE_LIMIT = 5;
+  const NOTE_MAX = 320;
   let root = null;
+  let notesKey = "";
 
   function el(tag, cls, parent) {
     const node = document.createElement(tag);
@@ -35,6 +39,47 @@
     el("ol", "upd-stages", wrap).id = "upd-stages";
     el("p", "upd-message", wrap).id = "upd-message";
     el("p", "upd-detail", wrap).id = "upd-detail";
+    const notes = el("section", "upd-notes hidden", wrap);
+    notes.id = "upd-notes";
+    PageText.bind(el("h3", "upd-notes-title", notes), "upd_notes_title");
+    ["features", "fixes"].forEach((kind) => {
+      const group = el("div", "upd-notes-group", notes);
+      group.dataset.kind = kind;
+      PageText.bind(el("h4", "upd-notes-kind", group), `upd_notes_${kind}`);
+      el("ul", "upd-notes-list", group);
+      el("p", "upd-notes-more", group);
+    });
+  }
+
+  function pick(item, lang) {
+    if (!item || typeof item !== "object") return "";
+    const value = [lang, "en", "it"].map((key) => item[key]).find((v) => typeof v === "string" && v.trim());
+    return value ? value.trim().slice(0, NOTE_MAX) : "";
+  }
+
+  function noteRows(notes) {
+    const box = document.getElementById("upd-notes");
+    const lang = LANGS.includes((document.documentElement.lang || "").slice(0, 2)) ? document.documentElement.lang.slice(0, 2) : "en";
+    const valid = notes && typeof notes === "object" ? notes : null;
+    const key = valid ? `${lang}:${JSON.stringify(valid)}` : "";
+    if (key === notesKey) return;
+    notesKey = key;
+    let any = false;
+    box.querySelectorAll(".upd-notes-group").forEach((group) => {
+      const kind = group.dataset.kind;
+      const items = valid && Array.isArray(valid[kind]) ? valid[kind].map((item) => pick(item, lang)).filter(Boolean) : [];
+      const total = valid && Number.isInteger(valid[`total_${kind}`]) ? Math.max(valid[`total_${kind}`], items.length) : items.length;
+      const list = group.querySelector(".upd-notes-list");
+      list.replaceChildren();
+      items.slice(0, NOTE_LIMIT).forEach((text) => PageText.plain(el("li", "upd-notes-item", list), text));
+      const more = group.querySelector(".upd-notes-more");
+      const rest = total - Math.min(items.length, NOTE_LIMIT);
+      if (rest > 0) PageText.bind(more, "upd_notes_more", { count: rest });
+      else PageText.plain(more, "");
+      group.classList.toggle("hidden", items.length === 0);
+      any = any || items.length > 0;
+    });
+    box.classList.toggle("hidden", !any);
   }
 
   function stageRows(stages) {
@@ -70,6 +115,7 @@
     if (run && REV.test(run.from || "") && REV.test(run.to || "")) PageText.plain(revs, `${run.from} → ${run.to}`);
     else PageText.plain(revs, "");
     stageRows(run ? run.stages : []);
+    noteRows(run ? run.notes : null);
     root.classList.toggle("upd-failed", !!run && run.outcome === "failed");
     const msg = document.getElementById("upd-message");
     if (run && run.active) PageText.bind(msg, `upd_active_${run.active}`);

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Note di rilascio con Novità e Bugfix negli aggiornamenti",
+    "en": "Release notes with New features and Bug fixes in updates",
+    "fr": "Notes de version avec Nouveautés et Corrections dans les mises à jour",
+    "es": "Notas de versión con Novedades y Correcciones en las actualizaciones"
+  },
+  "features": [
+    {
+      "it": "Prima di installare un aggiornamento, Nuxiva Update mostra le Novità e i Bugfix che troverai, raggruppati e nella tua lingua.",
+      "en": "Before installing an update, Nuxiva Update shows the new features and bug fixes you will get, grouped and in your language.",
+      "fr": "Avant d'installer une mise à jour, Nuxiva Update affiche les nouveautés et les corrections que vous trouverez, regroupées et dans votre langue.",
+      "es": "Antes de instalar una actualización, Nuxiva Update muestra las novedades y correcciones que encontrarás, agrupadas y en tu idioma."
+    },
+    {
+      "it": "La schermata di aggiornamento a tutto schermo elenca le novità mentre il sistema si aggiorna e si riavvia.",
+      "en": "The full-screen update screen lists what is new while the system updates and restarts.",
+      "fr": "L'écran de mise à jour plein écran liste les nouveautés pendant que le système se met à jour et redémarre.",
+      "es": "La pantalla de actualización a pantalla completa muestra las novedades mientras el sistema se actualiza y se reinicia."
+    },
+    {
+      "it": "Ogni modifica pubblicata porta con sé una nota di rilascio verificata: testo controllato, senza caratteri nascosti, in italiano, inglese, francese e spagnolo.",
+      "en": "Every published change carries a verified release note: checked text, no hidden characters, in Italian, English, French and Spanish.",
+      "fr": "Chaque modification publiée est accompagnée d'une note de version vérifiée : texte contrôlé, sans caractères cachés, en italien, anglais, français et espagnol.",
+      "es": "Cada cambio publicado incluye una nota de versión verificada: texto comprobado, sin caracteres ocultos, en italiano, inglés, francés y español."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "L'elenco delle modifiche in arrivo non mostra più solo gli oggetti tecnici dei commit: ora spiega cosa cambia per te.",
+      "en": "The list of incoming changes no longer shows only technical commit subjects: it now explains what changes for you.",
+      "fr": "La liste des modifications à venir n'affiche plus seulement les sujets techniques des commits : elle explique ce qui change pour vous.",
+      "es": "La lista de cambios pendientes ya no muestra solo los asuntos técnicos de los commits: ahora explica qué cambia para ti."
+    }
+  ]
+}

@@ -102,8 +102,8 @@ use surface::{RustMoveGuard, surface_audience, surface_layout};
 use token::{RustTokenCodec, TokenRejected};
 use topics::{TopicRouter, matches, valid_origin, valid_pattern, valid_topic};
 use update::{
-    update_changelog, update_impact, update_pipeline_advance, update_signature, update_valid_rev,
-    update_verify_tree,
+    update_changelog, update_impact, update_pipeline_advance, update_release_notes,
+    update_signature, update_valid_rev, update_verify_tree,
 };
 
 #[pymodule(gil_used = false)]
@@ -245,5 +245,6 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(update_impact, m)?)?;
     m.add_function(wrap_pyfunction!(update_changelog, m)?)?;
     m.add_function(wrap_pyfunction!(update_pipeline_advance, m)?)?;
+    m.add_function(wrap_pyfunction!(update_release_notes, m)?)?;
     Ok(())
 }

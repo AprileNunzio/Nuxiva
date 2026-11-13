@@ -198,13 +198,37 @@ export interface BootStep {
   readonly silent_for: number | null;
 }
 
+export interface LocalizedText {
+  readonly it: string;
+  readonly en: string;
+  readonly fr: string;
+  readonly es: string;
+}
+
+export interface ReleaseNote {
+  readonly id: string;
+  readonly date: string;
+  readonly title: LocalizedText;
+  readonly features: readonly LocalizedText[];
+  readonly fixes: readonly LocalizedText[];
+}
+
+export interface ReleaseNotesReport {
+  readonly notes: readonly ReleaseNote[];
+  readonly features: number;
+  readonly fixes: number;
+  readonly rejected: readonly { readonly file: string; readonly reason: string }[];
+  readonly error?: string;
+}
+
 export interface UpdaterTelemetry {
   readonly engine: { readonly name: 'rust' | 'python'; readonly version: string };
   readonly host: { readonly python: string; readonly git: string; readonly branch: string; readonly root: string };
   readonly run: UpdateRun | null;
   readonly console: readonly ConsoleLine[];
   readonly changelog: readonly ChangeEntry[];
-  readonly pending: { readonly signature: SignatureReport | null; readonly impact: ImpactReport | null };
+  readonly pending: { readonly signature: SignatureReport | null; readonly impact: ImpactReport | null; readonly notes?: ReleaseNotesReport | null };
+  readonly release_notes?: ReleaseNotesReport;
   readonly services: readonly ServiceState[];
   readonly stages: readonly string[];
   readonly boot?: BootStep | null;
