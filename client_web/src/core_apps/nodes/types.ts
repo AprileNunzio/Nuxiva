@@ -47,3 +47,46 @@ export interface OnboardResponse {
   message: string;
   log?: string;
 }
+
+export type ResourceLevel = 'calm' | 'elevated' | 'high' | 'critical';
+
+export interface ResourceComponent {
+  id: string;
+  kind: string;
+  class: string;
+  rss: number;
+  visible: boolean;
+}
+
+export interface ResourceAction {
+  id: string;
+  action: string;
+  reason: string;
+  reclaim: number;
+  ok?: boolean;
+}
+
+export interface ResourceBudget {
+  id: string;
+  budget: number;
+  rss: number;
+  over: boolean;
+}
+
+export interface ResourceState {
+  level: ResourceLevel;
+  pressure: number;
+  mem_percent: number;
+  reclaim_total: number;
+  system: { mem_total: number; mem_available: number; cpu_percent: number; gpu_percent: number; cores: number };
+  components: ResourceComponent[];
+  budgets: ResourceBudget[];
+  applied: ResourceAction[];
+  protected: string[];
+}
+
+export interface ResourceSnapshot {
+  state: Partial<ResourceState>;
+  history: { at: number; level: ResourceLevel; pressure: number }[];
+  log: (ResourceAction & { at: number })[];
+}

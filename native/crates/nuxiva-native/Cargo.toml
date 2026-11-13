@@ -54,6 +54,7 @@ nuxiva-face-core = { path = "../face-core" }
 nuxiva-dialog-core = { path = "../dialog-core" }
 nuxiva-rescue-core = { path = "../rescue-core" }
 nuxiva-defense-core = { path = "../defense-core" }
+nuxiva-resource-core = { path = "../resource-core" }
 nuxiva-expr-core = { path = "../expr-core" }
 nuxiva-memory-core = { path = "../memory-core" }
 nuxiva-vault-media = { path = "../vault-media" }

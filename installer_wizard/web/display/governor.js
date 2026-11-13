@@ -90,6 +90,7 @@
   }
 
   function frameGap(kind) {
+    if (window.NuxivaResources && window.NuxivaResources.covered && kind === "ambient") return Infinity;
     const base = kind === "ambient" ? 33 : 16;
     if (st.tier === "minimal") return kind === "ambient" ? Infinity : 66;
     return st.tier === "reduced" ? base * 2 : base;

@@ -81,6 +81,7 @@
     if (!root) build();
     const back = root.classList.contains("hidden");
     root.classList.remove("hidden");
+    if (global.NuxivaResources) global.NuxivaResources.claim("update");
     const run = s.update_progress || null;
     const revs = document.getElementById("upd-revs");
     if (run && REV.test(run.from || "") && REV.test(run.to || "")) PageText.plain(revs, `${run.from} → ${run.to}`);
@@ -94,6 +95,7 @@
   function clear() {
     if (!root || root.classList.contains("hidden")) return;
     root.classList.add("hidden");
+    if (global.NuxivaResources) global.NuxivaResources.release("update");
     global.NuxivaUpdateNotes.stop();
   }
 

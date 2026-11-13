@@ -8,6 +8,7 @@ import { AppFrame, Btn, Empty, Loading, Panel, Pill, Row } from '../shared/kit';
 import { fetchNodes, fetchUsbPorts, deleteNode } from './api';
 import { MeshNodeItem, UsbPort } from './types';
 import { InstallationCards } from './components/InstallationCards';
+import { ResourcesPanel } from './components/ResourcesPanel';
 
 export const View: React.FC = () => {
   const { t } = useScopedI18n('core_apps/nodes');
@@ -66,6 +67,7 @@ export const View: React.FC = () => {
       description={t('description')}
       onReload={() => void load()}
     >
+      <ResourcesPanel />
       <div className="grid gap-4 xl:grid-cols-2">
         <Panel title={t('install_platforms')}>
           <InstallationCards links={links} usbPorts={usbPorts} detectingUsb={detectingUsb} detectUsb={() => void detectUsb()} />

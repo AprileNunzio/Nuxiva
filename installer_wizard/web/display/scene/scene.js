@@ -72,7 +72,7 @@
       }
       if (mode !== "brain" && !isMini) this.faceTarget.s *= this.presence || 1;
       if (this.face) { this.face.opacity = mode === "brain" ? 0 : 1; if (this.face.setContext) this.face.setContext(mode); }
-      else if (mode === "brain" && this._sleeping) { this._sleeping = false; this.clock.getDelta(); this.renderer.setAnimationLoop(() => this._frame()); }
+      else if (mode === "brain" && this._sleeping) { this._sleeping = false; this.clock.getDelta(); if (!this._suspended) this.renderer.setAnimationLoop(() => this._frame()); }
       this.brain.opacity = mode === "brain" ? 1 : 0;
       this.controls.enabled = mode === "brain";
       this.brain.autoRotate = mode === "brain";
@@ -122,6 +122,21 @@
       this.handlers.onHover && this.handlers.onHover(hit ? hit.node : null, e);
     }
     focusOn(pos) { this._flyTarget = pos.clone().applyMatrix4(this.brain.group.matrixWorld); }
+    suspend() {
+      this._suspended = true;
+      this.renderer.setAnimationLoop(null);
+    }
+    resume() {
+      if (!this._suspended) return;
+      this._suspended = false;
+      this.clock.getDelta();
+      if (!this._sleeping) this.renderer.setAnimationLoop(() => this._frame());
+    }
+    memoryMb() {
+      const info = this.renderer.info.memory;
+      const px = this.renderer.domElement.width * this.renderer.domElement.height * 8;
+      return (px + info.geometries * 20000 + info.textures * 400000) / 1048576;
+    }
     _frame() {
       const dt = Math.min(0.05, this.clock.getDelta()), t = this.clock.elapsedTime;
       this.frames++;

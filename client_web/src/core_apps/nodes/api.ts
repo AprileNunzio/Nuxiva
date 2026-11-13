@@ -31,3 +31,5 @@ export async function deleteNode(nodeId: string): Promise<{ removed: boolean; st
   if (result.removed !== true) throw new Error(result.error || result.status || 'node_not_removed');
   return result;
 }
+
+export const RESOURCES_URL = '/api/resources/state';

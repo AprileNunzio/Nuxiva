@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Gestione centrale di RAM, processore e grafica",
+    "en": "Central management of RAM, processor and graphics",
+    "fr": "Gestion centrale de la RAM, du processeur et du graphique",
+    "es": "Gestión central de RAM, procesador y gráficos"
+  },
+  "features": [
+    {
+      "it": "Nuovo gestore centrale delle risorse: calcola i limiti dalla potenza reale della macchina, scarica i modelli inattivi solo quando serve e non tocca mai voce, sicurezza e soccorso.",
+      "en": "New central resource manager: it derives limits from the real power of the machine, unloads idle models only when needed and never touches voice, security or rescue.",
+      "fr": "Nouveau gestionnaire central des ressources : il calcule les limites selon la puissance réelle de la machine, décharge les modèles inactifs seulement quand il le faut et ne touche jamais à la voix, à la sécurité ni aux secours.",
+      "es": "Nuevo gestor central de recursos: calcula los límites según la potencia real de la máquina, descarga los modelos inactivos solo cuando hace falta y nunca toca voz, seguridad ni rescate."
+    },
+    {
+      "it": "Sulla pagina 80 il volto 3D, le particelle e il meteo si fermano quando una schermata a tutto schermo li copre e ripartono appena torni indietro.",
+      "en": "On page 80 the 3D face, particles and weather stop when a full-screen view covers them and restart as soon as you go back.",
+      "fr": "Sur la page 80, le visage 3D, les particules et la météo s'arrêtent quand un écran plein écran les recouvre et reprennent dès que tu reviens.",
+      "es": "En la página 80 la cara 3D, las partículas y el tiempo se detienen cuando una pantalla completa los cubre y vuelven en cuanto regresas."
+    },
+    {
+      "it": "Nell'app Nodi e Server vedi la pressione del sistema, l'uso per componente rispetto al limite e le ultime azioni automatiche.",
+      "en": "In the Nodes and Servers app you see system pressure, usage per component against its limit and the latest automatic actions.",
+      "fr": "Dans l'app Nœuds et serveurs, tu vois la pression du système, l'utilisation par composant face à sa limite et les dernières actions automatiques.",
+      "es": "En la app Nodos y servidores ves la presión del sistema, el uso por componente frente a su límite y las últimas acciones automáticas."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Con più memoria libera i modelli restano caricati più a lungo, su macchine piccole vengono scaricati prima per restare reattivi.",
+      "en": "With more free memory models stay loaded longer, on small machines they are unloaded sooner to stay responsive.",
+      "fr": "Avec plus de mémoire libre les modèles restent chargés plus longtemps, sur les petites machines ils sont déchargés plus tôt pour rester réactifs.",
+      "es": "Con más memoria libre los modelos siguen cargados más tiempo, en máquinas pequeñas se descargan antes para seguir ágiles."
+    }
+  ]
+}

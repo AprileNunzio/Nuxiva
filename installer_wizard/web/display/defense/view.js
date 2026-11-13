@@ -129,6 +129,7 @@
     current = data;
     await PageText.ready([SCOPE]);
     root.classList.remove("hidden");
+    if (window.NuxivaResources) window.NuxivaResources.claim("defense");
     paint(data);
     if (D.pingActivity) D.pingActivity(true);
     if (!view) {
@@ -150,6 +151,7 @@
   function hide() {
     if (view) { view.dispose(); view = null; }
     if (root) root.classList.add("hidden");
+    if (window.NuxivaResources) window.NuxivaResources.release("defense");
     selected = "";
   }
 

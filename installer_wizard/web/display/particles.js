@@ -463,6 +463,9 @@ void main() {
     try {
       const cloud = await load(p.digest);
       if (wanted !== p.id) return;
+      if (!renderer && window.NuxivaResources) {
+        window.NuxivaResources.register({ id: "particles", mb: 24, suspend: () => renderer && renderer.stop(), resume: () => renderer && showing && renderer.play() });
+      }
       renderer = renderer || new Renderer(canvas);
       const lecture = (p.professor_mode && p.professor_mode.lecture) || (p.catalog && p.catalog.lecture) || null;
       renderer.setHotspots(p.hotspots || [], lecture);

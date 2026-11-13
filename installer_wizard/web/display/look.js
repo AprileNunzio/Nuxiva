@@ -55,6 +55,7 @@
       $("scene").style.display = "block";
       D.avatar = window.nuxivaAvatar = scene;
       window.nuxivaScene = scene;
+      if (window.NuxivaResources) window.NuxivaResources.register({ id: "avatar3d", mb: () => scene.memoryMb(), suspend: () => scene.suspend(), resume: () => scene.resume() });
       scene.setMode(D.mode);
       if (D.weather) scene.setWeather(D.weather);
       D.applyStage();

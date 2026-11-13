@@ -27,8 +27,9 @@ import registry_api
 import setup_api
 import packages_api
 import system_api
-import os_api
+import os_api, resource_api
 from os_memory import memory_manager
+from resource_manager import resource_manager
 import mesh_api
 import node_api
 import node_commands_api
@@ -312,7 +313,7 @@ def build(admin: bool) -> FastAPI:
                 return FileResponse(str(web_dir / "index.html"))
 
     kind = "admin_routes" if admin else "public_routes"
-    for module in (*FEATURE_APIS, *discover_feature_apis(), bus_api, licensing_api, registry_api, pages, setup_api, packages_api, system_api, os_api, mesh_api, node_api, node_commands_api, update_center_api):
+    for module in (*FEATURE_APIS, *discover_feature_apis(), bus_api, licensing_api, registry_api, pages, setup_api, packages_api, system_api, os_api, resource_api, mesh_api, node_api, node_commands_api, update_center_api):
         routes = getattr(module, kind, None)
         if routes is not None:
             app.include_router(routes)
@@ -391,6 +392,7 @@ BACKGROUND = (
     ("motore-nativo", native_reload_loop, 0.0),
     ("risorse", governor.run, 0.0),
     ("memoria-os", memory_manager.run, 0.0),
+    ("gestore-risorse", resource_manager.run, 0.0),
     ("webcam", webcams.run, 0.0),
     ("avvio", orch.boot, 0.0),
     ("controllo-salute", lambda: health.Watchdog(orch).run(), 0.0),
