@@ -6,7 +6,6 @@
   },
   "dictionary": {
     "waiting": "In attesa di dati",
-    "refresh_every": "Si aggiorna ogni {{n}} s",
     "live": "In diretta",
     "empty_widget": "Nessun dato disponibile"
   }

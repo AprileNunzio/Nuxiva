@@ -2,7 +2,7 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/vital_check",
-    "version": "2.0.0"
+    "version": "3.0.0"
   },
   "dictionary": {
     "title": "Heart rate",
@@ -13,6 +13,7 @@
     "src_device": "From the device",
     "src_camera": "From the webcam",
     "not_medical": "Informative estimate, not medical",
-    "aria_row": "{{name}}: {{bpm}} beats per minute"
+    "aria_row": "{{name}}: {{bpm}} beats per minute",
+    "unit": "bpm"
   }
 }

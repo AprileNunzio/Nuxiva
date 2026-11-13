@@ -15,13 +15,6 @@
     return out;
   }
 
-  function trace(points, ctx) {
-    const ys = ctx.arr(points, 120).map((p) => ctx.num(Array.isArray(p) ? p[1] : null)).filter((v) => v !== null);
-    if (ys.length < 2) return "";
-    const lo = Math.min(...ys), hi = Math.max(...ys), span = hi - lo || 1;
-    const pts = ys.map((v, i) => `${((i / (ys.length - 1)) * 200).toFixed(1)},${(34 - ((v - lo) / span) * 28).toFixed(1)}`).join(" ");
-    return `<svg class="hh-trace" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}"/></svg>`;
-  }
 
   function gauge(key, v, ctx) {
     const [lo, hi] = SPAN[key] || [0, 100];
@@ -63,18 +56,10 @@
       const rec = data.recovery && typeof data.recovery === "object" && BANDS.has(data.recovery.band) ? data.recovery : null;
       const head = ctx.head({ icon: "sparkle", label: ctx.t("label"), title: who, chip: rec ? ctx.t("recovery", { n: ctx.fmt(rec.score) }) : "", state: rec ? `band-${rec.band}` : "" });
       if (!Object.keys(v).length) { el.innerHTML = `${head}${ctx.empty(ctx.tc("waiting"))}`; return; }
-      const hr = v.heart_rate;
-      const beat = hr ? Math.max(0.27, Math.min(2.4, 60 / hr.value)) : 0;
       if (v.bp_sys && v.bp_dia) v.bp_sys.dia = v.bp_dia.value;
       const orbit = ORBIT.filter((k) => v[k]).slice(0, 6).map((k) => gauge(k, v[k], ctx)).join("");
       const alerts = signals(data, ctx);
       el.innerHTML = `${head}
-        <div class="hh-core${hr ? " live" : ""}" style="--beat:${beat.toFixed(2)}s">
-          <div class="hh-heart" aria-hidden="true"><i></i><i></i><i></i>
-            <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.6.7-1.4 2.2-2.6 4.3-2.6 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg></div>
-          <div class="hh-bpm"><b>${hr ? ctx.esc(ctx.fmt(hr.value)) : "—"}</b><small>bpm</small><span>${ctx.esc(ctx.t(hr ? "live" : "no_pulse"))}</span></div>
-          ${trace(data.pulse, ctx)}
-        </div>
         ${orbit ? `<ul class="hh-orbit">${orbit}</ul>` : ""}
         ${rings(data, ctx)}
         ${alerts ? `<ul class="hh-sig" role="status">${alerts}</ul>` : ""}`;

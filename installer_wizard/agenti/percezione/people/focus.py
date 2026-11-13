@@ -8,6 +8,7 @@ from state import store
 from tasks import background
 
 CLOUD_EVERY = 120.0
+LIVE_HEART = frozenset({"heart_rate"})
 _polled: dict[str, float] = {}
 
 
@@ -42,9 +43,12 @@ def health_card() -> dict | None:
     now = time.time()
     _kick(slug, now)
     view = service.health_view(slug, now)
-    if not view:
+    values = {k: v for k, v in (view.get("values") or {}).items() if k not in LIVE_HEART}
+    if not values:
         return None
     view.pop("at", None)
+    view.pop("pulse", None)
+    view["values"] = values
     return {"person": who, **view}
 
 

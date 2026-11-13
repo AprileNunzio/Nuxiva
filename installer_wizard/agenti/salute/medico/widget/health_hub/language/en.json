@@ -7,8 +7,6 @@
   "dictionary": {
     "label": "Health",
     "recovery": "Recovery {{n}}",
-    "live": "Live heart rate",
-    "no_pulse": "No heart rate",
     "hours": "{{h}} h {{m}} min",
     "m_spo2": "Oxygen",
     "m_hrv": "HRV",

@@ -158,9 +158,7 @@
     let card = cards.get(inst.key);
     const sig = JSON.stringify(inst.data);
     if (card && card.sig === sig && card.rev === inst.rev) {
-      const renewed = card.inst.refreshed_at !== inst.refreshed_at;
       card.inst = inst;
-      if (renewed) pulse(card);
       return card;
     }
     let impl;
@@ -171,7 +169,7 @@
       el.className = `widget size-${inst.size} w-${inst.id} tone-${TONES.has(inst.tone) ? inst.tone : "cyan"}${inst.essential ? " essential" : ""}${inst.urgent ? " urgent" : ""}${inst.takeover ? " takeover" : ""}${inst.immersive ? " immersive" : ""}${inst.chrome === false ? " frameless" : ""} hidden`;
       el.dataset.key = inst.key;
       if (inst.browser_only) el.dataset.browserOnly = "true";
-      el.innerHTML = '<div class="w-body"></div><i class="w-cycle" aria-hidden="true"></i>';
+      el.innerHTML = '<div class="w-body"></div>';
       card = { el, sig, rev: inst.rev, impl, inst, placed: false };
       cards.set(inst.key, card);
       host.appendChild(el);
@@ -183,20 +181,7 @@
       card.sig = sig; card.inst = inst;
       try { gov(inst.id, () => (impl.update || impl.render)(card.el.firstChild, inst.data, ctxFor(inst.id)), card.el, false); } catch (err) { console.warn(`widget ${inst.id}:`, err); }
     }
-    pulse(card);
     return card;
-  }
-
-  function pulse(card) {
-    const cycle = card.el.querySelector(".w-cycle"), every = Number(card.inst.refresh) || 0;
-    if (!cycle) return;
-    card.el.classList.toggle("has-cycle", every > 0);
-    if (!every) return;
-    cycle.style.setProperty("--cycle", `${every}s`);
-    cycle.classList.remove("run");
-    void cycle.offsetWidth;
-    cycle.classList.add("run");
-    card.el.title = `${ctxFor(card.inst.id).tc("refresh_every", { n: every })}`;
   }
 
   function remove(key, now) {

@@ -2,7 +2,7 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/vital_check",
-    "version": "2.0.0"
+    "version": "3.0.0"
   },
   "dictionary": {
     "title": "Rythme cardiaque",
@@ -13,6 +13,7 @@
     "src_device": "Depuis l'appareil",
     "src_camera": "Depuis la webcam",
     "not_medical": "Estimation indicative, non médicale",
-    "aria_row": "{{name}} : {{bpm}} battements par minute"
+    "aria_row": "{{name}} : {{bpm}} battements par minute",
+    "unit": "bpm"
   }
 }

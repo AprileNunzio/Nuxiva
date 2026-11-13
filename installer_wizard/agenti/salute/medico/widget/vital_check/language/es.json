@@ -2,7 +2,7 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/vital_check",
-    "version": "2.0.0"
+    "version": "3.0.0"
   },
   "dictionary": {
     "title": "Pulso",
@@ -13,6 +13,7 @@
     "src_device": "Desde el dispositivo",
     "src_camera": "Desde la webcam",
     "not_medical": "Estimación informativa, no médica",
-    "aria_row": "{{name}}: {{bpm}} latidos por minuto"
+    "aria_row": "{{name}}: {{bpm}} latidos por minuto",
+    "unit": "lpm"
   }
 }

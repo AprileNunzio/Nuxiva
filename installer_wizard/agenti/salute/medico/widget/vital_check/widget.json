@@ -1,6 +1,6 @@
 {
   "id": "vital_check",
-  "name": "Battito in background",
+  "name": "Battito",
   "icon": "❤️",
   "priority": 85,
   "size": "m",
@@ -14,7 +14,7 @@
     "respiro",
     "parametri"
   ],
-  "description": "Misura in silenzio battito e respiro delle persone riconosciute davanti allo schermo, dal bracciale o dalla webcam; compare solo quando ha un valore affidabile, altrimenti resta nascosto e ritenta da solo. Fino a quattro persone insieme, nel rispetto della privacy di ciascuna.",
+  "description": "Unico widget del battito: misura in silenzio le persone riconosciute davanti allo schermo, dal bracciale o dalla webcam, e mostra un cuore che pulsa al ritmo reale con la sua traccia. Compare solo con un valore affidabile, altrimenti resta nascosto e ritenta da solo. Fino a quattro persone insieme, nel rispetto della privacy di ciascuna.",
   "refresh": 1,
   "cost": {
     "gpu": 1,

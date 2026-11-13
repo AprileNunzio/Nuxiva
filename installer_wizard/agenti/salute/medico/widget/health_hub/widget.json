@@ -13,7 +13,11 @@
     "salute",
     "vitals"
   ],
-  "description": "Parametri della salute della persona davanti allo schermo: battito dal vivo, recupero, ossigeno, sonno, attività e segnali da tenere d'occhio.",
+  "description": "Parametri della salute della persona davanti allo schermo: recupero, ossigeno, pressione, sonno, attività e segnali da tenere d'occhio. Il battito dal vivo ha il suo widget dedicato.",
   "refresh": 5,
-  "cost": {"gpu": 2, "cpu": 2}
+  "cost": {
+    "gpu": 2,
+    "cpu": 2
+  },
+  "chrome": false
 }

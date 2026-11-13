@@ -6,7 +6,6 @@
   },
   "dictionary": {
     "waiting": "Waiting for data",
-    "refresh_every": "Refreshes every {{n}} s",
     "live": "Live",
     "empty_widget": "No data available"
   }

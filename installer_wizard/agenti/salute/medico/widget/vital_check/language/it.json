@@ -2,7 +2,7 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/vital_check",
-    "version": "2.0.0"
+    "version": "3.0.0"
   },
   "dictionary": {
     "title": "Battito",
@@ -13,6 +13,7 @@
     "src_device": "Dal dispositivo",
     "src_camera": "Dalla webcam",
     "not_medical": "Stima informativa, non medica",
-    "aria_row": "{{name}}: {{bpm}} battiti al minuto"
+    "aria_row": "{{name}}: {{bpm}} battiti al minuto",
+    "unit": "bpm"
   }
 }

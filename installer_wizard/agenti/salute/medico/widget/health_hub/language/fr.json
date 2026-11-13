@@ -7,8 +7,6 @@
   "dictionary": {
     "label": "Santé",
     "recovery": "Récupération {{n}}",
-    "live": "Fréquence en direct",
-    "no_pulse": "Pas de fréquence",
     "hours": "{{h}} h {{m}} min",
     "m_spo2": "Oxygène",
     "m_hrv": "VFC",
