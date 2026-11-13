@@ -1,9 +1,13 @@
+import asyncio
 import json
 import logging
+
+import httpx
 
 log = logging.getLogger("nuxiva.particles.creator")
 
 MAX_TEXT = 1800
+MODEL_ERRORS = (ValueError, TypeError, RuntimeError, OSError, httpx.HTTPError, asyncio.TimeoutError)
 BRIEF = (
     "You are a senior engineer and a scientist. For the object in <object> reply with one JSON object that records real knowledge: "
     "{\"kind\":\"what it is\",\"real_size_m\":[length,height,width],\"components\":[{\"name\":\"lowercase_with_underscores\","
@@ -27,7 +31,7 @@ async def advice(concept: str) -> str:
         out = await service.ask(choice.expert.id, f"Explain the real structure of: {concept}. Name the main components, their real measures and how they connect.",
                                 "it", origin="particles")
         return _clip(out.get("text")) if isinstance(out, dict) else ""
-    except (ImportError, LookupError, ValueError, TypeError, RuntimeError, OSError, AttributeError) as exc:
+    except (ImportError, LookupError, AttributeError, *MODEL_ERRORS) as exc:
         log.info("consulto degli esperti non disponibile (%s)", type(exc).__name__)
         return ""
 
@@ -37,7 +41,7 @@ async def brief(concept: str, help_text: str = "") -> str:
     prompt = f"<object>{concept}</object>" + (f"<advice>{help_text}</advice>" if help_text else "")
     try:
         data = await generate(prompt, as_json=True, max_tokens=1200, temperature=0.2, kind="chat", system=BRIEF, component="particles", timeout=60)
-    except (ValueError, TypeError, RuntimeError, OSError) as exc:
+    except MODEL_ERRORS as exc:
         log.info("scheda di conoscenza non disponibile (%s)", type(exc).__name__)
         return ""
     return _clip(json.dumps(data, ensure_ascii=False, separators=(",", ":"))) if isinstance(data, dict) else ""

@@ -7,13 +7,16 @@ from config import env_get
 from state import store as state_store
 from tasks import background
 
-from agenti.particles import codec as particles, forma_design, morphogenesis, xr
-from agenti.particles.store import concept_key, store
+from agenti.particles import codec as particles, forma_creator, forma_design, morphogenesis, xr
+from agenti.particles.store import GENERATION, concept_key, store
 
 log = logging.getLogger("nuxiva.particles")
 
 POINTS = 12_000
 SHOW_SECONDS = 45.0
+KEEP_SECONDS = 120.0
+LEAVE_GRACE = 15.0
+FALLBACK_SECONDS = 600.0
 COOLDOWN_SECONDS = 60.0
 MIN_QUESTION = 10
 TRIVIAL = re.compile(r"^\s*(ciao|grazie|ok|okay|va bene|perfetto|buongiorno|buonasera|buonanotte|salve|sì|si|no)\b", re.I)
@@ -61,7 +64,7 @@ def _realistic_payload(engine_name: str, concept: str) -> dict | None:
     return None
 
 
-def present(entry: dict, ttl: float = SHOW_SECONDS, query: str = "") -> dict:
+def present(entry: dict, ttl: float = FALLBACK_SECONDS, query: str = "") -> dict:
     from agenti.visual_catalog import catalog, night_dreamer
     from agenti.visual_router import select_visual_engine
     concept = str(entry.get("concept") or "")
@@ -81,7 +84,8 @@ def present(entry: dict, ttl: float = SHOW_SECONDS, query: str = "") -> dict:
         "digest": entry["digest"],
         "concept": concept,
         "screen": target_screen(),
-        "until": time.time() + max(5.0, min(600.0, float(ttl))),
+        "until": time.time() + max(5.0, min(FALLBACK_SECONDS, float(ttl))),
+        "seen": time.time(),
         "id": secrets.token_hex(6),
         "hotspots": hotspots,
         "lod_stages": ["shell", "core", "fine", "full"],
@@ -101,8 +105,37 @@ def present(entry: dict, ttl: float = SHOW_SECONDS, query: str = "") -> dict:
     return current_entry
 
 
+def watching() -> bool | None:
+    data = getattr(state_store, "presence", None)
+    if not isinstance(data, dict) or data.get("status") != "ok":
+        return None
+    return bool(data.get("people"))
+
+
+def _extend(cur: dict, now: float) -> None:
+    here = watching()
+    if here is True:
+        cur["until"] = max(cur["until"], now + KEEP_SECONDS)
+    elif here is False:
+        cur["until"] = min(cur["until"], cur.get("seen", now) + LEAVE_GRACE)
+    if here is not False:
+        cur["seen"] = now
+
+
+def tick() -> None:
+    cur = state["current"]
+    if not cur:
+        return
+    now = time.time()
+    _extend(cur, now)
+    if cur["until"] <= now:
+        clear()
+
+
 def current() -> dict | None:
     cur = state["current"]
+    if cur:
+        _extend(cur, time.time())
     if cur and cur["until"] > time.time():
         return {
             "digest": cur["digest"],
@@ -151,11 +184,18 @@ def _anatomy_spec(key: str) -> dict | None:
         return None
 
 
+def known(key: str) -> dict | None:
+    hit = store.lookup(key)
+    if hit and int(hit.get("gen", 0)) < GENERATION and forma_design.draft(key) is not None:
+        return None
+    return hit
+
+
 def materialize_instant(concept: str) -> dict:
     key = concept_key(concept)
     if not key:
         raise particles.ParticleError("empty concept")
-    hit = store.lookup(key)
+    hit = known(key)
     if hit:
         return hit
     clean = _anatomy_spec(key) or morphogenesis.synthesize_spec(key)
@@ -178,7 +218,7 @@ async def refine(key: str, query: str) -> None:
         now = time.time()
         if cur and cur["until"] > now and concept_key(cur["concept"]) == key:
             present(entry, ttl=max(SHOW_SECONDS / 2, cur["until"] - now), query=query)
-    except (particles.ParticleError, ValueError, KeyError, TypeError, RuntimeError, OSError) as exc:
+    except (particles.ParticleError, KeyError, *forma_creator.MODEL_ERRORS) as exc:
         log.info("rifinimento delle particelle saltato (%s)", type(exc).__name__)
     finally:
         refining.discard(key)
@@ -202,7 +242,7 @@ async def materialize(concept: str, spec: dict | None = None) -> dict:
     key = concept_key(concept)
     if not key:
         raise particles.ParticleError("empty concept")
-    hit = store.lookup(key)
+    hit = known(key)
     if hit:
         return hit
     clean = particles.validate(spec) if spec is not None else await sculpt(key)
@@ -234,7 +274,7 @@ async def explain(concept: str, lang: str) -> str:
     try:
         text = await generate(f"<object>{concept}</object>", kind="chat", max_tokens=220, temperature=0.3,
                               system=EXPLAIN.format(lang=lang), component="particles", timeout=30)
-    except (ValueError, TypeError, RuntimeError, OSError) as exc:
+    except forma_creator.MODEL_ERRORS as exc:
         log.info("spiegazione della forma non disponibile (%s)", type(exc).__name__)
         return ""
     return text.strip() if isinstance(text, str) else ""

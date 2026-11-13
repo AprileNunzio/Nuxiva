@@ -89,7 +89,7 @@ async def particle_show(request: Request, _: str = Depends(require_admin)):
     except particles.ParticleError as exc:
         raise HTTPException(400, str(exc))
     try:
-        ttl = float(body.get("seconds", show.SHOW_SECONDS))
+        ttl = float(body.get("seconds", show.FALLBACK_SECONDS))
     except (TypeError, ValueError):
         raise HTTPException(400, "Durata non valida")
     return {"ok": True, "showing": show.present(entry, ttl)}

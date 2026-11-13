@@ -258,6 +258,14 @@ class PresenceMonitor:
         except (OSError, ValueError) as exc:
             log.error("Pubblico del display non aggiornato: %s", exc, exc_info=exc)
 
+    @staticmethod
+    def _particles() -> None:
+        try:
+            from agenti.particles import show
+            show.tick()
+        except (ImportError, ValueError, KeyError, TypeError) as exc:
+            log.warning("Figura a particelle non aggiornata: %s", type(exc).__name__)
+
     async def run(self) -> None:
         async with httpx.AsyncClient(timeout=3) as client:
             while True:
@@ -278,6 +286,7 @@ class PresenceMonitor:
                                       "objects": data.get("objects", [])[:20]}
                     self.updated_at = time.time()
                     self._audience()
+                    self._particles()
                     if [(p["name"], p["near"]) for p in visible] != [(p["name"], p["near"]) for p in previous]:
                         store.touch()
                     self._publish(data, visible)

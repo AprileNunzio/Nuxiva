@@ -451,7 +451,12 @@ void main() {
     screen = myScreen;
     const valid = p && typeof p === "object" && typeof p.id === "string" && DIGEST.test(String(p.digest || ""));
     if (!valid || Number(p.screen) !== screen || !(Number(p.remaining) > 0)) { hide(); return; }
-    if (p.id === showing || p.id === wanted) return;
+    if (p.id === showing) {
+      clearTimeout(expireTimer);
+      expireTimer = setTimeout(hide, Math.min(600, Number(p.remaining)) * 1000);
+      return;
+    }
+    if (p.id === wanted) return;
     wanted = p.id;
     const canvas = document.getElementById("particles");
     if (!canvas) return;

@@ -1,4 +1,5 @@
 import json
+import time
 import unittest
 from unittest import mock
 
@@ -131,6 +132,105 @@ class DesignLoopTest(unittest.IsolatedAsyncioTestCase):
         start = {"plan": joined()}
         _, prompts = await self.run_loop([start], start)
         self.assertEqual(len(prompts), 1)
+
+
+class ShowKeepTest(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from pathlib import Path
+        from agenti.particles import ParticleStore, show
+        from state import store as state_store
+        self.show, self.state_store = show, state_store
+        self.store = ParticleStore(Path(tempfile.mkdtemp()) / "particles")
+        patcher = mock.patch.object(show, "store", self.store)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.addCleanup(show.clear)
+        saved = state_store.presence
+        self.addCleanup(setattr, state_store, "presence", saved)
+        show.refining.clear()
+        mock.patch.object(show, "refine_later", lambda *a: False).start()
+        self.addCleanup(mock.patch.stopall)
+
+    def shown(self):
+        with mock.patch.object(self.show, "_realistic_payload", lambda *a: None):
+            return self.show.ensure_visual("mostrami come è fatto un cane")
+
+    def test_dog_is_an_anatomy_with_named_parts_without_any_model(self):
+        shown = self.shown()
+        labels = [spot["label"] for spot in shown["hotspots"]]
+        self.assertTrue(labels)
+        self.assertFalse([name for name in labels if name.startswith("Elemento")])
+
+    def test_old_stored_shape_is_replaced_by_the_anatomy(self):
+        from agenti.particles import codec, morphogenesis
+        old = morphogenesis.synthesize_spec("cane")
+        key = self.show.concept_key("cane")
+        self.store.put(key, old, codec.sample(old, 500, 1))
+        self.store.index[key].pop("gen")
+        entry = self.show.materialize_instant("cane")
+        self.assertNotEqual(entry["spec"], old)
+        self.assertEqual(self.store.lookup(key)["gen"], self.show.GENERATION)
+
+    def test_figure_stays_while_someone_is_in_front_of_the_screen(self):
+        self.shown()
+        self.show.state["current"]["until"] = time.time() + 1
+        self.state_store.presence = {"status": "ok", "people": [{"slug": "a"}]}
+        time.sleep(1.1)
+        self.assertIsNotNone(self.show.current())
+        self.assertGreater(self.show.current()["remaining"], 60)
+
+    def test_figure_goes_away_shortly_after_the_person_leaves(self):
+        self.shown()
+        self.state_store.presence = {"status": "ok", "people": []}
+        self.show.state["current"]["seen"] = time.time() - self.show.LEAVE_GRACE - 1
+        self.assertIsNone(self.show.current())
+
+    def test_tick_clears_the_figure_and_wakes_the_page_when_the_person_left(self):
+        self.shown()
+        self.state_store.presence = {"status": "ok", "people": []}
+        self.show.state["current"]["seen"] = time.time() - self.show.LEAVE_GRACE - 1
+        self.show.tick()
+        self.assertIsNone(self.show.state["current"])
+
+    def test_tick_without_a_figure_does_nothing(self):
+        self.show.clear()
+        self.show.tick()
+
+    def test_without_camera_the_long_fallback_applies(self):
+        self.shown()
+        self.state_store.presence = {"status": "offline", "people": []}
+        self.assertGreater(self.show.current()["remaining"], 300)
+
+
+class NetworkFailureTest(unittest.IsolatedAsyncioTestCase):
+    async def test_answer_visual_survives_a_network_error_and_still_names_the_parts(self):
+        import tempfile
+        from pathlib import Path
+        import httpx
+        from agenti.particles import ParticleStore, show
+
+        async def fake(*args, **kwargs):
+            raise httpx.ConnectError("network error")
+
+        store = ParticleStore(Path(tempfile.mkdtemp()) / "particles")
+        with mock.patch.object(show, "store", store), mock.patch.object(show, "refine_later", lambda *a: False), \
+                mock.patch.object(show, "_realistic_payload", lambda *a: None), mock.patch("agenti.brain.llm.generate", fake):
+            answer = await show.answer_visual("mostrami come è fatto un cane", "it")
+            show.clear()
+        self.assertIsNotNone(answer)
+        self.assertIn("Testa", answer["reply"])
+        self.assertNotIn("Elemento", answer["reply"])
+
+    async def test_design_and_brief_swallow_network_errors(self):
+        import httpx
+
+        async def fake(*args, **kwargs):
+            raise httpx.ReadTimeout("lento")
+
+        with mock.patch("agenti.brain.llm.generate", fake):
+            self.assertEqual(await forma_creator.brief("cane"), "")
+            self.assertIsNone(await forma_design.design("cane", None, ""))
 
 
 if __name__ == "__main__":

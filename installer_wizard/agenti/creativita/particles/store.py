@@ -20,6 +20,7 @@ log = logging.getLogger("nuxiva.particles")
 
 ROOT = Path(os.environ.get("NUXIVA_PARTICLES_DIR", str(STATE_DIR / "particles")))
 DIGEST = re.compile(r"^[0-9a-f]{64}$")
+GENERATION = 2
 MAX_CONCEPTS = 2_000
 MAX_ARCHIVE = 1_000_000
 EVICT_EVERY = 500
@@ -200,7 +201,7 @@ class ParticleStore:
                     fh.write(blob)
                 os.replace(tmp, path)
             self.index[key] = {"digest": digest, "spec": particles.validate(spec), "created": time.time(), "uses": 1,
-                               "last": time.time()}
+                               "last": time.time(), "gen": GENERATION}
             if len(self.index) > MAX_CONCEPTS:
                 for old in sorted(self.index, key=lambda k: self.index[k].get("last", 0))[:len(self.index) - MAX_CONCEPTS]:
                     self.index.pop(old, None)

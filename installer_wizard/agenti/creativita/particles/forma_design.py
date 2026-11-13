@@ -98,7 +98,7 @@ async def design(concept: str, start: dict | None = None, context: str = "") -> 
             data = await generate(prompt, as_json=True, max_tokens=2400, temperature=0.2, kind="chat", system=system(),
                                   component="particles", timeout=60)
             built, kept = build(data)
-        except (FormaError, codec.ParticleError, ValueError, TypeError, KeyError, RuntimeError, OSError) as exc:
+        except (FormaError, codec.ParticleError, KeyError, *forma_creator.MODEL_ERRORS) as exc:
             log.info("anatomia generale non disponibile (%s)", type(exc).__name__)
             break
         spec, current, measured = built, kept, _measure(kept)
