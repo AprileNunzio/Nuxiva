@@ -4,6 +4,7 @@
   const has = (v) => v !== null && v !== undefined && Number.isFinite(Number(v));
   const AQI_COLORS = ["#3ddc97", "#a6e22e", "#ffd166", "#ff9a4d", "#ff5d73", "#b24bf3"];
   const UV_COLORS = ["#3ddc97", "#ffd166", "#ff9a4d", "#ff5d73", "#b24bf3"];
+  const PRIO = { "wx-wind": 1, "wx-rain": 1, "wx-hum": 2, "wx-uv": 2, "wx-air": 2, "wx-sun": 2, "wx-press": 3, "wx-vis": 3, "wx-moon": 3, "wx-pollen": 3 };
 
   function units(u = {}) {
     const imperial = u.temp === "f";
@@ -26,7 +27,7 @@
     const hourLabel = (iso) => new Date(iso).toLocaleTimeString(loc, { hour: "2-digit", minute: "2-digit" }).replace(/:00$/, "");
     const dayName = (d, long) => new Date(`${d.iso}T12:00:00`).toLocaleDateString(loc, { weekday: long ? "long" : "short" });
     const rel = (d, i) => (i === 0 ? t("wx_today") : i === 1 ? t("wx_tomorrow") : dayName(d, true));
-    const tile = (cls, title, body, foot) => `<section class="wx-tile ${cls}"><h4>${esc(title)}</h4>${body}${foot ? `<p class="wx-foot">${foot}</p>` : ""}</section>`;
+    const tile = (cls, title, body, foot) => `<section class="wx-tile ${cls}" data-prio="${PRIO[cls] || 2}"><h4>${esc(title)}</h4>${body}${foot ? `<p class="wx-foot">${foot}</p>` : ""}</section>`;
     return { t, U, deg, cond, dirName, hourLabel, dayName, rel, tile, loc, esc };
   }
 
@@ -88,15 +89,15 @@
 
   function hourlyBlock(data, k) {
     const date = (data.days || [])[k.focus] && data.days[k.focus].iso, rows = (data.hourly || []).filter((h) => k.focus === 0 || (date && h.time.startsWith(date)));
-    const shown = rows.slice(0, data.view === "week" ? 24 : 36);
+    const room = Math.max(8, Math.floor((window.innerWidth || 1280) / 54)), shown = rows.slice(0, Math.min(room, data.view === "week" ? 24 : 36));
     if (shown.length < 3) return "";
-    return `<section class="wx-panel"><h4>${k.esc(k.t("wx_hourly"))}</h4><div class="wx-scroll">${C.hourly(shown, {
+    return `<section class="wx-panel" data-prio="1"><h4>${k.esc(k.t("wx_hourly"))}</h4><div class="wx-scroll">${C.hourly(shown, {
       temp: k.U.temp, hour: k.hourLabel, every: shown.length > 24 ? 4 : shown.length > 12 ? 3 : 2, icon: I.icon, label: k.t("wx_hourly") })}</div></section>`;
   }
 
   function strip(data, k) {
     const days = data.days || [];
-    return `<section class="wx-panel"><h4>${k.esc(k.t("wx_next_days"))}</h4><div class="wx-strip">${days.slice(0, 7).map((d, i) => `<div class="wx-mini ${i === k.focus ? "on" : ""}">
+    return `<section class="wx-panel" data-prio="2"><h4>${k.esc(k.t("wx_next_days"))}</h4><div class="wx-strip">${days.slice(0, 7).map((d, i) => `<div class="wx-mini ${i === k.focus ? "on" : ""}">
       <b>${k.esc(k.rel(d, i))}</b>${I.icon(d.icon, 34)}<span>${k.deg(d.tmax)} <small>${k.deg(d.tmin)}</small></span><em>☂ ${d.rain ?? 0}%</em></div>`).join("")}</div></section>`;
   }
 
@@ -109,7 +110,7 @@
       <div class="wx-st" title="${k.esc(k.t("wx_rain"))}">☂ ${d.rain ?? 0}%<small>${k.U.precip(d.rain_sum) ?? 0} ${k.U.precipUnit}</small></div>
       <div class="wx-st" title="${k.esc(k.t("wx_wind"))}"><i class="wx-arrow" style="transform:rotate(${(d.dir ?? 0) + 180}deg)">↑</i> ${k.U.wind(d.wind) ?? "—"}<small>${k.U.windUnit}${has(d.gust) ? ` · ↯${k.U.wind(d.gust)}` : ""}</small></div>
       <div class="wx-st" title="${k.esc(k.t("wx_uv"))}">UV <b class="uv-${has(d.uv) ? band(d.uv, [2.9, 5.9, 7.9, 10.9]) : 0}">${d.uv ?? "—"}</b><small>☀ ${k.esc(d.sunrise)}–${k.esc(d.sunset)}</small></div></div>`).join("");
-    return `<section class="wx-panel"><h4>${k.esc(k.t("wx_week"))}</h4><div class="wx-scroll">${C.weekChart(days, { temp: k.U.temp, day: (d) => k.dayName(d, false), label: k.t("wx_week") })}</div>
+    return `<section class="wx-panel" data-prio="1"><h4>${k.esc(k.t("wx_week"))}</h4><div class="wx-scroll" data-prio="3">${C.weekChart(days, { temp: k.U.temp, day: (d) => k.dayName(d, false), label: k.t("wx_week") })}</div>
       <div class="wx-days">${rows}</div></section>`;
   }
 
@@ -122,7 +123,7 @@
     const body = view === "week"
       ? `${hero(data, k)}${weekRows(data, k)}<div class="wx-tiles">${tiles(data, k)}</div>`
       : `${hero(data, k)}${hourlyBlock(data, k)}<div class="wx-tiles">${tiles(data, k)}</div>${strip(data, k)}`;
-    return `<div class="wx wx-${view} wx-theme-${theme} ${opts.compact ? "wx-compact" : ""}">${body}<p class="wx-credit">${k.esc(data.source || "")}${data.stale ? ` · ${k.esc(k.t("wx_stale"))}` : ""}</p></div>`;
+    return `<div class="wx wx-${view} wx-theme-${theme} ${opts.compact ? "wx-compact" : ""}">${body}<p class="wx-credit" data-prio="4">${k.esc(data.source || "")}${data.stale ? ` · ${k.esc(k.t("wx_stale"))}` : ""}</p></div>`;
   }
 
   function compact(data, opts) {

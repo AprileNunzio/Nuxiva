@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "I widget a schermo usano tutto lo spazio, senza barre di scorrimento",
+    "en": "On-screen widgets use all the space, with no scroll bars",
+    "fr": "Les widgets à l'écran utilisent tout l'espace, sans barres de défilement",
+    "es": "Los widgets en pantalla usan todo el espacio, sin barras de desplazamiento"
+  },
+  "features": [
+    {
+      "it": "Quando un widget (per esempio il meteo) non entra accanto a Nuxiva, il pannello si allarga a tutto lo schermo e Nuxiva continua a parlarti come flusso audio.",
+      "en": "When a widget (for example the weather) does not fit next to Nuxiva, the panel widens to the whole screen and Nuxiva keeps talking to you as an audio stream.",
+      "fr": "Quand un widget (par exemple la météo) ne tient pas à côté de Nuxiva, le panneau s'élargit à tout l'écran et Nuxiva continue de vous parler sous forme de flux audio.",
+      "es": "Cuando un widget (por ejemplo el tiempo) no cabe junto a Nuxiva, el panel se amplía a toda la pantalla y Nuxiva sigue hablándote como flujo de audio."
+    },
+    {
+      "it": "Se lo spazio è ancora poco, i contenuti si adattano alla dimensione dello schermo e i dati meno importanti lasciano il posto a quelli più utili, su computer, TV e telefono.",
+      "en": "If space is still short, content adapts to the screen size and less important data makes room for the most useful, on computers, TVs and phones.",
+      "fr": "Si l'espace reste insuffisant, le contenu s'adapte à la taille de l'écran et les données moins importantes laissent la place aux plus utiles, sur ordinateur, TV et téléphone.",
+      "es": "Si aún falta espacio, el contenido se adapta al tamaño de la pantalla y los datos menos importantes dejan sitio a los más útiles, en ordenador, TV y teléfono."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il widget del meteo non mostra più barre di scorrimento e il grafico ora per ora non esce più dai bordi sui telefoni.",
+      "en": "The weather widget no longer shows scroll bars and the hourly chart no longer spills over the edges on phones.",
+      "fr": "Le widget météo n'affiche plus de barres de défilement et le graphique heure par heure ne déborde plus sur les téléphones.",
+      "es": "El widget del tiempo ya no muestra barras de desplazamiento y el gráfico por horas ya no se sale de los bordes en los teléfonos."
+    },
+    {
+      "it": "La scheda principale del meteo era spostata di lato e tagliata a destra: ora è allineata.",
+      "en": "The main weather card was shifted sideways and cut off on the right: it is now aligned.",
+      "fr": "La carte principale de la météo était décalée et coupée à droite : elle est maintenant alignée.",
+      "es": "La tarjeta principal del tiempo estaba desplazada y cortada a la derecha: ahora está alineada."
+    }
+  ]
+}

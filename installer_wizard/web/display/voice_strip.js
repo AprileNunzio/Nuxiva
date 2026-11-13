@@ -24,11 +24,13 @@
     });
   };
 
-  D.setVoiceOnly = (on) => {
-    const was = document.body.classList.contains("voice-only");
-    if (was === !!on) return;
-    document.body.classList.toggle("voice-only", !!on);
+  const reasons = new Set();
+  D.setVoiceOnly = (on, reason = "desk") => {
+    if (on) reasons.add(reason); else reasons.delete(reason);
+    const want = reasons.size > 0;
+    if (document.body.classList.contains("voice-only") === want) return;
+    document.body.classList.toggle("voice-only", want);
     cancelAnimationFrame(raf); last = 0;
-    if (on && !matchMedia("(prefers-reduced-motion: reduce)").matches) raf = requestAnimationFrame(frame);
+    if (want && !matchMedia("(prefers-reduced-motion: reduce)").matches) raf = requestAnimationFrame(frame);
   };
 })();

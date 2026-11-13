@@ -31,7 +31,7 @@
       ${i % 2 === 0 || items.length < 14 ? `<text x="${f1(pts[i][0])}" y="${f1(pts[i][1] - 10)}" class="wxc-val">${Math.round(temps[i])}°</text>` : ""}</g>`).join("");
     const labels = items.map((r, i) => (i % o.every === 0 ? `<text x="${f1(pts[i][0])}" y="${H - 2}" class="wxc-hour">${o.hour(r.time)}</text>` : "")).join("");
     const icons = items.map((r, i) => (i % o.every === 0 ? `<foreignObject x="${f1(pts[i][0] - 12)}" y="${H - bottom + 17}" width="24" height="24">${o.icon(r.icon, 24)}</foreignObject>` : "")).join("");
-    return `<svg class="wxc-hourly" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${o.label}" style="min-width:${Math.min(W, 880)}px">
+    return `<svg class="wxc-hourly" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${o.label}">
       <defs><linearGradient id="wxc-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#29e0ff" stop-opacity=".45"/><stop offset="1" stop-color="#29e0ff" stop-opacity="0"/></linearGradient>
       <linearGradient id="wxc-line" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffd166"/><stop offset=".5" stop-color="#29e0ff"/><stop offset="1" stop-color="#9d7bff"/></linearGradient></defs>
       <path d="${area}" fill="url(#wxc-fill)"/>${bars}<path d="${line}" class="wxc-line" pathLength="1"/>${dots}${labels}${icons}</svg>`;
@@ -98,7 +98,7 @@
     const bars = items.map((d, i) => { const h = clamp(num(d.rain) ?? 0, 0, 100) * 0.32; return h > 2 ? `<rect class="wxc-rain" x="${f1(hp[i][0] - 9)}" y="${f1(150 - h)}" width="18" height="${f1(h)}" rx="3"><title>${d.rain}%</title></rect>` : ""; }).join("");
     const labels = items.map((d, i) => `<text x="${f1(hp[i][0])}" y="${f1(hp[i][1] - 9)}" class="wxc-val">${Math.round(hi[i])}°</text><text x="${f1(lp[i][0])}" y="${f1(lp[i][1] + 17)}" class="wxc-val low">${Math.round(lo[i])}°</text>
       <text x="${f1(hp[i][0])}" y="12" class="wxc-hour">${o.day(d)}</text>`).join("");
-    return `<svg class="wxc-week" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${o.label}" style="min-width:${Math.min(W, 760)}px">
+    return `<svg class="wxc-week" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${o.label}">
       ${bars}<path d="${smooth(hp)}" class="wxc-line hot" pathLength="1"/><path d="${smooth(lp)}" class="wxc-line cold" pathLength="1"/>${labels}</svg>`;
   }
 

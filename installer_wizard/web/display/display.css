@@ -83,7 +83,14 @@ body.focus .caption, body.brain .caption, body.desk-whiteboard .caption, body.de
 body.focus .stage { opacity: 1; transform: none; pointer-events: auto; }
 .stage-head h2 { margin: 0; font-weight: 300; font-size: clamp(22px, 3vh, 32px); letter-spacing: 0.04em; }
 .stage-head p { margin: 6px 0 0; color: var(--text-dim); font-size: 14px; }
-.stage-body { flex: 1; min-height: 0; overflow: auto; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); align-content: start; padding-right: 4px; }
+.stage-body { --fit: 1; flex: 1; min-height: 0; overflow: hidden; display: grid; gap: calc(16px * var(--fit)); grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); align-content: start; }
+.stage-body > .panel { zoom: var(--fit); min-width: 0; }
+.stage-body .fit-cut { display: none !important; }
+.stage-body.fit-measuring, .stage-body.fit-measuring * { transform: none !important; transition: none !important; }
+body.stage-wide .stage { left: 26px; width: auto; }
+body.stage-wide .focus-say { opacity: 0; pointer-events: none; }
+body.stage-wide.voice-only .voice-strip { left: auto; right: 26px; top: 112px; bottom: auto; height: 30px; transform: none; }
+body.stage-wide .stage-head { padding-right: 150px; }
 .stage-body .wide { grid-column: 1 / -1; }
 .stage-body.grid12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
 .stage-body.grid12 > .panel { grid-column: span var(--span, 12); min-width: 0; }
@@ -100,6 +107,9 @@ body.focus .focus-say { opacity: 1; }
 @media (max-aspect-ratio: 1/1) {
   .stage { left: 16px; right: 16px; width: auto; top: 38vh; }
   .focus-say { display: none; }
+  body.stage-wide .stage { left: 16px; right: 16px; top: 84px; }
+  body.stage-wide.voice-only .voice-strip { right: 16px; top: 54px; height: 22px; gap: 3px; }
+  body.stage-wide .stage-head { padding-right: 0; }
 }
 
 .skeleton { height: 150px; border-radius: 12px; background: linear-gradient(90deg, rgba(41,224,255,0.05), rgba(41,224,255,0.14), rgba(41,224,255,0.05)); background-size: 200% 100%; animation: shimmer 1.3s infinite linear; }
