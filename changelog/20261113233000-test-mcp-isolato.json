@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Test del client MCP isolato dagli altri",
+    "en": "MCP client test isolated from the others",
+    "fr": "Test du client MCP isolé des autres",
+    "es": "Prueba del cliente MCP aislada de las demás"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Un controllo automatico sul client MCP dava esito diverso a seconda dei test eseguiti prima: ora parte sempre da uno stato pulito.",
+      "en": "An automatic MCP client check gave different results depending on which tests ran before it: it now always starts from a clean state.",
+      "fr": "Un contrôle automatique du client MCP donnait des résultats différents selon les tests exécutés avant : il part désormais toujours d'un état propre.",
+      "es": "Una comprobación automática del cliente MCP daba resultados distintos según las pruebas anteriores: ahora siempre parte de un estado limpio."
+    }
+  ]
+}

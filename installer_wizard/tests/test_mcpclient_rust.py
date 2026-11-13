@@ -88,10 +88,11 @@ class RustEngineTest(unittest.TestCase):
         patches = [mock.patch.object(store, "FILE", root / "s.json"), mock.patch.object(engine, "VAULT", SealedFile(root / "v.vault", root / "v.key")),
                    mock.patch.object(engine, "SETTINGS_FILE", root / "settings.json"), mock.patch.object(engine, "POLICY_FILE", root / "policy.json"),
                    mock.patch.object(engine, "SCOPES_FILE", root / "scopes.json"), mock.patch.object(engine, "AUDIT_FILE", root / "audit.log"),
-                   mock.patch.dict(os.environ, {"NUXIVA_MCP_ENGINE": "rust"})]
+                   mock.patch.dict(os.environ, {"NUXIVA_MCP_ENGINE": "rust"}), mock.patch.dict(engine.INTERNAL, {}, clear=True)]
         for patcher in patches:
             patcher.start()
             self.addCleanup(patcher.stop)
+        engine.shutdown()
         self.addCleanup(self.cleanup)
         self.root = root
         self.token = registry.REQUEST.set("crea un evento")
