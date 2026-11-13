@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Controllo versioni allineato al nuovo motore MCP",
+    "en": "Version check aligned with the new MCP engine",
+    "fr": "Contrôle des versions aligné sur le nouveau moteur MCP",
+    "es": "Control de versiones alineado con el nuevo motor MCP"
+  },
+  "fixes": [
+    {
+      "it": "Il controllo di coerenza delle versioni non cerca più il vecchio client MCP in Python, rimosso; la versione resta verificata in tutti gli altri componenti.",
+      "en": "The version consistency check no longer looks for the removed Python MCP client; the version is still verified in every other component.",
+      "fr": "Le contrôle de cohérence des versions ne cherche plus l'ancien client MCP Python supprimé ; la version reste vérifiée dans tous les autres composants.",
+      "es": "El control de coherencia de versiones ya no busca el antiguo cliente MCP de Python, eliminado; la versión sigue verificándose en todos los demás componentes."
+    }
+  ],
+  "features": []
+}

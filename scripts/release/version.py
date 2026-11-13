@@ -23,7 +23,6 @@ TARGETS = (
     Target("server/cmd/main.py", rf'("version": "){V}(")'),
     Target("server/core/context_graph/graph_client.py", rf'("version": "){V}(", "status")'),
     Target("installer_wizard/agenti/cognizione/capabilities/mcp.py", rf'(INFO = \{{"name": "nuxiva-os", "version": "){V}(")'),
-    Target("installer_wizard/agenti/comunicazione/mcpclient/client.py", rf'("clientInfo": \{{"name": "nuxiva-os", "version": "){V}(")'),
     Target("client_web/package.json", rf'(?m)^(  "version": "){V}(")'),
     Target("client_web/package-lock.json", rf'(?m)^(  "version": "){V}(")'),
     Target("client_web/package-lock.json", rf'(?s)(  "packages": \{{\s+"": \{{\s+"name": "[^"]+",\s+"version": "){V}(")'),
