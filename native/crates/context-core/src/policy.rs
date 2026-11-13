@@ -22,6 +22,8 @@ pub enum FieldKey {
     Today,
     Allergies,
     Diet,
+    Notes,
+    Habits,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -43,12 +45,12 @@ pub struct Policy {
 impl Default for Policy {
     fn default() -> Self {
         use FieldKey::{
-            Allergies, Custom, Diet, Drinks, Food, Hobbies, Identity, Listening, Mood, Movies,
-            Music, Relations, Sports, Today, Work,
+            Allergies, Custom, Diet, Drinks, Food, Habits, Hobbies, Identity, Listening, Mood,
+            Movies, Music, Notes, Relations, Sports, Today, Work,
         };
         let family = [
             Relations, Work, Food, Drinks, Music, Movies, Sports, Hobbies, Custom, Listening, Mood,
-            Today, Allergies, Diet,
+            Today, Allergies, Diet, Notes, Habits,
         ];
         let mut audience: BTreeMap<FieldKey, Audience> =
             family.iter().map(|k| (*k, Audience::Family)).collect();

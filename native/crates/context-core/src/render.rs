@@ -107,8 +107,11 @@ fn relations_piece(person: &Person, snapshot: &Snapshot, labels: &Labels) -> Opt
         .relations
         .iter()
         .filter_map(|r| {
-            let other = snapshot.person(&r.with)?;
-            other.consent.then(|| format!("{} {}", r.kind, other.name))
+            let who = match r.with.as_ref().and_then(|id| snapshot.person(id)) {
+                Some(other) => other.consent.then(|| other.name.clone())?,
+                None => r.name.clone()?,
+            };
+            Some(format!("{} {who}", r.kind))
         })
         .collect();
     (!parts.is_empty()).then(|| format!("{}: {}", labels.relations, parts.join(", ")))
@@ -230,6 +233,25 @@ impl Sink<'_> {
                 .work
                 .as_ref()
                 .map(|w| format!("{}: {w}", labels.work))
+        });
+        self.push_allowed(7, FieldKey::Drinks, || {
+            person
+                .prefs
+                .coffee
+                .as_ref()
+                .map(|c| format!("{}: {c}", labels.coffee))
+        });
+        self.push_allowed(14, FieldKey::Notes, || {
+            person
+                .notes
+                .as_ref()
+                .map(|n| format!("{}: {n}", labels.notes))
+        });
+        self.push_allowed(14, FieldKey::Habits, || {
+            person
+                .habits
+                .as_ref()
+                .map(|h| format!("{}: {h}", labels.habits))
         });
         self.push_allowed(12, FieldKey::Custom, || {
             let custom: Vec<String> = person

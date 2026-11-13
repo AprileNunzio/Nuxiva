@@ -22,6 +22,8 @@ pub(crate) fn person(ctx: &SharedContext, id: &str, name: &str, role: Role) -> P
         nickname: None,
         age: Some(34),
         work: Some("ingegnere".to_owned()),
+        notes: None,
+        habits: None,
         languages: vec!["it".to_owned()],
         relations: Vec::new(),
         prefs: Prefs {
@@ -62,7 +64,8 @@ fn family(ctx: &SharedContext) {
     let mut anna = person(ctx, "anna", "Anna", Role::Family);
     anna.relations = vec![Relation {
         kind: "madre di".to_owned(),
-        with: pid("luca"),
+        with: Some(pid("luca")),
+        name: None,
     }];
     let luca = person(ctx, "luca", "Luca", Role::Family);
     let ospite = person(ctx, "ospite_1", "Ospite 1", Role::Guest);

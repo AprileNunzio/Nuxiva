@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Il contesto delle persone presenti arriva alle risposte dalla memoria calda",
+    "en": "People's context now reaches answers from the hot memory",
+    "fr": "Le contexte des personnes présentes alimente les réponses depuis la mémoire chaude",
+    "es": "El contexto de las personas presentes llega a las respuestas desde la memoria caliente"
+  },
+  "features": [
+    {
+      "it": "Le risposte usano il contesto delle persone presenti (preferenze, relazioni, lavoro, allergie, umore, abitudini e promemoria del giorno) letto dalla memoria in RAM, senza rileggere i profili dal disco a ogni frase. Le modifiche ai profili arrivano subito, senza riavvio.",
+      "en": "Answers use the context of the people present (preferences, relationships, work, allergies, mood, habits and today's reminders) read from RAM, without rereading profiles from disk on every sentence. Profile edits show up at once, with no restart.",
+      "fr": "Les réponses utilisent le contexte des personnes présentes (préférences, relations, travail, allergies, humeur, habitudes et rappels du jour) lu en mémoire vive, sans relire les profils sur le disque à chaque phrase. Les modifications des profils sont prises en compte aussitôt, sans redémarrage.",
+      "es": "Las respuestas usan el contexto de las personas presentes (preferencias, relaciones, trabajo, alergias, ánimo, hábitos y recordatorios del día) leído desde la RAM, sin releer los perfiles del disco en cada frase. Los cambios en los perfiles se ven al instante, sin reiniciar."
+    },
+    {
+      "it": "Se in stanza c'è un ospite, Nuxiva non usa più i dettagli personali dei familiari nelle risposte; il consenso negato esclude del tutto la persona.",
+      "en": "When a guest is in the room, Nuxiva no longer uses family members' personal details in answers; denied consent excludes the person entirely.",
+      "fr": "Quand un invité est dans la pièce, Nuxiva n'utilise plus les détails personnels des membres de la famille dans ses réponses ; un consentement refusé exclut totalement la personne.",
+      "es": "Cuando hay un invitado en la habitación, Nuxiva ya no usa los detalles personales de los familiares en sus respuestas; el consentimiento denegado excluye por completo a la persona."
+    }
+  ],
+  "fixes": []
+}

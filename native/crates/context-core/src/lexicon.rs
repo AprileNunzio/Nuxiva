@@ -50,6 +50,9 @@ pub struct Labels {
     pub today: &'static str,
     pub allergies: &'static str,
     pub diet: &'static str,
+    pub coffee: &'static str,
+    pub notes: &'static str,
+    pub habits: &'static str,
     pub mood: &'static str,
     pub mood_positive: &'static str,
     pub mood_negative: &'static str,
@@ -59,6 +62,9 @@ pub struct Labels {
 }
 
 static IT: Labels = Labels {
+    coffee: "caffè",
+    notes: "note",
+    habits: "abitudini",
     family: "famiglia",
     guest: "ospite",
     call: "chiamalo/a",
@@ -85,6 +91,9 @@ static IT: Labels = Labels {
 };
 
 static EN: Labels = Labels {
+    coffee: "coffee",
+    notes: "notes",
+    habits: "habits",
     family: "family",
     guest: "guest",
     call: "call them",
@@ -111,6 +120,9 @@ static EN: Labels = Labels {
 };
 
 static FR: Labels = Labels {
+    coffee: "café",
+    notes: "notes",
+    habits: "habitudes",
     family: "famille",
     guest: "invité",
     call: "appelle-le/la",
@@ -137,6 +149,9 @@ static FR: Labels = Labels {
 };
 
 static ES: Labels = Labels {
+    coffee: "café",
+    notes: "notas",
+    habits: "hábitos",
     family: "familia",
     guest: "invitado",
     call: "llámalo/a",

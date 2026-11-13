@@ -24,7 +24,10 @@ pub struct Affect {
 #[serde(deny_unknown_fields)]
 pub struct Relation {
     pub kind: String,
-    pub with: PersonId,
+    #[serde(default)]
+    pub with: Option<PersonId>,
+    #[serde(default)]
+    pub name: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -52,6 +55,7 @@ pub struct Prefs {
     pub movies: Vec<String>,
     pub sports: Vec<String>,
     pub hobbies: Vec<String>,
+    pub coffee: Option<String>,
     pub custom: Vec<Custom>,
 }
 
@@ -75,6 +79,10 @@ pub struct Person {
     pub age: Option<u16>,
     #[serde(default)]
     pub work: Option<String>,
+    #[serde(default)]
+    pub notes: Option<String>,
+    #[serde(default)]
+    pub habits: Option<String>,
     #[serde(default)]
     pub languages: Vec<String>,
     #[serde(default)]
@@ -131,6 +139,9 @@ impl Person {
         }
         clean_opt(self.nickname.as_ref(), settings)?;
         clean_opt(self.work.as_ref(), settings)?;
+        clean_opt(self.notes.as_ref(), settings)?;
+        clean_opt(self.habits.as_ref(), settings)?;
+        clean_opt(self.prefs.coffee.as_ref(), settings)?;
         if self.age.is_some_and(|a| a > 150) {
             return Err(ContextError::Invalid);
         }
@@ -159,6 +170,10 @@ impl Person {
         }
         for relation in &self.relations {
             clean(&relation.kind, max)?;
+            clean_opt(relation.name.as_ref(), settings)?;
+            if relation.with.is_none() && relation.name.is_none() {
+                return Err(ContextError::Invalid);
+            }
         }
         if self.listening.len() > settings.max_listening {
             return Err(ContextError::TooLarge);
@@ -192,6 +207,8 @@ impl Person {
             self.name.len(),
             self.nickname.as_ref().map_or(0, text),
             self.work.as_ref().map_or(0, text),
+            self.notes.as_ref().map_or(0, text),
+            self.habits.as_ref().map_or(0, text),
             list(&self.languages),
             list(&self.today),
             list(&prefs.food_likes),

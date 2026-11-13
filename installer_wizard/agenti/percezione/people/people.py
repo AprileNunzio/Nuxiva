@@ -108,6 +108,8 @@ def save(profile: dict) -> None:
     public, private = private_store.split(profile)
     private_store.save(PEOPLE_DIR, slugify(profile["slug"]), private)
     private_store.write_public(path, json.dumps(public, ensure_ascii=False, indent=1).encode("utf-8"))
+    from agenti.people import hot
+    hot.refresh(profile["slug"])
 
 
 def preferred_languages(slug: str | None) -> tuple[str, str]:
@@ -235,6 +237,8 @@ def delete(slug: str) -> bool:
             return False
         path.unlink()
         private_store.remove(PEOPLE_DIR, slugify(slug))
+    from agenti.people import hot
+    hot.forget(slug)
     for p in all_profiles(light=True):
         rels = p.get("relations", [])
         kept = [r for r in rels if r.get("person") != slug]

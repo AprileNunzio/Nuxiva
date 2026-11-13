@@ -34,7 +34,7 @@ from agenti.mind.mind import mind
 from agenti.chat import context as request_context
 from agenti.desktop.desk import desk
 from agenti.desktop.display_scope import is_host_display
-from agenti.people import learning, people
+from agenti.people import hot, learning, people
 from agenti.people.identity import first_name
 from agenti.skills.library import library as skill_library
 from agenti.study import study
@@ -53,7 +53,7 @@ SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,40}$")
 
 async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
     present = [p["slug"] for p in store.presence.get("people", []) if p.get("known")]
-    context = {"people_present": people.context_for(present)} if present else {}
+    context = {"people_present": hot.context_for(present)} if present else {}
     context["laws"] = laws.preamble()
     if capabilities.enabled():
         context["capabilities"] = capabilities.summary()
