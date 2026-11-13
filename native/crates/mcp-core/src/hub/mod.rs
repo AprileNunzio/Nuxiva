@@ -1,6 +1,7 @@
 mod call;
 mod heal;
 mod jobs;
+mod metrics;
 mod view;
 
 use std::collections::{HashMap, HashSet};
@@ -25,6 +26,7 @@ use crate::trust::{Catalog, ServerEntry};
 pub use call::CallOutput;
 pub use heal::HealReport;
 pub use jobs::{JobView, Within};
+pub use metrics::Metrics;
 pub use view::{ServerView, ToolView};
 
 pub(super) struct Running {

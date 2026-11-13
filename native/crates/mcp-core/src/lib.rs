@@ -28,8 +28,8 @@ mod transport;
 mod trust;
 
 pub use audit::{
-    AuditChain, AuditEvent, AuditRecord, AuditSink, FileSink, GENESIS, MemorySink, Verdict,
-    hash_value, resume_from_file, verify as verify_audit,
+    AuditChain, AuditEvent, AuditRecord, AuditReport, AuditSink, FileSink, GENESIS, MemorySink,
+    Verdict, hash_value, report_from_file, resume_from_file, verify as verify_audit,
 };
 pub use backoff::{Backoff, Breaker};
 pub use connect::connect_server;
@@ -39,7 +39,7 @@ pub use error::{McpError, McpResult};
 pub use errors::{ErrorBus, guarded};
 pub use guard::{IpClass, NetworkPolicy, Target, admit, classify_ip, parse_target, resolve};
 pub use health::{Health, ServerStatus};
-pub use hub::{CallOutput, HealReport, Hub, JobView, ServerView, ToolView, Within};
+pub use hub::{CallOutput, HealReport, Hub, JobView, Metrics, ServerView, ToolView, Within};
 pub use internal::{Factory, InternalRegistry, ToolOutput, ToolServer, serve};
 pub use keystore::{MemorySecrets, Secret, SecretProvider, SharedSecrets, bearer_header};
 pub use limits::Ceilings;

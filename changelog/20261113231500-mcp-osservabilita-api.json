@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Stato e registro verificabile degli strumenti esterni",
+    "en": "Status and verifiable log of external tools",
+    "fr": "État et journal vérifiable des outils externes",
+    "es": "Estado y registro verificable de las herramientas externas"
+  },
+  "fixes": [],
+  "features": [
+    {
+      "it": "Nuove interfacce per vedere server, strumenti, quarantene e compiti in corso e per controllare l'integrità del registro delle chiamate.",
+      "en": "New interfaces to see servers, tools, quarantines and running jobs and to check the integrity of the call log.",
+      "fr": "Nouvelles interfaces pour voir serveurs, outils, quarantaines et tâches en cours et vérifier l'intégrité du journal des appels.",
+      "es": "Nuevas interfaces para ver servidores, herramientas, cuarentenas y tareas en curso y comprobar la integridad del registro de llamadas."
+    }
+  ]
+}

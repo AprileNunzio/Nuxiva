@@ -1,7 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+import asyncio
+import json
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from access import require_admin
-from agenti.mcpclient import runtime, store
+from agenti.mcpclient import engine, mirror, runtime, store
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
@@ -59,3 +62,33 @@ async def approve(tool_id: str, _: str = Depends(require_admin)):
     except ValueError as exc:
         raise HTTPException(400, str(exc.args[0]) if exc.args else "rifiutato")
     return {"ok": True}
+
+
+def need_rust() -> None:
+    if not runtime.rust():
+        raise HTTPException(404, "Funzione non disponibile")
+
+
+@admin_routes.get("/api/mcp/status")
+async def status(_: str = Depends(require_admin)):
+    need_rust()
+    core = engine.get()
+    areas = [{"server": i, "tools": len(a["tools"]), "mode": "mcp" if mirror.active(i) else "legacy"} for i, a in mirror.AREAS.items()]
+    return {"metrics": json.loads(core.metrics_json()), "servers": json.loads(core.statuses_json()), "quarantined": core.quarantined(), "areas": areas}
+
+
+@admin_routes.get("/api/mcp/tools")
+async def tools(_: str = Depends(require_admin)):
+    need_rust()
+    rows = json.loads(engine.get().tools_json())
+    return {"tools": [{k: r[k] for k in ("id", "server", "name", "title", "description", "risk", "state", "hash")} for r in rows]}
+
+
+@admin_routes.get("/api/mcp/audit")
+async def audit(limit: int = Query(100, ge=1, le=1000), _: str = Depends(require_admin)):
+    need_rust()
+    try:
+        raw = await asyncio.to_thread(type(engine.get()).audit_report, str(engine.AUDIT_FILE), limit)
+    except ValueError as exc:
+        raise HTTPException(500, str(exc.args[0]) if exc.args else "audit non leggibile")
+    return json.loads(raw)

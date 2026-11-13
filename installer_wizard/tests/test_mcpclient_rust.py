@@ -210,6 +210,28 @@ class RustEngineTest(unittest.TestCase):
             rust_service.heal()
         self.assertTrue(any("iniettato" in str(a[1]) for a in events))
 
+    def test_observability_endpoints(self):
+        self.connect(trusted=True)
+        asyncio.run(registry.run(self.name_of("leggi_agenda"), {}))
+        app = FastAPI()
+        app.include_router(api.admin_routes)
+        app.dependency_overrides.update({api.require_admin: lambda: "admin"})
+        web = TestClient(app)
+        status = web.get("/api/mcp/status").json()
+        self.assertEqual(status["metrics"]["servers"], 1)
+        self.assertEqual(status["metrics"]["tools"], 4)
+        self.assertTrue(any(a["server"] == "readonly" for a in status["areas"]))
+        self.assertEqual(status["quarantined"], [])
+        listed = web.get("/api/mcp/tools").json()["tools"]
+        self.assertEqual(len(listed), 4)
+        self.assertNotIn("input_schema", listed[0])
+        report = web.get("/api/mcp/audit", params={"limit": 5}).json()
+        self.assertTrue(report["intact"])
+        self.assertGreaterEqual(report["count"], 1)
+        self.assertLessEqual(len(report["records"]), 5)
+        self.assertEqual(web.get("/api/mcp/audit", params={"limit": 0}).status_code, 422)
+        self.assertNotIn(TOKEN, json.dumps(report))
+
     def test_panel_api(self):
         app = FastAPI()
         app.include_router(api.admin_routes)

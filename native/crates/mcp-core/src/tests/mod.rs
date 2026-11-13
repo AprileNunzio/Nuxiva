@@ -11,6 +11,7 @@ mod hub;
 mod jsonrpc;
 mod model;
 mod names;
+mod observe;
 mod policy;
 mod registry;
 mod resilience;

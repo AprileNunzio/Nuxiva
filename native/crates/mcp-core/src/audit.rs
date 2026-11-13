@@ -187,3 +187,53 @@ pub fn verify<'a>(lines: impl IntoIterator<Item = &'a str>) -> McpResult<(u64, S
     }
     Ok((seq, last))
 }
+
+pub const MAX_REPORT: usize = 1_000;
+pub const MAX_AUDIT_BYTES: u64 = 256 * 1024 * 1024;
+
+#[derive(Debug, Clone, Serialize)]
+pub struct AuditReport {
+    pub schema_version: u32,
+    pub intact: bool,
+    pub error: Option<&'static str>,
+    pub count: u64,
+    pub head: String,
+    pub records: Vec<AuditRecord>,
+}
+
+pub fn report_from_file(path: &Path, limit: usize) -> McpResult<AuditReport> {
+    let limit = limit.clamp(1, MAX_REPORT);
+    let size = match std::fs::metadata(path) {
+        Ok(meta) => meta.len(),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => 0,
+        Err(_) => return Err(McpError::Io),
+    };
+    if size > MAX_AUDIT_BYTES {
+        return Err(McpError::TooLarge);
+    }
+    let text = match std::fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => String::new(),
+        Err(_) => return Err(McpError::Io),
+    };
+    let (intact, error, count, head) = match verify(text.lines()) {
+        Ok((count, head)) => (true, None, count, head),
+        Err(failure) => (false, Some(failure.code()), 0, GENESIS.to_owned()),
+    };
+    let lines: Vec<&str> = text.lines().collect();
+    let from = lines.len().saturating_sub(limit);
+    let records = lines
+        .get(from..)
+        .unwrap_or(&[])
+        .iter()
+        .filter_map(|line| serde_json::from_str::<AuditRecord>(line).ok())
+        .collect();
+    Ok(AuditReport {
+        schema_version: 1,
+        intact,
+        error,
+        count,
+        head,
+        records,
+    })
+}

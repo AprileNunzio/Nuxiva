@@ -6,8 +6,8 @@ use ed25519_dalek::SigningKey;
 use nuxiva_mcp_core::ToolOutput;
 use nuxiva_mcp_core::{
     AuditSink, CallRequest, Catalog, FileSink, Hub, McpError, PolicyConfig, Scope, Settings,
-    SharedSecrets, SignedCatalog, ToolError, Within, generate_signing_key, resume_from_file,
-    sign_catalog, verify_catalog,
+    SharedSecrets, SignedCatalog, ToolError, Within, generate_signing_key, report_from_file,
+    resume_from_file, sign_catalog, verify_catalog,
 };
 use nuxiva_mcp_servers::{Dispatch, ServerDefinition, register_all};
 use pyo3::create_exception;
@@ -199,6 +199,16 @@ impl RustMcpEngine {
 
     fn statuses_json(&self) -> PyResult<String> {
         json_of(&self.hub.statuses())
+    }
+
+    fn metrics_json(&self) -> PyResult<String> {
+        json_of(&self.hub.metrics())
+    }
+
+    #[staticmethod]
+    fn audit_report(path: &str, limit: usize) -> PyResult<String> {
+        let report = report_from_file(Path::new(path), limit).map_err(rejected)?;
+        json_of(&report)
     }
 
     fn tools_version(&self) -> u64 {
