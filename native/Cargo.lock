@@ -1196,6 +1196,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-mcp-core"
+version = "5.8.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
 name = "nuxiva-memory-core"
 version = "5.8.0"
 dependencies = [

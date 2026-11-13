@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "MCP dinamico: fondamenta del nuovo motore",
+    "en": "Dynamic MCP: foundations of the new engine",
+    "fr": "MCP dynamique : fondations du nouveau moteur",
+    "es": "MCP dinámico: cimientos del nuevo motor"
+  },
+  "features": [
+    {
+      "it": "Primo mattone del nuovo motore MCP in Rust: protocollo, limiti di sicurezza e configurazione modificabile senza toccare il codice.",
+      "en": "First building block of the new Rust MCP engine: protocol, safety limits and configuration that can change without touching the code.",
+      "fr": "Première brique du nouveau moteur MCP en Rust : protocole, limites de sécurité et configuration modifiable sans toucher au code.",
+      "es": "Primer bloque del nuevo motor MCP en Rust: protocolo, límites de seguridad y configuración modificable sin tocar el código."
+    }
+  ]
+}
