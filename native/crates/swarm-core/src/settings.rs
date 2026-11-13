@@ -4,9 +4,50 @@ use crate::error::{SwarmError, SwarmResult};
 use crate::limits::Ceilings;
 use crate::wire::ident::valid_token;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct LevelBudget {
+    pub tokens: u64,
+    pub tool_calls: u64,
+    pub time_ms: u64,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct LevelLimits {
+    pub lampo: LevelBudget,
+    pub standard: LevelBudget,
+    pub progetto: LevelBudget,
+}
+
+impl Default for LevelLimits {
+    fn default() -> Self {
+        Self {
+            lampo: LevelBudget {
+                tokens: 2_000,
+                tool_calls: 6,
+                time_ms: 20_000,
+            },
+            standard: LevelBudget {
+                tokens: 8_000,
+                tool_calls: 24,
+                time_ms: 120_000,
+            },
+            progetto: LevelBudget {
+                tokens: 50_000,
+                tool_calls: 100,
+                time_ms: 900_000,
+            },
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default, deny_unknown_fields)]
 pub struct Settings {
+    pub levels: LevelLimits,
+    pub max_graph_refs: usize,
+    pub repair_attempts: usize,
     pub max_payload_bytes: usize,
     pub max_text_chars: usize,
     pub max_presence: usize,
@@ -30,6 +71,9 @@ pub struct Settings {
 impl Default for Settings {
     fn default() -> Self {
         Self {
+            levels: LevelLimits::default(),
+            max_graph_refs: 1_024,
+            repair_attempts: 1,
             max_payload_bytes: 256 * 1024,
             max_text_chars: 16_000,
             max_presence: 16,
@@ -82,6 +126,19 @@ impl Settings {
         let ok = sizes.iter().all(|(v, c)| within(*v, *c))
             && numbers.iter().all(|(v, c)| within_u64(*v, *c))
             && self.max_redelegation_depth <= Ceilings::REDELEGATION_DEPTH
+            && self.repair_attempts <= 3
+            && within(self.max_graph_refs, 65_536)
+            && [
+                self.levels.lampo,
+                self.levels.standard,
+                self.levels.progetto,
+            ]
+            .iter()
+            .all(|b| {
+                within_u64(b.tokens, self.max_tokens)
+                    && within_u64(b.tool_calls, self.max_tool_calls)
+                    && within_u64(b.time_ms, self.max_time_ms)
+            })
             && within_u64(self.default_tokens, self.max_tokens)
             && within_u64(self.default_tool_calls, self.max_tool_calls)
             && within_u64(self.default_time_ms, self.max_time_ms)

@@ -113,6 +113,10 @@ impl Catalog {
         self.templates.is_empty()
     }
 
+    pub fn templates(&self) -> impl Iterator<Item = &WorkerTemplate> {
+        self.templates.values()
+    }
+
     #[must_use]
     pub fn template(&self, agent: &Ident) -> Option<&WorkerTemplate> {
         self.templates.get(agent)

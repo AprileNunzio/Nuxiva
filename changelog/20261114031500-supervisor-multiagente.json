@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Supervisor: Nuxiva organizza il lavoro tra più agenti in modo sicuro",
+    "en": "Supervisor: Nuxiva organizes work across several agents safely",
+    "fr": "Superviseur : Nuxiva organise le travail entre plusieurs agents en toute sécurité",
+    "es": "Supervisor: Nuxiva organiza el trabajo entre varios agentes de forma segura"
+  },
+  "features": [
+    {
+      "it": "Quando una richiesta richiede più agenti, Nuxiva prepara un piano a passi con limiti di tempo, costo e chiamate. Le richieste semplici partono subito, senza pianificazione; quelle più grandi usano un piano che viene controllato prima di partire e, se è sbagliato, corretto una sola volta prima di dichiarare onestamente l'errore.",
+      "en": "When a request needs several agents, Nuxiva prepares a step-by-step plan with limits on time, cost and calls. Simple requests start at once, with no planning; bigger ones use a plan that is checked before it runs and, if wrong, fixed only once before honestly reporting the error.",
+      "fr": "Quand une demande exige plusieurs agents, Nuxiva prépare un plan par étapes avec des limites de temps, de coût et d'appels. Les demandes simples démarrent aussitôt, sans planification ; les plus grandes utilisent un plan vérifié avant l'exécution et, s'il est faux, corrigé une seule fois avant de signaler honnêtement l'erreur.",
+      "es": "Cuando una petición requiere varios agentes, Nuxiva prepara un plan por pasos con límites de tiempo, coste y llamadas. Las peticiones simples empiezan al instante, sin planificar; las mayores usan un plan que se comprueba antes de ejecutarse y, si es erróneo, se corrige una sola vez antes de informar honestamente del error."
+    },
+    {
+      "it": "Per i passi che toccano file del progetto, Nuxiva richiede di aver consultato prima la mappa del progetto, con un riferimento recente.",
+      "en": "For steps that touch project files, Nuxiva requires the project map to have been consulted first, with a recent reference.",
+      "fr": "Pour les étapes qui touchent des fichiers du projet, Nuxiva exige d'avoir d'abord consulté la carte du projet, avec une référence récente.",
+      "es": "Para los pasos que tocan archivos del proyecto, Nuxiva exige haber consultado antes el mapa del proyecto, con una referencia reciente."
+    }
+  ],
+  "fixes": []
+}

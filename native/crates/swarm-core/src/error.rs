@@ -11,10 +11,15 @@ pub enum SwarmError {
     Budget,
     Settings,
     Serialize,
+    NoPlanner,
+    PlannerFailed,
+    GraphNotConsulted,
+    GraphStale,
+    Direct,
 }
 
 impl SwarmError {
-    const ALL: [Self; 11] = [
+    const ALL: [Self; 16] = [
         Self::Parse,
         Self::TooLarge,
         Self::Invalid,
@@ -26,6 +31,11 @@ impl SwarmError {
         Self::Budget,
         Self::Settings,
         Self::Serialize,
+        Self::NoPlanner,
+        Self::PlannerFailed,
+        Self::GraphNotConsulted,
+        Self::GraphStale,
+        Self::Direct,
     ];
 
     #[must_use]
@@ -42,6 +52,11 @@ impl SwarmError {
             Self::Budget => "swarm.budget",
             Self::Settings => "swarm.settings.invalid",
             Self::Serialize => "swarm.serialize",
+            Self::NoPlanner => "swarm.plan.no_planner",
+            Self::PlannerFailed => "swarm.plan.planner_failed",
+            Self::GraphNotConsulted => "swarm.graph.not_consulted",
+            Self::GraphStale => "swarm.graph.stale",
+            Self::Direct => "swarm.direct",
         }
     }
 
