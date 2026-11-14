@@ -10,7 +10,7 @@
 .w-alarm .al-title { font-size: clamp(26px, 10cqh, 62px); font-weight: 200; letter-spacing: -0.01em; line-height: 1.1; color: var(--hud-text); overflow-wrap: anywhere; }
 .w-alarm .al-room { display: inline-flex; align-items: center; gap: 8px; font: 600 12px/1 var(--mono); letter-spacing: 0.3em; text-transform: uppercase; color: rgb(var(--tone)); }
 .w-alarm .al-msg { max-width: 680px; margin-top: 6px; font-size: clamp(13px, 4.6cqh, 18px); font-weight: 300; line-height: 1.55; color: var(--text); overflow-wrap: anywhere; }
-.w-alarm .al-advice { display: inline-flex; align-items: flex-start; gap: 10px; max-width: 640px; margin-top: clamp(4px, 2cqh, 12px); padding: 10px 16px; border-radius: 12px; background: rgba(var(--tone), 0.1); box-shadow: 0 0 0 1px rgba(var(--tone), 0.35) inset; font-size: clamp(12px, 3.8cqh, 15px); line-height: 1.45; color: var(--hud-text); text-align: left; }
+.w-alarm .al-advice { display: inline-flex; align-items: flex-start; gap: 10px; max-width: 640px; margin-top: clamp(4px, 2cqh, 12px); padding: 2px 0 2px 14px; background: none; box-shadow: none; border-left: 0; background-image: linear-gradient(rgba(var(--tone), 0.8), rgba(var(--tone), 0.8)); background-size: 2px 100%; background-repeat: no-repeat; font-size: clamp(12px, 3.8cqh, 15px); line-height: 1.45; color: var(--hud-text); text-align: left; }
 .w-alarm .al-advice .wk-svg { flex: none; margin-top: 2px; color: rgb(var(--tone)); }
 .w-alarm .al-time { display: flex; gap: 10px; margin-top: 4px; font: 400 12px var(--mono); letter-spacing: 0.12em; color: var(--text-faint); font-variant-numeric: tabular-nums; }
 .w-alarm .al-time b { font-weight: 600; color: var(--text-dim); }

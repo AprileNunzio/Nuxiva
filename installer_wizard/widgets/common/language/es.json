@@ -7,8 +7,6 @@
   "dictionary": {
     "waiting": "Esperando datos",
     "live": "En directo",
-    "empty_widget": "Sin datos disponibles",
-    "simple_more": "Detalles",
-    "simple_less": "Ocultar"
+    "empty_widget": "Sin datos disponibles"
   }
 }

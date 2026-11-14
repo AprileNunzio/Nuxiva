@@ -49,8 +49,17 @@
 .wk-alert-items { margin: 2px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--text); }
 .wk-alert-items li { position: relative; padding-left: 12px; overflow-wrap: anywhere; }
 .wk-alert-items li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 5px; height: 1px; background: rgba(var(--tone), 0.8); }
-.wk-alert-hint { display: flex; gap: 8px; align-items: flex-start; margin-top: 2px; padding: 7px 10px; border-radius: 10px; background: rgba(var(--tone), 0.08); font-size: 12px; line-height: 1.45; color: var(--hud-text); }
+.wk-alert-hint { display: flex; gap: 8px; align-items: flex-start; margin-top: 2px; padding: 2px 0 2px 10px; background: none; font-size: 12px; line-height: 1.45; color: var(--hud-text); }
 .wk-alert-hint .wk-svg { flex: none; margin-top: 2px; color: rgb(var(--tone)); }
 .wk-alert-meta { display: flex; gap: 6px; flex-wrap: wrap; font: 500 10px/1.4 var(--mono); letter-spacing: 0.08em; color: var(--text-faint); font-variant-numeric: tabular-nums; }
 .w-alert_error .wk-alert::before { animation: wk-blink 1.6s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .w-alert_error .wk-alert::before { animation: none; } }
+
+.widget:not(.fullscreen):not(.takeover) button { background: none !important; box-shadow: none; transition: color 0.2s var(--wg-ease), text-shadow 0.2s var(--wg-ease), opacity 0.2s; }
+.widget:not(.fullscreen):not(.takeover) button:hover, .widget:not(.fullscreen):not(.takeover) button:focus-visible { text-shadow: 0 0 12px rgba(var(--tone), 0.85); }
+.widget:not(.fullscreen):not(.takeover) button:focus-visible { outline: 1px solid rgba(var(--tone), 0.7); outline-offset: 3px; }
+.widget:not(.fullscreen):not(.takeover) button:active { opacity: 0.6; }
+.widget .wk-head { position: relative; }
+.widget.enter .wk-bar > i, .widget.enter .wk-ring .value { animation: wk-fill 1s var(--wg-ease) both; }
+@keyframes wk-fill { from { opacity: 0; filter: blur(3px); } to { opacity: 1; filter: none; } }
+@media (prefers-reduced-motion: reduce) { .widget.enter .wk-bar > i, .widget.enter .wk-ring .value { animation: none; } }

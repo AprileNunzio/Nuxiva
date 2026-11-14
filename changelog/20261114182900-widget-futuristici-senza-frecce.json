@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Widget della pagina 80 più moderni e futuristici",
+    "en": "Page 80 widgets, more modern and futuristic",
+    "fr": "Widgets de la page 80, plus modernes et futuristes",
+    "es": "Widgets de la página 80, más modernos y futuristas"
+  },
+  "features": [
+    {
+      "it": "Nuovo stile uniforme per tutti i widget: titoli in maiuscolo spaziato, icone lineari sottili con alone leggero, linea luminosa sotto l'intestazione, senza sfondi e senza bordi.",
+      "en": "New uniform style for every widget: spaced uppercase titles, thin line icons with a soft glow, a luminous line under the header, no backgrounds and no borders.",
+      "fr": "Nouveau style uniforme pour tous les widgets : titres en capitales espacées, icônes linéaires fines avec une lueur douce, ligne lumineuse sous l'en-tête, sans fonds ni bordures.",
+      "es": "Nuevo estilo uniforme para todos los widgets: títulos en mayúsculas espaciadas, iconos lineales finos con un brillo suave, línea luminosa bajo el encabezado, sin fondos ni bordes."
+    },
+    {
+      "it": "Le informazioni dei widget sono sempre tutte visibili: niente più frecce per aprire e chiudere.",
+      "en": "Widget information is always fully visible: no more arrows to open and close.",
+      "fr": "Les informations des widgets sont toujours entièrement visibles : plus de flèches pour ouvrir et fermer.",
+      "es": "La información de los widgets está siempre visible por completo: se acabaron las flechas para abrir y cerrar."
+    }
+  ],
+  "fixes": []
+}
