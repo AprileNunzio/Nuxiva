@@ -1,5 +1,7 @@
 import ipaddress
 import json
+import logging
+import os
 import threading
 import time
 from urllib.parse import urlparse
@@ -14,6 +16,9 @@ POLICY_FILE = ETC_DIR / "mcp-policy.json"
 SCOPES_FILE = ETC_DIR / "mcp-scopes.json"
 INTERNAL_FILE = ETC_DIR / "mcp-internal.json"
 AUDIT_FILE = STATE_DIR / "mcp-audit.log"
+CATALOG_FILE = ETC_DIR / "mcp-catalog.signed.json"
+PUBLIC_FILE = ETC_DIR / "mcp-catalog.pub"
+log = logging.getLogger("nuxiva.mcp")
 AGENT = "mcpclient"
 PRINCIPAL = "nuxiva"
 CATALOG_TTL = 900
@@ -27,6 +32,9 @@ WAIT = 10.0
 _lock = threading.RLock()
 _engine = None
 _published = False
+_export_state: dict = {}
+_renew_stop = threading.Event()
+_renew_thread = None
 
 
 def available() -> bool:
@@ -176,6 +184,47 @@ def entry(ident: str, row: dict) -> dict:
                           "network": {"allow_loopback": lan, "allow_private": lan, "ports": []}}}
 
 
+def write_private(path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_name(path.name + ".tmp")
+    fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w", encoding="utf-8") as handle:
+        handle.write(text)
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(temp, path)
+
+
+def renewed(catalog: dict, now: int) -> dict:
+    return {**catalog, "issued_at": now, "not_after": now + CATALOG_TTL}
+
+
+def export(catalog: dict, signing: str, public: str) -> None:
+    signed = type(get()).sign_catalog(json.dumps(catalog), bytes.fromhex(signing))
+    write_private(CATALOG_FILE, signed)
+    write_private(PUBLIC_FILE, public)
+
+
+def _renew_loop() -> None:
+    while not _renew_stop.wait(CATALOG_TTL / 3):
+        with _lock:
+            state = dict(_export_state)
+        if not state:
+            continue
+        try:
+            export(renewed(state["catalog"], int(time.time())), state["signing"], state["public"])
+        except (OSError, ValueError) as error:
+            log.warning("rinnovo del catalogo firmato non riuscito: %s", error)
+
+
+def _start_renewer() -> None:
+    global _renew_thread
+    if _renew_thread is None or not _renew_thread.is_alive():
+        _renew_stop.clear()
+        _renew_thread = threading.Thread(target=_renew_loop, name="mcp-catalog-renew", daemon=True)
+        _renew_thread.start()
+
+
 def publish(rows: dict) -> int:
     global _published
     with _lock:
@@ -190,13 +239,21 @@ def publish(rows: dict) -> int:
         data["serial"] = serial
         VAULT.save(data)
         _published = True
+        _export_state.update({"catalog": catalog, "signing": data["signing"], "public": data["public"]})
+        try:
+            export(catalog, data["signing"], data["public"])
+        except OSError as error:
+            log.warning("catalogo firmato non scritto su file: %s", error)
+        _start_renewer()
         return serial
 
 
 def shutdown() -> None:
     global _engine, _published
+    _renew_stop.set()
     with _lock:
         _published = False
+        _export_state.clear()
         if _engine is not None:
             _engine.shutdown()
             _engine = None

@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": { "it": "Il catalogo degli strumenti firmato viene salvato e rinnovato", "en": "The signed tool catalogue is saved and renewed", "fr": "Le catalogue d'outils signé est enregistré et renouvelé", "es": "El catálogo de herramientas firmado se guarda y se renueva" },
+  "features": [
+    { "it": "Il catalogo degli strumenti firmato viene scritto su file protetti e rinnovato prima della scadenza, così altri componenti possono verificarlo.", "en": "The signed tool catalogue is written to protected files and renewed before it expires, so other components can verify it.", "fr": "Le catalogue d'outils signé est écrit dans des fichiers protégés et renouvelé avant son expiration, afin que d'autres composants puissent le vérifier.", "es": "El catálogo de herramientas firmado se escribe en archivos protegidos y se renueva antes de caducar, para que otros componentes puedan verificarlo." }
+  ]
+}
