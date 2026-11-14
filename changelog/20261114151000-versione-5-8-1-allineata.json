@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Versione 5.8.1 allineata in tutti i componenti",
+    "en": "Version 5.8.1 aligned across all components",
+    "fr": "Version 5.8.1 alignée sur tous les composants",
+    "es": "Versión 5.8.1 alineada en todos los componentes"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Tutti i componenti di Nuxiva riportano ora la versione 5.8.1, la stessa dell'installer Windows appena pubblicato.",
+      "en": "All Nuxiva components now report version 5.8.1, the same as the Windows installer just published.",
+      "fr": "Tous les composants de Nuxiva indiquent maintenant la version 5.8.1, la même que le programme d'installation Windows qui vient d'être publié.",
+      "es": "Todos los componentes de Nuxiva indican ahora la versión 5.8.1, la misma del instalador de Windows recién publicado."
+    }
+  ]
+}

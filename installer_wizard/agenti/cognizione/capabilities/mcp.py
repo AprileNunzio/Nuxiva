@@ -12,7 +12,7 @@ from agenti.sentinel.collectors import operations
 from agenti.team import roster, runner
 
 SUPPORTED = ("2025-06-18", "2025-03-26", "2024-11-05")
-INFO = {"name": "nuxiva-os", "version": "5.8.0"}
+INFO = {"name": "nuxiva-os", "version": "5.8.1"}
 SAFE_AGENTS = {"music", "cameras", "desktop", "agent", "whiteboard"}
 SCOPED_READ = frozenset({"firewall_status", "firewall_incidents", "firewall_trusted"})
 INSTRUCTIONS = ("Nuxiva OS: ogni strumento appartiene a un agente con una priorità. Leggi il prompt «panoramica» e le risorse nuxiva://capabilities e "

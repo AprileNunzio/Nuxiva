@@ -1652,7 +1652,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-bus-core"
-version = "5.8.0"
+version = "5.8.1"
 
 [[package]]
 name = "nuxiva-chat-core"
@@ -1729,7 +1729,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-crdt-core"
-version = "5.8.0"
+version = "5.8.1"
 dependencies = [
  "serde",
  "serde_json",
@@ -1862,7 +1862,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-egress"
-version = "5.8.0"
+version = "5.8.1"
 dependencies = [
  "landlock",
  "serde",
@@ -1941,7 +1941,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-langid"
-version = "5.8.0"
+version = "5.8.1"
 dependencies = [
  "whatlang",
 ]
@@ -2035,7 +2035,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-native"
-version = "5.8.0"
+version = "5.8.1"
 dependencies = [
  "agency-action",
  "agency-codeindex",
@@ -2117,7 +2117,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-netguard"
-version = "5.8.0"
+version = "5.8.1"
 dependencies = [
  "serde",
  "serde_json",
