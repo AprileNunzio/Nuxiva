@@ -45,8 +45,7 @@ bool EarLink::begin(const Stored& stored) {
     config.transport = WEBSOCKET_TRANSPORT_OVER_SSL;
     config.buffer_size = 4096;
     config.task_stack = 6144;
-    config.network_timeout_ms = 10000;
-    config.reconnect_timeout_ms = 5000;
+    config.pingpong_timeout_sec = 10;
     config.disable_auto_reconnect = false;
     config.skip_cert_common_name_check = false;
     client_ = esp_websocket_client_init(&config);

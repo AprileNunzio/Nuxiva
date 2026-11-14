@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Firmware dei nodi ESP32 compatibile",
+    "en": "ESP32 node firmware compatible",
+    "fr": "Firmware des nœuds ESP32 compatible",
+    "es": "Firmware de los nodos ESP32 compatible"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Il collegamento audio dei nodi ESP32 usa ora solo le impostazioni supportate dalla versione della piattaforma, e il firmware si compila di nuovo.",
+      "en": "The ESP32 nodes audio link now uses only the settings supported by the platform version, and the firmware builds again.",
+      "fr": "La liaison audio des nœuds ESP32 n'utilise plus que les réglages pris en charge par la version de la plateforme, et le firmware se compile de nouveau.",
+      "es": "El enlace de audio de los nodos ESP32 usa ahora solo los ajustes admitidos por la versión de la plataforma, y el firmware vuelve a compilarse."
+    }
+  ]
+}
