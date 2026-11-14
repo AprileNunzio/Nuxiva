@@ -14,7 +14,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 regex = "1"
 sha2 = "0.10"
-getrandom = "0.3"
+getrandom = "0.4"
 rustix = { version = "1", features = ["fs"] }
 agency-ledger = { path = "../agency-ledger" }
 zeroize = "1"

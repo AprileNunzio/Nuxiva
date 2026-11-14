@@ -14,4 +14,4 @@ serde = { version = "1", features = ["derive"] }
 thiserror = "2"
 
 [dev-dependencies]
-getrandom = "0.3"
+getrandom = "0.4"

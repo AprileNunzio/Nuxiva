@@ -19,4 +19,4 @@ thiserror = "2"
 rustix = { version = "1", features = ["fs"] }
 
 [dev-dependencies]
-getrandom = "0.3"
+getrandom = "0.4"

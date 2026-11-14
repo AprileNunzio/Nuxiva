@@ -20,7 +20,7 @@ sha2 = "0.10"
 hkdf = "0.12"
 aes-gcm = "0.10"
 zeroize = { version = "1", features = ["zeroize_derive"] }
-getrandom = "0.3"
+getrandom = "0.4"
 subtle = "2"
 ureq = { version = "3", default-features = false, features = ["rustls", "json"] }
 rustix = { version = "1", features = ["fs", "process"] }

@@ -13,7 +13,7 @@ workspace = true
 aes = "0.8"
 base64 = "0.23"
 cbc = { version = "0.1", features = ["std"] }
-getrandom = "0.3"
+getrandom = "0.4"
 hmac = "0.12"
 sha2 = "0.10"
 subtle = "2"
