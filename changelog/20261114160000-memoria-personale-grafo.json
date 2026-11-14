@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Memoria personale a grafo per ogni persona",
+    "en": "Personal knowledge graph for every person",
+    "fr": "Mémoire personnelle en graphe pour chaque personne",
+    "es": "Memoria personal en grafo para cada persona"
+  },
+  "features": [
+    {
+      "it": "Nuxiva ricorda persone, luoghi, oggetti, abitudini e preferenze di ciascuno, con fonte e affidabilità, e le ritrova per significato o seguendo i legami tra loro.",
+      "en": "Nuxiva remembers each person's people, places, objects, habits and preferences, with source and reliability, and finds them by meaning or by following the links between them.",
+      "fr": "Nuxiva retient pour chacun les personnes, lieux, objets, habitudes et préférences, avec source et fiabilité, et les retrouve par le sens ou en suivant les liens entre eux.",
+      "es": "Nuxiva recuerda de cada persona sus personas, lugares, objetos, hábitos y preferencias, con fuente y fiabilidad, y los encuentra por significado o siguiendo los vínculos entre ellos."
+    },
+    {
+      "it": "Le tue correzioni valgono più di tutto: un fatto smentito o rimosso non torna da solo. Ogni dato è tuo, gli ospiti restano isolati, i segreti sono cifrati e puoi esportare o cancellare tutto.",
+      "en": "Your corrections outrank everything: a refuted or removed fact never comes back on its own. Every item is yours, guests stay isolated, secrets are encrypted and you can export or delete everything.",
+      "fr": "Tes corrections priment sur tout : un fait démenti ou supprimé ne revient pas tout seul. Chaque donnée t'appartient, les invités restent isolés, les secrets sont chiffrés et tu peux tout exporter ou effacer.",
+      "es": "Tus correcciones valen más que todo: un hecho desmentido o eliminado no vuelve solo. Cada dato es tuyo, los invitados quedan aislados, los secretos se cifran y puedes exportar o borrar todo."
+    },
+    {
+      "it": "Con il tempo i ricordi poco usati sfumano in modo controllato, quelli ripetuti diventano abitudini e i duplicati si fondono, senza mai toccare ciò che hai fissato tu.",
+      "en": "Over time rarely used memories fade in a controlled way, repeated ones become habits and duplicates merge, never touching anything you pinned.",
+      "fr": "Avec le temps, les souvenirs peu utilisés s'estompent de façon contrôlée, ceux qui se répètent deviennent des habitudes et les doublons fusionnent, sans jamais toucher ce que tu as épinglé.",
+      "es": "Con el tiempo los recuerdos poco usados se desvanecen de forma controlada, los repetidos se vuelven hábitos y los duplicados se fusionan, sin tocar nunca lo que has fijado tú."
+    }
+  ],
+  "fixes": []
+}

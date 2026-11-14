@@ -45,6 +45,7 @@ mod guard;
 mod home_rules;
 mod initiative;
 mod jev;
+mod knowledge;
 mod language;
 mod learner;
 mod llm;
@@ -170,6 +171,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     sensory::register(m)?;
     capture::register(m)?;
     graph::register(m)?;
+    knowledge::register(m)?;
     ear_array::register(m)?;
     ear_music::register(m)?;
     lyrics::register(m)?;
