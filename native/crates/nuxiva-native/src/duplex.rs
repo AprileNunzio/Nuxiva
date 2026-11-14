@@ -1,0 +1,142 @@
+use std::sync::{Mutex, PoisonError};
+
+use nuxiva_duplex_core::{Audio, Control, DuplexError, Session, Settings, Trigger};
+use nuxiva_taskq_core::CancelToken;
+use pyo3::exceptions::PyValueError;
+use pyo3::prelude::*;
+use serde_json::Value;
+
+fn fail(error: DuplexError) -> PyErr {
+    PyValueError::new_err(error.code())
+}
+
+fn to_json<T: serde::Serialize>(value: &T) -> Result<String, DuplexError> {
+    serde_json::to_string(value).map_err(|_| DuplexError::Serialize)
+}
+
+fn trigger(code: &str) -> Result<Trigger, DuplexError> {
+    serde_json::from_value(Value::String(code.to_owned())).map_err(|_| DuplexError::Invalid)
+}
+
+#[pyclass(module = "nuxiva_native", frozen, skip_from_py_object)]
+#[derive(Debug, Clone)]
+pub struct RustCancelFlag {
+    token: CancelToken,
+}
+
+#[pymethods]
+impl RustCancelFlag {
+    fn is_cancelled(&self) -> bool {
+        self.token.is_cancelled()
+    }
+
+    fn cancel(&self) {
+        self.token.cancel();
+    }
+}
+
+#[pyclass(module = "nuxiva_native")]
+#[derive(Debug)]
+pub struct RustDuplex {
+    session: Mutex<Session>,
+    settings: Settings,
+}
+
+impl RustDuplex {
+    fn with<T>(&self, f: impl FnOnce(&mut Session) -> Result<T, DuplexError>) -> PyResult<T> {
+        let mut guard = self.session.lock().unwrap_or_else(PoisonError::into_inner);
+        f(&mut guard).map_err(fail)
+    }
+}
+
+#[pymethods]
+impl RustDuplex {
+    #[new]
+    #[pyo3(signature = (settings_json, now_ms))]
+    fn new(settings_json: &str, now_ms: u64) -> PyResult<Self> {
+        let settings = if settings_json.is_empty() {
+            Settings::default()
+        } else {
+            Settings::from_json(settings_json).map_err(fail)?
+        };
+        let session = Session::new(settings.clone(), now_ms).map_err(fail)?;
+        Ok(Self {
+            session: Mutex::new(session),
+            settings,
+        })
+    }
+
+    fn trigger(&self, code: &str, now_ms: u64) -> PyResult<String> {
+        let t = trigger(code).map_err(fail)?;
+        self.with(|s| to_json(&s.trigger(t, now_ms)?))
+    }
+
+    fn begin_reply(&self, now_ms: u64) -> PyResult<u32> {
+        self.with(|s| s.begin_reply(now_ms))
+    }
+
+    fn next_seq(&self, epoch: u32) -> PyResult<u32> {
+        self.with(|s| s.next_out_seq(epoch))
+    }
+
+    fn bind(&self, epoch: u32) -> PyResult<RustCancelFlag> {
+        let token = CancelToken::new();
+        self.with(|s| s.bind(epoch, token.clone()))?;
+        Ok(RustCancelFlag { token })
+    }
+
+    fn mark_spoken(&self, epoch: u32, chars: u32) -> PyResult<()> {
+        self.with(|s| s.mark_spoken(epoch, chars))
+    }
+
+    fn admit(&self, epoch: u32, seq: u32, now_ms: u64) -> PyResult<()> {
+        self.with(|s| s.admit(epoch, seq, now_ms))
+    }
+
+    fn cut(&self, epoch: u32, now_ms: u64) -> PyResult<String> {
+        self.with(|s| to_json(&s.cut(epoch, now_ms)?))
+    }
+
+    fn finish(&self, epoch: u32, now_ms: u64) -> PyResult<String> {
+        self.with(|s| to_json(&s.finish_reply(epoch, now_ms)?))
+    }
+
+    fn tick(&self, now_ms: u64) -> PyResult<Option<String>> {
+        self.with(|s| s.tick(now_ms).map(|state| to_json(&state)).transpose())
+    }
+
+    fn is_live(&self, epoch: u32) -> bool {
+        self.session
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .is_live(epoch)
+    }
+
+    fn snapshot(&self) -> PyResult<String> {
+        self.with(|s| to_json(&s.snapshot()))
+    }
+
+    fn interruption(&self) -> PyResult<String> {
+        self.with(|s| to_json(&s.interruption()))
+    }
+
+    fn events(&self) -> PyResult<String> {
+        self.with(|s| to_json(&s.drain_events()))
+    }
+
+    fn parse_control(&self, text: &str) -> PyResult<String> {
+        Control::parse(text, &self.settings)
+            .and_then(|c| c.encode())
+            .map_err(fail)
+    }
+
+    fn decode_audio(&self, data: &[u8]) -> PyResult<(u32, u32, usize)> {
+        let frame = Audio::decode(data, &self.settings).map_err(fail)?;
+        Ok((frame.epoch, frame.seq, frame.pcm.len()))
+    }
+}
+
+pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_class::<RustDuplex>()?;
+    m.add_class::<RustCancelFlag>()
+}

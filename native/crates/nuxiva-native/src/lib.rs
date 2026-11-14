@@ -22,6 +22,7 @@ mod dialog;
 mod dialogue;
 mod display;
 mod dossier;
+mod duplex;
 mod ear;
 mod ear_array;
 mod ear_music;
@@ -266,6 +267,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     coderloop::register(m)?;
     reflect::register(m)?;
     initiative::register(m)?;
+    duplex::register(m)?;
     m.add_function(wrap_pyfunction!(mastery::mastery_evaluate, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_verify, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_insights, m)?)?;

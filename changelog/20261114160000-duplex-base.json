@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Base per conversare senza aspettare il proprio turno",
+    "en": "Foundation for talking without waiting for your turn",
+    "fr": "Base pour discuter sans attendre son tour",
+    "es": "Base para conversar sin esperar el turno"
+  },
+  "features": [
+    {
+      "it": "Nuxiva ha ora le fondamenta per parlare e ascoltare nello stesso momento: sa se sta ascoltando, pensando o parlando e, quando lo interrompi, può fermare subito la risposta in corso senza lasciare nulla a metà.",
+      "en": "Nuxiva now has the foundation to speak and listen at the same time: it knows whether it is listening, thinking or speaking and, when you interrupt, it can stop the current answer at once without leaving anything half done.",
+      "fr": "Nuxiva a maintenant les bases pour parler et écouter en même temps : elle sait si elle écoute, réfléchit ou parle et, quand tu l'interromps, elle peut arrêter aussitôt la réponse en cours sans rien laisser à moitié.",
+      "es": "Nuxiva ya tiene la base para hablar y escuchar a la vez: sabe si está escuchando, pensando o hablando y, cuando la interrumpes, puede detener al instante la respuesta en curso sin dejar nada a medias."
+    }
+  ],
+  "fixes": []
+}

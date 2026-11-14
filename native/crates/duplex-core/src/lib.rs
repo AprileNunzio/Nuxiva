@@ -1,0 +1,24 @@
+#![forbid(unsafe_code)]
+
+mod error;
+mod frame;
+mod session;
+mod settings;
+mod state;
+
+pub use error::{DuplexError, DuplexResult};
+pub use frame::{AUDIO_HEADER, AUDIO_KIND, Audio, Control};
+pub use session::{CutReport, Event, EventKind, Interruption, Session, Snapshot};
+pub use settings::{MAX_SETTINGS_BYTES, PROTOCOL_VERSION, Settings};
+pub use state::{State, Trigger};
+
+#[cfg(test)]
+#[allow(
+    clippy::expect_used,
+    clippy::arithmetic_side_effects,
+    clippy::panic,
+    clippy::indexing_slicing,
+    clippy::field_reassign_with_default,
+    clippy::cast_possible_truncation
+)]
+mod tests;

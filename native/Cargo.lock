@@ -1457,6 +1457,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-duplex-core"
+version = "5.8.0"
+dependencies = [
+ "nuxiva-taskq-core",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-ear-core"
 version = "5.8.0"
 dependencies = [
@@ -1659,6 +1668,7 @@ dependencies = [
  "nuxiva-display-planner",
  "nuxiva-display-stream",
  "nuxiva-dossier-core",
+ "nuxiva-duplex-core",
  "nuxiva-ear-core",
  "nuxiva-expr-core",
  "nuxiva-face-core",

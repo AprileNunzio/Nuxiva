@@ -21,6 +21,7 @@ nuxiva-taskq-core = { path = "../taskq-core" }
 nuxiva-loop-core = { path = "../loop-core" }
 nuxiva-reflect-core = { path = "../reflect-core" }
 nuxiva-initiative-core = { path = "../initiative-core" }
+nuxiva-duplex-core = { path = "../duplex-core" }
 nuxiva-forma-core = { path = "../forma-core" }
 nuxiva-creations-core = { path = "../creations-core" }
 nuxiva-mastery-core = { path = "../mastery-core" }
