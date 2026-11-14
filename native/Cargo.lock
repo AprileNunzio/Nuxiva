@@ -1826,6 +1826,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-taskq-core"
+version = "5.8.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "sha2",
+ "tokio",
+]
+
+[[package]]
 name = "nuxiva-telemetry-core"
 version = "5.8.0"
 dependencies = [

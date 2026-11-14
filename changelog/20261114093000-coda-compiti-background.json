@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Nuxiva lavora in background senza mai bloccare la voce",
+    "en": "Nuxiva works in the background without ever blocking the voice",
+    "fr": "Nuxiva travaille en arrière-plan sans jamais bloquer la voix",
+    "es": "Nuxiva trabaja en segundo plano sin bloquear nunca la voz"
+  },
+  "features": [
+    {
+      "it": "Nasce la coda dei compiti lunghi: build, controlli e ricerche partono in disparte, con priorità, dipendenze, nuovi tentativi automatici e un limite di tempo. La voce ha una corsia riservata e non aspetta mai.",
+      "en": "The long-task queue is here: builds, checks and searches run on the side, with priorities, dependencies, automatic retries and a time limit. Voice has a reserved lane and never waits.",
+      "fr": "La file des tâches longues arrive : compilations, contrôles et recherches tournent à part, avec priorités, dépendances, nouvelles tentatives automatiques et limite de temps. La voix a une voie réservée et n attend jamais.",
+      "es": "Llega la cola de tareas largas: compilaciones, comprobaciones y búsquedas se ejecutan aparte, con prioridades, dependencias, reintentos automáticos y límite de tiempo. La voz tiene un carril reservado y nunca espera."
+    },
+    {
+      "it": "Se il computer si riavvia, i compiti in coda riprendono da soli, tranne quelli rischiosi che aspettano il tuo via libera.",
+      "en": "If the computer restarts, queued tasks resume on their own, except risky ones, which wait for your go-ahead.",
+      "fr": "Si l ordinateur redémarre, les tâches en file reprennent seules, sauf les risquées qui attendent ton feu vert.",
+      "es": "Si el equipo se reinicia, las tareas en cola se reanudan solas, salvo las arriesgadas, que esperan tu visto bueno."
+    }
+  ],
+  "fixes": []
+}
