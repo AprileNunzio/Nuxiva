@@ -36,16 +36,11 @@ export const WindowsDownload: React.FC = () => {
     setBusy(true);
     setFailed(false);
     try {
-      await download('/api/rpa/enrollment-file', 'enroll.json', {
+      await download('/api/rpa/enrolled-installer', info.name, {
         method: 'POST',
         cache: 'no-store',
         headers: { 'X-Nuxiva-Request': '1' },
       });
-      const anchor = document.createElement('a');
-      anchor.href = info.url;
-      anchor.rel = 'noopener noreferrer';
-      anchor.download = info.name;
-      anchor.click();
     } catch (cause) {
       setFailed(true);
       reportError('nodes_windows_download_failed', cause);
@@ -69,7 +64,15 @@ export const WindowsDownload: React.FC = () => {
           </a>
         </p>
       )}
-      {failed && <p role="alert" className="text-xs text-rose-600 dark:text-rose-400">{t('windows_download_failed')}</p>}
+      {failed && info && (
+        <p role="alert" className="space-y-1 text-xs text-rose-600 dark:text-rose-400">
+          <span className="block">{t('windows_download_failed')}</span>
+          <a className="inline-flex min-h-11 items-center gap-1 font-semibold underline" href={info.url} rel="noopener noreferrer" download={info.name}>
+            <Download className="h-3.5 w-3.5" aria-hidden="true" />
+            {t('windows_download_plain')}
+          </a>
+        </p>
+      )}
       <p className="text-xs text-slate-600 dark:text-slate-400">{t('windows_download_hint')}</p>
     </div>
   );

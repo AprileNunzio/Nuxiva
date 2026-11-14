@@ -100,5 +100,44 @@ class RedeemTest(unittest.TestCase):
         self.assertEqual(ctx.exception.key, "enroll.unreachable")
 
 
+class TrailerTest(unittest.TestCase):
+    def setUp(self):
+        self.path = Path(tempfile.mkdtemp()) / "Nuxiva_Setup.exe"
+
+    def build(self, data: dict, base: bytes = b"MZ" + b"\0" * 5000) -> None:
+        raw = json.dumps(data).encode()
+        self.path.write_bytes(base + raw + len(raw).to_bytes(4, "big") + enroll.TRAILER_MAGIC)
+
+    def test_a_clean_installer_has_no_enrollment(self):
+        self.path.write_bytes(b"MZ" + b"\0" * 5000)
+        self.assertIsNone(enroll.load_trailer(self.path))
+
+    def test_a_tiny_file_has_no_enrollment(self):
+        self.path.write_bytes(b"MZ")
+        self.assertIsNone(enroll.load_trailer(self.path))
+
+    def test_the_appended_block_is_read_and_validated(self):
+        self.build(payload())
+        self.assertEqual(enroll.load_trailer(self.path)["token"], TOKEN)
+
+    def test_an_expired_or_malformed_block_is_rejected(self):
+        for data, key in ((payload(expires=int(time.time()) - 5), "enroll.file_expired"), (payload(token="corto"), "enroll.file_invalid"),
+                          (payload(server="http://x"), "enroll.file_invalid")):
+            self.build(data)
+            with self.assertRaises(enroll.EnrollError) as ctx:
+                enroll.load_trailer(self.path)
+            self.assertEqual(ctx.exception.key, key)
+
+    def test_an_impossible_length_is_rejected(self):
+        self.path.write_bytes(b"MZ" + (60000).to_bytes(4, "big") + enroll.TRAILER_MAGIC)
+        with self.assertRaises(enroll.EnrollError):
+            enroll.load_trailer(self.path)
+
+    def test_source_arguments_are_recognised(self):
+        self.assertEqual(enroll.enrollment_source(["x", "--enrollment-installer", "a.exe"]), ("installer", Path("a.exe")))
+        self.assertEqual(enroll.enrollment_source(["x", "--enrollment-file", "e.json"]), ("file", Path("e.json")))
+        self.assertIsNone(enroll.enrollment_source(["x"]))
+
+
 if __name__ == "__main__":
     unittest.main()

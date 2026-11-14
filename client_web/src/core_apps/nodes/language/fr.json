@@ -8,7 +8,7 @@
     "install_linux_step_1": "Ouvrez le Terminal sur le PC Linux.",
     "install_linux_step_2": "Collez la commande et appuyez sur Entrée.",
     "install_linux_step_3": "Revenez ici et approuvez la demande de connexion.",
-    "install_windows_step_1": "Appuyez sur le bouton ci-dessous : Nuxiva_Setup.exe et le fichier d’association sont téléchargés.",
+    "install_windows_step_1": "Appuyez sur le bouton ci-dessous : un seul fichier prêt à l’emploi, Nuxiva_Setup.exe, est téléchargé.",
     "install_windows_step_2": "Ouvrez Nuxiva_Setup.exe depuis le dossier Téléchargements : il installe et associe le PC tout seul.",
     "install_macos_step_1": "Télécharger le paquet Mac quand il sera disponible.",
     "install_macos_step_2": "Ouvrir le paquet et autoriser le lancement.",
@@ -22,14 +22,14 @@
     "install_macos_title": "macOS (OS X)",
     "install_esp32_title": "ESP32",
     "install_linux_guide": "Ouvrez le Terminal sur le PC Linux. Collez la commande ci-dessous, appuyez sur Entrée et approuvez la demande sur cette page. Python 3, curl et un compte avec sudo sont nécessaires.",
-    "install_windows_guide": "Aucune configuration et aucun ZIP : seul le PC Windows à connecter est nécessaire. Si le navigateur demande d’autoriser plusieurs téléchargements, acceptez.",
+    "install_windows_guide": "Aucune configuration, aucun ZIP et aucun fichier supplémentaire : seul le PC Windows à connecter est nécessaire.",
     "install_macos_guide": "Le paquet macOS est en préparation. L’association guidée nécessite encore un installateur compatible avec Mac et vérifié.",
     "install_esp32_guide": "La détection USB est disponible. L’écriture automatique du micrologiciel est en préparation.",
     "install_esp32_start": "Détecter les ports USB",
     "install_esp32_no_ports": "Aucun port USB détecté. Branchez la carte avec un câble de données et réessayez.",
     "windows_download": "Télécharger Nuxiva pour Windows",
-    "windows_download_hint": "Gardez les deux fichiers dans le même dossier. Le fichier d’association contient un code à usage unique : gardez-le confidentiel et utilisez-le avant son expiration.",
-    "windows_download_failed": "Échec du téléchargement. Vérifiez que HTTPS est activé et réessayez.",
+    "windows_download_hint": "Le fichier contient déjà le code à usage unique qui associe le PC : gardez-le confidentiel et utilisez-le avant son expiration.",
+    "windows_download_failed": "Échec du téléchargement. Réessayez dans un instant.",
     "title": "Nœuds et Serveurs",
     "description": "Gestion de la flotte maillée et assistant d'intégration pas à pas pour nouveaux appareils",
     "add_node": "Ajouter un Nœud",
@@ -122,6 +122,7 @@
     "res_unreachable": "État des ressources inaccessible.",
     "windows_download_version": "Télécharger Nuxiva {version} pour Windows",
     "windows_installer_unavailable": "Impossible de lire la dernière version : vérifiez la connexion Internet du serveur.",
-    "windows_releases_page": "Ouvrir la page des versions"
+    "windows_releases_page": "Ouvrir la page des versions",
+    "windows_download_plain": "Télécharger l’installateur sans association automatique"
   }
 }

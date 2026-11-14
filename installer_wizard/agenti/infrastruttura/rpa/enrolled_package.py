@@ -9,7 +9,7 @@ from state import store
 
 from agenti.nodes import trust
 from agenti.nodes.enrollment import EnrollmentError, tokens
-from agenti.rpa import package
+from agenti.rpa import custom_installer, package, releases
 from agenti.secure import api as secure
 
 admin_routes = APIRouter(tags=["RPA"])
@@ -35,13 +35,21 @@ def _enrollment_payload(request: Request) -> bytes:
     return json.dumps({"server": origin, "token": token, "pin": pin, "expires": int(expires)}).encode()
 
 
-@admin_routes.post("/api/rpa/enrollment-file")
-async def download_enrollment_file(request: Request, user: str = Depends(require_admin)):
-    payload = _enrollment_payload(request)
-    store.event("INFO", f"File di associazione Windows con token monouso generato da {user}", "nodes")
-    return StreamingResponse(io.BytesIO(payload), media_type="application/json",
-                             headers={"Content-Disposition": f"attachment; filename={ENROLL_FILE}",
-                                      "Cache-Control": "no-store"})
+@admin_routes.post("/api/rpa/enrolled-installer")
+async def download_enrolled_installer(request: Request, user: str = Depends(require_admin)):
+    info = await releases.installer_info()
+    if not info:
+        raise HTTPException(503, "windows_installer_unavailable")
+    try:
+        base = await custom_installer.base_installer(info)
+    except custom_installer.InstallerUnavailable as exc:
+        raise HTTPException(503, str(exc))
+    extra = custom_installer.trailer(_enrollment_payload(request))
+    store.event("INFO", f"Installer Windows personalizzato con token monouso generato da {user}", "nodes")
+    return StreamingResponse(custom_installer.stream(base, extra), media_type="application/vnd.microsoft.portable-executable",
+                             headers={"Content-Disposition": f"attachment; filename={releases.INSTALLER}",
+                                      "Content-Length": str(base.stat().st_size + len(extra)),
+                                      "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"})
 
 
 @admin_routes.post("/api/rpa/enrolled-client")

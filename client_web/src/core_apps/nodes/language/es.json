@@ -8,7 +8,7 @@
     "install_linux_step_1": "Abre Terminal en el equipo Linux.",
     "install_linux_step_2": "Pega el comando y pulsa Intro.",
     "install_linux_step_3": "Vuelve aquí y aprueba la solicitud de conexión.",
-    "install_windows_step_1": "Pulsa el botón de abajo: se descargan Nuxiva_Setup.exe y el archivo de vinculación.",
+    "install_windows_step_1": "Pulsa el botón de abajo: se descarga un solo archivo listo, Nuxiva_Setup.exe.",
     "install_windows_step_2": "Abre Nuxiva_Setup.exe desde la carpeta Descargas: instala y vincula el PC por sí solo.",
     "install_macos_step_1": "Descargar el paquete para Mac cuando esté disponible.",
     "install_macos_step_2": "Abrir el paquete y autorizar el inicio.",
@@ -22,14 +22,14 @@
     "install_macos_title": "macOS (OS X)",
     "install_esp32_title": "ESP32",
     "install_linux_guide": "Abre Terminal en el equipo Linux. Pega el comando, pulsa Intro y aprueba la solicitud en esta página. Necesitas Python 3, curl y una cuenta con acceso sudo.",
-    "install_windows_guide": "Sin configuración y sin ZIP: solo necesitas el PC con Windows que quieres conectar. Si el navegador pide permitir varias descargas, acepta.",
+    "install_windows_guide": "Sin configuración, sin ZIP y sin archivos extra: solo necesitas el PC con Windows que quieres conectar.",
     "install_macos_guide": "El paquete de macOS está en preparación. La vinculación guiada todavía requiere un instalador compatible con Mac y verificado.",
     "install_esp32_guide": "La detección USB está disponible. La grabación automática del firmware está en preparación.",
     "install_esp32_start": "Detectar puertos USB",
     "install_esp32_no_ports": "No se detectaron puertos USB. Conecta la placa con un cable de datos e inténtalo de nuevo.",
     "windows_download": "Descargar Nuxiva para Windows",
-    "windows_download_hint": "Mantén los dos archivos en la misma carpeta. El archivo de vinculación contiene un código de un solo uso: guárdalo de forma segura y úsalo antes de que caduque.",
-    "windows_download_failed": "Error de descarga. Comprueba que HTTPS esté activado e inténtalo de nuevo.",
+    "windows_download_hint": "El archivo ya contiene el código de un solo uso que vincula el PC: guárdalo de forma segura y úsalo antes de que caduque.",
+    "windows_download_failed": "La descarga ha fallado. Inténtalo de nuevo en breve.",
     "title": "Nodos y Servidores",
     "description": "Gestión de la flota mesh y asistente paso a paso para incorporar nuevos dispositivos",
     "add_node": "Añadir Nuevo Nodo",
@@ -122,6 +122,7 @@
     "res_unreachable": "Estado de recursos inaccesible.",
     "windows_download_version": "Descargar Nuxiva {version} para Windows",
     "windows_installer_unavailable": "No se puede leer la última versión: comprueba la conexión a Internet del servidor.",
-    "windows_releases_page": "Abrir la página de versiones"
+    "windows_releases_page": "Abrir la página de versiones",
+    "windows_download_plain": "Descargar el instalador sin vinculación automática"
   }
 }

@@ -19,6 +19,11 @@ def _official(tag: str, name: str) -> str:
     return f"https://github.com/{REPOSITORY}/releases/download/{tag}/{name}"
 
 
+def _digest(value) -> str:
+    text = str(value or "")
+    return text[7:].lower() if re.fullmatch(r"sha256:[0-9a-fA-F]{64}", text) else ""
+
+
 def newest(releases: list) -> dict:
     best: dict = {}
     for release in releases:
@@ -27,12 +32,13 @@ def newest(releases: list) -> dict:
         if not match or release.get("draft") or release.get("prerelease"):
             continue
         assets = {asset.get("name"): asset.get("browser_download_url") for asset in release.get("assets") or []}
+        digests = {asset.get("name"): asset.get("digest") for asset in release.get("assets") or []}
         for name in (INSTALLER, LEGACY_INSTALLER):
             url = assets.get(name)
             if isinstance(url, str) and url.casefold() == _official(tag, name).casefold():
                 key = tuple(int(n) for n in match.group(1).split("."))
                 if not best or key > best["key"]:
-                    best = {"key": key, "version": match.group(1), "name": name, "url": url,
+                    best = {"key": key, "version": match.group(1), "name": name, "url": url, "sha256": _digest(digests.get(name)),
                             "signed": bool(assets.get("manifest.json") and assets.get("manifest.sig"))}
                 break
     return best
@@ -73,6 +79,6 @@ async def installer_info() -> dict:
     except (httpx.HTTPError, ValueError) as exc:
         log.warning("Release dell'Assistente Windows non leggibili da GitHub: %s", exc)
         return cached
-    info = {"version": best["version"], "name": best["name"], "url": best["url"]} if best else {}
+    info = {k: best[k] for k in ("version", "name", "url", "sha256")} if best else {}
     _info["v"] = (time.monotonic(), info)
     return info

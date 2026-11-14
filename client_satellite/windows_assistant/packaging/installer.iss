@@ -100,8 +100,9 @@ function EnrollmentParameters(Value: String): String;
 var
   EnrollmentFile: String;
 begin
-  Result := '';
   EnrollmentFile := ExpandConstant('{src}\enroll.json');
   if FileExists(EnrollmentFile) then
-    Result := '--enrollment-file "' + EnrollmentFile + '"';
+    Result := '--enrollment-file "' + EnrollmentFile + '"'
+  else
+    Result := '--enrollment-installer "' + ExpandConstant('{srcexe}') + '"';
 end;

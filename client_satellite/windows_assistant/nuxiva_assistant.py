@@ -51,17 +51,18 @@ def pair(cfg: dict, address: str, code: str, name: str, start_with_windows: bool
     autostart.set_enabled(start_with_windows)
 
 
-def auto_enroll(cfg: dict, enrollment_file: Path | None = None) -> bool:
-    path = enrollment_file or paths.APP_DIR / enroll.ENROLL_FILE
+def auto_enroll(cfg: dict, source: tuple[str, Path] | None = None) -> bool:
+    kind, path = source or ("file", paths.APP_DIR / enroll.ENROLL_FILE)
     try:
-        data = enroll.load(path)
+        data = enroll.load_trailer(path) if kind == "installer" else enroll.load(path)
         if data is None:
             return False
         enroll.redeem(cfg, data, first_contact)
     except enroll.EnrollError as exc:
         ctypes.windll.user32.MessageBoxW(None, t("enroll.failed", reason=t(exc.key)), "Nuxiva", 0x30)
         return False
-    enroll.wipe(path)
+    if kind == "file":
+        enroll.wipe(path)
     autostart.set_enabled(True)
     return True
 
@@ -75,9 +76,9 @@ def main() -> None:
         return
     cfg = store.load()
     autostart.refresh()
-    enrollment_file = (Path(sys.argv[2]) if len(sys.argv) == 3 and sys.argv[1] == "--enrollment-file" else None)
+    source = enroll.enrollment_source(sys.argv)
     local_only = profile.parse_mode(cfg.get("mode")) is profile.Mode.LOCAL
-    if (not cfg["token"] or not cfg["ca"]) and not local_only and not auto_enroll(cfg, enrollment_file):
+    if (not cfg["token"] or not cfg["ca"]) and not local_only and not auto_enroll(cfg, source):
         from ui.pairing_view import PairingWindow
         window = PairingWindow(cfg, verify, lambda *values: pair(cfg, *values))
         if not window.run():

@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Windows: un solo file Nuxiva_Setup.exe già pronto",
+    "en": "Windows: a single ready-made Nuxiva_Setup.exe",
+    "fr": "Windows : un seul fichier Nuxiva_Setup.exe prêt à l'emploi",
+    "es": "Windows: un solo archivo Nuxiva_Setup.exe listo"
+  },
+  "features": [
+    {
+      "it": "Il pulsante Scarica per Windows in Nodi e Server scarica ora un solo file: l'installer ufficiale con il codice monouso di associazione già incorporato, quindi basta aprirlo e il PC si collega da solo.",
+      "en": "The Download for Windows button in Nodes & Servers now downloads a single file: the official installer with the one-time pairing code already built in, so you just open it and the PC pairs by itself.",
+      "fr": "Le bouton Télécharger pour Windows dans Nœuds et Serveurs télécharge désormais un seul fichier : l'installateur officiel avec le code d'association à usage unique déjà intégré, il suffit de l'ouvrir et le PC s'associe tout seul.",
+      "es": "El botón Descargar para Windows en Nodos y Servidores descarga ahora un solo archivo: el instalador oficial con el código de vinculación de un solo uso ya incorporado, basta abrirlo y el PC se vincula solo."
+    },
+    {
+      "it": "Il server verifica l'impronta SHA-256 dell'installer pubblicato prima di usarlo, lo conserva in una cache locale e aggiunge in coda il codice monouso a scadenza breve, senza alterare il file originale.",
+      "en": "The server checks the SHA-256 digest of the published installer before using it, keeps it in a local cache and appends the short-lived one-time code at the end, without altering the original file.",
+      "fr": "Le serveur vérifie l'empreinte SHA-256 de l'installateur publié avant de l'utiliser, le garde dans un cache local et ajoute à la fin le code à usage unique à courte durée, sans modifier le fichier d'origine.",
+      "es": "El servidor comprueba la huella SHA-256 del instalador publicado antes de usarlo, lo conserva en una caché local y añade al final el código de un solo uso de corta duración, sin alterar el archivo original."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto il download di due file (installer più file di associazione) al clic su Scarica per Windows.",
+      "en": "Fixed the two-file download (installer plus pairing file) when clicking Download for Windows.",
+      "fr": "Corrigé le téléchargement de deux fichiers (installateur plus fichier d'association) au clic sur Télécharger pour Windows.",
+      "es": "Corregida la descarga de dos archivos (instalador más archivo de vinculación) al pulsar Descargar para Windows."
+    }
+  ]
+}

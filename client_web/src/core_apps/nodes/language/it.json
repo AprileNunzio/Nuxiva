@@ -8,7 +8,7 @@
     "install_linux_step_1": "Apri Terminale sul PC Linux.",
     "install_linux_step_2": "Copia e incolla il comando e premi Invio.",
     "install_linux_step_3": "Torna qui e approva la richiesta di collegamento.",
-    "install_windows_step_1": "Premi il pulsante qui sotto: si scaricano Nuxiva_Setup.exe e il file di associazione.",
+    "install_windows_step_1": "Premi il pulsante qui sotto: si scarica un solo file, Nuxiva_Setup.exe, già pronto.",
     "install_windows_step_2": "Apri Nuxiva_Setup.exe dalla cartella Download: installa e collega il PC da solo.",
     "install_macos_step_1": "Scaricare il pacchetto per Mac quando sarà disponibile.",
     "install_macos_step_2": "Aprire il pacchetto e autorizzare l’avvio.",
@@ -22,14 +22,14 @@
     "install_macos_title": "macOS (OS X)",
     "install_esp32_title": "ESP32",
     "install_linux_guide": "Sul computer Linux apri il Terminale. Copia e incolla il comando qui sotto, premi Invio e approva la richiesta di collegamento in questa pagina. Servono Python 3, curl e un account con sudo.",
-    "install_windows_guide": "Nessuna configurazione e nessuno ZIP: serve solo il PC Windows da collegare. Se il browser chiede di consentire più download, accetta.",
+    "install_windows_guide": "Nessuna configurazione, nessuno ZIP e nessun file in più: serve solo il PC Windows da collegare.",
     "install_macos_guide": "Il pacchetto macOS è in preparazione. Il collegamento guidato richiede ancora un installer compatibile e verificato per Mac.",
     "install_esp32_guide": "Il rilevamento USB è disponibile. La scrittura automatica del firmware è in preparazione.",
     "install_esp32_start": "Rileva porte USB",
     "install_esp32_no_ports": "Nessuna porta USB rilevata. Collega la scheda con un cavo dati e riprova.",
     "windows_download": "Scarica Nuxiva per Windows",
-    "windows_download_hint": "Tieni i due file nella stessa cartella. Il file di associazione contiene un codice monouso: conservalo al sicuro e usalo prima della scadenza.",
-    "windows_download_failed": "Download non riuscito. Verifica che HTTPS sia attivo e riprova.",
+    "windows_download_hint": "Il file contiene già il codice monouso per collegare il PC: conservalo al sicuro e usalo prima della scadenza.",
+    "windows_download_failed": "Download non riuscito. Riprova tra poco.",
     "title": "Nodi e Server",
     "description": "Gestione del cluster distribuito e onboarding guidato a step per nuovi dispositivi",
     "add_node": "Aggiungi Nuovo Nodo",
@@ -122,6 +122,7 @@
     "res_unreachable": "Stato delle risorse non raggiungibile.",
     "windows_download_version": "Scarica Nuxiva {version} per Windows",
     "windows_installer_unavailable": "Non riesco a leggere l’ultima versione: controlla la connessione del server a Internet.",
-    "windows_releases_page": "Apri la pagina delle versioni"
+    "windows_releases_page": "Apri la pagina delle versioni",
+    "windows_download_plain": "Scarica l’installer senza associazione automatica"
   }
 }

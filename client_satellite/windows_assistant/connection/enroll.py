@@ -13,6 +13,9 @@ from settings import store
 log = logging.getLogger("nuxiva.enroll")
 ENROLL_FILE = "enroll.json"
 FILE_LIMIT = 4096
+TRAILER_MAGIC = b"NXENROL1"
+LENGTH_SIZE = 4
+TRAILER_TAIL = LENGTH_SIZE + len(TRAILER_MAGIC)
 PIN_RE = re.compile(r"[0-9a-f]{64}")
 TOKEN_RE = re.compile(r"[A-Za-z0-9_\-]{20,128}")
 SERVER_ERRORS = {
@@ -28,24 +31,60 @@ class EnrollError(Exception):
         self.key = key
 
 
-def load(path: Path) -> dict | None:
-    if not path.is_file():
-        return None
+def parse(raw: bytes) -> dict:
     try:
-        raw = path.read_bytes()[:FILE_LIMIT + 1]
         data = json.loads(raw.decode("utf-8")) if len(raw) <= FILE_LIMIT else None
-    except (OSError, ValueError) as exc:
-        log.error("File di iscrizione illeggibile: %s", exc)
+    except ValueError as exc:
+        log.error("Dati di iscrizione illeggibili: %s", exc)
         raise EnrollError("enroll.file_invalid") from exc
     if not isinstance(data, dict):
         raise EnrollError("enroll.file_invalid")
     server, token, pin, expires = (data.get("server"), data.get("token"), data.get("pin"), data.get("expires"))
     if not (isinstance(server, str) and server.startswith("https://") and isinstance(token, str) and TOKEN_RE.fullmatch(token)
-            and isinstance(pin, str) and PIN_RE.fullmatch(pin) and isinstance(expires, int)):
+            and isinstance(pin, str) and PIN_RE.fullmatch(pin) and isinstance(expires, int) and not isinstance(expires, bool)):
         raise EnrollError("enroll.file_invalid")
     if expires < time.time():
         raise EnrollError("enroll.file_expired")
     return data
+
+
+def load(path: Path) -> dict | None:
+    if not path.is_file():
+        return None
+    try:
+        raw = path.read_bytes()[:FILE_LIMIT + 1]
+    except OSError as exc:
+        log.error("File di iscrizione illeggibile: %s", exc)
+        raise EnrollError("enroll.file_invalid") from exc
+    return parse(raw)
+
+
+def load_trailer(path: Path) -> dict | None:
+    try:
+        with path.open("rb") as handle:
+            handle.seek(0, os.SEEK_END)
+            size = handle.tell()
+            if size < TRAILER_TAIL:
+                return None
+            handle.seek(size - TRAILER_TAIL)
+            tail = handle.read(TRAILER_TAIL)
+            if tail[LENGTH_SIZE:] != TRAILER_MAGIC:
+                return None
+            length = int.from_bytes(tail[:LENGTH_SIZE], "big")
+            if not 0 < length <= FILE_LIMIT or length > size - TRAILER_TAIL:
+                raise EnrollError("enroll.file_invalid")
+            handle.seek(size - TRAILER_TAIL - length)
+            raw = handle.read(length)
+    except OSError as exc:
+        log.error("Installer illeggibile: %s", exc)
+        raise EnrollError("enroll.file_invalid") from exc
+    return parse(raw)
+
+
+def enrollment_source(argv: list[str]) -> tuple[str, Path] | None:
+    if len(argv) == 3 and argv[1] in ("--enrollment-file", "--enrollment-installer"):
+        return ("installer" if argv[1] == "--enrollment-installer" else "file", Path(argv[2]))
+    return None
 
 
 def redeem(cfg: dict, data: dict, first_contact, name: str | None = None) -> None:

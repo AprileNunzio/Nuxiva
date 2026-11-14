@@ -55,6 +55,9 @@ jobs:
           NUXIVA_ASSISTANT_SIGNING_KEY: ${{ secrets.NUXIVA_ASSISTANT_SIGNING_KEY }}
         run: .\packaging\build.ps1
 
+      - name: Installer With Appended Enrollment Block
+        run: python packaging\verify_trailer.py build\installer\Nuxiva_Setup.exe
+
       - name: Upload Installer
         uses: actions/upload-artifact@v4
         with:
