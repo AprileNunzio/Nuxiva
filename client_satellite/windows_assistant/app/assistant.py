@@ -10,7 +10,10 @@ from actions.executor import Executor
 from app.conversation import Conversation
 from autonomy import profile
 from autonomy.brain import LocalBrain
+from autonomy.memory import LocalMemory
 from autonomy.router import Router
+from autonomy.sync import Sync
+from autonomy.vault import KeyFile, Vault
 from app.errors import errors
 from app.interface import Interface
 from app import tvwindow
@@ -30,7 +33,7 @@ from permissions.gate import Gate
 from permissions.policy import Policy
 from senses import places
 from senses.windows import Focus
-from settings import agent_name, autostart, paths, shortcuts, store
+from settings import agent_name, autostart, paths, protect, shortcuts, store
 from updates.updater import Updater
 
 log = logging.getLogger("nuxiva")
@@ -53,8 +56,10 @@ class Assistant:
         self.has_server = self.voice.has_server
         self.ollama = OllamaProbe()
         self.hardware = profile.detect()
-        self.brain = LocalBrain(self.ollama, cfg, profile.recommend(self.hardware))
-        self.router = Router(self.client, self.brain, cfg, self.has_server)
+        keys = KeyFile(paths.DATA_DIR / "memory.key", protect.seal, protect.unseal)
+        self.memory = LocalMemory(Vault(paths.DATA_DIR / "memory.vault", keys.load()))
+        self.brain = LocalBrain(self.ollama, cfg, profile.recommend(self.hardware), self.memory)
+        self.router = Router(self.client, self.brain, cfg, self.has_server, self.memory, Sync(self.client, self.memory))
         self.conversation = Conversation(self.client, self.executor, self.gate, self.policy, self.focus, self.ui,
                                          self.voice, self._environment, self.router)
         self.conversation.on_unauthorized = lambda: self.ui.dispatch.post(self.unpair, True)

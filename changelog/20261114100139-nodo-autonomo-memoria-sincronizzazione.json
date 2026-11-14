@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Memoria locale cifrata e sincronizzazione con il server",
+    "en": "Encrypted local memory and sync with the server",
+    "fr": "Mémoire locale chiffrée et synchronisation avec le serveur",
+    "es": "Memoria local cifrada y sincronización con el servidor"
+  },
+  "features": [
+    {
+      "it": "Quando Nuxiva risponde dal tuo PC ricorda la conversazione anche dopo un riavvio, in un archivio cifrato che solo il tuo account Windows può aprire. Se il file viene alterato lo mette da parte e riparte pulito.",
+      "en": "When Nuxiva answers from your PC it remembers the conversation even after a restart, in an encrypted store that only your Windows account can open. If the file is tampered with it sets it aside and starts clean.",
+      "fr": "Quand Nuxiva répond depuis ton PC, il se souvient de la conversation même après un redémarrage, dans un stockage chiffré que seul ton compte Windows peut ouvrir. Si le fichier est altéré, il le met de côté et repart à zéro.",
+      "es": "Cuando Nuxiva responde desde tu PC recuerda la conversación incluso tras reiniciar, en un almacén cifrado que solo tu cuenta de Windows puede abrir. Si el archivo se altera, lo aparta y empieza limpio."
+    },
+    {
+      "it": "Appena il server torna raggiungibile, le conversazioni fatte offline vengono inviate e il server le ricorda come tutte le altre.",
+      "en": "As soon as the server is reachable again, conversations held offline are sent up and the server remembers them like all the others.",
+      "fr": "Dès que le serveur est de nouveau joignable, les conversations tenues hors ligne sont envoyées et le serveur s'en souvient comme des autres.",
+      "es": "En cuanto el servidor vuelve a estar disponible, las conversaciones hechas sin conexión se envían y el servidor las recuerda como las demás."
+    }
+  ],
+  "fixes": []
+}

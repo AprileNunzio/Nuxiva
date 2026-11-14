@@ -67,9 +67,11 @@ def _post(path: str, body: dict) -> dict:
 
 
 class LocalBrain:
-    def __init__(self, probe, cfg: dict, tier: profile.Tier) -> None:
+    def __init__(self, probe, cfg: dict, tier: profile.Tier, memory=None) -> None:
         self.probe, self.cfg, self.tier = probe, cfg, tier
         self.history: list[dict] = []
+        for turn in (memory.recent(HISTORY_TURNS) if memory is not None else []):
+            self.history += [{"role": "user", "content": turn["text"]}, {"role": "assistant", "content": turn["reply"]}]
 
     def model(self) -> str:
         state = self.probe.read()

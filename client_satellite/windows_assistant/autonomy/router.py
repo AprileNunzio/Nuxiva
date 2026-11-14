@@ -9,8 +9,9 @@ RETRY_AFTER = 30.0
 
 
 class Router:
-    def __init__(self, client, brain, cfg: dict, has_server: bool) -> None:
+    def __init__(self, client, brain, cfg: dict, has_server: bool, memory=None, sync=None) -> None:
         self.client, self.brain, self.cfg, self.has_server = client, brain, cfg, has_server
+        self.memory, self.sync = memory, sync
         self.down_until = 0.0
         self.last = "none"
 
@@ -33,6 +34,8 @@ class Router:
                 log.info("Server non raggiungibile, passo al cervello locale: %s", exc)
             else:
                 self.last = "server"
+                if self.sync is not None:
+                    self.sync.flush_later()
                 return result
         elif route == "none":
             raise ServerError("Nessun cervello disponibile: collega il PC a NUXIVA oppure installa Ollama con un modello")
@@ -41,4 +44,6 @@ class Router:
         except OSError as exc:
             raise ServerError(str(exc)) from exc
         self.last = "local"
+        if self.memory is not None and not body.get("results") and result.get("reply"):
+            self.memory.record(str(body.get("text") or ""), str(result["reply"]))
         return result

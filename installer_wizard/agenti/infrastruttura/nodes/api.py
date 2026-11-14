@@ -258,6 +258,26 @@ async def node_assist(request: Request):
     return await assist_turn.run(node["id"], body.get("turn_id"), lambda: desk_assistant.assist(node, body))
 
 
+@public_routes.post("/api/nodes/memory-sync")
+async def node_memory_sync(request: Request):
+    node = _node(request)
+    body = await _body(request, 256 * 1024)
+    turns = body.get("turns")
+    if not isinstance(turns, list) or len(turns) > 50:
+        raise HTTPException(400, "Richiesta non valida")
+    from agenti.chat import dialogue as dialogue_mod
+
+    stored = 0
+    for turn in turns:
+        if not isinstance(turn, dict):
+            continue
+        text, reply = turn.get("text"), turn.get("reply")
+        if isinstance(text, str) and isinstance(reply, str) and text.strip():
+            dialogue_mod.dialogue.remember(node["id"], text[:600], reply[:600], "pc")
+            stored += 1
+    return {"stored": stored}
+
+
 @public_routes.post("/api/nodes/assist/stop")
 async def node_assist_stop(request: Request):
     node = _node(request)
