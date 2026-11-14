@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "App Android: versione riallineata al resto del sistema",
+    "en": "Android app: version realigned with the rest of the system",
+    "fr": "Application Android : version réalignée avec le reste du système",
+    "es": "Aplicación Android: versión realineada con el resto del sistema"
+  },
+  "features": [
+    {
+      "it": "Nessuna novità visibile: la versione dell'app Android torna coerente con quella di tutti gli altri componenti.",
+      "en": "No visible news: the Android app version is consistent again with every other component.",
+      "fr": "Aucune nouveauté visible : la version de l'application Android est de nouveau cohérente avec celle de tous les autres composants.",
+      "es": "Ninguna novedad visible: la versión de la aplicación Android vuelve a ser coherente con la de todos los demás componentes."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto il numero di versione dell'app Android che non coincideva con quello del sistema e bloccava il controllo di coerenza prima dell'aggiornamento.",
+      "en": "Fixed the Android app version number that did not match the system one and blocked the consistency check before the update.",
+      "fr": "Correction du numéro de version de l'application Android qui ne correspondait pas à celui du système et bloquait le contrôle de cohérence avant la mise à jour.",
+      "es": "Corregido el número de versión de la aplicación Android que no coincidía con el del sistema y bloqueaba la comprobación de coherencia antes de la actualización."
+    }
+  ]
+}
