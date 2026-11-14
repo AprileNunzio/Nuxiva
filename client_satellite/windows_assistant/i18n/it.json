@@ -59,5 +59,7 @@
   "tier.standard": "standard",
   "tier.performance": "alte prestazioni",
   "tier.workstation": "workstation",
-  "pairing.standalone": "Usa solo su questo PC, senza server"
+  "pairing.standalone": "Usa solo su questo PC, senza server",
+  "mode.host": "Offri questo PC come secondo server",
+  "mode.host_hint": "Con l'abbinamento firmato, questo PC annuncia calcolo, agenti e modelli locali al server. Resta spento se non lo attivi o se usi Solo su questo PC."
 }

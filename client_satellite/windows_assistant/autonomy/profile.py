@@ -121,3 +121,7 @@ def resolve(mode: Mode, server_up: bool, local_ready: bool) -> str:
 def describe(hardware: Hardware) -> str:
     return json.dumps({"cores": hardware.cores, "ram_gb": hardware.ram_gb, "gpu": hardware.gpu_name,
                        "vram_gb": hardware.vram_gb}, ensure_ascii=False)
+
+
+def host_full(cfg: dict) -> bool:
+    return bool(cfg.get("host_full")) and parse_mode(cfg.get("mode")) is not Mode.LOCAL

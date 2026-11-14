@@ -19,6 +19,14 @@ class FakeProbe:
 TIER = profile.TIERS[3]
 
 
+class HostTest(unittest.TestCase):
+    def test_second_server_is_opt_in_and_never_in_local_only(self):
+        self.assertFalse(profile.host_full({}))
+        self.assertTrue(profile.host_full({"host_full": True, "mode": "auto"}))
+        self.assertTrue(profile.host_full({"host_full": True, "mode": "server"}))
+        self.assertFalse(profile.host_full({"host_full": True, "mode": "local"}))
+
+
 class CatalogTest(unittest.TestCase):
     def test_unknown_types_and_fields_are_dropped(self):
         clean = catalog.sanitize([

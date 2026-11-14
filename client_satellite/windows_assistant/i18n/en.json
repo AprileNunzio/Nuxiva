@@ -59,5 +59,7 @@
   "tier.standard": "standard",
   "tier.performance": "high performance",
   "tier.workstation": "workstation",
-  "pairing.standalone": "Use on this PC only, without a server"
+  "pairing.standalone": "Use on this PC only, without a server",
+  "mode.host": "Offer this PC as a second server",
+  "mode.host_hint": "With the signed pairing, this PC announces compute, agents and local models to the server. It stays off unless you turn it on or you use This PC only."
 }

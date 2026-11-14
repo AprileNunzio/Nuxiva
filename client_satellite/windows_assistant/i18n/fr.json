@@ -59,5 +59,7 @@
   "tier.standard": "standard",
   "tier.performance": "hautes performances",
   "tier.workstation": "station de travail",
-  "pairing.standalone": "Utiliser sur ce PC seulement, sans serveur"
+  "pairing.standalone": "Utiliser sur ce PC seulement, sans serveur",
+  "mode.host": "Proposer ce PC comme second serveur",
+  "mode.host_hint": "Avec l'appairage signé, ce PC annonce calcul, agents et modèles locaux au serveur. Il reste désactivé si tu ne l'actives pas ou si tu utilises Ce PC seulement."
 }

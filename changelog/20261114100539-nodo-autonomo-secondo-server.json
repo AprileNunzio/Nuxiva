@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Windows come secondo server a scelta, con modelli locali annunciati",
+    "en": "Windows as an optional second server, announcing local models",
+    "fr": "Windows comme second serveur facultatif, avec modèles locaux annoncés",
+    "es": "Windows como segundo servidor opcional, anunciando modelos locales"
+  },
+  "features": [
+    {
+      "it": "Nelle Impostazioni puoi offrire questo PC come secondo server: con l'abbinamento firmato annuncia calcolo, agenti e inferenza locale. Resta spento di default e non si attiva mai in Solo su questo PC.",
+      "en": "In Settings you can offer this PC as a second server: with the signed pairing it announces compute, agents and local inference. It is off by default and never turns on in This PC only.",
+      "fr": "Dans Paramètres tu peux proposer ce PC comme second serveur : avec l'appairage signé il annonce calcul, agents et inférence locale. Il est désactivé par défaut et ne s'active jamais en Ce PC seulement.",
+      "es": "En Ajustes puedes ofrecer este PC como segundo servidor: con el emparejamiento firmado anuncia cálculo, agentes e inferencia local. Está apagado por defecto y nunca se activa en Solo este PC."
+    }
+  ],
+  "fixes": []
+}
