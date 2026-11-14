@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Il motore centrale riconosce la tua voce e passa i comandi alla squadra di agenti",
+    "en": "The central engine recognises your voice and hands commands to the agent team",
+    "fr": "Le moteur central reconnaît ta voix et transmet les commandes à l'équipe d'agents",
+    "es": "El motor central reconoce tu voz y pasa las órdenes al equipo de agentes"
+  },
+  "features": [
+    {
+      "it": "Il riconoscimento della voce usa un modello aperto scaricato al primo avvio e controllato prima dell'uso. Se manca o è alterato, Nuxiva lo dice chiaramente e non parte.",
+      "en": "Voice recognition uses an open model downloaded on first start and checked before use. If it is missing or altered, Nuxiva says so clearly and does not start.",
+      "fr": "La reconnaissance vocale utilise un modèle ouvert téléchargé au premier démarrage et vérifié avant l'emploi. S'il manque ou est altéré, Nuxiva le dit clairement et ne démarre pas.",
+      "es": "El reconocimiento de voz usa un modelo abierto descargado en el primer arranque y comprobado antes de usarlo. Si falta o está alterado, Nuxiva lo dice claramente y no arranca."
+    },
+    {
+      "it": "Quando ti riconosce, il motore sceglie l'agente giusto e lo fa lavorare con gli strumenti disponibili, rispettando i permessi.",
+      "en": "When it recognises you, the engine picks the right agent and has it work with the available tools, respecting permissions.",
+      "fr": "Quand il te reconnaît, le moteur choisit le bon agent et le fait travailler avec les outils disponibles, en respectant les autorisations.",
+      "es": "Cuando te reconoce, el motor elige al agente adecuado y lo hace trabajar con las herramientas disponibles, respetando los permisos."
+    }
+  ]
+}

@@ -21,7 +21,16 @@ workspace = true
 [dependencies]
 nuxiva-context-core = { path = "../native/crates/context-core" }
 nuxiva-ear-core = { path = "../native/crates/ear-core" }
-tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros", "signal"] }
+nuxiva-swarm-core = { path = "../native/crates/swarm-core" }
+nuxiva-agent-core = { path = "../native/crates/agent-core" }
+serde_json = "1"
+
+nuxiva-mcp-core = { path = "../native/crates/mcp-core" }
+tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros", "signal", "fs"] }
+tract-onnx = "0.23"
+sha2 = "0.10"
+realfft = "3.5"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros", "test-util"] }

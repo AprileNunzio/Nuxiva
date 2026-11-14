@@ -13,6 +13,7 @@ pub enum BrainError {
     Closed,
     Panic,
     Deadline,
+    Dispatch(String),
 }
 
 pub type BrainResult<T> = Result<T, BrainError>;
@@ -28,6 +29,7 @@ impl fmt::Display for BrainError {
             Self::Closed => f.write_str("brain.closed"),
             Self::Panic => f.write_str("brain.panic"),
             Self::Deadline => f.write_str("brain.deadline"),
+            Self::Dispatch(e) => write!(f, "brain.dispatch.{e}"),
         }
     }
 }
