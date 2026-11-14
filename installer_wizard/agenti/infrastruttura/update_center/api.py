@@ -39,6 +39,7 @@ class PolicyRequest(BaseModel):
     interval_minutes: int = Field(ge=1, le=1440)
     sync_nodes: bool
     require_ci: bool
+    auto_security: bool = True
 
 
 def _registry():
@@ -136,6 +137,12 @@ async def update_policy(req: PolicyRequest, user: str = Depends(require_admin)) 
     except PolicyError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     store.event("INFO", f"Politica aggiornamenti modificata da {user}", "updater")
+    from agenti.update_center import system_runner
+    from health import sh
+
+    await system_runner.sync_auto_security(
+        sh, policy.auto_security, lambda level, message: store.event(level, message, "updater")
+    )
     return _status_payload()
 
 

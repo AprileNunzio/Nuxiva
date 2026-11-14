@@ -23,6 +23,7 @@ class UpdatePolicy:
     interval_minutes: int
     sync_nodes: bool
     require_ci: bool
+    auto_security: bool = True
 
     def as_dict(self) -> Dict[str, object]:
         return asdict(self)
@@ -49,6 +50,7 @@ def load_policy(reader: Callable[[str, str], str]) -> UpdatePolicy:
         interval_minutes=_interval(reader("NUXIVA_UPDATE_INTERVAL_MIN", "5")),
         sync_nodes=_flag(reader("NUXIVA_UPDATE_SYNC_NODES", "1"), True),
         require_ci=_flag(reader("NUXIVA_UPDATE_REQUIRE_CI", "1"), True),
+        auto_security=_flag(reader("NUXIVA_AUTO_SECURITY_UPDATES", "1"), True),
     )
 
 
@@ -63,6 +65,7 @@ def policy_to_env(policy: UpdatePolicy) -> Dict[str, str]:
         "NUXIVA_UPDATE_INTERVAL_MIN": str(policy.interval_minutes),
         "NUXIVA_UPDATE_SYNC_NODES": "1" if policy.sync_nodes else "0",
         "NUXIVA_UPDATE_REQUIRE_CI": "1" if policy.require_ci else "0",
+        "NUXIVA_AUTO_SECURITY_UPDATES": "1" if policy.auto_security else "0",
     }
 
 

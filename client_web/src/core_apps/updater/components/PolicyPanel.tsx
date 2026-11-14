@@ -10,8 +10,8 @@ interface PolicyPanelProps {
   readonly onStatus: (status: UpdaterStatus) => void;
 }
 
-type ToggleKey = 'auto_update' | 'sync_nodes' | 'require_ci';
-const TOGGLES: readonly ToggleKey[] = ['auto_update', 'sync_nodes', 'require_ci'];
+type ToggleKey = 'auto_update' | 'sync_nodes' | 'require_ci' | 'auto_security';
+const TOGGLES: readonly ToggleKey[] = ['auto_update', 'sync_nodes', 'require_ci', 'auto_security'];
 
 export const PolicyPanel: React.FC<PolicyPanelProps> = ({ status, onStatus }) => {
   const { t, lang } = useUpdaterI18n();

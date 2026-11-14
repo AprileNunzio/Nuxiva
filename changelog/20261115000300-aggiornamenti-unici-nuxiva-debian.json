@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Un solo aggiornamento per Nuxiva e Debian, con sicurezza automatica",
+    "en": "A single update for Nuxiva and Debian, with automatic security",
+    "fr": "Une seule mise à jour pour Nuxiva et Debian, avec sécurité automatique",
+    "es": "Una sola actualización para Nuxiva y Debian, con seguridad automática"
+  },
+  "features": [
+    {
+      "it": "Dicendo «installa gli aggiornamenti» Nuxiva applica ora tutto ciò che il controllo mostra: prima i pacchetti Debian, poi la nuova versione di Nuxiva, con un unico piano coerente.",
+      "en": "Saying \"install the updates\" now applies everything the check shows: Debian packages first, then the new Nuxiva version, in a single consistent plan.",
+      "fr": "En disant « installe les mises à jour », Nuxiva applique désormais tout ce que la vérification affiche : d'abord les paquets Debian, puis la nouvelle version de Nuxiva, dans un plan unique et cohérent.",
+      "es": "Al decir «instala las actualizaciones», Nuxiva aplica ahora todo lo que muestra la comprobación: primero los paquetes de Debian y después la nueva versión de Nuxiva, en un único plan coherente."
+    },
+    {
+      "it": "Se l'aggiornamento rimuoverebbe dei pacchetti, Nuxiva chiede una conferma esplicita; non riavvia mai il computer da sola e segnala quando serve un riavvio.",
+      "en": "If the update would remove packages, Nuxiva asks for explicit confirmation; it never reboots the computer on its own and tells you when a reboot is needed.",
+      "fr": "Si la mise à jour supprimait des paquets, Nuxiva demande une confirmation explicite ; elle ne redémarre jamais l'ordinateur seule et signale quand un redémarrage est nécessaire.",
+      "es": "Si la actualización eliminara paquetes, Nuxiva pide una confirmación explícita; nunca reinicia el equipo por su cuenta y avisa cuando hace falta reiniciar."
+    },
+    {
+      "it": "Nuova opzione per installare in automatico le correzioni di sicurezza Debian, attiva di default e senza riavvii automatici.",
+      "en": "New option to automatically install Debian security fixes, on by default and with no automatic reboots.",
+      "fr": "Nouvelle option pour installer automatiquement les correctifs de sécurité Debian, activée par défaut et sans redémarrage automatique.",
+      "es": "Nueva opción para instalar automáticamente las correcciones de seguridad de Debian, activada por defecto y sin reinicios automáticos."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto il difetto per cui «installa gli aggiornamenti» installava solo Nuxiva: il riavvio di Nuxiva interrompeva l'installazione dei pacchetti Debian, che ora gira in un ambiente separato, attende il blocco di dpkg, ripara in caso di errore e riporta l'esito.",
+      "en": "Fixed the bug where \"install the updates\" installed only Nuxiva: the Nuxiva restart interrupted the Debian package installation, which now runs in a separate scope, waits for the dpkg lock, recovers on error and reports the outcome.",
+      "fr": "Correction du défaut où « installe les mises à jour » n'installait que Nuxiva : le redémarrage de Nuxiva interrompait l'installation des paquets Debian, qui s'exécute désormais dans une portée séparée, attend le verrou dpkg, répare en cas d'erreur et rapporte le résultat.",
+      "es": "Corregido el fallo por el que «instala las actualizaciones» instalaba solo Nuxiva: el reinicio de Nuxiva interrumpía la instalación de los paquetes de Debian, que ahora se ejecuta en un ámbito separado, espera el bloqueo de dpkg, se repara ante un error e informa del resultado."
+    }
+  ]
+}

@@ -41,6 +41,8 @@
     "policy_sync_nodes_hint": "Tras el servidor, envía la actualización a todos los nodos emparejados.",
     "policy_require_ci": "Solo versiones con pruebas superadas",
     "policy_require_ci_hint": "Instala solo revisiones con la CI de GitHub en verde.",
+    "policy_auto_security": "Actualizaciones de seguridad de Debian automáticas",
+    "policy_auto_security_hint": "Instala por sí solo las correcciones de seguridad del sistema y nunca reinicia el equipo.",
     "policy_window": "Ventana nocturna",
     "policy_window_time": "Hora de la ventana",
     "policy_window_hint": "Instala solo entre las {time} y una hora después; el resto del tiempo solo comprueba.",

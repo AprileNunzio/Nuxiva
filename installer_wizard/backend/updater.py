@@ -417,9 +417,13 @@ async def finish_pending(success: bool) -> bool:
 async def _scheduled_cycle(stuck: bool) -> None:
     from datetime import datetime
 
+    from agenti.update_center import system_runner
     from agenti.update_center.policy import in_window, load_policy
 
     policy = load_policy(env_get)
+    await system_runner.sync_auto_security(
+        sh, policy.auto_security, lambda level, message: store.event(level, message, "updater")
+    )
     if not policy.auto_update:
         await check()
         return

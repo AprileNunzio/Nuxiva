@@ -6,6 +6,7 @@ export interface UpdatePolicy {
   readonly interval_minutes: number;
   readonly sync_nodes: boolean;
   readonly require_ci: boolean;
+  readonly auto_security: boolean;
 }
 
 export interface RolloutNode {

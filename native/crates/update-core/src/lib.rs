@@ -7,6 +7,7 @@ pub mod pipeline;
 pub mod release_notes;
 pub mod rev;
 pub mod signature;
+pub mod system;
 
 pub use changelog::{ChangeEntry, parse_oneline};
 pub use impact::{ImpactReport, analyze};

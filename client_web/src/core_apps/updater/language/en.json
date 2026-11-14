@@ -41,6 +41,8 @@
     "policy_sync_nodes_hint": "After the server, send the update to every paired node.",
     "policy_require_ci": "Only versions with passing tests",
     "policy_require_ci_hint": "Installs only revisions with green GitHub CI.",
+    "policy_auto_security": "Automatic Debian security updates",
+    "policy_auto_security_hint": "Installs operating system security fixes on its own and never reboots the computer.",
     "policy_window": "Night window",
     "policy_window_time": "Window time",
     "policy_window_hint": "Installs only between {time} and one hour later; at other times it only checks.",

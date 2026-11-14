@@ -80,3 +80,32 @@ pub fn update_pipeline_advance(
         .map_err(|e| PyValueError::new_err(e.to_string()))?;
     to_json(&pipeline)
 }
+
+#[pyfunction]
+pub fn update_system_parse(raw: &str) -> PyResult<String> {
+    to_json(&nuxiva_update_core::system::parse_simulation(bounded(raw)?))
+}
+
+#[pyfunction]
+pub fn update_system_plan(
+    raw: &str,
+    nuxiva_available: bool,
+    nuxiva_target: &str,
+) -> PyResult<String> {
+    let sim = nuxiva_update_core::system::parse_simulation(bounded(raw)?);
+    to_json(&nuxiva_update_core::system::build_plan(
+        &sim,
+        nuxiva_available,
+        nuxiva_target,
+    ))
+}
+
+#[pyfunction]
+pub fn update_system_auto_config(enabled: bool) -> PyResult<String> {
+    to_json(&nuxiva_update_core::system::render_auto_config(enabled))
+}
+
+#[pyfunction]
+pub fn update_valid_package(name: &str) -> bool {
+    nuxiva_update_core::system::valid_package_name(name)
+}
