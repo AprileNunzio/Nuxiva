@@ -1543,6 +1543,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-loop-core"
+version = "5.8.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
 name = "nuxiva-lyrics-core"
 version = "5.8.0"
 
@@ -1649,6 +1658,7 @@ dependencies = [
  "nuxiva-gesture-core",
  "nuxiva-guard-core",
  "nuxiva-langid",
+ "nuxiva-loop-core",
  "nuxiva-lyrics-core",
  "nuxiva-mastery-core",
  "nuxiva-matter-core",

@@ -18,6 +18,7 @@ nuxiva-context-core = { path = "../context-core" }
 nuxiva-percept-core = { path = "../percept-core" }
 nuxiva-swarm-core = { path = "../swarm-core" }
 nuxiva-taskq-core = { path = "../taskq-core" }
+nuxiva-loop-core = { path = "../loop-core" }
 nuxiva-forma-core = { path = "../forma-core" }
 nuxiva-creations-core = { path = "../creations-core" }
 nuxiva-mastery-core = { path = "../mastery-core" }

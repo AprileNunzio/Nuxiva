@@ -11,6 +11,7 @@ mod audio;
 mod authz;
 mod bus;
 mod ceo;
+mod coderloop;
 mod compute_lease;
 mod config;
 mod context;
@@ -260,6 +261,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     swarm::register(m)?;
     percept::register(m)?;
     taskq::register(m)?;
+    coderloop::register(m)?;
     m.add_function(wrap_pyfunction!(mastery::mastery_evaluate, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_verify, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_insights, m)?)?;

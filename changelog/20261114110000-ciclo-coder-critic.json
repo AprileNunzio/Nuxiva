@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Il codice scritto da Nuxiva viene provato in una sandbox prima di ogni consegna",
+    "en": "Code written by Nuxiva is tried in a sandbox before every delivery",
+    "fr": "Le code écrit par Nuxiva est essayé dans un bac à sable avant chaque livraison",
+    "es": "El código escrito por Nuxiva se prueba en un entorno aislado antes de cada entrega"
+  },
+  "features": [
+    {
+      "it": "Quando Nuxiva scrive codice, un secondo agente lo controlla in isolamento con test, analisi e controlli di sicurezza. Se qualcosa non va, gli errori tornano all'autore che corregge da solo, fino a un limite di tentativi.",
+      "en": "When Nuxiva writes code, a second agent checks it in isolation with tests, analysis and security checks. If something fails, the errors go back to the author who fixes it alone, up to an attempt limit.",
+      "fr": "Quand Nuxiva écrit du code, un second agent le vérifie en isolation avec des tests, une analyse et des contrôles de sécurité. En cas de problème, les erreurs retournent à l'auteur qui corrige seul, dans la limite d'un nombre d'essais.",
+      "es": "Cuando Nuxiva escribe código, un segundo agente lo revisa de forma aislada con pruebas, análisis y controles de seguridad. Si algo falla, los errores vuelven al autor, que lo corrige solo, hasta un límite de intentos."
+    },
+    {
+      "it": "Nessun codice viene consegnato senza un controllo superato, e il controllore non può essere modificato da chi scrive il codice. Le consegne verso l'esterno chiedono il tuo permesso, salvo i repository che dichiari autonomi.",
+      "en": "No code is delivered without a passed check, and the checker cannot be changed by whoever writes the code. Deliveries to the outside ask for your permission, except repositories you declare autonomous.",
+      "fr": "Aucun code n'est livré sans un contrôle réussi, et le contrôleur ne peut pas être modifié par celui qui écrit le code. Les livraisons vers l'extérieur demandent ta permission, sauf pour les dépôts que tu déclares autonomes.",
+      "es": "Ningún código se entrega sin una comprobación superada, y quien escribe el código no puede modificar al revisor. Las entregas al exterior piden tu permiso, salvo los repositorios que declares autónomos."
+    }
+  ],
+  "fixes": []
+}
