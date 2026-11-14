@@ -7,7 +7,7 @@ from pathlib import Path
 log = logging.getLogger("nuxiva.i18n")
 DIR = Path(__file__).resolve().parent
 FALLBACK = "en"
-WINDOWS_LANGUAGES = {0x10: "it", 0x0C: "fr", 0x09: "en"}
+WINDOWS_LANGUAGES = {0x10: "it", 0x0C: "fr", 0x0A: "es", 0x09: "en"}
 
 
 def detect() -> str:

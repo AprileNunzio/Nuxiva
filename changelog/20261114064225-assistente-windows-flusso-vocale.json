@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Assistente Windows: nucleo a flusso vocale e risposte più rapide",
+    "en": "Windows assistant: voice-flow core and faster replies",
+    "fr": "Assistant Windows : noyau en flux vocal et réponses plus rapides",
+    "es": "Asistente de Windows: núcleo de flujo de voz y respuestas más rápidas"
+  },
+  "features": [
+    {
+      "it": "Il nucleo luminoso dell'assistente Windows ora mostra un flusso di onde che segue la tua voce mentre ascolta e la voce di Nuxiva mentre parla, senza sfondo né bordi.",
+      "en": "The glowing core of the Windows assistant now shows a flow of waves that follows your voice while it listens and Nuxiva's voice while it speaks, with no background or borders.",
+      "fr": "Le noyau lumineux de l'assistant Windows affiche désormais un flux d'ondes qui suit ta voix quand il écoute et celle de Nuxiva quand elle parle, sans fond ni bordures.",
+      "es": "El núcleo luminoso del asistente de Windows ahora muestra un flujo de ondas que sigue tu voz mientras escucha y la voz de Nuxiva mientras habla, sin fondo ni bordes."
+    },
+    {
+      "it": "Le risposte vocali partono dopo la prima frase invece che a risposta intera, mentre il resto viene preparato in anticipo durante la riproduzione.",
+      "en": "Spoken replies start after the first sentence instead of the whole answer, while the rest is prepared ahead during playback.",
+      "fr": "Les réponses vocales démarrent après la première phrase au lieu de la réponse entière, pendant que la suite est préparée à l'avance.",
+      "es": "Las respuestas habladas empiezan tras la primera frase en lugar de la respuesta entera, mientras el resto se prepara por adelantado."
+    },
+    {
+      "it": "Pannello e menu dell'assistente Windows ora sono tradotti in italiano, inglese, francese e spagnolo.",
+      "en": "The Windows assistant panel and menu are now translated into Italian, English, French and Spanish.",
+      "fr": "Le panneau et le menu de l'assistant Windows sont désormais traduits en italien, anglais, français et espagnol.",
+      "es": "El panel y el menú del asistente de Windows ahora están traducidos al italiano, inglés, francés y español."
+    }
+  ],
+  "fixes": []
+}

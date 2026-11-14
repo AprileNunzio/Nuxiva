@@ -2,19 +2,15 @@ import time
 
 import customtkinter as ctk
 
+from i18n.strings import t
 from ui import theme
 from ui.orb import STATE_COLOR
 
 WIDTH, HEIGHT = 400, 540
 IDLE_HIDE_SECONDS = 45
-STATE_TEXT = {"idle": "Pronta · di' «Nuxiva» o premi {hotkey}", "listening": "Ti ascolto…", "thinking": "Ci penso…",
-              "speaking": "Sto parlando · Esc per interrompere", "offline": "NUXIVA non raggiungibile · riprovo…",
-              "error": "Qualcosa non va", "alert": "Attenzione: controlla i messaggi"}
-SHORTCUTS = (("🖥 Schermo", "Guarda il mio schermo e dimmi cosa vedi"),
-             ("✍ Scrivi", "Aiutami a migliorare il testo che sto scrivendo"),
-             ("📷 Guardami", "Guardami dalla webcam"))
-WELCOME = ("Ciao! Sono NUXIVA. Posso creare cartelle e file, aprire documenti e programmi, aiutarti a scrivere e guardare "
-           "lo schermo o la webcam quando me lo chiedi. Quello che posso fare lo decidi tu in Impostazioni → Permessi.")
+STATES = ("idle", "listening", "thinking", "speaking", "offline", "error", "alert")
+SHORTCUTS = (("shortcut.screen", "shortcut.screen.prompt"), ("shortcut.write", "shortcut.write.prompt"),
+             ("shortcut.webcam", "shortcut.webcam.prompt"))
 
 
 def _icon_button(parent, text: str, command):
@@ -35,7 +31,7 @@ class Panel:
         self._header()
         self.feed = ctk.CTkScrollableFrame(self.window, fg_color=theme.BG, corner_radius=12)
         self.feed.pack(fill="both", expand=True, padx=12)
-        self.bubble("nuxiva", WELCOME)
+        self.bubble("nuxiva", t("panel.welcome"))
         self._shortcuts()
         self._input()
 
@@ -53,15 +49,15 @@ class Panel:
     def _shortcuts(self) -> None:
         row = ctk.CTkFrame(self.window, fg_color=theme.PANEL)
         row.pack(fill="x", padx=12, pady=(8, 0))
-        for label, prompt in SHORTCUTS:
-            ctk.CTkButton(row, text=label, height=26, corner_radius=13, fg_color=theme.CARD, hover_color=theme.LINE,
+        for label_key, prompt_key in SHORTCUTS:
+            ctk.CTkButton(row, text=t(label_key), height=26, corner_radius=13, fg_color=theme.CARD, hover_color=theme.LINE,
                           text_color=theme.TEXT, font=(theme.FONT, 12), width=10,
-                          command=lambda text=prompt: self.actions["ask"](text)).pack(side="left", padx=(0, 6))
+                          command=lambda text=t(prompt_key): self.actions["ask"](text)).pack(side="left", padx=(0, 6))
 
     def _input(self) -> None:
         row = ctk.CTkFrame(self.window, fg_color=theme.PANEL)
         row.pack(fill="x", padx=12, pady=12)
-        self.entry = ctk.CTkEntry(row, placeholder_text="Scrivi ad NUXIVA…", height=38, corner_radius=19,
+        self.entry = ctk.CTkEntry(row, placeholder_text=t("panel.placeholder"), height=38, corner_radius=19,
                                   fg_color=theme.CARD, border_color=theme.LINE, text_color=theme.TEXT, font=(theme.FONT, 13))
         self.entry.pack(side="left", fill="x", expand=True)
         self.entry.bind("<Return>", self._send)
@@ -108,7 +104,7 @@ class Panel:
     def set_state(self, state: str) -> None:
         self.last_activity = time.time()
         color = theme.DIM if state == "idle" else STATE_COLOR.get(state, theme.DIM)
-        self.status.configure(text=STATE_TEXT.get(state, "").format(hotkey=self.hotkey.upper()), text_color=color)
+        self.status.configure(text=t(f"state.{state}", hotkey=self.hotkey.upper()) if state in STATES else "", text_color=color)
 
     def bubble(self, who: str, text: str, long: str = "") -> None:
         mine = who == "user"
@@ -125,7 +121,7 @@ class Panel:
             box.insert("1.0", long)
             box.configure(state="disabled")
             box.pack(padx=10, pady=(0 if text else 10, 6))
-            ctk.CTkButton(card, text="Copia", height=24, width=70, fg_color=theme.LINE, hover_color="#2d4268",
+            ctk.CTkButton(card, text=t("panel.copy"), height=24, width=70, fg_color=theme.LINE, hover_color="#2d4268",
                           font=(theme.FONT, 11), command=lambda: self._copy(long)).pack(padx=10, pady=(0, 8), anchor="e")
         self.last_activity = time.time()
         self._scroll_end()

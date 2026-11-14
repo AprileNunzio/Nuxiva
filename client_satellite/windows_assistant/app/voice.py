@@ -8,6 +8,7 @@ from permissions.catalog import Level
 from permissions.policy import Policy
 from voice.microphone import Microphone
 from voice.speaker import Speaker
+from voice.stream import speak_stream, split_reply
 
 log = logging.getLogger("nuxiva.voice")
 FOLLOWUP_SECONDS = 8
@@ -49,8 +50,8 @@ class Voice:
 
     def _levels(self) -> None:
         while True:
-            self.ui.set_level(self.mic.level)
-            time.sleep(0.05)
+            self.ui.set_level(self.speaker.level if self.speaking else self.mic.level)
+            time.sleep(0.033)
 
     def on_link(self, ok: bool, error: str) -> None:
         self.ui.dispatch.post(self.ui.set_state, "idle" if ok else "offline")
@@ -115,25 +116,32 @@ class Voice:
                     self._reply_cancel = None
 
     def _play_reply(self, text: str, lang: str | None, cancelled: threading.Event) -> None:
-        try:
-            wav = self.client.tts(text, lang)
-        except ServerError as exc:
-            log.info("Voce non disponibile: %s", exc)
+        chunks = split_reply(text)
+        if not chunks:
             return
-        if cancelled.is_set():
-            return
-        self.speaking = True
-        self.ui.dispatch.post(self.ui.set_state, "speaking")
-        self.ear.send(type="speaking", on=True)
         was_muted = self.mic.muted
-        if not self.cfg.get("headset"):
-            self.mic.muted = True
+        started = False
+
+        def begin() -> None:
+            nonlocal started
+            started = True
+            self.speaking = True
+            self.ui.dispatch.post(self.ui.set_state, "speaking")
+            self.ear.send(type="speaking", on=True)
+            if not self.cfg.get("headset"):
+                self.mic.muted = True
+
+        def failed(exc: Exception) -> None:
+            log.info("Voce non disponibile: %s", exc)
+
         try:
-            self.speaker.play_wav(wav, cancelled)
+            speak_stream(chunks, lambda chunk: self.client.tts(chunk, lang),
+                         lambda wav: self.speaker.play_wav(wav, cancelled), cancelled, begin, failed, (ServerError,))
         finally:
-            self.mic.muted = was_muted
-            self.speaking = False
-            self.ear.send(type="speaking", on=False)
-            if not cancelled.is_set():
-                self.ear.send(type="followup", seconds=FOLLOWUP_SECONDS, conversation=True)
-            self.ui.dispatch.post(self.ui.set_state, "idle")
+            if started:
+                self.mic.muted = was_muted
+                self.speaking = False
+                self.ear.send(type="speaking", on=False)
+                if not cancelled.is_set():
+                    self.ear.send(type="followup", seconds=FOLLOWUP_SECONDS, conversation=True)
+                self.ui.dispatch.post(self.ui.set_state, "idle")

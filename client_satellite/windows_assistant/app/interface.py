@@ -3,6 +3,7 @@ import tkinter as tk
 
 import customtkinter as ctk
 
+from i18n.strings import t
 from permissions.catalog import Capability
 from permissions.gate import Answer, Request
 from ui import confirm_view, theme
@@ -32,9 +33,11 @@ class Interface:
 
     def _menu(self) -> list:
         self.muted.set(self.actions["is_muted"]())
-        return [("Apri NUXIVA", self.toggle_panel), ("Parla con NUXIVA", self.actions["listen"]), ("Widget di NUXIVA", self.actions["widgets"]),
-                ("Microfono in pausa", self.muted, lambda: self.actions["mute"](self.muted.get())), None,
-                ("Permessi…", self.open_permissions), ("Impostazioni…", self.open_settings), ("Esci", self.actions["quit"])]
+        return [(t("menu.open"), self.toggle_panel), (t("menu.listen"), self.actions["listen"]),
+                (t("menu.widgets"), self.actions["widgets"]),
+                (t("menu.mute"), self.muted, lambda: self.actions["mute"](self.muted.get())), None,
+                (t("menu.permissions"), self.open_permissions), (t("menu.settings"), self.open_settings),
+                (t("menu.quit"), self.actions["quit"])]
 
     def _orb_moved(self, finished: bool) -> None:
         if self.panel.visible:
