@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Controlli di compilazione di nuovo verdi dopo l'allineamento di versione",
+    "en": "Build checks green again after the version alignment",
+    "fr": "Les controles de compilation sont de nouveau verts apres l'alignement de version",
+    "es": "Los controles de compilacion vuelven a estar en verde tras alinear la version"
+  },
+  "fixes": [
+    {
+      "it": "Il registro delle dipendenze del motore nativo viene ora allineato alla versione di rilascio per tutti i moduli, cosi' la verifica automatica non fallisce piu' dopo un cambio di versione.",
+      "en": "The native engine dependency lock is now aligned to the release version for every module, so the automatic check no longer fails after a version change.",
+      "fr": "Le registre des dependances du moteur natif est maintenant aligne sur la version de publication pour tous les modules, la verification automatique n'echoue plus apres un changement de version.",
+      "es": "El registro de dependencias del motor nativo se alinea ahora con la version de publicacion en todos los modulos, y la verificacion automatica ya no falla tras un cambio de version."
+    }
+  ]
+}

@@ -27,12 +27,7 @@ TARGETS = (
     Target("client_web/package-lock.json", rf'(?m)^(  "version": "){V}(")'),
     Target("client_web/package-lock.json", rf'(?s)(  "packages": \{{\s+"": \{{\s+"name": "[^"]+",\s+"version": "){V}(")'),
     Target("native/Cargo.toml", rf'(?m)^(version = "){V}(")'),
-    Target("native/Cargo.lock", rf'(name = "nuxiva-bus-core"\r?\nversion = "){V}(")'),
-    Target("native/Cargo.lock", rf'(name = "nuxiva-crdt-core"\r?\nversion = "){V}(")'),
-    Target("native/Cargo.lock", rf'(name = "nuxiva-egress"\r?\nversion = "){V}(")'),
-    Target("native/Cargo.lock", rf'(name = "nuxiva-native"\r?\nversion = "){V}(")'),
-    Target("native/Cargo.lock", rf'(name = "nuxiva-netguard"\r?\nversion = "){V}(")'),
-    Target("native/Cargo.lock", rf'(name = "nuxiva-langid"\r?\nversion = "){V}(")'),
+    Target("native/Cargo.lock", rf'(name = "nuxiva-[a-z0-9-]+"\r?\nversion = ")' + V + r'(")', count=0),
     Target("native/crates/nuxiva-native/pyproject.toml", rf'(?m)^(version = "){V}(")'),
     Target("client_apk/app/build.gradle.kts", rf'(versionName = "){V}(")'),
     Target("client_satellite/context_bridge/setup_msi.py", rf'(version="){V}(")'),
@@ -66,7 +61,7 @@ def version_code(version: str) -> int:
 
 def _rewrite(text: str, target: Target, value: str) -> str:
     updated, found = re.subn(target.pattern, lambda m: f"{m.group(1)}{value}{m.group(2)}", text)
-    if found != target.count:
+    if found == 0 or (target.count and found != target.count):
         raise LookupError(f"{target.path}: attese {target.count} occorrenze di versione, trovate {found}")
     return updated
 
@@ -89,7 +84,7 @@ def mismatches(version: str) -> list[str]:
     for target in TARGETS:
         text = (ROOT / target.path).read_bytes().decode("utf-8")
         found = [m.group(0) for m in re.finditer(target.pattern, text)]
-        if len(found) != target.count or any(version not in f for f in found):
+        if not found or (target.count and len(found) != target.count) or any(version not in f for f in found):
             wrong.append(f"{target.path}: {found}")
     gradle = (ROOT / VERSION_CODE.path).read_text(encoding="utf-8")
     if f"versionCode = {version_code(version)}" not in gradle:
