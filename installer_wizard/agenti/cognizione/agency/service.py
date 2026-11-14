@@ -1,4 +1,5 @@
 import logging
+import re
 
 from state import store
 
@@ -14,6 +15,10 @@ GOAL_MIN = 8
 GOAL_MAX = 8000
 DEFAULT_BUDGET = {"tokens": 4_000_000, "seconds": 7 * 24 * 3600, "parallel": 8}
 CONTROLS = ("pause", "resume", "cancel")
+TASK_ACTIONS = {"approve": "approve", "rework": "rework", "interrupt": "interrupt", "submit": "submit"}
+AGENT_ID = re.compile(r"[a-z0-9_-]{1,64}")
+MAX_ASSIGNEES = 32
+TITLE_MAX = 200
 
 
 class AgencyFailure(RuntimeError):
@@ -96,3 +101,44 @@ async def control(project_id: str, action: str) -> dict:
 async def answer(project_id: str, question: str, option: str | None = None, answer_text: str | None = None) -> dict:
     return await client.call("project_answer", id=project_id, question=question, option=option, answer=answer_text)
 
+
+
+async def rename(project_id: str, title: str) -> dict:
+    title = clean(title, TITLE_MAX)
+    if not title:
+        raise AgencyFailure("invalid")
+    return await client.call("project_rename", id=project_id, title=title)
+
+
+async def archive(project_id: str, archived: bool) -> dict:
+    return await client.call("project_archive", id=project_id, archived=bool(archived))
+
+
+async def assign(project_id: str, agents: list) -> dict:
+    if not isinstance(agents, list) or len(agents) > MAX_ASSIGNEES:
+        raise AgencyFailure("invalid")
+    clean_agents = []
+    for agent in agents:
+        if not isinstance(agent, str) or not AGENT_ID.fullmatch(agent):
+            raise AgencyFailure("invalid")
+        if agent not in clean_agents:
+            clean_agents.append(agent)
+    return await client.call("project_assign", id=project_id, agents=clean_agents)
+
+
+async def delete(project_id: str, confirm: str) -> dict:
+    if confirm != project_id:
+        raise AgencyFailure("confirm")
+    result = await client.call("project_delete", id=project_id, confirm=confirm)
+    memory.forget(project_id)
+    return result
+
+
+async def review(project_id: str, task_id: str, action: str, feedback: str = "") -> dict:
+    if action not in TASK_ACTIONS:
+        raise AgencyFailure("invalid")
+    fields = {"project": project_id, "task": task_id, "action": TASK_ACTIONS[action]}
+    text = clean(feedback, 600)
+    if text and action == "rework":
+        fields["feedback"] = text
+    return await client.call("task_update", **fields)

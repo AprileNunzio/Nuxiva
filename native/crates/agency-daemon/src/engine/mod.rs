@@ -194,6 +194,10 @@ impl Engine {
                 answer,
             } => self.answer_project_question(&id, &question, option.as_deref(), answer.as_deref()),
             Request::ProjectControl { id, action } => self.control(&project_id(&id)?, action),
+            Request::ProjectRename { id, title } => self.rename(&project_id(&id)?, &title),
+            Request::ProjectArchive { id, archived } => self.archive(&project_id(&id)?, archived),
+            Request::ProjectAssign { id, agents } => self.assign(&project_id(&id)?, &agents),
+            Request::ProjectDelete { id, confirm } => self.delete(&project_id(&id)?, &confirm),
             Request::AssignmentRevoke { project, task } => {
                 let id = project_id(&project)?;
                 let task = TaskId::new(&task)?;

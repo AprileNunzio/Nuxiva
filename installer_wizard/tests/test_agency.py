@@ -408,3 +408,32 @@ class ApiTest(unittest.TestCase):
     def test_bad_ids_and_actions(self):
         self.assertEqual(self.admin.post("/api/agency/projects/Bad..id/pause", headers=HEADERS).status_code, 404)
         self.assertEqual(self.admin.post("/api/agency/projects/ok/explode", headers=HEADERS).status_code, 400)
+
+    def test_management_routes_forward_validated_requests(self):
+        calls = []
+
+        class Fake:
+            async def call(self, op, **fields):
+                calls.append((op, fields))
+                return {"ok": True}
+
+        with mock.patch.object(service, "client", Fake()), mock.patch.object(service.memory, "forget"):
+            ok = self.admin.patch("/api/agency/projects/shop", json={"title": "Nuovo nome"}, headers=HEADERS)
+            self.assertEqual(ok.status_code, 200)
+            self.assertEqual(self.admin.patch("/api/agency/projects/shop", json={"title": "  "}, headers=HEADERS).status_code, 400)
+            self.assertEqual(self.admin.post("/api/agency/projects/shop/archive", headers=HEADERS).status_code, 200)
+            self.assertEqual(self.admin.post("/api/agency/projects/shop/unarchive", headers=HEADERS).status_code, 200)
+            self.assertEqual(self.admin.put("/api/agency/projects/shop/agents", json={"agents": ["coder", "coder", "qa"]}, headers=HEADERS).status_code, 200)
+            self.assertEqual(self.admin.put("/api/agency/projects/shop/agents", json={"agents": ["../x"]}, headers=HEADERS).status_code, 400)
+            wrong = self.admin.request("DELETE", "/api/agency/projects/shop", json={"confirm": "other"}, headers=HEADERS)
+            self.assertEqual((wrong.status_code, wrong.json()["detail"]["code"]), (400, "confirm"))
+            self.assertEqual(self.admin.request("DELETE", "/api/agency/projects/shop", json={"confirm": "shop"}, headers=HEADERS).status_code, 200)
+            self.assertEqual(self.admin.post("/api/agency/projects/shop/tasks/api/approve", headers=HEADERS).status_code, 200)
+            self.assertEqual(self.admin.post("/api/agency/projects/shop/tasks/api/explode", headers=HEADERS).status_code, 400)
+            self.assertEqual(self.admin.request("DELETE", "/api/agency/projects/shop", json={"confirm": "shop"}).status_code, 403)
+        self.assertIn(("project_rename", {"id": "shop", "title": "Nuovo nome"}), calls)
+        self.assertIn(("project_assign", {"id": "shop", "agents": ["coder", "qa"]}), calls)
+        self.assertIn(("project_delete", {"id": "shop", "confirm": "shop"}), calls)
+        self.assertIn(("task_update", {"project": "shop", "task": "api", "action": "approve"}), calls)
+        self.assertEqual(sum(1 for op, _ in calls if op == "project_delete"), 1)
+

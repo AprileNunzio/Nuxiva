@@ -157,3 +157,89 @@ fn code_search_stays_inside_the_project() -> Result<(), AgencyError> {
     assert!(call(&mut engine, json!({"op": "code_files", "project": "ghost"})).is_err());
     Ok(())
 }
+
+#[test]
+fn manages_rename_archive_assign_and_delete() -> Result<(), AgencyError> {
+    let sandbox = Sandbox::new("manage")?;
+    let mut engine = Engine::open(sandbox.config(), HOST)?;
+    create(&mut engine)?;
+    plan(&mut engine)?;
+    let renamed = call(
+        &mut engine,
+        json!({"op": "project_rename", "id": "shop", "title": "Negozio nuovo"}),
+    )?;
+    assert_eq!(at(&renamed, "/project/title"), "Negozio nuovo");
+    assert!(
+        call(
+            &mut engine,
+            json!({"op": "project_rename", "id": "shop", "title": "   "})
+        )
+        .is_err()
+    );
+    let assigned = call(
+        &mut engine,
+        json!({"op": "project_assign", "id": "shop", "agents": ["coder", "critic", "coder"]}),
+    )?;
+    assert_eq!(
+        at(&assigned, "/project/assignees"),
+        json!(["coder", "critic"])
+    );
+    assert!(
+        call(
+            &mut engine,
+            json!({"op": "project_assign", "id": "shop", "agents": ["../x"]})
+        )
+        .is_err()
+    );
+    assert!(
+        call(
+            &mut engine,
+            json!({"op": "project_archive", "id": "shop", "archived": true})
+        )
+        .is_err()
+    );
+    call(
+        &mut engine,
+        json!({"op": "project_control", "id": "shop", "action": "pause"}),
+    )?;
+    let archived = call(
+        &mut engine,
+        json!({"op": "project_archive", "id": "shop", "archived": true}),
+    )?;
+    assert_eq!(at(&archived, "/project/archived"), true);
+    assert!(
+        call(
+            &mut engine,
+            json!({"op": "project_delete", "id": "shop", "confirm": "wrong"})
+        )
+        .is_err()
+    );
+    call(
+        &mut engine,
+        json!({"op": "project_delete", "id": "shop", "confirm": "shop"}),
+    )?;
+    assert!(matches!(
+        call(&mut engine, json!({"op": "project_get", "id": "shop"})),
+        Err(AgencyError::NotFound)
+    ));
+    assert!(sandbox.root.join("share/negozio").is_dir());
+    let reopened = Engine::open(sandbox.config(), HOST)?;
+    assert!(reopened.projects.is_empty());
+    Ok(())
+}
+
+#[test]
+fn running_project_cannot_be_deleted() -> Result<(), AgencyError> {
+    let sandbox = Sandbox::new("nodelete")?;
+    let mut engine = Engine::open(sandbox.config(), HOST)?;
+    create(&mut engine)?;
+    plan(&mut engine)?;
+    assert!(
+        call(
+            &mut engine,
+            json!({"op": "project_delete", "id": "shop", "confirm": "shop"})
+        )
+        .is_err()
+    );
+    Ok(())
+}

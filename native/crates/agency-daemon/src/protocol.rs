@@ -126,6 +126,22 @@ pub enum Request {
         id: String,
         action: Control,
     },
+    ProjectRename {
+        id: String,
+        title: String,
+    },
+    ProjectArchive {
+        id: String,
+        archived: bool,
+    },
+    ProjectAssign {
+        id: String,
+        agents: Vec<String>,
+    },
+    ProjectDelete {
+        id: String,
+        confirm: String,
+    },
     TaskUpdate {
         project: String,
         task: String,

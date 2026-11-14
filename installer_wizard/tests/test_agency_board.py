@@ -46,7 +46,7 @@ class Engine:
             ]}
         if op == "project_control":
             return {"ok": True}
-        if op in ("task_review", "task_fail", "task_submit", "project_answer"):
+        if op in ("task_update", "project_answer", "project_rename", "project_archive", "project_assign", "project_delete"):
             return {"ok": True}
         raise AssertionError(op)
 
@@ -140,9 +140,9 @@ class BoardApiTest(BoardCase):
         self.assertEqual(self.web.post("/api/agency/board/shop/pause", headers=HEADERS).status_code, 200)
         self.assertIn(("project_control", {"id": "shop", "action": "pause"}), self.engine.calls)
         self.assertEqual(self.web.post("/api/agency/board/shop/tasks/api/approve", json={"feedback": "Ottimo"}, headers=HEADERS).status_code, 200)
-        self.assertIn(("task_review", {"project": "shop", "task": "api", "approved": True, "feedback": "Ottimo"}), self.engine.calls)
+        self.assertIn(("task_update", {"project": "shop", "task": "api", "action": "approve"}), self.engine.calls)
         self.assertEqual(self.web.post("/api/agency/board/shop/tasks/api/interrupt", json={"feedback": "Stop"}, headers=HEADERS).status_code, 200)
-        self.assertIn(("task_fail", {"project": "shop", "task": "api", "reason": "Stop"}), self.engine.calls)
+        self.assertIn(("task_update", {"project": "shop", "task": "api", "action": "interrupt"}), self.engine.calls)
         self.assertEqual(self.web.post("/api/agency/board/shop/questions/q1/answer", json={"answer": "Stripe"}, headers=HEADERS).status_code, 200)
         self.assertIn(("project_answer", {"id": "shop", "question": "q1", "option": None, "answer": "Stripe"}), self.engine.calls)
         self.assertEqual(self.web.post("/api/agency/board/shop/cancel", headers=HEADERS).status_code, 400)

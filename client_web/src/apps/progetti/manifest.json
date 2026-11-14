@@ -1,0 +1,38 @@
+{
+  "id": "progetti",
+  "tone": "dark",
+  "name": "Progetti",
+  "icon": "FolderKanban",
+  "version": "1.0.0",
+  "description": "Gestisci i progetti dell'agenzia: crea, rinomina, metti in pausa, riprendi, rivedi, archivia, assegna agenti ed elimina",
+  "scope": "apps/progetti",
+  "kind": "app",
+  "target": "global",
+  "window": {
+    "defaultWidth": 70,
+    "defaultHeight": 78,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Nuxiva",
+    "technique": "3d",
+    "id": "agency",
+    "url": "https://github.com/AprileNunzio/Nuxiva"
+  },
+  "category": "intelligence"
+}

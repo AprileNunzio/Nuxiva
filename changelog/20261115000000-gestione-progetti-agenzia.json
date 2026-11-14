@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Gestione completa dei progetti dell'agenzia",
+    "en": "Full management of agency projects",
+    "fr": "Gestion complète des projets de l'agence",
+    "es": "Gestión completa de los proyectos de la agencia"
+  },
+  "features": [
+    {
+      "it": "Nella nuova app Progetti della pagina 8080 puoi creare, rinominare, mettere in pausa, riprendere, rivedere, archiviare, assegnare agenti ed eliminare i progetti. L'eliminazione chiede una conferma esplicita e ogni azione finisce nel registro.",
+      "en": "In the new Projects app on page 8080 you can create, rename, pause, resume, review, archive, assign agents to and delete projects. Deleting asks for an explicit confirmation and every action is written to the log.",
+      "fr": "Dans la nouvelle app Projets de la page 8080 tu peux créer, renommer, mettre en pause, reprendre, relire, archiver, assigner des agents et supprimer les projets. La suppression demande une confirmation explicite et chaque action est inscrite au registre.",
+      "es": "En la nueva app Proyectos de la página 8080 puedes crear, renombrar, pausar, reanudar, revisar, archivar, asignar agentes y eliminar proyectos. Eliminar pide una confirmación explícita y cada acción queda en el registro."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Le azioni sulle attività dei progetti usavano operazioni sbagliate e ora funzionano.",
+      "en": "Actions on project tasks used wrong operations and now work.",
+      "fr": "Les actions sur les tâches des projets utilisaient de mauvaises opérations et fonctionnent maintenant.",
+      "es": "Las acciones sobre las tareas de los proyectos usaban operaciones erróneas y ahora funcionan."
+    }
+  ]
+}

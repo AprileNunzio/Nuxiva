@@ -13,6 +13,8 @@ const MAX_TITLE: usize = 200;
 const MAX_GOAL: usize = 8_000;
 const MAX_DEPTH: usize = 8;
 const MAX_SEGMENT: usize = 64;
+const MAX_ASSIGNEES: usize = 32;
+const MAX_ASSIGNEE_LEN: usize = 64;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -134,6 +136,10 @@ pub struct Project {
     decisions: Vec<Decision>,
     #[serde(default)]
     questions: Vec<Question>,
+    #[serde(default)]
+    archived: bool,
+    #[serde(default)]
+    assignees: Vec<String>,
 }
 
 impl Project {
@@ -156,7 +162,62 @@ impl Project {
             created_at_ms,
             decisions: Vec::new(),
             questions: Vec::new(),
+            archived: false,
+            assignees: Vec::new(),
         })
+    }
+
+    pub fn rename(&mut self, title: &str) -> Result<(), DomainError> {
+        self.title = CleanText::new("title", title, MAX_TITLE)?;
+        Ok(())
+    }
+
+    #[must_use]
+    pub fn archived(&self) -> bool {
+        self.archived
+    }
+
+    pub fn set_archived(&mut self, archived: bool) -> Result<(), DomainError> {
+        if archived && !(self.status.is_terminal() || self.status == ProjectStatus::Paused) {
+            return Err(DomainError::Transition {
+                from: self.status.name(),
+                to: "archived",
+            });
+        }
+        self.archived = archived;
+        Ok(())
+    }
+
+    #[must_use]
+    pub fn assignees(&self) -> &[String] {
+        &self.assignees
+    }
+
+    pub fn set_assignees(&mut self, agents: &[String]) -> Result<(), DomainError> {
+        if agents.len() > MAX_ASSIGNEES {
+            return Err(DomainError::InvalidId("too many agents".to_owned()));
+        }
+        let mut clean: Vec<String> = Vec::with_capacity(agents.len());
+        for agent in agents {
+            let valid = !agent.is_empty()
+                && agent.len() <= MAX_ASSIGNEE_LEN
+                && agent.chars().all(|c| {
+                    c.is_ascii_lowercase() || c.is_ascii_digit() || matches!(c, '_' | '-')
+                });
+            if !valid {
+                return Err(DomainError::InvalidId(format!("agent {agent}")));
+            }
+            if !clean.contains(agent) {
+                clean.push(agent.clone());
+            }
+        }
+        self.assignees = clean;
+        Ok(())
+    }
+
+    #[must_use]
+    pub fn is_deletable(&self) -> bool {
+        self.status != ProjectStatus::Running
     }
 
     #[must_use]

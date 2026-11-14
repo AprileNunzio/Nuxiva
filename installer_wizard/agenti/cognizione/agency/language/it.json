@@ -37,7 +37,10 @@
     "empty_plan": "Il Direttore non ha prodotto un piano utilizzabile",
     "goal": "Descrivi il progetto in almeno 8 caratteri",
     "tool_not_found": "Strumento sconosciuto",
-    "tool_limit": "Troppi strumenti attivi: ritirane qualcuno prima"
+    "tool_limit": "Troppi strumenti attivi: ritirane qualcuno prima",
+    "confirm": "La conferma non corrisponde",
+    "delete_blocked": "Metti in pausa o annulla il progetto prima di eliminarlo",
+    "archive_blocked": "Solo i progetti in pausa o chiusi si possono archiviare"
   },
   "settings": {
     "NUXIVA_AGENCY_FORGE": "Gli agenti creano nuovi strumenti quando servono",

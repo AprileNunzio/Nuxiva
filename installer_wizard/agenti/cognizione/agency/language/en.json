@@ -37,7 +37,10 @@
     "empty_plan": "The Director did not produce a usable plan",
     "goal": "Describe the project in at least 8 characters",
     "tool_not_found": "Unknown tool",
-    "tool_limit": "Too many active tools: retire some first"
+    "tool_limit": "Too many active tools: retire some first",
+    "confirm": "The confirmation does not match",
+    "delete_blocked": "Pause or cancel the project before deleting it",
+    "archive_blocked": "Only paused or closed projects can be archived"
   },
   "settings": {
     "NUXIVA_AGENCY_FORGE": "Agents create new tools when needed",

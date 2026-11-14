@@ -28,6 +28,8 @@ def card(summary: dict) -> dict:
         "budget_tokens": _number(budget.get("tokens")),
         "eta_seconds": _number(summary.get("critical_path_seconds")),
         "created_at_ms": _number(project.get("created_at_ms")),
+        "archived": project.get("archived") is True,
+        "assignees": [str(a)[:64] for a in (project.get("assignees") or [])[:32]],
     }
 
 

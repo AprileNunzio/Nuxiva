@@ -3,6 +3,7 @@ import re
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from access import require_admin, require_display
+from state import store
 from tasks import background
 
 from agenti.agency import board, service
@@ -27,7 +28,7 @@ def _lang(request: Request) -> str:
 
 
 def _fail(request: Request, code: str, status: int):
-    key = code if code in ("unavailable", "invalid", "not_found", "brain", "empty_plan", "goal", "tool_not_found", "tool_limit") else "invalid"
+    key = code if code in ("unavailable", "invalid", "not_found", "brain", "empty_plan", "goal", "tool_not_found", "tool_limit", "confirm", "delete_blocked", "archive_blocked") else "invalid"
     raise HTTPException(status, {"code": key, "message": word(_lang(request), "errors", key)})
 
 
@@ -75,11 +76,105 @@ async def create(request: Request, _: str = Depends(require_admin)):
     return await _accept(request)
 
 
+async def _body(request: Request) -> dict:
+    try:
+        body = await request.json()
+    except ValueError:
+        _fail(request, "invalid", 400)
+    if not isinstance(body, dict):
+        _fail(request, "invalid", 400)
+    return body
+
+
+def _audit(user: str, project_id: str, what: str) -> None:
+    store.event("INFO", f"Agency project {project_id}: {what} by {user}", "agency")
+
+
+@admin_routes.patch("/api/agency/projects/{project_id}")
+async def rename(project_id: str, request: Request, user: str = Depends(require_admin)):
+    pid = _project(request, project_id)
+    body = await _body(request)
+    title = body.get("title")
+    if not isinstance(title, str):
+        _fail(request, "invalid", 400)
+    result = await _guard(request, service.rename(pid, title))
+    _audit(user, pid, "renamed")
+    return result
+
+
+@admin_routes.post("/api/agency/projects/{project_id}/archive")
+async def archive(project_id: str, request: Request, user: str = Depends(require_admin)):
+    pid = _project(request, project_id)
+    try:
+        result = await service.archive(pid, True)
+    except AgencyRejected as exc:
+        _fail(request, "archive_blocked" if exc.code == "invalid" else exc.code, 409)
+    except (AgencyUnavailable, service.AgencyFailure):
+        _fail(request, "unavailable", 503)
+    _audit(user, pid, "archived")
+    return result
+
+
+@admin_routes.post("/api/agency/projects/{project_id}/unarchive")
+async def unarchive(project_id: str, request: Request, user: str = Depends(require_admin)):
+    pid = _project(request, project_id)
+    result = await _guard(request, service.archive(pid, False))
+    _audit(user, pid, "restored from archive")
+    return result
+
+
+@admin_routes.put("/api/agency/projects/{project_id}/agents")
+async def assign(project_id: str, request: Request, user: str = Depends(require_admin)):
+    pid = _project(request, project_id)
+    body = await _body(request)
+    result = await _guard(request, service.assign(pid, body.get("agents")))
+    _audit(user, pid, "agents reassigned")
+    return result
+
+
+@admin_routes.delete("/api/agency/projects/{project_id}")
+async def remove(project_id: str, request: Request, user: str = Depends(require_admin)):
+    pid = _project(request, project_id)
+    body = await _body(request)
+    confirm = body.get("confirm")
+    if not isinstance(confirm, str):
+        _fail(request, "confirm", 400)
+    try:
+        result = await service.delete(pid, confirm)
+    except service.AgencyFailure as exc:
+        _fail(request, exc.code, 400)
+    except AgencyRejected as exc:
+        _fail(request, "delete_blocked" if exc.code == "bad_request" else exc.code, 409)
+    except AgencyUnavailable:
+        _fail(request, "unavailable", 503)
+    _audit(user, pid, "deleted")
+    return result
+
+
+@admin_routes.post("/api/agency/projects/{project_id}/tasks/{task_id}/{action}")
+async def review(project_id: str, task_id: str, action: str, request: Request, user: str = Depends(require_admin)):
+    pid = _project(request, project_id)
+    tid = _project(request, task_id)
+    if action not in service.TASK_ACTIONS:
+        _fail(request, "invalid", 400)
+    try:
+        body = await request.json()
+    except ValueError:
+        body = {}
+    feedback = body.get("feedback", "") if isinstance(body, dict) else ""
+    result = await _guard(request, service.review(pid, tid, action, feedback if isinstance(feedback, str) else ""))
+    _audit(user, pid, f"task {tid} {action}")
+    return result
+
+
 @admin_routes.post("/api/agency/projects/{project_id}/{action}")
-async def control(project_id: str, action: str, request: Request, _: str = Depends(require_admin)):
+async def control(project_id: str, action: str, request: Request, user: str = Depends(require_admin)):
     if action not in service.CONTROLS:
         _fail(request, "invalid", 400)
-    return await _guard(request, service.control(_project(request, project_id), action))
+    pid = _project(request, project_id)
+    result = await _guard(request, service.control(pid, action))
+    _audit(user, pid, action)
+    return result
 
 
 def _tool(request: Request, tool_name: str):

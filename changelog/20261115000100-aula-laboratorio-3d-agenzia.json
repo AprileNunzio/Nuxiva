@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Aula laboratorio 3D per gli agenti",
+    "en": "3D laboratory classroom for the agents",
+    "fr": "Salle de laboratoire 3D pour les agents",
+    "es": "Aula laboratorio 3D para los agentes"
+  },
+  "features": [
+    {
+      "it": "La vista dell'agenzia sulla pagina 80 è ora un'aula laboratorio in 3D: ogni agente è una persona che cammina, si siede e lavora alla sua postazione, e si muove secondo cosa sta davvero facendo: lavora, aspetta, si confronta con un collega o ha un problema.",
+      "en": "The agency view on page 80 is now a 3D laboratory classroom: every agent is a person who walks, sits and works at their workstation, moving according to what they are really doing: working, waiting, consulting a colleague or hitting a problem.",
+      "fr": "La vue de l'agence sur la page 80 est maintenant une salle de laboratoire en 3D : chaque agent est une personne qui marche, s'assoit et travaille à son poste, et bouge selon ce qu'il fait vraiment : travaille, attend, consulte un collègue ou rencontre un problème.",
+      "es": "La vista de la agencia en la página 80 es ahora un aula laboratorio en 3D: cada agente es una persona que camina, se sienta y trabaja en su puesto, y se mueve según lo que hace de verdad: trabaja, espera, consulta a un compañero o tiene un problema."
+    },
+    {
+      "it": "La qualità grafica si adatta da sola al dispositivo e si ferma quando la vista non è visibile. I personaggi sono in licenza CC0, elencati nei crediti.",
+      "en": "Graphics quality adapts to the device by itself and pauses when the view is not visible. The characters are CC0 licensed and listed in the credits.",
+      "fr": "La qualité graphique s'adapte seule à l'appareil et se met en pause quand la vue n'est pas visible. Les personnages sont sous licence CC0, listés dans les crédits.",
+      "es": "La calidad gráfica se adapta sola al dispositivo y se detiene cuando la vista no es visible. Los personajes tienen licencia CC0 y figuran en los créditos."
+    }
+  ],
+  "fixes": []
+}

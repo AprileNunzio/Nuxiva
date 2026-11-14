@@ -83,6 +83,64 @@ impl Engine {
         Ok(detail)
     }
 
+    pub(crate) fn rename(&mut self, id: &ProjectId, title: &str) -> Result<Value, AgencyError> {
+        let mut state = self.state_mut(id)?.clone();
+        state.project.rename(title)?;
+        let detail = state.detail();
+        self.commit_state(id, state)?;
+        self.event("project.renamed", json!({ "project": id }))?;
+        Ok(detail)
+    }
+
+    pub(crate) fn archive(&mut self, id: &ProjectId, archived: bool) -> Result<Value, AgencyError> {
+        let mut state = self.state_mut(id)?.clone();
+        state.project.set_archived(archived)?;
+        let detail = state.detail();
+        self.commit_state(id, state)?;
+        self.event(
+            "project.archived",
+            json!({ "project": id, "archived": archived }),
+        )?;
+        Ok(detail)
+    }
+
+    pub(crate) fn assign(
+        &mut self,
+        id: &ProjectId,
+        agents: &[String],
+    ) -> Result<Value, AgencyError> {
+        let mut state = self.state_mut(id)?.clone();
+        state.project.set_assignees(agents)?;
+        let detail = state.detail();
+        self.commit_state(id, state)?;
+        self.event(
+            "project.assigned",
+            json!({ "project": id, "agents": state_agents(&detail) }),
+        )?;
+        Ok(detail)
+    }
+
+    pub(crate) fn delete(&mut self, id: &ProjectId, confirm: &str) -> Result<Value, AgencyError> {
+        let state = self.projects.get(id).ok_or(AgencyError::NotFound)?;
+        if confirm != id.as_str() {
+            return Err(AgencyError::BadRequest("confirmation mismatch".to_owned()));
+        }
+        if !state.project.is_deletable() {
+            return Err(AgencyError::BadRequest(
+                "pause or cancel the project before deleting it".to_owned(),
+            ));
+        }
+        let path = self.config.projects_dir().join(format!("{id}.json"));
+        match std::fs::remove_file(&path) {
+            Ok(()) => {}
+            Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
+            Err(err) => return Err(err.into()),
+        }
+        self.projects.remove(id);
+        self.event("project.deleted", json!({ "project": id }))?;
+        Ok(json!({ "deleted": id }))
+    }
+
     pub(crate) fn plan_project(
         &mut self,
         id: &str,
@@ -185,4 +243,11 @@ pub(crate) fn settle(state: &mut ProjectState) -> Result<(), AgencyError> {
     };
     state.project.transition(next)?;
     Ok(())
+}
+
+fn state_agents(detail: &Value) -> Value {
+    detail
+        .pointer("/project/assignees")
+        .cloned()
+        .unwrap_or_else(|| json!([]))
 }

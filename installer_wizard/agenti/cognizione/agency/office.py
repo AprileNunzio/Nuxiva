@@ -297,16 +297,7 @@ def enrich_focus(data: dict, base: dict) -> dict:
 async def task_action(project_id: str, task_id: str, action: str, payload: dict | None = None) -> dict:
     body = payload if isinstance(payload, dict) else {}
     feedback = clean(body.get("feedback") or body.get("instruction") or "", 600)
-    if action == "approve":
-        return await service.client.call("task_review", project=project_id, task=task_id, approved=True,
-                                         feedback=feedback or "Approved by supervisor")
-    if action in ("rework", "modify"):
-        return await service.client.call("task_review", project=project_id, task=task_id, approved=False,
-                                         feedback=feedback or "Richiesta modifica dal supervisore")
-    if action == "interrupt":
-        return await service.client.call("task_fail", project=project_id, task=task_id,
-                                         reason=feedback or "Lavoro interrotto dal supervisore")
-    if action == "submit":
-        return await service.client.call("task_submit", project=project_id, task=task_id,
-                                         summary=feedback or "Inviato in revisione", artifacts=[])
-    raise ValueError("invalid_task_action")
+    mapped = "rework" if action == "modify" else action
+    if mapped not in ("approve", "rework", "interrupt", "submit"):
+        raise ValueError("invalid_task_action")
+    return await service.review(project_id, task_id, mapped, feedback or ("Richiesta modifica dal supervisore" if mapped == "rework" else ""))
