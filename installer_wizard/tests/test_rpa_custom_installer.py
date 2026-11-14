@@ -1,7 +1,6 @@
 import asyncio
 import hashlib
 import json
-import re
 import tempfile
 import unittest
 from pathlib import Path

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Pulizia dei test dell'installer Windows personalizzato",
+    "en": "Cleanup of the custom Windows installer tests",
+    "fr": "Nettoyage des tests de l'installateur Windows personnalisé",
+    "es": "Limpieza de las pruebas del instalador de Windows personalizado"
+  },
+  "features": [
+    {
+      "it": "Nessuna novità visibile: è stata tolta un'importazione inutilizzata dai test del download dell'installer Windows.",
+      "en": "No visible change: an unused import was removed from the Windows installer download tests.",
+      "fr": "Aucun changement visible : une importation inutilisée a été retirée des tests du téléchargement de l'installateur Windows.",
+      "es": "Sin cambios visibles: se eliminó una importación sin usar de las pruebas de descarga del instalador de Windows."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Ripristinata la verifica statica dei file Python nella pipeline di controllo.",
+      "en": "Restored the static check of Python files in the verification pipeline.",
+      "fr": "Rétablie la vérification statique des fichiers Python dans la chaîne de contrôle.",
+      "es": "Restablecida la verificación estática de los archivos Python en la canalización de comprobación."
+    }
+  ]
+}
