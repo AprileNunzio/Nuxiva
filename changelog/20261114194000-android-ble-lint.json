@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "App Android: controllo corretto dei sensori Bluetooth",
+    "en": "Android app: correct Bluetooth sensor check",
+    "fr": "Application Android : vérification correcte des capteurs Bluetooth",
+    "es": "Aplicación Android: comprobación correcta de los sensores Bluetooth"
+  },
+  "features": [
+    {
+      "it": "L'attivazione delle notifiche dei sensori Bluetooth usa ora i codici di stato ufficiali di Android 13 e successivi.",
+      "en": "Enabling Bluetooth sensor notifications now uses the official status codes of Android 13 and later.",
+      "fr": "L'activation des notifications des capteurs Bluetooth utilise maintenant les codes d'état officiels d'Android 13 et versions suivantes.",
+      "es": "La activación de las notificaciones de los sensores Bluetooth usa ahora los códigos de estado oficiales de Android 13 y posteriores."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto un errore del controllo di qualità dell'app Android che bloccava la creazione dell'APK.",
+      "en": "Fixed a quality check error in the Android app that blocked building the APK.",
+      "fr": "Correction d'une erreur du contrôle qualité de l'application Android qui bloquait la création de l'APK.",
+      "es": "Corregido un error del control de calidad de la aplicación Android que bloqueaba la creación del APK."
+    }
+  ]
+}
