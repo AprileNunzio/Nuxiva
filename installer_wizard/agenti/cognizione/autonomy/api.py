@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from access import require_admin
-from agenti.autonomy import approvals, journal
+from agenti.autonomy import approvals, health, journal
 from agenti.autonomy.trust import book
 from agenti.autonomy.engine import autonomy, enabled
 from agenti.autonomy.routines import describe, parse_when, routines
@@ -29,6 +29,11 @@ async def overview(_: str = Depends(require_admin)):
             "routines": [_view(r) for r in routines.all()],
             "approvals": [{k: v for k, v in a.items() if k != "steps"} for a in approvals.pending()],
             "journal": journal.recent(80)}
+
+
+@admin_routes.get("/api/autonomy/health")
+async def autonomy_health(_: str = Depends(require_admin)):
+    return health.snapshot()
 
 
 @admin_routes.post("/api/autonomy/routines")

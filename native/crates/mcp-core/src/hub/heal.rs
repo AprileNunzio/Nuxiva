@@ -86,6 +86,9 @@ impl Hub {
                     let _ = self.restart_server(id);
                 }
                 Remedy::QuarantineServer(id) => self.quarantine_server(id),
+                Remedy::RestartTask(_)
+                | Remedy::RetryWithBackoff(_)
+                | Remedy::EscalateToUser(_) => {}
             }
         }
         HealReport {

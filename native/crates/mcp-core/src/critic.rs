@@ -12,6 +12,9 @@ use crate::settings::Settings;
 pub enum Remedy {
     RestartServer(String),
     QuarantineServer(String),
+    RestartTask(String),
+    RetryWithBackoff(String),
+    EscalateToUser(String),
 }
 
 #[derive(Debug)]
@@ -23,6 +26,10 @@ pub struct Critic {
 
 const BAD_OUTPUT: [&str; 2] = ["mcp.output.invalid", "mcp.tool.invalid"];
 const UNRESPONSIVE: [&str; 2] = ["mcp.timeout", "mcp.closed"];
+
+fn queue_of(component: &str) -> Option<&str> {
+    component.strip_prefix("queue:").filter(|id| !id.is_empty())
+}
 
 fn server_of(component: &str) -> Option<&str> {
     component
@@ -66,7 +73,28 @@ impl Critic {
         self.seen.retain(|(s, _), _| s != server);
     }
 
+    fn advise_task(&mut self, task: &str, code: &str, now: Instant) -> Option<Remedy> {
+        let count = self.count(task, code, now);
+        let remedy = match code {
+            "queue.crashed" => Some(Remedy::RestartTask(task.to_owned())),
+            "queue.transient" if count >= self.threshold => {
+                Some(Remedy::EscalateToUser(task.to_owned()))
+            }
+            "queue.transient" => Some(Remedy::RetryWithBackoff(task.to_owned())),
+            "queue.fatal" | "queue.policy" => Some(Remedy::EscalateToUser(task.to_owned())),
+            _ => None,
+        };
+        if matches!(remedy, Some(Remedy::EscalateToUser(_))) {
+            self.forget(task);
+        }
+        remedy
+    }
+
     pub fn advise(&mut self, payload: &ErrorPayload, now: Instant) -> Option<Remedy> {
+        if let Some(task) = queue_of(&payload.component) {
+            let task = task.to_owned();
+            return self.advise_task(&task, payload.code.as_str(), now);
+        }
         let server = server_of(&payload.component)?.to_owned();
         let code = payload.code.as_str();
         let count = self.count(&server, code, now);

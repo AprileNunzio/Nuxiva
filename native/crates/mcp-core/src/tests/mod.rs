@@ -13,6 +13,7 @@ mod model;
 mod names;
 mod observe;
 mod policy;
+mod queue_remedies;
 mod registry;
 mod resilience;
 mod runner;

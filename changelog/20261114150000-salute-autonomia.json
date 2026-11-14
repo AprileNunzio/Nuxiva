@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Controllo di salute dei compiti in background",
+    "en": "Health check for background tasks",
+    "fr": "Contrôle de santé des tâches en arrière-plan",
+    "es": "Control de salud de las tareas en segundo plano"
+  },
+  "features": [
+    {
+      "it": "Il pannello mostra solo numeri sullo stato di coda, idee e lezioni, senza contenuti personali. Se un compito fallisce più volte Nuxiva ti avvisa invece di riprovare all'infinito.",
+      "en": "The panel shows only numbers about the queue, ideas and lessons, with no personal content. If a task fails repeatedly Nuxiva tells you instead of retrying forever.",
+      "fr": "Le panneau affiche seulement des chiffres sur la file, les idées et les leçons, sans contenu personnel. Si une tâche échoue plusieurs fois, Nuxiva te prévient au lieu de réessayer sans fin.",
+      "es": "El panel muestra solo números sobre la cola, las ideas y las lecciones, sin contenido personal. Si una tarea falla varias veces Nuxiva te avisa en lugar de reintentar sin fin."
+    }
+  ],
+  "fixes": []
+}
