@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "App Android: corretta la compilazione della lettura QR",
+    "en": "Android app: fixed the QR scanning build",
+    "fr": "Application Android : compilation de la lecture QR corrigée",
+    "es": "Aplicación Android: corregida la compilación de la lectura QR"
+  },
+  "features": [
+    {
+      "it": "La lettura del codice QR di iscrizione usa ora le librerie complete della fotocamera, pronte per l'APK firmato.",
+      "en": "Enrollment QR scanning now uses the complete camera libraries, ready for the signed APK.",
+      "fr": "La lecture du code QR d'inscription utilise maintenant les bibliothèques complètes de la caméra, prêtes pour l'APK signé.",
+      "es": "La lectura del código QR de inscripción usa ahora las bibliotecas completas de la cámara, listas para el APK firmado."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto l'errore di compilazione dell'app Android dovuto a una libreria mancante nella schermata di scansione QR.",
+      "en": "Fixed the Android app build error caused by a missing library in the QR scanning screen.",
+      "fr": "Correction de l'erreur de compilation de l'application Android due à une bibliothèque manquante dans l'écran de lecture QR.",
+      "es": "Corregido el error de compilación de la aplicación Android por una biblioteca que faltaba en la pantalla de lectura QR."
+    }
+  ]
+}
