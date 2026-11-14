@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "App Android: compilazione aggiornata ad Android 15",
+    "en": "Android app: build updated to Android 15",
+    "fr": "Application Android : compilation mise à jour pour Android 15",
+    "es": "Aplicación Android: compilación actualizada a Android 15"
+  },
+  "features": [
+    {
+      "it": "L'app Android viene ora compilata con gli strumenti più recenti, così le librerie di salute e sensori si installano senza errori.",
+      "en": "The Android app is now built with the latest tools, so the health and sensor libraries install without errors.",
+      "fr": "L'application Android est maintenant compilée avec les outils les plus récents, ce qui évite les erreurs avec les bibliothèques santé et capteurs.",
+      "es": "La aplicación Android se compila ahora con las herramientas más recientes, así las bibliotecas de salud y sensores se instalan sin errores."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto il blocco della compilazione dell'APK causato dalla libreria Health Connect, che richiede Android 15.",
+      "en": "Fixed the APK build failure caused by the Health Connect library, which requires Android 15.",
+      "fr": "Correction de l'échec de compilation de l'APK causé par la bibliothèque Health Connect, qui exige Android 15.",
+      "es": "Corregido el fallo de compilación del APK causado por la biblioteca Health Connect, que requiere Android 15."
+    }
+  ]
+}

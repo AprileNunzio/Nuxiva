@@ -13,7 +13,7 @@ val signingReady = listOf(signingPath, signingStorePassword, signingAlias, signi
 
 android {
     namespace = "com.nuxiva.edge"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.nuxiva.edge"
