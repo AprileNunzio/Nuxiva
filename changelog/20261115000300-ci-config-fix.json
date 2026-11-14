@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Controlli automatici ripristinati",
+    "en": "Automatic checks restored",
+    "fr": "Contrôles automatiques rétablis",
+    "es": "Comprobaciones automáticas restauradas"
+  },
+  "features": [
+    {
+      "it": "I controlli automatici includono ora la compilazione del firmware ESP32 e i test del rilevatore della parola di attivazione.",
+      "en": "Automatic checks now include the ESP32 firmware build and the wake word detector tests.",
+      "fr": "Les contrôles automatiques incluent maintenant la compilation du firmware ESP32 et les tests du détecteur du mot d'activation.",
+      "es": "Las comprobaciones automáticas incluyen ahora la compilación del firmware ESP32 y las pruebas del detector de la palabra de activación."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretta la configurazione dei controlli automatici, che conteneva passaggi duplicati e impediva l'avvio.",
+      "en": "Fixed the automatic checks configuration, which contained duplicate steps and prevented it from starting.",
+      "fr": "Correction de la configuration des contrôles automatiques, qui contenait des étapes en double et empêchait le démarrage.",
+      "es": "Corregida la configuración de las comprobaciones automáticas, que contenía pasos duplicados e impedía el inicio."
+    }
+  ]
+}
