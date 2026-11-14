@@ -105,8 +105,9 @@ async fn main() -> ExitCode {
     let router = tokio::spawn(route(merged_rx, parts.dispatcher, out_tx));
     let drain = tokio::spawn(async move {
         while let Some(outcome) = out_rx.recv().await {
-            if let Outcome::Failed(error) = outcome {
-                eprintln!("{error}");
+            match outcome {
+                Outcome::Failed(error) => eprintln!("{error}"),
+                other => println!("{other:?}"),
             }
         }
     });

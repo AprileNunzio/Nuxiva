@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Il motore centrale mostra l'esito di ogni frase",
+    "en": "The central engine shows the outcome of every sentence",
+    "fr": "Le moteur central affiche le résultat de chaque phrase",
+    "es": "El motor central muestra el resultado de cada frase"
+  },
+  "features": [
+    {
+      "it": "Ogni frase ascoltata ora ha un esito chiaro: conversazione, azione eseguita, scartata o errore.",
+      "en": "Every sentence heard now has a clear outcome: conversation, action done, dropped or error.",
+      "fr": "Chaque phrase entendue a désormais un résultat clair : conversation, action faite, ignorée ou erreur.",
+      "es": "Cada frase escuchada tiene ahora un resultado claro: conversación, acción hecha, descartada o error."
+    }
+  ]
+}
