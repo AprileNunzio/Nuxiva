@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "App Android: anteprima della fotocamera per il codice QR",
+    "en": "Android app: camera preview for the QR code",
+    "fr": "Application Android : aperçu de la caméra pour le code QR",
+    "es": "Aplicación Android: vista previa de la cámara para el código QR"
+  },
+  "features": [
+    {
+      "it": "La schermata di scansione del QR mostra l'anteprima della fotocamera posteriore e legge il codice di iscrizione.",
+      "en": "The QR scanning screen shows the rear camera preview and reads the enrollment code.",
+      "fr": "L'écran de lecture du QR affiche l'aperçu de la caméra arrière et lit le code d'inscription.",
+      "es": "La pantalla de lectura del QR muestra la vista previa de la cámara trasera y lee el código de inscripción."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto l'ultimo errore di compilazione dell'app Android nella schermata di scansione QR.",
+      "en": "Fixed the last Android app build error in the QR scanning screen.",
+      "fr": "Correction de la dernière erreur de compilation de l'application Android dans l'écran de lecture QR.",
+      "es": "Corregido el último error de compilación de la aplicación Android en la pantalla de lectura QR."
+    }
+  ]
+}
