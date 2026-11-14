@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Il servizio di visione torna ad avviarsi",
+    "en": "The vision service starts again",
+    "fr": "Le service de vision redémarre correctement",
+    "es": "El servicio de visión vuelve a arrancar"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Il servizio di visione non entra più in un ciclo continuo di riavvii dopo l'aggiornamento: ora trova i moduli del progetto necessari al suo avvio. Grazie a geniomatto per la segnalazione.",
+      "en": "The vision service no longer falls into an endless restart loop after an update: it now finds the project modules it needs to start. Thanks to geniomatto for the report.",
+      "fr": "Le service de vision ne tombe plus dans une boucle de redémarrages après une mise à jour : il trouve maintenant les modules du projet nécessaires à son démarrage. Merci à geniomatto pour le signalement.",
+      "es": "El servicio de visión ya no entra en un bucle de reinicios tras una actualización: ahora encuentra los módulos del proyecto que necesita para arrancar. Gracias a geniomatto por el aviso."
+    },
+    {
+      "it": "Un nuovo controllo automatico verifica che ogni servizio di sistema scritto in Python possa importare i moduli del progetto, così un errore del genere viene fermato prima della pubblicazione.",
+      "en": "A new automatic check verifies that every Python system service can import the project modules, so this kind of error is stopped before release.",
+      "fr": "Un nouveau contrôle automatique vérifie que chaque service système Python peut importer les modules du projet, afin d'arrêter ce type d'erreur avant la publication.",
+      "es": "Una nueva comprobación automática verifica que cada servicio del sistema en Python pueda importar los módulos del proyecto, de modo que este error se detenga antes de publicar."
+    }
+  ]
+}
