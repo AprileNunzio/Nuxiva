@@ -2,9 +2,11 @@ import http.client
 import json
 import logging
 import ssl
+import time
 from urllib.parse import urlsplit
 
 from connection import tls
+from connection.devicekey import DeviceKey
 
 log = logging.getLogger("nuxiva.link")
 CA_PATH = "/nuxiva-ca.crt"
@@ -16,6 +18,10 @@ class Unauthorized(Exception):
 
 
 class ServerError(Exception):
+    pass
+
+
+class SignatureRejected(ServerError):
     pass
 
 
@@ -60,11 +66,16 @@ def first_contact(server: str, timeout: float = 10) -> tuple[str, str]:
 
 
 class Client:
-    def __init__(self, server: str, node_id: str, token: str, ca_pem: str) -> None:
-        self.server, self.node_id, self.token, self.ca_pem = server, node_id, token, ca_pem
+    def __init__(self, server: str, node_id: str, token: str, ca_pem: str, key: DeviceKey | None = None) -> None:
+        self.server, self.node_id, self.token, self.ca_pem, self.key = server, node_id, token, ca_pem, key
 
     def headers(self) -> dict:
         return {"X-Nuxiva-Node": self.node_id, "Authorization": f"Bearer {self.token}"}
+
+    def proof(self, path: str, payload: bytes) -> dict:
+        if self.key is None or not self.node_id:
+            return {}
+        return self.key.sign(self.node_id, "POST", path, payload, int(time.time()))
 
     def context(self) -> ssl.SSLContext:
         return tls.pinned_context(self.ca_pem)
@@ -72,9 +83,10 @@ class Client:
     def request(self, path: str, body: dict, auth: bool = True, timeout: float = 30.0, raw: bool = False):
         host, port = endpoint(self.server)
         conn = http.client.HTTPSConnection(host, port, timeout=timeout, context=self.context())
+        payload = json.dumps(body).encode("utf-8")
         try:
-            conn.request("POST", path, json.dumps(body).encode("utf-8"),
-                         {"Content-Type": "application/json", **(self.headers() if auth else {})})
+            conn.request("POST", path, payload,
+                         {"Content-Type": "application/json", **(self.headers() if auth else {}), **self.proof(path, payload)})
             response = conn.getresponse()
             data = response.read()
         except ssl.SSLCertVerificationError as exc:
@@ -84,7 +96,10 @@ class Client:
         finally:
             conn.close()
         if response.status == 401:
-            raise Unauthorized(self._detail(data) or "Questo PC non è più autorizzato")
+            detail = self._detail(data)
+            if detail.startswith("node.error."):
+                raise SignatureRejected(detail)
+            raise Unauthorized(detail or "Questo PC non è più autorizzato")
         if response.status >= 400:
             raise ServerError(self._detail(data) or f"Errore del server ({response.status})")
         return data if raw else json.loads(data.decode("utf-8") or "{}")
@@ -97,11 +112,15 @@ class Client:
             return ""
 
     def pair(self, code: str, name: str) -> str:
-        res = self.request("/api/nodes/pair", {"code": code, "id": self.node_id, "name": name, "type": "desktop"}, auth=False)
-        return res["token"]
+        body = {"code": code, "id": self.node_id, "name": name, "type": "desktop"}
+        if self.key is not None:
+            body["pubkey"] = self.key.public_hex()
+        return self.request("/api/nodes/pair", body, auth=False)["token"]
 
     def enroll(self, enrollment_token: str, node_id: str, name: str) -> str:
         body = {"token": enrollment_token, "id": node_id, "name": name}
+        if self.key is not None:
+            body["pubkey"] = self.key.public_hex()
         return self.request("/api/nodes/enroll", body, auth=False)["token"]
 
     def heartbeat(self, report: dict) -> dict:

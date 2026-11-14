@@ -1,5 +1,6 @@
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
+use nuxiva_node_core::DeviceKey;
 use serde::Deserialize;
 use serde_json::{Value, json};
 use zeroize::{Zeroize, ZeroizeOnDrop};
@@ -74,10 +75,17 @@ pub fn redeem(
 ) -> Result<Identity, LinkError> {
     let server = normalize_server(&file.server)?;
     let ca_pem = first_contact(&server, &file.pin)?;
+    let key = DeviceKey::generate().map_err(|_| LinkError::Protocol)?;
     let link = Link::anonymous(&server, &ca_pem, Duration::from_secs(30))?;
     let reply = link.post(
         "/api/nodes/enroll",
-        &json!({"token": file.token, "id": node_id, "name": name, "type": kind}),
+        &json!({
+            "token": file.token,
+            "id": node_id,
+            "name": name,
+            "type": kind,
+            "pubkey": key.public_hex()
+        }),
     )?;
     let token = reply
         .get("token")
@@ -89,5 +97,6 @@ pub fn redeem(
         name: name.to_owned(),
         token: token.to_owned(),
         ca_pem,
+        secret: key.seed_hex().to_string(),
     })
 }

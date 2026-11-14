@@ -51,6 +51,15 @@ recommended agent for new satellites and replaces `linux_edge/satellite.py` wher
   token and the SHA-256 pin of the Nuxiva CA; the agent refuses a CA with a different pin and a server certificate not
   signed by that CA. The node token is stored encrypted with AES-256-GCM, with a key bound to `/etc/machine-id`, in
   `0600` files.
+- **Device key and signed requests:** every node generates its own Ed25519 key on the device (inside the encrypted
+  vault on Linux boards, sealed with Windows DPAPI on Windows PCs) and sends only the public key. Every request after
+  pairing carries a signature over method, path, body hash, time and a single-use nonce, so a stolen token alone is
+  rejected. Nothing is trusted because of the network address. Nodes paired before this change keep working as
+  satellites and must be paired again to become a second server.
+- **Pairing by 6-digit code:** `nuxiva-satellite pair --server https://host:8443 [--pin SHA256] --name Salotto` prints a
+  code derived from the device key; approve the same code in the Nodes panel and pick the profile. Without `--pin` the
+  CA fingerprint is printed so it can be compared with the panel. `NUXIVA_HOST_FULL=1` lets the device announce that it
+  can host a second server; the server still needs hardware, your approval and the profile.
 - **Hardened service:** `sudo nuxiva-satellite install-service --file nuxiva-satellite-enroll.json --name Salotto`
   installs a systemd unit with `DynamicUser`, `ProtectSystem=strict`, no capabilities and a system call filter. The
   enrollment is redeemed on first start through a systemd credential.

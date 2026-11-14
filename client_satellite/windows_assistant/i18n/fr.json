@@ -43,5 +43,6 @@
   "menu.mute": "Micro en pause",
   "menu.permissions": "Autorisations…",
   "menu.settings": "Paramètres…",
-  "menu.quit": "Quitter"
+  "menu.quit": "Quitter",
+  "link.signature_rejected": "Le serveur a refusé la signature de ce PC ({code}). Vérifiez la date et l'heure du PC ; si cela persiste, reliez à nouveau le PC."
 }

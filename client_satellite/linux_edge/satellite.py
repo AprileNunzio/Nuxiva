@@ -31,10 +31,29 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 log = logging.getLogger("nuxiva-node")
 
 
-def post(server: str, path: str, body: dict, headers: dict | None = None) -> dict:
+def device_key(seed: str):
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+    if not re.fullmatch(r"[0-9a-f]{64}", seed):
+        sys.exit("Chiave del nodo non valida: abbina di nuovo il nodo")
+    return Ed25519PrivateKey.from_private_bytes(bytes.fromhex(seed))
+
+
+def public_hex(seed: str) -> str:
+    from cryptography.hazmat.primitives import serialization as ser
+    return device_key(seed).public_key().public_bytes(ser.Encoding.Raw, ser.PublicFormat.Raw).hex()
+
+
+def proof(seed: str, node: str, path: str, data: bytes) -> dict:
+    ts, nonce = str(int(time.time())), secrets.token_hex(16)
+    msg = "\n".join(("nuxiva-node-v1", node, "POST", path, ts, nonce, hashlib.sha256(data).hexdigest())).encode()
+    return {"X-Nuxiva-Node": node, "X-Nuxiva-Ts": ts, "X-Nuxiva-Nonce": nonce, "X-Nuxiva-Sig": device_key(seed).sign(msg).hex()}
+
+
+def post(server: str, path: str, body: dict, headers: dict | None = None, seed: str = "", node: str = "") -> dict:
     data = json.dumps(body).encode()
+    signed = proof(seed, node, path, data) if seed else {}
     req = urllib.request.Request(f"{server}{path}", data=data, method="POST",
-                                 headers={"Content-Type": "application/json", **(headers or {})})
+                                 headers={"Content-Type": "application/json", **(headers or {}), **signed})
     with urllib.request.urlopen(req, timeout=15) as res:
         return json.loads(res.read() or b"{}")
 
@@ -193,9 +212,10 @@ def run_command(cmd: str, cfg: dict) -> None:
 
 def pair(args) -> dict:
     ident = node_id(args.name)
-    res = post(args.server, "/api/nodes/pair",
-               {"code": args.code, "id": ident, "name": args.name, "type": args.type, "room": args.room})
-    cfg = {"server": args.server, "id": ident, "token": res["token"], "name": args.name}
+    seed = secrets.token_hex(32)
+    res = post(args.server, "/api/nodes/pair", {"code": args.code, "id": ident, "name": args.name, "type": args.type,
+                                                "room": args.room, "pubkey": public_hex(seed)})
+    cfg = {"server": args.server, "id": ident, "token": res["token"], "name": args.name, "key": seed}
     save_config(cfg)
     log.info("Abbinato a %s come %s", args.server, ident)
     return cfg
@@ -205,17 +225,17 @@ def join(args) -> dict:
     server = args.server or discover(node_id(args.name))
     if not server:
         sys.exit("Nessun server Nuxiva trovato in rete: indica --server http://IP-DI-NUXIVA")
-    ident, key = node_id(args.name), secrets.token_hex(32)
-    res = post(server, "/api/nodes/request", {"id": ident, "key": key, "name": args.name, "type": args.type,
-                                              "room": args.room})
+    ident, seed = node_id(args.name), secrets.token_hex(32)
+    res = post(server, "/api/nodes/request", {"id": ident, "pubkey": public_hex(seed), "name": args.name,
+                                              "type": args.type, "room": args.room})
     log.info("Richiesta inviata a %s. Nel pannello Nodi approva il codice %s", server, res["fingerprint"])
     print(f"Codice da confermare nel pannello Nuxiva: {res['fingerprint']}", flush=True)
     deadline = time.time() + JOIN_TIMEOUT
     while time.time() < deadline:
         time.sleep(5)
-        claim = post(server, "/api/nodes/claim", {"id": ident, "key": key})
+        claim = post(server, "/api/nodes/claim", {"id": ident}, seed=seed, node=ident)
         if claim.get("approved"):
-            cfg = {"server": server, "id": ident, "token": claim["token"], "name": args.name}
+            cfg = {"server": server, "id": ident, "token": claim["token"], "name": args.name, "key": seed}
             save_config(cfg)
             log.info("Nodo approvato e abbinato come %s", ident)
             return cfg
@@ -404,7 +424,8 @@ def loop(cfg: dict) -> None:
             adapted, STATE["adapted"] = STATE["adapted"], False
             res = post(cfg["server"], "/api/nodes/heartbeat", {"version": VERSION, "hostname": socket.gethostname(),
                                                              "metrics": metrics(), "capabilities": capabilities(),
-                                                             "hardware": hardware(force=adapted), "adapted": adapted}, headers)
+                                                             "hardware": hardware(force=adapted), "adapted": adapted}, headers,
+                       cfg.get("key", ""), cfg["id"])
             wait, failures = int(res.get("heartbeat") or 30), 0
             cfg["agent"] = res.get("agent") or ""
             if cfg["agent"] and cfg["agent"] != own_sha():
@@ -419,7 +440,7 @@ def loop(cfg: dict) -> None:
                 save_config({k: v for k, v in cfg.items() if k != "agent"})
                 log.info("Impostazioni aggiornate dal server (%d personalizzate)", len(res.get("custom") or []))
         except urllib.error.HTTPError as exc:
-            if exc.code == 401:
+            if exc.code == 401 and b"node.error." not in exc.read(512):
                 sys.exit("Il server ha revocato questo nodo: abbinalo di nuovo")
             log.warning("Server non disponibile: %s", exc)
         except (urllib.error.URLError, OSError) as exc:

@@ -1,0 +1,11 @@
+{
+ "body": "{}",
+ "method": "POST",
+ "node": "pc-uno",
+ "nonce": "0123456789abcdef0123",
+ "path": "/api/nodes/heartbeat",
+ "public": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+ "seed": "0707070707070707070707070707070707070707070707070707070707070707",
+ "signature": "37734162b500b5797206ab132299af0d8b79d266b91018117cf5a85b8d498dfeb68171b7a36dcb3b7c63f686ecd875cc76b9ed6175608ebb281eb45a4abb9608",
+ "ts": 1000
+}

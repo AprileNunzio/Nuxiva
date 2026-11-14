@@ -4,7 +4,7 @@ use std::time::Duration;
 
 use nuxiva_satellite::agent::{self, Exit, Runner, service};
 use nuxiva_satellite::backends::{EXTENSIONS_DIR, builtin, load_extensions, merge};
-use nuxiva_satellite::link::{EnrollFile, Link, node_id, now, redeem};
+use nuxiva_satellite::link::{EnrollFile, Link, Offer, begin, node_id, now, redeem};
 use nuxiva_satellite::plan::plan;
 use nuxiva_satellite::probe::profile;
 use nuxiva_satellite::probe::root::Root;
@@ -19,7 +19,7 @@ const NODE_TYPES: &[&str] = &[
     "android",
     "other",
 ];
-const USAGE: &str = "uso: nuxiva-satellite probe [--root DIR] | enroll --file F [--name N] [--type T] | run | forget | install-service --file F [--name N] [--type T] [--room R]";
+const USAGE: &str = "uso: nuxiva-satellite probe [--root DIR] | enroll --file F [--name N] [--type T] | run | forget | pair --server URL [--pin SHA256] [--name N] [--type T] [--room R] | install-service --file F [--name N] [--type T] [--room R]";
 
 #[derive(Debug, Default)]
 struct Args {
@@ -29,6 +29,8 @@ struct Args {
     name: Option<String>,
     kind: Option<String>,
     room: Option<String>,
+    server: Option<String>,
+    pin: Option<String>,
 }
 
 fn parse_args() -> Result<Args, String> {
@@ -47,6 +49,8 @@ fn parse_args() -> Result<Args, String> {
             "--name" => args.name = Some(value),
             "--type" => args.kind = Some(value),
             "--room" => args.room = Some(value),
+            "--server" => args.server = Some(value),
+            "--pin" => args.pin = Some(value),
             _ => return Err(format!("opzione sconosciuta: {flag}")),
         }
     }
@@ -127,6 +131,43 @@ fn enroll_from(path: &Path, args: &Args, root: &Root, wipe: bool) -> Result<(), 
     Ok(())
 }
 
+fn pair(args: &Args) -> Result<(), String> {
+    let root = Root::default();
+    let vault = vault(&root);
+    if vault.exists() {
+        return Err("nodo già abbinato: esegui prima forget".into());
+    }
+    let server = args
+        .server
+        .as_deref()
+        .ok_or("serve --server https://indirizzo")?;
+    let pin = args.pin.as_deref().map(str::to_ascii_lowercase);
+    if let Some(pin) = &pin {
+        if pin.len() != 64 || !pin.chars().all(|c| c.is_ascii_hexdigit()) {
+            return Err("pin non valido".into());
+        }
+    }
+    let (id, name, kind) = identity_labels(args, &root)?;
+    let room = args.room.clone().unwrap_or_default();
+    let pairing = begin(&Offer {
+        server,
+        pin: pin.as_deref(),
+        node_id: &id,
+        name: &name,
+        kind: &kind,
+        room: &room,
+    })
+    .map_err(|e| e.to_string())?;
+    if !pairing.pinned {
+        println!("impronta dell'autorità: {}", pairing.ca_fingerprint);
+    }
+    println!("codice da confermare nel pannello Nodi: {}", pairing.code);
+    let identity = pairing.wait().map_err(|e| e.to_string())?;
+    vault.save(&identity).map_err(|e| e.to_string())?;
+    agent::log(&format!("paired {id}"));
+    Ok(())
+}
+
 fn probe(args: &Args) -> Result<(), String> {
     let root = Root::new(args.root.clone().unwrap_or_else(|| PathBuf::from("/")));
     let found = profile(&root, &descriptors(), &library_dirs());
@@ -153,7 +194,8 @@ fn run(args: &Args) -> Result<(), String> {
     }
     let identity = vault.load().map_err(|e| e.to_string())?;
     let link = Link::open(&identity, Duration::from_secs(30)).map_err(|e| e.to_string())?;
-    let mut runner = Runner::new(root, descriptors(), library_dirs());
+    let host_full = env("NUXIVA_HOST_FULL").as_deref() == Some("1");
+    let mut runner = Runner::new(root, descriptors(), library_dirs()).with_host_full(host_full);
     match runner.run(&link).map_err(|e| e.to_string())? {
         Exit::Restart => Ok(()),
         Exit::Revoked => {
@@ -210,6 +252,7 @@ fn main() -> ExitCode {
             let path = args.file.clone().ok_or("serve --file <iscrizione.json>")?;
             enroll_from(&path, &args, &Root::default(), true)
         }
+        "pair" => pair(&args),
         "run" => run(&args),
         "forget" => vault(&Root::default()).destroy().map_err(|e| e.to_string()),
         "install-service" => install(&args),

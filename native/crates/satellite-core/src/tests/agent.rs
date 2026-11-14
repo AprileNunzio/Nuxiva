@@ -59,6 +59,25 @@ fn heartbeat_report_matches_the_server_contract() -> Result<(), String> {
         .map(Vec::len)
         .unwrap_or_default();
     assert!(caps <= 12 && caps > 0);
+    let scopes = at(&report, "/announce/capabilities")
+        .as_array()
+        .map(|c| {
+            c.iter()
+                .filter_map(|v| v["scope"].as_str().map(str::to_owned))
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    assert!(scopes.contains(&"audio.capture".to_owned()));
+    assert!(scopes.contains(&"camera.stream".to_owned()));
+    assert!(!scopes.contains(&"node.host_full".to_owned()));
+    assert_eq!(at(&report, "/announce/hardware/cpu_cores"), 8);
+    let mut host = Runner::new(fx.root(), builtin(), Vec::new()).with_host_full(true);
+    let hosted = host.report();
+    assert!(
+        at(&hosted, "/announce/capabilities")
+            .as_array()
+            .is_some_and(|c| c.iter().any(|v| v["scope"] == "node.host_full"))
+    );
     assert!(
         at(&report, "/capabilities")
             .as_array()

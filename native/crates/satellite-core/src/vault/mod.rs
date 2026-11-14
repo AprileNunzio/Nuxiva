@@ -24,6 +24,8 @@ pub struct Identity {
     pub name: String,
     pub token: String,
     pub ca_pem: String,
+    #[serde(default)]
+    pub secret: String,
 }
 
 #[derive(Debug, PartialEq, Eq)]

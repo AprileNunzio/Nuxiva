@@ -61,7 +61,7 @@ pub fn pinned_agent(ca_pem: &str, timeout: Duration) -> Result<Agent, LinkError>
     ))
 }
 
-pub fn first_contact(server: &str, pin: &str) -> Result<String, LinkError> {
+pub fn fetch_ca(server: &str) -> Result<String, LinkError> {
     let blind = agent(
         TlsConfig::builder().disable_verification(true).build(),
         Duration::from_secs(10),
@@ -77,14 +77,26 @@ pub fn first_contact(server: &str, pin: &str) -> Result<String, LinkError> {
         .limit(CA_LIMIT)
         .read_to_string()
         .map_err(|e| LinkError::network(&e))?;
+    pem_fingerprint(&pem)?;
+    Ok(pem)
+}
+
+pub fn first_contact(server: &str, pin: &str) -> Result<String, LinkError> {
+    let pem = fetch_ca(server)?;
     let fingerprint = pem_fingerprint(&pem)?;
     if !bool::from(fingerprint.as_bytes().ct_eq(pin.as_bytes())) {
         return Err(LinkError::Pin("pin_mismatch"));
     }
-    let pinned = pinned_agent(&pem, Duration::from_secs(10))?;
+    verify_server(server, &pem)?;
+    Ok(pem)
+}
+
+pub fn verify_server(server: &str, pem: &str) -> Result<(), LinkError> {
+    let url = format!("{server}{CA_PATH}");
+    let pinned = pinned_agent(pem, Duration::from_secs(10))?;
     pinned
         .get(&url)
         .call()
         .map_err(|_| LinkError::Pin("server_not_signed_by_ca"))?;
-    Ok(pem)
+    Ok(())
 }

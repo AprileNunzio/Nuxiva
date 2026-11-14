@@ -67,6 +67,7 @@ pub struct Runner {
     plan: Plan,
     probed: Instant,
     adapted: bool,
+    host_full: bool,
 }
 
 impl Runner {
@@ -82,7 +83,14 @@ impl Runner {
             plan,
             probed: Instant::now(),
             adapted: false,
+            host_full: false,
         }
+    }
+
+    #[must_use]
+    pub fn with_host_full(mut self, host_full: bool) -> Self {
+        self.host_full = host_full;
+        self
     }
 
     pub fn reprobe(&mut self) -> bool {
@@ -111,7 +119,7 @@ impl Runner {
         }
         let metrics = system::metrics(&self.root, self.profile.system.cores);
         let adapted = std::mem::take(&mut self.adapted);
-        report::heartbeat(&self.profile, &self.plan, &metrics, adapted)
+        report::heartbeat(&self.profile, &self.plan, &metrics, adapted, self.host_full)
     }
 
     pub fn run(&mut self, link: &Link) -> Result<Exit, LinkError> {

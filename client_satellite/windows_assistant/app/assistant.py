@@ -19,6 +19,8 @@ from compute.idle import session_is_idle
 from compute.relay import ComputeRelay
 from connection import tls
 from connection.client import Client, ServerError
+from connection import declare
+from connection.devicekey import DeviceKey
 from connection.heartbeat import Heartbeat
 from connection.inbox import Inbox
 from permissions.gate import Gate
@@ -34,7 +36,7 @@ log = logging.getLogger("nuxiva")
 class Assistant:
     def __init__(self, cfg: dict) -> None:
         self.cfg = cfg
-        self.client = Client(cfg["server"], cfg["node_id"], cfg["token"], cfg["ca"])
+        self.client = Client(cfg["server"], cfg["node_id"], cfg["token"], cfg["ca"], DeviceKey.load(cfg.get("key", "")))
         self.policy = Policy()
         self.ui = Interface(cfg, self._ui_actions())
         errors.attach(self.ui.root, lambda text: self.ui.dispatch.post(self.ui.note, text))
@@ -84,6 +86,7 @@ class Assistant:
     def _report(self) -> dict:
         return {"version": paths.VERSION, "hostname": socket.gethostname(), "hardware": {"os": "windows"},
                 "capabilities": [k for k, v in self.policy.summary().items() if v != "deny"][:12],
+                "announce": declare.declare(declare.local_facts(self.cfg.get("voice", True)), bool(self.cfg.get("host_full"))),
                 "compute": {"ollama": {**self.ollama.read(), "shared": self.compute.sharing()}}}
 
     def _on_reply(self, reply: dict) -> None:
@@ -174,7 +177,7 @@ class Assistant:
         from tkinter import messagebox
         if not revoked and not messagebox.askyesno("Nuxiva", "Scollegare questo PC da NUXIVA? Dovrai abbinarlo di nuovo."):
             return
-        self.cfg.update(token="", pin="", ca="")
+        self.cfg.update(token="", pin="", ca="", key="")
         store.save(self.cfg)
         if revoked:
             messagebox.showwarning("Nuxiva", "Questo PC non è più autorizzato da NUXIVA. Riavvia l'assistente per abbinarlo di nuovo.")

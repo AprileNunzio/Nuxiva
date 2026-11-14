@@ -11,6 +11,7 @@ fn identity() -> Identity {
         name: "Salotto".into(),
         token: "segreto-token-abcdefghijklmnopqrstuvwxyz".into(),
         ca_pem: "-----BEGIN CERTIFICATE-----\nAA==\n-----END CERTIFICATE-----\n".into(),
+        secret: "ab".repeat(32),
     }
 }
 
@@ -68,5 +69,14 @@ fn destroy_removes_key_and_identity() -> Result<(), String> {
     vault.destroy().map_err(|e| e.to_string())?;
     assert!(!vault.exists());
     assert!(!fx.path().join("vault.key").exists());
+    Ok(())
+}
+
+#[test]
+fn legacy_identity_without_key_still_loads() -> Result<(), String> {
+    let legacy =
+        r#"{"server":"https://a.local","node_id":"abc","name":"n","token":"t","ca_pem":"p"}"#;
+    let parsed: Identity = serde_json::from_str(legacy).map_err(|e| e.to_string())?;
+    assert!(parsed.secret.is_empty());
     Ok(())
 }

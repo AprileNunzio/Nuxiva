@@ -4,6 +4,7 @@ import time
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from access import require_admin
+from agenti.nodes import deviceauth
 from agenti.nodes.registry import registry
 from agenti.people import connectors, people
 from agenti.medico.vitals import cloud, service
@@ -73,7 +74,7 @@ async def vitals_push(request: Request):
     return service.ingest(device["slug"], samples, device["id"], device["kind"])
 
 
-@public_routes.post("/api/vitals/node")
+@public_routes.post("/api/vitals/node", dependencies=[Depends(deviceauth.guard)])
 async def vitals_node(request: Request):
     try:
         node = registry.authenticate(request.headers.get("x-nuxiva-node", ""), _bearer(request))

@@ -1,3 +1,4 @@
+use nuxiva_node_core::{Facts, declare};
 use serde_json::{Map, Value, json};
 
 use crate::backends::{Accelerator, Kind};
@@ -8,7 +9,13 @@ use crate::probe::system::Metrics;
 pub const AGENT: &str = "rust";
 
 #[must_use]
-pub fn heartbeat(profile: &Profile, plan: &Plan, metrics: &Metrics, adapted: bool) -> Value {
+pub fn heartbeat(
+    profile: &Profile,
+    plan: &Plan,
+    metrics: &Metrics,
+    adapted: bool,
+    host_full: bool,
+) -> Value {
     json!({
         "version": env!("CARGO_PKG_VERSION"),
         "agent": AGENT,
@@ -18,7 +25,26 @@ pub fn heartbeat(profile: &Profile, plan: &Plan, metrics: &Metrics, adapted: boo
         "hardware": hardware(profile),
         "offload": offload(plan),
         "adapted": adapted,
+        "announce": declare(&facts(profile, plan), host_full),
     })
+}
+
+#[must_use]
+pub fn facts(profile: &Profile, plan: &Plan) -> Facts {
+    let senses = &profile.senses;
+    Facts {
+        microphone: !senses.microphones.is_empty(),
+        speaker: !senses.speakers.is_empty(),
+        camera: !senses.cameras.is_empty(),
+        sensors: senses.bluetooth || senses.gpio_chips > 0 || senses.i2c_buses > 0,
+        display: false,
+        edge_inference: plan
+            .steps
+            .iter()
+            .any(|step| matches!(step.placement, Placement::Edge { .. })),
+        cpu_cores: profile.system.cores,
+        ram_mb: u64::from(profile.system.ram_mb),
+    }
 }
 
 #[must_use]

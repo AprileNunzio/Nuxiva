@@ -43,5 +43,6 @@
   "menu.mute": "Microphone paused",
   "menu.permissions": "Permissions…",
   "menu.settings": "Settings…",
-  "menu.quit": "Quit"
+  "menu.quit": "Quit",
+  "link.signature_rejected": "The server rejected this PC's signature ({code}). Check the PC date and time; if it persists, re-pair the PC."
 }

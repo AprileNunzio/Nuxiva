@@ -2,7 +2,8 @@ import logging
 import threading
 
 from connection import tls
-from connection.client import Client, ServerError, Unauthorized
+from connection.client import Client, ServerError, SignatureRejected, Unauthorized
+from i18n.strings import t
 
 log = logging.getLogger("nuxiva.link")
 MIN_INTERVAL = 10.0
@@ -15,6 +16,7 @@ class Heartbeat(threading.Thread):
         self.on_reply, self.on_unauthorized, self.on_security = on_reply, on_unauthorized, on_security
         self.stop_flag = threading.Event()
         self.online = False
+        self.rejected = False
 
     def run(self) -> None:
         interval = 30.0
@@ -27,12 +29,16 @@ class Heartbeat(threading.Thread):
             except tls.PinMismatch as exc:
                 self.on_security(str(exc))
                 return
+            except SignatureRejected as exc:
+                if self.online or not self.rejected:
+                    log.error(t("link.signature_rejected", code=exc))
+                self.online, self.rejected = False, True
             except ServerError as exc:
                 if self.online:
                     log.warning("NUXIVA non raggiungibile: %s", exc)
                 self.online = False
             else:
-                self.online = True
+                self.online, self.rejected = True, False
                 interval = float(reply.get("heartbeat") or 30)
                 self.on_reply(reply)
             self.stop_flag.wait(max(MIN_INTERVAL, interval))

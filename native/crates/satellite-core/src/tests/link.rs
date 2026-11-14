@@ -85,3 +85,37 @@ fn garbage_pem_has_no_fingerprint() {
         Err(LinkError::Pin("ca_invalid"))
     );
 }
+
+#[test]
+fn signature_failures_are_not_revocations() {
+    use crate::link::signature_failure;
+    assert_eq!(
+        signature_failure(&serde_json::json!({"detail": "node.error.clock"})),
+        LinkError::Signature("node.error.clock".to_owned())
+    );
+    assert_eq!(
+        signature_failure(&serde_json::json!({"detail": "Nodo non autorizzato"})),
+        LinkError::Unauthorized
+    );
+    assert_eq!(
+        signature_failure(&serde_json::json!({})),
+        LinkError::Unauthorized
+    );
+}
+
+#[test]
+fn signed_link_requires_a_valid_seed() {
+    use crate::link::Link;
+    use std::time::Duration;
+    let pem = "not a pem";
+    assert!(
+        Link::proving(
+            "https://a.local",
+            pem,
+            "pc-uno",
+            &"00".repeat(32),
+            Duration::from_secs(1)
+        )
+        .is_err()
+    );
+}

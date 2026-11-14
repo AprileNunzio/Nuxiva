@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "I PC collegati si abbinano con una chiave propria e firmano ogni richiesta",
+    "en": "Linked PCs pair with their own key and sign every request",
+    "fr": "Les PC reliés s'associent avec leur propre clé et signent chaque requête",
+    "es": "Los PC vinculados se vinculan con su propia clave y firman cada solicitud"
+  },
+  "features": [
+    {
+      "it": "Il client Windows, il satellite Linux e il satellite nativo generano la propria chiave sul dispositivo, la custodiscono cifrata e firmano ogni richiesta: un token rubato non basta più.",
+      "en": "The Windows client, the Linux satellite and the native satellite generate their own key on the device, keep it encrypted and sign every request: a stolen token is no longer enough.",
+      "fr": "Le client Windows, le satellite Linux et le satellite natif génèrent leur propre clé sur l'appareil, la gardent chiffrée et signent chaque requête : un jeton volé ne suffit plus.",
+      "es": "El cliente de Windows, el satélite Linux y el satélite nativo generan su propia clave en el dispositivo, la guardan cifrada y firman cada solicitud: un token robado ya no basta."
+    },
+    {
+      "it": "Il satellite nativo si abbina anche con il codice a 6 cifre (comando pair) e ogni dispositivo dichiara cosa sa fare, così dopo un nuovo abbinamento un PC può diventare secondo server.",
+      "en": "The native satellite can also pair with the 6-digit code (pair command) and every device declares what it can do, so after a new pairing a PC can become a second server.",
+      "fr": "Le satellite natif peut aussi s'associer avec le code à 6 chiffres (commande pair) et chaque appareil déclare ce qu'il sait faire, ainsi après une nouvelle association un PC peut devenir second serveur.",
+      "es": "El satélite nativo también se vincula con el código de 6 cifras (comando pair) y cada dispositivo declara lo que sabe hacer, así tras un nuevo emparejamiento un PC puede convertirse en segundo servidor."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Se l'orologio del PC è sbagliato, il client lo segnala senza scollegarsi dal server; prima un rifiuto della firma poteva sembrare una revoca.",
+      "en": "If the PC clock is wrong, the client reports it without disconnecting from the server; before, a rejected signature could look like a revocation.",
+      "fr": "Si l'horloge du PC est fausse, le client le signale sans se déconnecter du serveur ; avant, une signature refusée pouvait ressembler à une révocation.",
+      "es": "Si el reloj del PC es incorrecto, el cliente lo avisa sin desconectarse del servidor; antes, una firma rechazada podía parecer una revocación."
+    },
+    {
+      "it": "La lettura dei parametri vitali dai nodi ora richiede anche la firma del dispositivo, non solo il token.",
+      "en": "Reading vital signs from nodes now also requires the device signature, not just the token.",
+      "fr": "La lecture des signes vitaux depuis les nœuds exige maintenant aussi la signature de l'appareil, pas seulement le jeton.",
+      "es": "La lectura de signos vitales desde los nodos ahora exige también la firma del dispositivo, no solo el token."
+    }
+  ]
+}

@@ -1,0 +1,236 @@
+[
+ {
+  "expect": {
+   "capabilities": [
+    {
+     "scope": "telemetry.report"
+    }
+   ],
+   "hardware": {
+    "cpu_cores": 0,
+    "ram_mb": 0
+   }
+  },
+  "facts": {
+   "camera": false,
+   "cpu_cores": 0,
+   "display": false,
+   "edge_inference": false,
+   "microphone": false,
+   "ram_mb": 0,
+   "sensors": false,
+   "speaker": false
+  },
+  "host_full": false
+ },
+ {
+  "expect": {
+   "capabilities": [
+    {
+     "scope": "agents.run"
+    },
+    {
+     "scope": "compute.lease"
+    },
+    {
+     "scope": "inference.host"
+    },
+    {
+     "scope": "mcp.serve"
+    },
+    {
+     "scope": "node.host_full"
+    },
+    {
+     "scope": "storage.replica"
+    },
+    {
+     "scope": "telemetry.report"
+    }
+   ],
+   "hardware": {
+    "cpu_cores": 0,
+    "ram_mb": 0
+   }
+  },
+  "facts": {
+   "camera": false,
+   "cpu_cores": 0,
+   "display": false,
+   "edge_inference": false,
+   "microphone": false,
+   "ram_mb": 0,
+   "sensors": false,
+   "speaker": false
+  },
+  "host_full": true
+ },
+ {
+  "expect": {
+   "capabilities": [
+    {
+     "scope": "audio.capture"
+    },
+    {
+     "scope": "audio.play"
+    },
+    {
+     "scope": "telemetry.report"
+    }
+   ],
+   "hardware": {
+    "cpu_cores": 4,
+    "ram_mb": 8192
+   }
+  },
+  "facts": {
+   "camera": false,
+   "cpu_cores": 4,
+   "display": false,
+   "edge_inference": false,
+   "microphone": true,
+   "ram_mb": 8192,
+   "sensors": false,
+   "speaker": true
+  },
+  "host_full": false
+ },
+ {
+  "expect": {
+   "capabilities": [
+    {
+     "scope": "agents.run"
+    },
+    {
+     "scope": "audio.capture"
+    },
+    {
+     "scope": "audio.play"
+    },
+    {
+     "scope": "compute.lease"
+    },
+    {
+     "scope": "inference.host"
+    },
+    {
+     "scope": "mcp.serve"
+    },
+    {
+     "scope": "node.host_full"
+    },
+    {
+     "scope": "storage.replica"
+    },
+    {
+     "scope": "telemetry.report"
+    }
+   ],
+   "hardware": {
+    "cpu_cores": 4,
+    "ram_mb": 8192
+   }
+  },
+  "facts": {
+   "camera": false,
+   "cpu_cores": 4,
+   "display": false,
+   "edge_inference": false,
+   "microphone": true,
+   "ram_mb": 8192,
+   "sensors": false,
+   "speaker": true
+  },
+  "host_full": true
+ },
+ {
+  "expect": {
+   "capabilities": [
+    {
+     "scope": "camera.stream"
+    },
+    {
+     "scope": "display.render"
+    },
+    {
+     "scope": "inference.edge"
+    },
+    {
+     "scope": "sensor.read"
+    },
+    {
+     "scope": "telemetry.report"
+    }
+   ],
+   "hardware": {
+    "cpu_cores": 16,
+    "ram_mb": 65536
+   }
+  },
+  "facts": {
+   "camera": true,
+   "cpu_cores": 16,
+   "display": true,
+   "edge_inference": true,
+   "microphone": false,
+   "ram_mb": 65536,
+   "sensors": true,
+   "speaker": false
+  },
+  "host_full": false
+ },
+ {
+  "expect": {
+   "capabilities": [
+    {
+     "scope": "agents.run"
+    },
+    {
+     "scope": "camera.stream"
+    },
+    {
+     "scope": "compute.lease"
+    },
+    {
+     "scope": "display.render"
+    },
+    {
+     "scope": "inference.edge"
+    },
+    {
+     "scope": "inference.host"
+    },
+    {
+     "scope": "mcp.serve"
+    },
+    {
+     "scope": "node.host_full"
+    },
+    {
+     "scope": "sensor.read"
+    },
+    {
+     "scope": "storage.replica"
+    },
+    {
+     "scope": "telemetry.report"
+    }
+   ],
+   "hardware": {
+    "cpu_cores": 16,
+    "ram_mb": 65536
+   }
+  },
+  "facts": {
+   "camera": true,
+   "cpu_cores": 16,
+   "display": true,
+   "edge_inference": true,
+   "microphone": false,
+   "ram_mb": 65536,
+   "sensors": true,
+   "speaker": false
+  },
+  "host_full": true
+ }
+]

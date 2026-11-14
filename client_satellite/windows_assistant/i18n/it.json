@@ -43,5 +43,6 @@
   "menu.mute": "Microfono in pausa",
   "menu.permissions": "Permessi…",
   "menu.settings": "Impostazioni…",
-  "menu.quit": "Esci"
+  "menu.quit": "Esci",
+  "link.signature_rejected": "Il server ha rifiutato la firma di questo PC ({code}). Controlla data e ora del PC; se continua, ricollega il PC."
 }

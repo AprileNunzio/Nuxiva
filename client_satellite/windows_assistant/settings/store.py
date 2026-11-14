@@ -11,8 +11,8 @@ from settings import paths, protect
 log = logging.getLogger("nuxiva.settings")
 
 DEFAULTS = {
-    "server": "", "node_id": "", "token": "", "pin": "", "ca": "", "name": socket.gethostname(),
-    "hotkey": "ctrl+alt+space", "voice": True, "headset": False,
+    "server": "", "node_id": "", "token": "", "key": "", "pin": "", "ca": "", "name": socket.gethostname(),
+    "hotkey": "ctrl+alt+space", "voice": True, "host_full": False, "headset": False,
     "mic_device": None, "orb_x": None, "orb_y": None,
     "backup_folders": [], "backup_target": "", "backup_hours": 24, "agent_name": "",
 }
@@ -55,6 +55,7 @@ def load() -> dict:
     cfg = dict(DEFAULTS)
     cfg.update({k: v for k, v in _read_json().items() if k in DEFAULTS})
     cfg["token"] = _unseal(str(cfg.get("token") or ""))
+    cfg["key"] = _unseal(str(cfg.get("key") or ""))
     cfg["server"] = cfg["server"] or _bootstrap_server()
     return cfg
 
@@ -63,6 +64,7 @@ def save(cfg: dict) -> None:
     paths.ensure()
     data = {k: cfg.get(k, v) for k, v in DEFAULTS.items()}
     data["token"] = _seal(str(cfg.get("token") or ""))
+    data["key"] = _seal(str(cfg.get("key") or ""))
     tmp = paths.CONFIG_FILE.with_suffix(".tmp")
     tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     os.replace(tmp, paths.CONFIG_FILE)

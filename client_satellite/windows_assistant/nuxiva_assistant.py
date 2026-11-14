@@ -9,6 +9,7 @@ importlib.import_module("customtkinter")
 
 from app.errors import configure_logging, errors  # noqa: E402
 from connection import enroll  # noqa: E402
+from connection.devicekey import DeviceKey  # noqa: E402
 from connection.client import Client, first_contact  # noqa: E402
 from i18n.strings import t  # noqa: E402
 from settings import autostart, paths, store  # noqa: E402
@@ -37,8 +38,9 @@ def pair(cfg: dict, address: str, code: str, name: str, start_with_windows: bool
         raise ValueError("Il certificato di NUXIVA è cambiato durante l'abbinamento: premi di nuovo «Verifica»")
     name = name or cfg["name"]
     node_id = store.node_id_for(name)
-    token = Client(server, node_id, "", ca_pem).pair(code, name)
-    cfg.update(server=server, name=name, node_id=node_id, token=token, pin=fingerprint, ca=ca_pem)
+    key = DeviceKey.generate()
+    token = Client(server, node_id, "", ca_pem, key).pair(code, name)
+    cfg.update(server=server, name=name, node_id=node_id, token=token, pin=fingerprint, ca=ca_pem, key=key.seed_hex())
     store.save(cfg)
     autostart.set_enabled(start_with_windows)
 

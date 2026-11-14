@@ -7,6 +7,7 @@ import time
 from pathlib import Path
 
 from connection.client import Client, ServerError
+from connection.devicekey import DeviceKey
 from settings import store
 
 log = logging.getLogger("nuxiva.enroll")
@@ -60,11 +61,12 @@ def redeem(cfg: dict, data: dict, first_contact, name: str | None = None) -> Non
         raise EnrollError("enroll.pin_mismatch")
     name = name or cfg["name"]
     node_id = store.node_id_for(name)
+    key = DeviceKey.generate()
     try:
-        token = Client(server, node_id, "", ca_pem).enroll(data["token"], node_id, name)
+        token = Client(server, node_id, "", ca_pem, key).enroll(data["token"], node_id, name)
     except ServerError as exc:
         raise EnrollError(SERVER_ERRORS.get(str(exc), "enroll.unreachable")) from exc
-    cfg.update(server=server, name=name, node_id=node_id, token=token, pin=fingerprint, ca=ca_pem)
+    cfg.update(server=server, name=name, node_id=node_id, token=token, pin=fingerprint, ca=ca_pem, key=key.seed_hex())
     store.save(cfg)
 
 
