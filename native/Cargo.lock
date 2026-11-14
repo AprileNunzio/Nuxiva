@@ -2026,6 +2026,7 @@ dependencies = [
  "nuxiva-bus-core",
  "nuxiva-config-core",
  "nuxiva-context-core",
+ "nuxiva-core-brain",
  "nuxiva-cortex-core",
  "nuxiva-crdt-core",
  "nuxiva-creations-core",

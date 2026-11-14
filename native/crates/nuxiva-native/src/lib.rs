@@ -9,6 +9,7 @@ mod ask_core;
 mod attribution;
 mod audio;
 mod authz;
+mod brain;
 mod bus;
 mod capture;
 mod ceo;
@@ -149,6 +150,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     compute_lease::register(m)?;
     jev::register(m)?;
     seal::register(m)?;
+    brain::register(m)?;
     mcp::register(m)?;
     config::register(m)?;
     telemetry::register(m)?;

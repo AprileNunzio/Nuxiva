@@ -81,6 +81,16 @@ pub struct RustMcpEngine {
     dispatch: Mutex<Option<Arc<dyn Dispatch>>>,
 }
 
+impl RustMcpEngine {
+    pub(crate) fn hub_handle(&self) -> Arc<Hub> {
+        Arc::clone(&self.hub)
+    }
+
+    pub(crate) fn runtime_handle(&self) -> tokio::runtime::Handle {
+        self.runtime.handle().clone()
+    }
+}
+
 #[pymethods]
 impl RustMcpEngine {
     #[new]

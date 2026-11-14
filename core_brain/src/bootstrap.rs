@@ -47,6 +47,9 @@ pub fn load_agents(root: &Path, settings: &Settings) -> BrainResult<(Catalog, In
         .values()
         .map(|entry| entry.manifest.clone())
         .collect();
+    if manifests.is_empty() {
+        return Err(BrainError::Input("agents_empty"));
+    }
     let catalog = Catalog::build(&manifests, settings).map_err(dispatch)?;
     let cards = manifests.iter().map(card_of).collect();
     let declared = manifests

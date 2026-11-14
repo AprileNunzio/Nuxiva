@@ -141,6 +141,16 @@ fn agents_come_from_the_existing_registry() {
     assert!(declared.values().any(|tools| !tools.is_empty()));
 }
 
+#[test]
+fn empty_or_missing_agents_directory_is_refused() {
+    let dir = scratch("noagents");
+    assert_eq!(
+        load_agents(&dir, &Settings::default()).err(),
+        Some(BrainError::Input("agents_empty"))
+    );
+    assert!(load_agents(&dir.join("assente"), &Settings::default()).is_err());
+}
+
 #[tokio::test]
 async fn ear_link_turns_transcripts_into_events_and_stops() {
     let listener = TcpListener::bind("127.0.0.1:0").await.expect("bind");

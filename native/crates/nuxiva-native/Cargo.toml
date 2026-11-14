@@ -17,6 +17,7 @@ nuxiva-dossier-core = { path = "../dossier-core" }
 nuxiva-context-core = { path = "../context-core" }
 nuxiva-percept-core = { path = "../percept-core" }
 nuxiva-swarm-core = { path = "../swarm-core" }
+nuxiva-core-brain = { path = "../../../core_brain" }
 nuxiva-taskq-core = { path = "../taskq-core" }
 nuxiva-loop-core = { path = "../loop-core" }
 nuxiva-reflect-core = { path = "../reflect-core" }

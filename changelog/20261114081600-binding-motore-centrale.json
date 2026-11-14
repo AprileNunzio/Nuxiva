@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": { "it": "Il motore centrale è collegato al cuore Rust di Nuxiva", "en": "The central engine is connected to Nuxiva's Rust core", "fr": "Le moteur central est relié au cœur Rust de Nuxiva", "es": "El motor central está conectado al núcleo Rust de Nuxiva" },
+  "features": [
+    { "it": "Il motore centrale può essere usato dal resto di Nuxiva, spento di default, con rifiuto chiaro di agenti mancanti e testi non validi.", "en": "The central engine can be used by the rest of Nuxiva, off by default, with a clear refusal for missing agents and invalid text.", "fr": "Le moteur central peut être utilisé par le reste de Nuxiva, désactivé par défaut, avec un refus clair des agents manquants et des textes invalides.", "es": "El motor central puede usarlo el resto de Nuxiva, desactivado por defecto, con rechazo claro de agentes ausentes y textos no válidos." }
+  ]
+}
