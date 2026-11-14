@@ -105,6 +105,7 @@ kernel_checks() {
 
 sync_state
 run "Note di rilascio per ogni commit / Release note for every commit" changelog_check
+run "Note di rilascio valide / Release notes valid" "$PY" scripts/ci/changelog_valid.py
 run "Limite di 500 righe per file / 500-line limit per file" "$PY" scripts/ci/line_limit.py
 run "Accessi ai file solo tramite il server MCP / File access only through the MCP server" "$PY" scripts/ci/fs_boundary.py
 run "Nessuna logica MCP in Python / No MCP logic in Python" "$PY" scripts/ci/mcp_boundary.py

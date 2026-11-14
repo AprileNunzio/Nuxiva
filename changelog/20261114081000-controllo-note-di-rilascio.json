@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Controllo anticipato delle note di rilascio",
+    "en": "Early check of release notes",
+    "fr": "Contrôle anticipé des notes de version",
+    "es": "Comprobación temprana de las notas de versión"
+  },
+  "fixes": [
+    {
+      "it": "Le note di rilascio con data o nome sbagliati ora vengono bloccate subito prima della pubblicazione, così non fanno più fallire i controlli automatici.",
+      "en": "Release notes with a wrong date or name are now stopped right before publishing, so they no longer make the automated checks fail.",
+      "fr": "Les notes de version avec une date ou un nom incorrects sont désormais bloquées avant la publication, elles ne font donc plus échouer les contrôles automatiques.",
+      "es": "Las notas de versión con fecha o nombre incorrectos ahora se bloquean antes de publicar, así que ya no hacen fallar las comprobaciones automáticas."
+    }
+  ]
+}

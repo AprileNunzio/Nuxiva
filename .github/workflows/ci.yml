@@ -65,6 +65,9 @@ jobs:
           RANGE_HEAD: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
         run: python scripts/ci/changelog_required.py "$RANGE_BASE" "$RANGE_HEAD"
 
+      - name: Release Notes Valid
+        run: python scripts/ci/changelog_valid.py
+
   tests:
     runs-on: ubuntu-latest
     steps:
