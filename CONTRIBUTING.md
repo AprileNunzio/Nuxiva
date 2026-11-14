@@ -13,7 +13,7 @@ privately as described in [SECURITY.md](SECURITY.md), never through public issue
 ## Ways to contribute
 
 - **Report a bug** or **propose a feature** with the issue templates. Search existing issues first.
-- **Improve documentation**: the README ([English](README.md), [Italiano](README_IT.md), [Français](README_FR.md)), [installer_wizard/features/README.md](installer_wizard/features/README.md) and [installer_wizard/MCP.md](installer_wizard/MCP.md).
+- **Improve documentation**: the README ([English](README.md), [Italiano](README_IT.md), [Français](README_FR.md), [Español](README_ES.md)), [installer_wizard/features/README.md](installer_wizard/features/README.md) and [installer_wizard/MCP.md](installer_wizard/MCP.md).
 - **Add or fix a feature, tool, widget, algorithm or installation step**: see
   [how to add things](#adding-things-to-nuxiva).
 - **Review pull requests** and reproduce reported problems.

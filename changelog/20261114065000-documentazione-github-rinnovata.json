@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Documentazione GitHub rinnovata con nuovi screenshot",
+    "en": "Refreshed GitHub documentation with new screenshots",
+    "fr": "Documentation GitHub renouvelée avec de nouvelles captures",
+    "es": "Documentación de GitHub renovada con nuevas capturas"
+  },
+  "features": [
+    {
+      "it": "Il README, in italiano, inglese, francese e spagnolo, mostra i nuovi schermi: widget del display su desktop e mobile e pannello degli strumenti MCP.",
+      "en": "The README, in Italian, English, French and Spanish, now shows the new screens: display widgets on desktop and mobile and the MCP tools panel.",
+      "fr": "Le README, en italien, anglais, français et espagnol, montre les nouveaux écrans : widgets de l'écran sur bureau et mobile et panneau des outils MCP.",
+      "es": "El README, en italiano, inglés, francés y español, muestra las nuevas pantallas: widgets de la pantalla en escritorio y móvil y panel de herramientas MCP."
+    },
+    {
+      "it": "Aggiunti SUPPORT.md e gli aggiornamenti automatici delle dipendenze con Dependabot.",
+      "en": "Added SUPPORT.md and automatic dependency updates through Dependabot.",
+      "fr": "Ajout de SUPPORT.md et des mises à jour automatiques des dépendances avec Dependabot.",
+      "es": "Añadidos SUPPORT.md y las actualizaciones automáticas de dependencias con Dependabot."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretti i link a sicurezza e documentazione nei modelli delle issue e in SECURITY.md, e aggiunto lo spagnolo in CONTRIBUTING.md.",
+      "en": "Fixed the security and documentation links in the issue templates and SECURITY.md, and added Spanish to CONTRIBUTING.md.",
+      "fr": "Liens vers la sécurité et la documentation corrigés dans les modèles d'issue et SECURITY.md, et espagnol ajouté à CONTRIBUTING.md.",
+      "es": "Corregidos los enlaces a seguridad y documentación en las plantillas de issue y SECURITY.md, y añadido el español a CONTRIBUTING.md."
+    }
+  ]
+}

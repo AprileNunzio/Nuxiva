@@ -6,7 +6,7 @@ Nuxiva OS runs on a home server with access to microphones, cameras, files, smar
 it can be driven by external assistants over MCP. Security is therefore a design requirement, not an
 afterthought: the project follows a **zero-trust** model in which every endpoint, tool call and input is
 authenticated, validated and, when it can change the real world, confirmed **in code** (never only in a prompt).
-A summary is in the [README, section 1.10](README.md#110-security).
+A summary is in the [README, section 5](README.md#5-security-model).
 
 ## Supported versions
 
@@ -126,7 +126,7 @@ privately at once so that it can be rotated.
 Nuxiva OS gira su un server di casa con accesso a microfoni, telecamere, file, domotica e shell, e può essere
 guidato da assistenti esterni via MCP: la sicurezza è un requisito di progetto. Modello **zero-trust**: ogni
 endpoint, strumento e input è autenticato e validato, e ciò che può cambiare il mondo reale è confermato **dal
-codice**, non solo dal prompt (sintesi nel [README, §1.10](README_IT.md#110-sicurezza)).
+codice**, non solo dal prompt (sintesi nel [README, §5](README_IT.md#5-modello-di-sicurezza)).
 
 - **Versioni supportate**: 5.x (`main`); le installazioni si aggiornano da sole solo con CI verde.
 - **Come segnalare**: in privato, mai con una issue pubblica. Con la segnalazione privata di GitHub

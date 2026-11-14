@@ -61,6 +61,9 @@ Todas las capturas proceden de una compilación sin modificar de la rama `main`.
 | <img src=".github/readme/setup-wizard.webp" alt="Asistente de primer arranque"><br>**Asistente de primer arranque** | <img src=".github/readme/admin-control-panel.webp" alt="Panel de control"><br>**Escritorio de administración: panel de control** |
 | <img src=".github/readme/admin-brain.webp" alt="Brain: enrutamiento de modelos"><br>**Brain: enrutamiento de modelos y perfiles** | <img src=".github/readme/admin-applications.webp" alt="Aplicaciones"><br>**Lanzador de aplicaciones** |
 | <img src=".github/readme/admin-network.webp" alt="Red y nodos"><br>**Red, dispositivos y nodos** | <img src=".github/readme/admin-studio-3d.webp" alt="Estudio 3D"><br>**Estudio 3D** |
+| <img src=".github/readme/display-widgets.webp" alt="Widgets de la pantalla en escritorio y móvil"><br>**Widgets de la pantalla en escritorio y móvil** | <img src=".github/readme/admin-mcp-tools.webp" alt="Herramientas MCP: servidores, consentimientos y registro verificable"><br>**Herramientas MCP: servidores, consentimientos y registro verificable** |
+
+<p align="center"><img src=".github/readme/display-mobile.webp" alt="Widgets de la pantalla en móvil" width="280"><br><b>Widgets de la pantalla en móvil</b></p>
 
 ---
 

@@ -61,6 +61,9 @@ All screenshots are taken from an unmodified build of the `main` branch.
 | <img src=".github/readme/setup-wizard.webp" alt="First-run setup wizard"><br>**First-run setup wizard** | <img src=".github/readme/admin-control-panel.webp" alt="Admin control panel"><br>**Admin desktop: control panel** |
 | <img src=".github/readme/admin-brain.webp" alt="Brain: model routing"><br>**Brain: model routing and profiles** | <img src=".github/readme/admin-applications.webp" alt="Applications"><br>**Applications launcher** |
 | <img src=".github/readme/admin-network.webp" alt="Network and nodes"><br>**Network, devices and nodes** | <img src=".github/readme/admin-studio-3d.webp" alt="3D studio"><br>**3D studio** |
+| <img src=".github/readme/display-widgets.webp" alt="Widget display on desktop and mobile"><br>**Widget display on desktop and mobile** | <img src=".github/readme/admin-mcp-tools.webp" alt="MCP tools: servers, consents and verifiable log"><br>**MCP tools: servers, consents and verifiable log** |
+
+<p align="center"><img src=".github/readme/display-mobile.webp" alt="Widgets of the display on mobile" width="280"><br><b>Widgets of the display on mobile</b></p>
 
 ---
 
