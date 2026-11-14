@@ -1,0 +1,9 @@
+{
+  "max_words": 3,
+  "fillers": [
+    "mh", "mhm", "mmh", "uhm", "eh", "ah", "aha", "ahah", "oh",
+    "si", "sì", "ok", "okay", "certo", "capito", "esatto", "vero", "già",
+    "bene", "ottimo", "perfetto", "sicuro", "va", "d'accordo", "chiaro",
+    "davvero", "giusto", "yes", "right", "sure", "yeah", "mm"
+  ]
+}

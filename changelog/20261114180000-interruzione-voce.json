@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Puoi interrompere Nuxiva mentre parla, la radio no",
+    "en": "You can interrupt Nuxiva while it speaks, the radio cannot",
+    "fr": "Tu peux interrompre Nuxiva pendant qu'elle parle, pas la radio",
+    "es": "Puedes interrumpir a Nuxiva mientras habla, la radio no"
+  },
+  "features": [
+    {
+      "it": "Mentre Nuxiva parla, solo una voce riconosciuta e abbastanza sicura per un attimo la fa fermare. Radio, TV, musica e voci incerte non la interrompono mai. Un semplice «sì» o «mh» abbassa solo il volume, senza tagliare la risposta.",
+      "en": "While Nuxiva speaks, only a recognised voice that is sure enough for a moment makes it stop. Radio, TV, music and uncertain voices never interrupt it. A simple \"yes\" or \"mm\" only lowers the volume, without cutting the answer.",
+      "fr": "Pendant que Nuxiva parle, seule une voix reconnue et assez sûre pendant un instant la fait s'arrêter. Radio, télé, musique et voix incertaines ne l'interrompent jamais. Un simple « oui » ou « mh » baisse seulement le volume, sans couper la réponse.",
+      "es": "Mientras Nuxiva habla, solo una voz reconocida y lo bastante segura durante un instante la hace parar. Radio, TV, música y voces inciertas nunca la interrumpen. Un simple «sí» o «mm» solo baja el volumen, sin cortar la respuesta."
+    },
+    {
+      "it": "Un ospite può interrompere ma non può dare comandi delicati: quelli restano solo per le persone riconosciute.",
+      "en": "A guest can interrupt but cannot give delicate commands: those stay reserved for recognised people.",
+      "fr": "Un invité peut interrompre mais ne peut pas donner de commandes délicates : elles restent réservées aux personnes reconnues.",
+      "es": "Un invitado puede interrumpir pero no puede dar órdenes delicadas: esas quedan reservadas a las personas reconocidas."
+    }
+  ],
+  "fixes": []
+}

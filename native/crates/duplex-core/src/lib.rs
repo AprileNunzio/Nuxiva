@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+mod barge;
 mod chunker;
 mod error;
 mod frame;
@@ -8,6 +9,10 @@ mod session;
 mod settings;
 mod state;
 
+pub use barge::{
+    Backchannel, BargeDetector, BargeSettings, BargeStats, Decision, Evidence, PreRoll, Risk,
+    Verdict, may_command,
+};
 pub use chunker::{Backlog, ChunkSettings, Chunker};
 pub use error::{DuplexError, DuplexResult};
 pub use frame::{AUDIO_HEADER, AUDIO_KIND, Audio, Control};
@@ -26,6 +31,15 @@ pub use state::{State, Trigger};
     clippy::cast_possible_truncation
 )]
 mod tests;
+#[cfg(test)]
+#[allow(
+    clippy::expect_used,
+    clippy::arithmetic_side_effects,
+    clippy::panic,
+    clippy::indexing_slicing,
+    clippy::field_reassign_with_default
+)]
+mod tests_barge;
 #[cfg(test)]
 #[allow(
     clippy::expect_used,

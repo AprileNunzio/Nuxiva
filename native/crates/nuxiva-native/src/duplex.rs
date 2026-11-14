@@ -1,7 +1,8 @@
 use std::sync::{Mutex, PoisonError};
 
 use nuxiva_duplex_core::{
-    Audio, ChunkSettings, Chunker, Control, DuplexError, Session, Settings, Trigger,
+    Audio, Backchannel, BargeDetector, BargeSettings, ChunkSettings, Chunker, Control, Decision,
+    DuplexError, Evidence, PreRoll, Session, Settings, Trigger, Verdict,
 };
 use nuxiva_taskq_core::CancelToken;
 use pyo3::exceptions::PyValueError;
@@ -182,8 +183,124 @@ impl RustChunker {
     }
 }
 
+#[pyclass(module = "nuxiva_native")]
+#[derive(Debug)]
+pub struct RustBarge {
+    detector: Mutex<BargeDetector>,
+    backchannel: Backchannel,
+}
+
+fn verdict(code: &str) -> Result<Verdict, DuplexError> {
+    serde_json::from_value(Value::String(code.to_owned())).map_err(|_| DuplexError::Invalid)
+}
+
+fn decision_json(decision: &Decision) -> Result<String, DuplexError> {
+    let value = match decision {
+        Decision::Hold => serde_json::json!({"decision": "hold"}),
+        Decision::Duck => serde_json::json!({"decision": "duck"}),
+        Decision::Restore => serde_json::json!({"decision": "restore"}),
+        Decision::Cut(report) => serde_json::json!({"decision": "cut", "report": report}),
+    };
+    to_json(&value)
+}
+
+#[pymethods]
+impl RustBarge {
+    #[new]
+    #[pyo3(signature = (settings_json=""))]
+    fn new(settings_json: &str) -> PyResult<Self> {
+        let settings = if settings_json.is_empty() {
+            BargeSettings::default()
+        } else {
+            BargeSettings::from_json(settings_json).map_err(fail)?
+        };
+        Ok(Self {
+            detector: Mutex::new(BargeDetector::new(settings).map_err(fail)?),
+            backchannel: Backchannel::builtin().map_err(fail)?,
+        })
+    }
+
+    fn step(
+        &self,
+        duplex: &RustDuplex,
+        verdict_code: &str,
+        margin_permille: u16,
+        voiced: bool,
+        frame_ms: u32,
+        now_ms: u64,
+    ) -> PyResult<String> {
+        let ev = Evidence {
+            verdict: verdict(verdict_code).map_err(fail)?,
+            margin_permille,
+            voiced,
+            frame_ms,
+        };
+        let mut session = duplex
+            .session
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner);
+        let mut detector = self.detector.lock().unwrap_or_else(PoisonError::into_inner);
+        decision_json(&detector.step(&mut session, &ev, now_ms)).map_err(fail)
+    }
+
+    fn tick(&self, now_ms: u64) -> PyResult<String> {
+        let mut detector = self.detector.lock().unwrap_or_else(PoisonError::into_inner);
+        decision_json(&detector.tick(now_ms)).map_err(fail)
+    }
+
+    fn is_backchannel(&self, text: &str) -> bool {
+        self.backchannel.is_backchannel(text)
+    }
+
+    fn stats(&self) -> PyResult<String> {
+        let detector = self.detector.lock().unwrap_or_else(PoisonError::into_inner);
+        to_json(detector.stats()).map_err(fail)
+    }
+}
+
+#[pyclass(module = "nuxiva_native")]
+#[derive(Debug)]
+pub struct RustPreRoll {
+    ring: Mutex<PreRoll>,
+}
+
+#[pymethods]
+impl RustPreRoll {
+    #[new]
+    fn new(rate_hz: u32, ms: u32, bytes_per_sample: u32) -> PyResult<Self> {
+        Ok(Self {
+            ring: Mutex::new(PreRoll::new(rate_hz, ms, bytes_per_sample).map_err(fail)?),
+        })
+    }
+
+    fn push(&self, pcm: &[u8]) {
+        self.ring
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .push(pcm);
+    }
+
+    fn snapshot<'py>(&self, py: Python<'py>) -> Bound<'py, pyo3::types::PyBytes> {
+        let data = self
+            .ring
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .snapshot();
+        pyo3::types::PyBytes::new(py, &data)
+    }
+
+    fn clear(&self) {
+        self.ring
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .clear();
+    }
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustDuplex>()?;
     m.add_class::<RustCancelFlag>()?;
-    m.add_class::<RustChunker>()
+    m.add_class::<RustChunker>()?;
+    m.add_class::<RustBarge>()?;
+    m.add_class::<RustPreRoll>()
 }
