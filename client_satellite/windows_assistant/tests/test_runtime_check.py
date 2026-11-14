@@ -76,6 +76,11 @@ class SpecTest(unittest.TestCase):
         self.assertIn('"customtkinter"', text)
         self.assertIn("collect_all", text)
 
+    def test_installer_removes_legacy_atena_install(self):
+        text = (ROOT / "packaging" / "installer.iss").read_text(encoding="utf-8")
+        self.assertIn("Programs\\ATENA", text)
+        self.assertIn('/Delete /TN "ATENA"', text)
+
     def test_build_runs_verification_and_smoke_test(self):
         text = (ROOT / "packaging" / "build.ps1").read_text(encoding="utf-8")
         self.assertIn("verify_bundle.py", text)

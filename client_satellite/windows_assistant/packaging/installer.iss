@@ -68,9 +68,15 @@ Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; IconFilename: "{a
 Type: files; Name: "{userprograms}\NUXIVA Assistente.lnk"
 Type: files; Name: "{userdesktop}\NUXIVA Assistente.lnk"
 Type: filesandordirs; Name: "{localappdata}\Programs\NUXIVA"
+Type: filesandordirs; Name: "{localappdata}\Programs\ATENA"
+Type: files; Name: "{userprograms}\ATENA.lnk"
+Type: files; Name: "{userdesktop}\ATENA.lnk"
+Type: filesandordirs; Name: "{userprograms}\ATENA"
 
 [Registry]
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueName: "NUXIVA Assistente"; Flags: deletevalue
+Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueName: "ATENA"; Flags: deletevalue
+Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\ATENA_is1"; Flags: deletekey
 
 [Run]
 Filename: "{app}\{#AppExe}"; Parameters: "{code:EnrollmentParameters}"; Description: "{cm:LaunchProgram,{#AppName}}"; Flags: nowait postinstall skipifsilent
@@ -81,6 +87,14 @@ Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""Nuxiva"" /F"; Flags: 
 Filename: "{cmd}"; Parameters: "/C reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v ""NUXIVA Assistente"" /f"; Flags: runhidden; RunOnceId: "RemoveLegacyAutostart"
 
 [Code]
+procedure CurStepChanged(CurStep: TSetupStep);
+var
+  ResultCode: Integer;
+begin
+  if CurStep = ssInstall then
+    Exec(ExpandConstant('{sys}\schtasks.exe'), '/Delete /TN "ATENA" /F', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+end;
+
 function EnrollmentParameters(Value: String): String;
 var
   EnrollmentFile: String;

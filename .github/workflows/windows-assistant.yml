@@ -55,6 +55,14 @@ jobs:
           NUXIVA_ASSISTANT_SIGNING_KEY: ${{ secrets.NUXIVA_ASSISTANT_SIGNING_KEY }}
         run: .\packaging\build.ps1
 
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: Nuxiva_Setup
+          path: client_satellite/windows_assistant/build/installer/Nuxiva_Setup.exe
+          if-no-files-found: error
+          retention-days: 30
+
       - name: Publish Release
         if: steps.version.outputs.exists == 'false'
         shell: pwsh

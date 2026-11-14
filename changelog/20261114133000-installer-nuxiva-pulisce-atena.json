@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "L'installer di Nuxiva sostituisce la vecchia versione ATENA",
+    "en": "The Nuxiva installer replaces the old ATENA version",
+    "fr": "Le programme d'installation de Nuxiva remplace l'ancienne version ATENA",
+    "es": "El instalador de Nuxiva reemplaza la antigua versión ATENA"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Installando Nuxiva sopra una vecchia installazione chiamata ATENA, cartella, collegamenti, avvio automatico e attività pianificata del vecchio nome vengono rimossi.",
+      "en": "Installing Nuxiva over an old installation named ATENA removes the old name's folder, shortcuts, autostart entry and scheduled task.",
+      "fr": "Installer Nuxiva par-dessus une ancienne installation nommée ATENA supprime le dossier, les raccourcis, le démarrage automatique et la tâche planifiée de l'ancien nom.",
+      "es": "Al instalar Nuxiva sobre una instalación antigua llamada ATENA se eliminan la carpeta, los accesos directos, el inicio automático y la tarea programada del nombre antiguo."
+    }
+  ]
+}
