@@ -23,6 +23,27 @@ def _https_origin(request: Request) -> str:
     return origin
 
 
+def _enrollment_payload(request: Request) -> bytes:
+    origin = _https_origin(request)
+    pin = trust.ca_pin()
+    if not pin:
+        raise HTTPException(409, "enroll_ca_missing")
+    try:
+        token, expires = tokens.issue()
+    except EnrollmentError as exc:
+        raise HTTPException(429, exc.code)
+    return json.dumps({"server": origin, "token": token, "pin": pin, "expires": int(expires)}).encode()
+
+
+@admin_routes.post("/api/rpa/enrollment-file")
+async def download_enrollment_file(request: Request, user: str = Depends(require_admin)):
+    payload = _enrollment_payload(request)
+    store.event("INFO", f"File di associazione Windows con token monouso generato da {user}", "nodes")
+    return StreamingResponse(io.BytesIO(payload), media_type="application/json",
+                             headers={"Content-Disposition": f"attachment; filename={ENROLL_FILE}",
+                                      "Cache-Control": "no-store"})
+
+
 @admin_routes.post("/api/rpa/enrolled-client")
 async def download_enrolled_client(request: Request, user: str = Depends(require_admin)):
     origin = _https_origin(request)

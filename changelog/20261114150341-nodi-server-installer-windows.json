@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Nodi e Server scarica l'installer Windows invece dello ZIP",
+    "en": "Nodes & Servers downloads the Windows installer instead of the ZIP",
+    "fr": "Nœuds et Serveurs télécharge l'installateur Windows au lieu du ZIP",
+    "es": "Nodos y Servidores descarga el instalador de Windows en lugar del ZIP"
+  },
+  "features": [
+    {
+      "it": "In Nodi e Server, per Windows basta un pulsante: scarica Nuxiva_Setup.exe dell'ultima versione pubblicata e il file di associazione, poi basta aprire l'installer. Passi ridotti da tre a due.",
+      "en": "In Nodes & Servers, Windows needs a single button: it downloads Nuxiva_Setup.exe of the latest published version plus the pairing file, then you just open the installer. Steps cut from three to two.",
+      "fr": "Dans Nœuds et Serveurs, Windows n'a besoin que d'un bouton : il télécharge Nuxiva_Setup.exe de la dernière version publiée et le fichier d'association, puis il suffit d'ouvrir l'installateur. Étapes réduites de trois à deux.",
+      "es": "En Nodos y Servidores, Windows solo necesita un botón: descarga Nuxiva_Setup.exe de la última versión publicada y el archivo de vinculación, y luego basta abrir el instalador. Pasos reducidos de tres a dos."
+    },
+    {
+      "it": "La versione viene letta dalle release ufficiali e mostrata sul pulsante; senza rete o senza release compare un messaggio chiaro con il link alla pagina delle versioni.",
+      "en": "The version is read from the official releases and shown on the button; without network or releases a clear message appears with a link to the releases page.",
+      "fr": "La version est lue depuis les versions officielles et affichée sur le bouton ; sans réseau ou sans version, un message clair apparaît avec le lien vers la page des versions.",
+      "es": "La versión se lee de las versiones oficiales y se muestra en el botón; sin red o sin versiones aparece un mensaje claro con el enlace a la página de versiones."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto il motivo per cui veniva sempre proposto lo ZIP: il server cercava ancora il vecchio nome del file dell'installer e non trovava mai quello nuovo.",
+      "en": "Fixed why the ZIP was always offered: the server still looked for the old installer file name and never found the new one.",
+      "fr": "Corrigé la raison pour laquelle le ZIP était toujours proposé : le serveur cherchait encore l'ancien nom de fichier de l'installateur et ne trouvait jamais le nouveau.",
+      "es": "Corregido el motivo por el que siempre se ofrecía el ZIP: el servidor seguía buscando el nombre antiguo del instalador y nunca encontraba el nuevo."
+    }
+  ]
+}

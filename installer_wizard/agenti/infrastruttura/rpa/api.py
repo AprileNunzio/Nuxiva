@@ -22,6 +22,14 @@ def _server_address(request: Request) -> str:
     return f"http://{host}" + ("" if PUBLIC_PORT == 80 else f":{PUBLIC_PORT}")
 
 
+@admin_routes.get("/api/rpa/installer-info")
+async def installer_info():
+    info = await releases.installer_info()
+    if not info:
+        raise HTTPException(status_code=503, detail="windows_installer_unavailable")
+    return info
+
+
 @admin_routes.get("/api/rpa/download-client")
 @public_routes.get("/api/rpa/download-client")
 async def download_client(request: Request, format: str = "exe"):

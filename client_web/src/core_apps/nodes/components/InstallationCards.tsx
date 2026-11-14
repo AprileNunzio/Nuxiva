@@ -9,7 +9,7 @@ import { WindowsDownload } from './WindowsDownload';
 
 const platforms = [
   { id: 'linux', icon: Terminal, steps: 3 },
-  { id: 'windows', icon: Monitor, steps: 3 },
+  { id: 'windows', icon: Monitor, steps: 2 },
   { id: 'macos', icon: Laptop, steps: 3 },
   { id: 'esp32', icon: Cpu, steps: 3 },
 ] as const;
