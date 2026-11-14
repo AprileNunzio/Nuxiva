@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Corretto il nome di una nota di rilascio dei widget",
+    "en": "Fixed the name of a widgets release note",
+    "fr": "Nom d'une note de version des widgets corrigé",
+    "es": "Corregido el nombre de una nota de versión de los widgets"
+  },
+  "features": [
+    {
+      "it": "Le novità dei widget compatti e fluidi compaiono di nuovo correttamente nell'elenco degli aggiornamenti.",
+      "en": "The news about compact and fluid widgets shows up correctly again in the updates list.",
+      "fr": "Les nouveautés des widgets compacts et fluides s'affichent de nouveau correctement dans la liste des mises à jour.",
+      "es": "Las novedades de los widgets compactos y fluidos vuelven a aparecer correctamente en la lista de actualizaciones."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Un file di note con data diversa dal nome bloccava la verifica automatica e quindi gli aggiornamenti.",
+      "en": "A notes file whose date differed from its name blocked the automatic check and therefore updates.",
+      "fr": "Un fichier de notes dont la date différait du nom bloquait la vérification automatique, donc les mises à jour.",
+      "es": "Un archivo de notas cuya fecha difería del nombre bloqueaba la verificación automática y por tanto las actualizaciones."
+    }
+  ]
+}
