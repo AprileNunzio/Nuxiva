@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "App Android: permessi di posizione allineati alle regole di Android",
+    "en": "Android app: location permissions aligned with Android rules",
+    "fr": "Application Android : autorisations de localisation alignées sur les règles d'Android",
+    "es": "Aplicación Android: permisos de ubicación alineados con las reglas de Android"
+  },
+  "features": [
+    {
+      "it": "Sui telefoni con Android 11 o precedente, la ricerca dei sensori Bluetooth chiede la posizione approssimata insieme a quella precisa, come richiede il sistema.",
+      "en": "On phones with Android 11 or earlier, the Bluetooth sensor search asks for approximate location together with precise location, as the system requires.",
+      "fr": "Sur les téléphones sous Android 11 ou antérieur, la recherche de capteurs Bluetooth demande la localisation approximative avec la précise, comme l'exige le système.",
+      "es": "En teléfonos con Android 11 o anterior, la búsqueda de sensores Bluetooth pide la ubicación aproximada junto con la precisa, como exige el sistema."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto l'ultimo errore del controllo di qualità che bloccava la creazione dell'APK Android.",
+      "en": "Fixed the last quality check error that blocked building the Android APK.",
+      "fr": "Correction de la dernière erreur du contrôle qualité qui bloquait la création de l'APK Android.",
+      "es": "Corregido el último error del control de calidad que bloqueaba la creación del APK de Android."
+    }
+  ]
+}
