@@ -12,7 +12,7 @@ from agenti.nodes import audit as audit_module
 from agenti.nodes import esp32_routes
 from agenti.nodes.inbox import inbox
 from agenti.nodes.registry import registry
-from tests.test_node_trust_api import Device, TrustApiTest
+from tests.test_node_trust_api import TrustApiTest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))

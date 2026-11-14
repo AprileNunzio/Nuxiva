@@ -15,7 +15,6 @@ from node_api import (
     get_usb_ports,
     onboard_node,
     delete_node,
-    list_nodes,
     OnboardNodeRequest,
 )
 

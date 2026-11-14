@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Controlli automatici di nuovo verdi",
+    "en": "Automated checks green again",
+    "fr": "Contrôles automatiques de nouveau au vert",
+    "es": "Comprobaciones automáticas de nuevo en verde"
+  },
+  "features": [
+    {
+      "it": "Il controllo prima della pubblicazione verifica ora sempre che l'elenco delle dipendenze Rust sia allineato alla versione.",
+      "en": "The pre-publish check now always verifies that the Rust dependency list is aligned with the version.",
+      "fr": "Le contrôle avant publication vérifie maintenant toujours que la liste des dépendances Rust est alignée sur la version.",
+      "es": "La comprobación previa a la publicación verifica ahora siempre que la lista de dependencias de Rust esté alineada con la versión."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretta la compilazione del firmware dei nodi ESP32, rimossi tre import inutilizzati nei test e riallineato l'elenco delle dipendenze Rust.",
+      "en": "Fixed the ESP32 node firmware build, removed three unused imports in the tests and realigned the Rust dependency list.",
+      "fr": "Correction de la compilation du firmware des nœuds ESP32, suppression de trois imports inutilisés dans les tests et réalignement de la liste des dépendances Rust.",
+      "es": "Corregida la compilación del firmware de los nodos ESP32, eliminados tres imports sin usar en las pruebas y realineada la lista de dependencias de Rust."
+    }
+  ]
+}

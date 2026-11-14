@@ -81,6 +81,7 @@ script_syntax() {
 
 rust_checks() {
     cargo fmt --manifest-path native/Cargo.toml --all --check || return 1
+    cargo metadata --manifest-path native/Cargo.toml --locked --format-version 1 >/dev/null || return 1
     if [ "$MODE" = "full" ] || touches '^native/'; then
         cargo clippy --manifest-path native/Cargo.toml --workspace --all-targets --locked -- -D warnings || return 1
         cargo test --manifest-path native/Cargo.toml --workspace --locked || return 1
