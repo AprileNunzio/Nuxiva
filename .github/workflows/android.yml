@@ -71,8 +71,14 @@ jobs:
           test -n "$version"
           echo "value=$version" >> "$GITHUB_OUTPUT"
           if gh release view "android-v$version" > /dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            if gh release view "android-v$version" --json assets --jq '.assets[].name' | grep -qx 'Nuxiva.apk'; then
+              echo "exists=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "exists=false" >> "$GITHUB_OUTPUT"
+            fi
           else
+            echo "present=false" >> "$GITHUB_OUTPUT"
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
@@ -142,6 +148,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.version.outputs.value }}
           PERSISTENT: ${{ steps.signing.outputs.persistent }}
+          PRESENT: ${{ steps.version.outputs.present }}
           SHA256: ${{ steps.apk.outputs.sha256 }}
         run: |
           set -euo pipefail
@@ -150,5 +157,11 @@ jobs:
           else
             notes="Nuxiva $VERSION for Android, signed with a temporary key because the signing secrets are not set. It cannot update an older build in place: uninstall the old one first. SHA-256 $SHA256."
           fi
-          gh release create "android-v$VERSION" build/release/Nuxiva.apk build/release/Nuxiva.apk.sha256 \
+          if [ "$PRESENT" = "true" ]; then
+            gh release upload "android-v$VERSION" build/release/Nuxiva.apk build/release/Nuxiva.apk.sha256 --clobber
+            gh release delete-asset "android-v$VERSION" Nuxiva_Node.apk --yes || true
+            gh release edit "android-v$VERSION" --title "Nuxiva $VERSION" --notes "$notes"
+          else
+            gh release create "android-v$VERSION" build/release/Nuxiva.apk build/release/Nuxiva.apk.sha256 \
             --title "Nuxiva $VERSION" --notes "$notes"
+          fi

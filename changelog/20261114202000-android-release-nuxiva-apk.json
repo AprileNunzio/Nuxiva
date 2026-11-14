@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "App Android: il download ora è Nuxiva.apk",
+    "en": "Android app: the download is now Nuxiva.apk",
+    "fr": "Application Android : le téléchargement est maintenant Nuxiva.apk",
+    "es": "Aplicación Android: la descarga ahora es Nuxiva.apk"
+  },
+  "features": [
+    {
+      "it": "Il file dell'app Android pubblicato nelle versioni si chiama Nuxiva.apk e sostituisce il vecchio file con il nome precedente.",
+      "en": "The Android app file published in the releases is called Nuxiva.apk and replaces the old file with the previous name.",
+      "fr": "Le fichier de l'application Android publié dans les versions s'appelle Nuxiva.apk et remplace l'ancien fichier portant le nom précédent.",
+      "es": "El archivo de la aplicación Android publicado en las versiones se llama Nuxiva.apk y sustituye al archivo antiguo con el nombre anterior."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "La pubblicazione dell'app Android non si ferma più quando la versione esiste già senza il nuovo file: il file viene aggiunto alla versione esistente.",
+      "en": "Publishing the Android app no longer stops when the version already exists without the new file: the file is added to the existing release.",
+      "fr": "La publication de l'application Android ne s'arrête plus quand la version existe déjà sans le nouveau fichier : le fichier est ajouté à la version existante.",
+      "es": "La publicación de la aplicación Android ya no se detiene cuando la versión existe sin el nuevo archivo: el archivo se añade a la versión existente."
+    }
+  ]
+}
