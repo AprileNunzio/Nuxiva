@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Il collegamento ai modelli locali può usare un client in Rust",
+    "en": "The link to local models can use a Rust client",
+    "fr": "La liaison avec les modèles locaux peut utiliser un client Rust",
+    "es": "La conexión con los modelos locales puede usar un cliente en Rust"
+  },
+  "features": [
+    {
+      "it": "Le richieste ai modelli locali possono passare da un client in Rust, che rifiuta indirizzi non validi, non segue i reindirizzamenti e limita la dimensione delle risposte. Resta spento di default e si attiva con NUXIVA_LLM_CLIENT=rust.",
+      "en": "Requests to local models can go through a Rust client that rejects invalid addresses, does not follow redirects and caps the size of replies. It is off by default and turns on with NUXIVA_LLM_CLIENT=rust.",
+      "fr": "Les requêtes vers les modèles locaux peuvent passer par un client Rust qui refuse les adresses invalides, ne suit pas les redirections et limite la taille des réponses. Il est désactivé par défaut et s'active avec NUXIVA_LLM_CLIENT=rust.",
+      "es": "Las peticiones a los modelos locales pueden pasar por un cliente en Rust que rechaza direcciones no válidas, no sigue redirecciones y limita el tamaño de las respuestas. Está apagado por defecto y se activa con NUXIVA_LLM_CLIENT=rust."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Se il client in Rust non riesce a collegarsi, la richiesta passa automaticamente al metodo precedente.",
+      "en": "If the Rust client cannot connect, the request automatically goes to the previous method.",
+      "fr": "Si le client Rust ne parvient pas à se connecter, la requête passe automatiquement à la méthode précédente.",
+      "es": "Si el cliente en Rust no logra conectarse, la petición pasa automáticamente al método anterior."
+    }
+  ]
+}

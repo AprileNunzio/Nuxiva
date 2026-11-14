@@ -5,7 +5,8 @@ import time
 from typing import Any
 
 import httpx
-from config import ollama_url
+import native_core
+from config import env_get, ollama_url
 from tasks import background
 
 from agenti.brain import scope
@@ -70,6 +71,30 @@ def _runtime_ollama_options(kind: str, component: str, max_tokens: int | None, t
     }
 
 
+def _native_client():
+    if env_get("NUXIVA_LLM_CLIENT", "python").strip().lower() != "rust":
+        return None
+    return native_core.symbol("llm_post_json")
+
+
+async def _post_generate(base: str, body: dict, timeout: float) -> dict:
+    native = _native_client()
+    if native is not None:
+        try:
+            status, text = await asyncio.to_thread(native, base, "api/generate", json.dumps(body), float(timeout), None)
+        except (OSError, ValueError):
+            native = None
+        else:
+            if status >= 400:
+                request = httpx.Request("POST", f"{base.rstrip('/')}/api/generate")
+                raise httpx.HTTPStatusError(f"HTTP {status}", request=request, response=httpx.Response(status, text=text, request=request))
+            return json.loads(text)
+    async with httpx.AsyncClient(timeout=httpx.Timeout(timeout, connect=10)) as client:
+        r = await client.post(f"{base}/api/generate", json=body)
+        r.raise_for_status()
+    return r.json()
+
+
 async def _ollama(model: str, prompt: str, system: str, as_json: bool, max_tokens: int | None, temperature: float,
                   timeout: float, kind: str = "deep", component: str = "") -> str:
     opts = _runtime_ollama_options(kind, component, max_tokens, temperature)
@@ -79,10 +104,7 @@ async def _ollama(model: str, prompt: str, system: str, as_json: bool, max_token
         body["system"] = system
     if as_json:
         body["format"] = "json"
-    async with httpx.AsyncClient(timeout=httpx.Timeout(timeout, connect=10)) as client:
-        r = await client.post(f"{ollama_url()}/api/generate", json=body)
-        r.raise_for_status()
-    data = r.json()
+    data = await _post_generate(ollama_url(), body, timeout)
     usage_ledger.record(model, data.get("prompt_eval_count"), data.get("eval_count"))
     return data.get("response", "")
 

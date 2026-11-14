@@ -1957,6 +1957,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-llm-client"
+version = "5.8.2"
+dependencies = [
+ "reqwest",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "nuxiva-llm-core"
 version = "5.8.2"
 dependencies = [
@@ -2086,6 +2095,7 @@ dependencies = [
  "nuxiva-guard-core",
  "nuxiva-initiative-core",
  "nuxiva-langid",
+ "nuxiva-llm-client",
  "nuxiva-llm-core",
  "nuxiva-loop-core",
  "nuxiva-lyrics-core",
