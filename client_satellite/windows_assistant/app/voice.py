@@ -27,7 +27,6 @@ class Voice:
     def __init__(self, client: Client, cfg: dict, policy: Policy, ui, on_security) -> None:
         self.client, self.cfg, self.policy, self.ui = client, cfg, policy, ui
         self.speaker = Speaker()
-        self.mode = profile.parse_mode(cfg.get("mode"))
         self.has_server = bool(cfg.get("server") and cfg.get("token"))
         self.ear = EarStream(client, self.on_event, self.on_link, on_security)
         tier = profile.recommend(profile.detect())
@@ -45,6 +44,10 @@ class Voice:
 
     def continuous(self) -> bool:
         return self.policy.level("senses.microphone") is not Level.DENY
+
+    @property
+    def mode(self) -> profile.Mode:
+        return profile.parse_mode(self.cfg.get("mode"))
 
     def _server_ear(self) -> bool:
         return self.has_server and self.mode is not profile.Mode.LOCAL and self.ear.connected

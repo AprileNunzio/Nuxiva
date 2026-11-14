@@ -4,6 +4,7 @@ import tkinter as tk
 import customtkinter as ctk
 
 from connection import tls
+from i18n.strings import t
 from ui import theme
 
 GUIDE = ("1. Nel pannello di NUXIVA apri Funzionalità → Nodi e server e premi «+ Aggiungi un nodo»: compare un codice di "
@@ -15,6 +16,7 @@ class PairingWindow:
     def __init__(self, cfg: dict, verify, pair) -> None:
         self.verify, self.pair = verify, pair
         self.paired = False
+        self.standalone = False
         self.fingerprint = ""
         self.window = ctk.CTk(fg_color=theme.PANEL)
         self.window.title("NUXIVA · Collega questo PC")
@@ -44,7 +46,9 @@ class PairingWindow:
         self.status.pack(anchor="w", padx=24, pady=(10, 0))
         self.button = ctk.CTkButton(self.window, text="Collega", height=42, fg_color=theme.BLUE, hover_color=theme.BLUE_HOVER,
                                     font=(theme.FONT, 14, "bold"), command=self._pair, state="disabled")
-        self.button.pack(fill="x", padx=24, pady=(14, 18))
+        self.button.pack(fill="x", padx=24, pady=(14, 6))
+        ctk.CTkButton(self.window, text=t("pairing.standalone"), fg_color="transparent", border_width=1,
+                      border_color=theme.LINE, text_color=theme.DIM, command=self._standalone).pack(fill="x", padx=24, pady=(0, 18))
 
     def _field(self, label: str, value: str, placeholder: str) -> ctk.CTkEntry:
         ctk.CTkLabel(self.window, text=label, font=(theme.FONT, 12), text_color=theme.TEXT).pack(anchor="w", padx=24, pady=(14, 2))
@@ -93,6 +97,11 @@ class PairingWindow:
         self.button.configure(state="disabled")
         values = (self.server.get(), self.code.get().strip(), self.name.get().strip(), self.autostart.get(), self.fingerprint)
         self._background(lambda: self.pair(*values), self._paired)
+
+    def _standalone(self) -> None:
+        self.standalone = True
+        self.paired = True
+        self.window.destroy()
 
     def _paired(self, _result) -> None:
         self.paired = True

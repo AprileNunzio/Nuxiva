@@ -44,5 +44,20 @@
   "menu.permissions": "Permissions…",
   "menu.settings": "Settings…",
   "menu.quit": "Quit",
-  "link.signature_rejected": "The server rejected this PC's signature ({code}). Check the PC date and time; if it persists, re-pair the PC."
+  "link.signature_rejected": "The server rejected this PC's signature ({code}). Check the PC date and time; if it persists, re-pair the PC.",
+  "mode.title": "Where Nuxiva thinks",
+  "mode.server": "Server only",
+  "mode.auto": "Automatic",
+  "mode.local": "This PC only",
+  "mode.hint": "Automatic uses the server when present and switches to this PC's models on its own when it is missing. This PC only sends nothing to the server.",
+  "mode.hardware": "This PC: {cores} cores, {ram} GB of RAM, {gpu}. Recommended tier: {tier}.",
+  "mode.no_gpu": "no dedicated GPU",
+  "mode.model": "Recommended local model (Ollama): {model}",
+  "mode.model_choice": "Local model to use (empty = automatic)",
+  "tier.minimal": "minimal",
+  "tier.light": "light",
+  "tier.standard": "standard",
+  "tier.performance": "high performance",
+  "tier.workstation": "workstation",
+  "pairing.standalone": "Use on this PC only, without a server"
 }

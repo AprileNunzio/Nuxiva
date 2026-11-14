@@ -8,6 +8,7 @@ from pathlib import Path
 importlib.import_module("customtkinter")
 
 from app.errors import configure_logging, errors  # noqa: E402
+from autonomy import profile  # noqa: E402
 from connection import enroll  # noqa: E402
 from connection.devicekey import DeviceKey  # noqa: E402
 from connection.client import Client, first_contact  # noqa: E402
@@ -70,11 +71,16 @@ def main() -> None:
     cfg = store.load()
     autostart.refresh()
     enrollment_file = (Path(sys.argv[2]) if len(sys.argv) == 3 and sys.argv[1] == "--enrollment-file" else None)
-    if (not cfg["token"] or not cfg["ca"]) and not auto_enroll(cfg, enrollment_file):
+    local_only = profile.parse_mode(cfg.get("mode")) is profile.Mode.LOCAL
+    if (not cfg["token"] or not cfg["ca"]) and not local_only and not auto_enroll(cfg, enrollment_file):
         from ui.pairing_view import PairingWindow
         window = PairingWindow(cfg, verify, lambda *values: pair(cfg, *values))
         if not window.run():
             return
+        if window.standalone:
+            cfg["mode"] = profile.Mode.LOCAL.value
+            store.save(cfg)
+            autostart.set_enabled(True)
     from app.assistant import Assistant
     Assistant(cfg).start()
 

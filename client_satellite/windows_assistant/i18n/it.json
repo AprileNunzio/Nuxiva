@@ -44,5 +44,20 @@
   "menu.permissions": "Permessi…",
   "menu.settings": "Impostazioni…",
   "menu.quit": "Esci",
-  "link.signature_rejected": "Il server ha rifiutato la firma di questo PC ({code}). Controlla data e ora del PC; se continua, ricollega il PC."
+  "link.signature_rejected": "Il server ha rifiutato la firma di questo PC ({code}). Controlla data e ora del PC; se continua, ricollega il PC.",
+  "mode.title": "Dove ragiona Nuxiva",
+  "mode.server": "Solo server",
+  "mode.auto": "Automatico",
+  "mode.local": "Solo su questo PC",
+  "mode.hint": "Automatico usa il server quando c'è e passa da solo ai modelli di questo PC quando manca. Solo su questo PC non invia nulla al server.",
+  "mode.hardware": "Questo PC: {cores} core, {ram} GB di RAM, {gpu}. Fascia consigliata: {tier}.",
+  "mode.no_gpu": "nessuna GPU dedicata",
+  "mode.model": "Modello locale consigliato (Ollama): {model}",
+  "mode.model_choice": "Modello locale da usare (vuoto = automatico)",
+  "tier.minimal": "minima",
+  "tier.light": "leggera",
+  "tier.standard": "standard",
+  "tier.performance": "alte prestazioni",
+  "tier.workstation": "workstation",
+  "pairing.standalone": "Usa solo su questo PC, senza server"
 }

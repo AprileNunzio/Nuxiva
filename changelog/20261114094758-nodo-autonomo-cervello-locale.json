@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Assistente Windows: cervello locale con Ollama e scelta della modalità",
+    "en": "Windows assistant: local brain with Ollama and mode choice",
+    "fr": "Assistant Windows : cerveau local avec Ollama et choix du mode",
+    "es": "Asistente de Windows: cerebro local con Ollama y elección del modo"
+  },
+  "features": [
+    {
+      "it": "Nuxiva può ragionare sul tuo PC con Ollama: in Impostazioni scegli Solo server, Automatico o Solo su questo PC. Vede core, RAM e GPU, ti dice la fascia adatta e propone il modello giusto, da piccolo a molto potente.",
+      "en": "Nuxiva can think on your PC with Ollama: in Settings you choose Server only, Automatic or This PC only. It sees cores, RAM and GPU, tells you the right tier and suggests the right model, from small to very powerful.",
+      "fr": "Nuxiva peut raisonner sur ton PC avec Ollama : dans Paramètres tu choisis Serveur seul, Automatique ou Ce PC seulement. Il voit cœurs, RAM et GPU, t'indique le niveau adapté et propose le bon modèle, du petit au très puissant.",
+      "es": "Nuxiva puede razonar en tu PC con Ollama: en Ajustes eliges Solo servidor, Automático o Solo este PC. Ve núcleos, RAM y GPU, te indica el nivel adecuado y propone el modelo correcto, de pequeño a muy potente."
+    },
+    {
+      "it": "In modalità Automatico, se il server non risponde passa subito al modello locale e ci riprova più tardi. Le azioni proposte dal modello sono filtrate: solo quelle note e con campi validi arrivano all'esecuzione.",
+      "en": "In Automatic mode, if the server does not answer it switches to the local model right away and retries later. Actions proposed by the model are filtered: only known ones with valid fields reach execution.",
+      "fr": "En mode Automatique, si le serveur ne répond pas, il passe aussitôt au modèle local et réessaie plus tard. Les actions proposées par le modèle sont filtrées : seules les actions connues aux champs valides sont exécutées.",
+      "es": "En modo Automático, si el servidor no responde pasa enseguida al modelo local y reintenta más tarde. Las acciones propuestas por el modelo se filtran: solo llegan a ejecutarse las conocidas con campos válidos."
+    },
+    {
+      "it": "Al primo avvio puoi scegliere «Usa solo su questo PC, senza server»: non serve nessun abbinamento.",
+      "en": "At first start you can choose “Use on this PC only, without a server”: no pairing is needed.",
+      "fr": "Au premier démarrage tu peux choisir « Utiliser sur ce PC seulement, sans serveur » : aucun appairage n'est nécessaire.",
+      "es": "En el primer arranque puedes elegir «Usar solo en este PC, sin servidor»: no hace falta emparejar."
+    }
+  ],
+  "fixes": []
+}

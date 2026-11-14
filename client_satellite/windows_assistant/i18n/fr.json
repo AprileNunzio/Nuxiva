@@ -44,5 +44,20 @@
   "menu.permissions": "Autorisations…",
   "menu.settings": "Paramètres…",
   "menu.quit": "Quitter",
-  "link.signature_rejected": "Le serveur a refusé la signature de ce PC ({code}). Vérifiez la date et l'heure du PC ; si cela persiste, reliez à nouveau le PC."
+  "link.signature_rejected": "Le serveur a refusé la signature de ce PC ({code}). Vérifiez la date et l'heure du PC ; si cela persiste, reliez à nouveau le PC.",
+  "mode.title": "Où Nuxiva réfléchit",
+  "mode.server": "Serveur seul",
+  "mode.auto": "Automatique",
+  "mode.local": "Ce PC seulement",
+  "mode.hint": "Automatique utilise le serveur quand il est là et passe seul aux modèles de ce PC quand il manque. Ce PC seulement n'envoie rien au serveur.",
+  "mode.hardware": "Ce PC : {cores} cœurs, {ram} Go de RAM, {gpu}. Niveau conseillé : {tier}.",
+  "mode.no_gpu": "pas de GPU dédié",
+  "mode.model": "Modèle local conseillé (Ollama) : {model}",
+  "mode.model_choice": "Modèle local à utiliser (vide = automatique)",
+  "tier.minimal": "minimal",
+  "tier.light": "léger",
+  "tier.standard": "standard",
+  "tier.performance": "hautes performances",
+  "tier.workstation": "station de travail",
+  "pairing.standalone": "Utiliser sur ce PC seulement, sans serveur"
 }

@@ -99,7 +99,8 @@ class Interface:
     def open_settings(self) -> None:
         SettingsWindow(self.root, self.cfg, self.actions["autostart"](), self.actions["fingerprint"](),
                        {"permissions": self.open_permissions, "unpair": self.actions["unpair"],
-                        "saved": self.actions["settings_saved"]})
+                        "saved": self.actions["settings_saved"], "models": self.actions["models"],
+                        "hardware": self.actions["hardware"]})
 
     def open_permissions(self) -> None:
         PermissionsWindow(self.root, self.actions["policy"](), self.actions["permissions_changed"])

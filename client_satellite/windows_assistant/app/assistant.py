@@ -8,6 +8,9 @@ import keyboard
 
 from actions.executor import Executor
 from app.conversation import Conversation
+from autonomy import profile
+from autonomy.brain import LocalBrain
+from autonomy.router import Router
 from app.errors import errors
 from app.interface import Interface
 from app import tvwindow
@@ -47,15 +50,19 @@ class Assistant:
         self.snapshots = Snapshots()
         self.executor = self._executor()
         self.voice = Voice(self.client, cfg, self.policy, self.ui, self._security)
+        self.has_server = self.voice.has_server
+        self.ollama = OllamaProbe()
+        self.hardware = profile.detect()
+        self.brain = LocalBrain(self.ollama, cfg, profile.recommend(self.hardware))
+        self.router = Router(self.client, self.brain, cfg, self.has_server)
         self.conversation = Conversation(self.client, self.executor, self.gate, self.policy, self.focus, self.ui,
-                                         self.voice, self._environment)
+                                         self.voice, self._environment, self.router)
         self.conversation.on_unauthorized = lambda: self.ui.dispatch.post(self.unpair, True)
         self.conversation.on_security = self._security
         self.voice.busy = self.conversation.busy.locked
         self.voice.on_transcript = lambda text, lang: self.conversation.ask(text, lang, spoken=True)
         self.heartbeat = Heartbeat(self.client, self._report, self._on_reply,
                                    lambda: self.ui.dispatch.post(self.unpair, True), self._security)
-        self.ollama = OllamaProbe()
         self.compute = ComputeRelay(
             self.client, self.gate, self.policy, lambda: self.ollama.read()["available"], session_is_idle,
         )
@@ -77,6 +84,7 @@ class Assistant:
             "autostart": autostart.enabled, "fingerprint": lambda: tls.short(self.cfg["pin"]),
             "settings_saved": self._settings_saved, "unpair": self.unpair, "policy": lambda: self.policy,
             "permissions_changed": self._permissions_changed, "widgets": self.open_widgets,
+            "models": lambda: [m["name"] for m in self.ollama.read()["models"]], "hardware": lambda: self.hardware,
         }
 
     def _environment(self) -> dict:
@@ -165,9 +173,10 @@ class Assistant:
     def start(self) -> None:
         self.focus.start()
         self.voice.start()
-        self.heartbeat.start()
-        self.inbox.start()
-        self.compute.start()
+        if self.has_server:
+            self.heartbeat.start()
+            self.inbox.start()
+            self.compute.start()
         self.backup.start()
         self.updater.start()
         self._bind_hotkeys()

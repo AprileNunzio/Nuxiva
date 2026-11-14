@@ -4,6 +4,7 @@ from tkinter import filedialog
 import customtkinter as ctk
 
 from ui import theme
+from ui.mode_card import ModeCard
 
 BACKUP_HOURS = {"Ogni ora": 1, "Ogni 6 ore": 6, "Ogni giorno": 24, "Ogni settimana": 168}
 
@@ -28,6 +29,7 @@ class SettingsWindow:
             "headset": self._switch("Uso le cuffie", "Puoi interrompere NUXIVA parlandole sopra.", cfg["headset"]),
             "autostart": self._switch("Avvia con Windows", "NUXIVA parte da sola quando accendi il PC.", autostart),
         }
+        self.mode = ModeCard(body, cfg, actions["models"](), actions["hardware"]())
         self.hotkey = self._entry("Tasti rapidi per parlare", cfg["hotkey"])
         self._backup()
         row = ctk.CTkFrame(body, fg_color=theme.PANEL)
@@ -108,6 +110,6 @@ class SettingsWindow:
         self.cfg.update(voice=self.values["voice"].get(), headset=self.values["headset"].get(),
                         hotkey=self.hotkey.get().strip().lower() or "ctrl+alt+space",
                         backup_folders=self.sources, backup_target=self.target.get(),
-                        backup_hours=BACKUP_HOURS[self.every.get()])
+                        backup_hours=BACKUP_HOURS[self.every.get()], **self.mode.values())
         self.actions["saved"](self.values["autostart"].get())
         self.window.destroy()

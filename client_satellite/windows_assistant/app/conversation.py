@@ -28,7 +28,8 @@ WEBCAM_HINT = re.compile(r"\b(guardami|mi vedi|webcam|telecamera|come (?:sto|son
 
 class Conversation:
     def __init__(self, client: Client, executor: Executor, gate: Gate, policy: Policy, focus: Focus, ui, voice,
-                 environment) -> None:
+                 environment, backend=None) -> None:
+        self.backend = backend or client
         self.client, self.executor, self.gate, self.policy = client, executor, gate, policy
         self.focus, self.ui, self.voice, self.environment = focus, ui, voice, environment
         self.busy = threading.Lock()
@@ -62,7 +63,7 @@ class Conversation:
             request_id = uuid.uuid4().hex
             self._request_id = request_id
         try:
-            return self.client.assist({**body, "turn_id": request_id})
+            return self.backend.assist({**body, "turn_id": request_id})
         finally:
             with self._turn_lock:
                 self._request_id = None
