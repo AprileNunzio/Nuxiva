@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Rimossi gli aggiornamenti automatici Dependabot",
+    "en": "Removed automatic Dependabot updates",
+    "fr": "Mises à jour automatiques Dependabot supprimées",
+    "es": "Eliminadas las actualizaciones automáticas de Dependabot"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Tolta la configurazione Dependabot che apriva troppe richieste di aggiornamento dipendenze insieme.",
+      "en": "Removed the Dependabot configuration that opened too many dependency update requests at once.",
+      "fr": "Configuration Dependabot supprimée : elle ouvrait trop de demandes de mise à jour de dépendances à la fois.",
+      "es": "Eliminada la configuración de Dependabot que abría demasiadas solicitudes de actualización de dependencias a la vez."
+    }
+  ]
+}
