@@ -1,6 +1,7 @@
 mod candidates;
 mod privacy;
 mod ranking;
+mod rate;
 
 #[cfg(test)]
 mod tests;
@@ -10,3 +11,4 @@ pub use candidates::{
 };
 pub use privacy::{Level, PrivacyDetector, Verdict};
 pub use ranking::{RankError, cosine, retrieve};
+pub use rate::{ModelRate, Observed, RateRules, available};

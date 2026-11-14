@@ -1,6 +1,6 @@
 use nuxiva_llm_core::{
-    Candidate, CriticWeights, Group, PrivacyDetector, Verdict, best_index, cosine, group_models,
-    retrieve, round3, score, valid_text,
+    Candidate, CriticWeights, Group, ModelRate, Observed, PrivacyDetector, RateRules, Verdict,
+    best_index, cosine, group_models, retrieve, round3, score, valid_text,
 };
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
@@ -133,7 +133,69 @@ impl RustPrivacy {
     }
 }
 
+type RateState = (Option<i64>, Option<i64>, Option<i64>, f64, f64, bool);
+
+fn to_rate(state: RateState) -> ModelRate {
+    ModelRate {
+        remaining_requests: state.0,
+        request_limit: state.1,
+        remaining_tokens: state.2,
+        reset_at: state.3,
+        cooldown_until: state.4,
+        disabled: state.5,
+    }
+}
+
+#[pyclass(module = "nuxiva_native", frozen)]
+#[derive(Debug)]
+pub struct RustRateRules {
+    rules: RateRules,
+}
+
+#[pymethods]
+impl RustRateRules {
+    #[new]
+    fn new() -> PyResult<Self> {
+        RateRules::new()
+            .map(|rules| Self { rules })
+            .map_err(|error| PyValueError::new_err(error.to_string()))
+    }
+
+    #[allow(clippy::needless_pass_by_value)]
+    fn observe(
+        &self,
+        state: RateState,
+        headers: Vec<(String, String)>,
+        status: i64,
+        now: f64,
+    ) -> (&'static str, Option<RateState>) {
+        if headers.len() > MAX_MODELS || !now.is_finite() {
+            return ("defer", None);
+        }
+        match self.rules.observe(to_rate(state), &headers, status, now) {
+            Observed::Rate(rate) => (
+                "rate",
+                Some((
+                    rate.remaining_requests,
+                    rate.request_limit,
+                    rate.remaining_tokens,
+                    rate.reset_at,
+                    rate.cooldown_until,
+                    rate.disabled,
+                )),
+            ),
+            Observed::Defer => ("defer", None),
+        }
+    }
+
+    #[allow(clippy::unused_self)]
+    fn available(&self, state: RateState, estimated_tokens: i64, now: f64) -> bool {
+        nuxiva_llm_core::available(&to_rate(state), estimated_tokens, now)
+    }
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_class::<RustRateRules>()?;
     m.add_class::<RustPrivacy>()?;
     m.add_function(wrap_pyfunction!(llm_valid_text, m)?)?;
     m.add_function(wrap_pyfunction!(llm_score, m)?)?;

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Il limitatore dei modelli gratuiti ora gira in Rust",
+    "en": "The free model rate limiter now runs in Rust",
+    "fr": "Le limiteur des modèles gratuits tourne désormais en Rust",
+    "es": "El limitador de los modelos gratuitos ahora funciona en Rust"
+  },
+  "features": [
+    {
+      "it": "Il controllo che evita di sovraccaricare i modelli gratuiti, leggendo i limiti e le attese dichiarati dai servizi, usa un motore in Rust con gli stessi risultati di prima.",
+      "en": "The check that avoids overloading the free models, reading the limits and waits declared by the services, uses a Rust engine with the same results as before.",
+      "fr": "Le contrôle qui évite de surcharger les modèles gratuits, en lisant les limites et attentes déclarées par les services, utilise un moteur Rust avec les mêmes résultats qu'avant.",
+      "es": "La comprobación que evita sobrecargar los modelos gratuitos, leyendo los límites y esperas declarados por los servicios, usa un motor en Rust con los mismos resultados de antes."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Le attese indicate come data o con valori insoliti passano al metodo precedente, così nessun modello viene riattivato troppo presto.",
+      "en": "Waits given as a date or with unusual values go to the previous method, so no model is re-enabled too early.",
+      "fr": "Les attentes indiquées sous forme de date ou avec des valeurs inhabituelles passent à la méthode précédente, donc aucun modèle n'est réactivé trop tôt.",
+      "es": "Las esperas indicadas como fecha o con valores inusuales pasan al método anterior, así ningún modelo se reactiva demasiado pronto."
+    }
+  ]
+}

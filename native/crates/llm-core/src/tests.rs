@@ -127,3 +127,37 @@ fn privacy_levels() -> Check {
     assert_eq!(level("日本語", &[])?, Verdict::Defer);
     Ok(())
 }
+
+#[test]
+fn rate_observation_and_availability() -> Check {
+    use crate::{ModelRate, Observed, RateRules, available};
+    let rules = RateRules::new().map_err(|_| RankError::NotFinite)?;
+    let blank = ModelRate {
+        remaining_requests: None,
+        request_limit: None,
+        remaining_tokens: None,
+        reset_at: 0.0,
+        cooldown_until: 0.0,
+        disabled: false,
+    };
+    let headers = vec![
+        ("Retry-After".to_owned(), "30".to_owned()),
+        ("X-RateLimit-Remaining".to_owned(), "1".to_owned()),
+    ];
+    let Observed::Rate(limited) = rules.observe(blank, &headers, 429, 1000.0) else {
+        return Err(RankError::NotFinite);
+    };
+    assert!((limited.cooldown_until - 1030.0).abs() < f64::EPSILON);
+    assert!(!available(&limited, 0, 1010.0));
+    assert!(available(&limited, 0, 1031.0) || limited.remaining_requests == Some(1));
+    let dated = vec![(
+        "retry-after".to_owned(),
+        "Wed, 21 Oct 2026 07:28:00 GMT".to_owned(),
+    )];
+    assert_eq!(rules.observe(blank, &dated, 200, 1.0), Observed::Defer);
+    let Observed::Rate(banned) = rules.observe(blank, &[], 401, 1.0) else {
+        return Err(RankError::NotFinite);
+    };
+    assert!(banned.disabled);
+    Ok(())
+}

@@ -1,8 +1,11 @@
 import re
+import threading
 import time
 from dataclasses import dataclass
 from email.utils import parsedate_to_datetime
 from collections.abc import Mapping
+
+import native_core
 
 _DURATION = re.compile(r"^\s*(\d+(?:\.\d+)?)\s*([smhd]?)\s*$", re.I)
 
@@ -24,6 +27,25 @@ class ModelRate:
     disabled: bool = False
     ttft_ms: float = 0.0
     tokens_per_second: float = 0.0
+
+
+_native = None
+_lock = threading.Lock()
+
+
+def _engine():
+    global _native
+    if _native is None:
+        with _lock:
+            if _native is None:
+                factory = native_core.symbol("RustRateRules")
+                _native = factory() if factory is not None else False
+    return _native or None
+
+
+def _state(rate: "ModelRate") -> tuple:
+    return (rate.remaining_requests, rate.request_limit, rate.remaining_tokens, float(rate.reset_at),
+            float(rate.cooldown_until), bool(rate.disabled))
 
 
 class RateLimiter:
@@ -54,6 +76,23 @@ class RateLimiter:
 
     def observe(self, provider: str, model: str, headers: Mapping[str, str], status: int = 200, now: float | None = None) -> ModelRate:
         current = time.time() if now is None else now
+        engine = _engine()
+        if engine is None:
+            native_core.python_fallback("brain.rate_limiter")
+            return self._py_observe(provider, model, headers, status, current)
+        rate = self._rate(provider, model)
+        try:
+            pairs = [(str(key), str(value)) for key, value in headers.items()]
+            kind, state = engine.observe(_state(rate), pairs, int(status), float(current))
+        except (ValueError, TypeError, OverflowError):
+            return self._py_observe(provider, model, headers, status, current)
+        if kind != "rate":
+            return self._py_observe(provider, model, headers, status, current)
+        (rate.remaining_requests, rate.request_limit, rate.remaining_tokens, rate.reset_at, rate.cooldown_until,
+         rate.disabled) = state
+        return rate
+
+    def _py_observe(self, provider: str, model: str, headers: Mapping[str, str], status: int, current: float) -> ModelRate:
         normalized = {str(key).lower(): str(value).strip() for key, value in headers.items()}
         rate = self._rate(provider, model)
         for name, attr in (("x-ratelimit-remaining-requests", "remaining_requests"),
@@ -82,6 +121,16 @@ class RateLimiter:
     def available(self, provider: str, model: str, estimated_tokens: int = 0, now: float | None = None) -> bool:
         current = time.time() if now is None else now
         rate = self._rate(provider, model)
+        engine = _engine()
+        if engine is not None:
+            try:
+                return engine.available(_state(rate), int(estimated_tokens), float(current))
+            except (ValueError, TypeError, OverflowError):
+                pass
+        return self._py_available(rate, estimated_tokens, current)
+
+    @staticmethod
+    def _py_available(rate: ModelRate, estimated_tokens: int, current: float) -> bool:
         if rate.disabled or rate.cooldown_until > current:
             return False
         if rate.remaining_requests is not None and rate.remaining_requests <= 1 and rate.reset_at > current:
