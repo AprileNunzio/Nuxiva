@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Nuxiva inizia a parlare mentre sta ancora pensando",
+    "en": "Nuxiva starts speaking while still thinking",
+    "fr": "Nuxiva commence à parler pendant qu'elle réfléchit encore",
+    "es": "Nuxiva empieza a hablar mientras aún piensa"
+  },
+  "features": [
+    {
+      "it": "La risposta viene spezzata in frasi naturali appena arrivano le prime parole, senza tagliare numeri, date, sigle o abbreviazioni, così la voce parte subito invece di aspettare la risposta intera. Se la interrompi, quello che non è ancora stato detto viene scartato.",
+      "en": "The reply is split into natural phrases as soon as the first words arrive, without cutting numbers, dates, acronyms or abbreviations, so the voice starts right away instead of waiting for the whole answer. If you interrupt, whatever has not been said yet is discarded.",
+      "fr": "La réponse est découpée en phrases naturelles dès l'arrivée des premiers mots, sans couper les nombres, dates, sigles ou abréviations, si bien que la voix démarre tout de suite au lieu d'attendre la réponse entière. Si tu l'interromps, ce qui n'a pas encore été dit est écarté.",
+      "es": "La respuesta se divide en frases naturales en cuanto llegan las primeras palabras, sin cortar números, fechas, siglas ni abreviaturas, de modo que la voz arranca enseguida en lugar de esperar la respuesta entera. Si la interrumpes, lo que aún no se ha dicho se descarta."
+    }
+  ],
+  "fixes": []
+}

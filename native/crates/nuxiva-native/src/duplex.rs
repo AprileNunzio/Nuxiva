@@ -1,6 +1,8 @@
 use std::sync::{Mutex, PoisonError};
 
-use nuxiva_duplex_core::{Audio, Control, DuplexError, Session, Settings, Trigger};
+use nuxiva_duplex_core::{
+    Audio, ChunkSettings, Chunker, Control, DuplexError, Session, Settings, Trigger,
+};
 use nuxiva_taskq_core::CancelToken;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
@@ -136,7 +138,52 @@ impl RustDuplex {
     }
 }
 
+#[pyclass(module = "nuxiva_native")]
+#[derive(Debug)]
+pub struct RustChunker {
+    chunker: Mutex<Chunker>,
+}
+
+impl RustChunker {
+    fn with<T>(&self, f: impl FnOnce(&mut Chunker) -> T) -> T {
+        f(&mut self.chunker.lock().unwrap_or_else(PoisonError::into_inner))
+    }
+}
+
+#[pymethods]
+impl RustChunker {
+    #[new]
+    #[pyo3(signature = (settings_json=""))]
+    fn new(settings_json: &str) -> PyResult<Self> {
+        let settings = if settings_json.is_empty() {
+            ChunkSettings::default()
+        } else {
+            ChunkSettings::from_json(settings_json).map_err(fail)?
+        };
+        Ok(Self {
+            chunker: Mutex::new(Chunker::new(settings).map_err(fail)?),
+        })
+    }
+
+    fn push(&self, token: &str, now_ms: u64) -> Vec<String> {
+        self.with(|c| c.push(token, now_ms))
+    }
+
+    fn poll(&self, now_ms: u64) -> Vec<String> {
+        self.with(|c| c.poll(now_ms))
+    }
+
+    fn flush(&self, now_ms: u64) -> Vec<String> {
+        self.with(|c| c.flush(now_ms))
+    }
+
+    fn reset(&self) {
+        self.with(Chunker::reset);
+    }
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustDuplex>()?;
-    m.add_class::<RustCancelFlag>()
+    m.add_class::<RustCancelFlag>()?;
+    m.add_class::<RustChunker>()
 }
