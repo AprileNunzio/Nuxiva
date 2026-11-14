@@ -1,6 +1,6 @@
 use nuxiva_llm_core::{
-    Candidate, CriticWeights, Group, best_index, cosine, group_models, retrieve, round3, score,
-    valid_text,
+    Candidate, CriticWeights, Group, PrivacyDetector, Verdict, best_index, cosine, group_models,
+    retrieve, round3, score, valid_text,
 };
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
@@ -99,7 +99,42 @@ fn llm_cosine(left: Vec<f64>, right: Vec<f64>) -> PyResult<f64> {
     cosine(&left, &right).map_err(|error| rank_error(&error))
 }
 
+#[pyclass(module = "nuxiva_native", frozen)]
+#[derive(Debug)]
+pub struct RustPrivacy {
+    detector: PrivacyDetector,
+}
+
+#[pymethods]
+impl RustPrivacy {
+    #[new]
+    fn new() -> PyResult<Self> {
+        PrivacyDetector::new()
+            .map(|detector| Self { detector })
+            .map_err(|error| PyValueError::new_err(error.to_string()))
+    }
+
+    #[allow(clippy::needless_pass_by_value)]
+    fn classify_all(
+        &self,
+        py: Python<'_>,
+        texts: Vec<String>,
+        names: Vec<String>,
+    ) -> PyResult<(&'static str, &'static str)> {
+        if texts.len() > MAX_CANDIDATES {
+            return Ok(("defer", ""));
+        }
+        py.detach(|| self.detector.classify_all(&texts, &names))
+            .map(|verdict| match verdict {
+                Verdict::Level(level) => ("level", level.name()),
+                Verdict::Defer => ("defer", ""),
+            })
+            .map_err(|error| PyValueError::new_err(error.to_string()))
+    }
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_class::<RustPrivacy>()?;
     m.add_function(wrap_pyfunction!(llm_valid_text, m)?)?;
     m.add_function(wrap_pyfunction!(llm_score, m)?)?;
     m.add_function(wrap_pyfunction!(llm_best_index, m)?)?;

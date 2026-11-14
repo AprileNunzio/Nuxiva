@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Il rilevamento dei dati riservati nelle conversazioni ora gira in Rust",
+    "en": "Detection of private data in conversations now runs in Rust",
+    "fr": "La détection des données privées dans les conversations tourne désormais en Rust",
+    "es": "La detección de datos privados en las conversaciones ahora funciona en Rust"
+  },
+  "features": [
+    {
+      "it": "Il controllo che decide se una frase contiene dati personali o sensibili, come carte, IBAN, contatti o temi di salute, usa un motore in Rust con gli stessi risultati di prima.",
+      "en": "The check that decides whether a sentence holds personal or sensitive data, such as cards, IBANs, contacts or health topics, uses a Rust engine with the same results as before.",
+      "fr": "Le contrôle qui décide si une phrase contient des données personnelles ou sensibles, comme cartes, IBAN, contacts ou sujets de santé, utilise un moteur Rust avec les mêmes résultats qu'avant.",
+      "es": "La comprobación que decide si una frase contiene datos personales o sensibles, como tarjetas, IBAN, contactos o temas de salud, usa un motor en Rust con los mismos resultados de antes."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Testi con caratteri insoliti passano al controllo precedente, così il livello di riservatezza non può mai risultare più basso.",
+      "en": "Texts with unusual characters go to the previous check, so the privacy level can never come out lower.",
+      "fr": "Les textes avec des caractères inhabituels passent au contrôle précédent, donc le niveau de confidentialité ne peut jamais être plus bas.",
+      "es": "Los textos con caracteres inusuales pasan a la comprobación anterior, así que el nivel de privacidad nunca puede salir más bajo."
+    }
+  ]
+}

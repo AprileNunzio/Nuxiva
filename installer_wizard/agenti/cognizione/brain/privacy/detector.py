@@ -1,5 +1,8 @@
 import re
+import threading
 from typing import Iterable
+
+import native_core
 
 from agenti.brain.privacy.levels import PERSONAL, PUBLIC, SENSITIVE, strictest
 
@@ -52,6 +55,34 @@ def classify(text: object, names: Iterable[str] = ()) -> str:
     return PUBLIC
 
 
-def classify_all(texts: Iterable[object], names: Iterable[str] = ()) -> str:
+_native = None
+_lock = threading.Lock()
+
+
+def _engine():
+    global _native
+    if _native is None:
+        with _lock:
+            if _native is None:
+                factory = native_core.symbol("RustPrivacy")
+                _native = factory() if factory is not None else False
+    return _native or None
+
+
+def _py_classify_all(texts: Iterable[object], names: Iterable[str] = ()) -> str:
     known = tuple(names)
     return strictest(*(classify(text, known) for text in texts))
+
+
+def classify_all(texts: Iterable[object], names: Iterable[str] = ()) -> str:
+    items = tuple(texts)
+    known = tuple(names)
+    engine = _engine()
+    if engine is None:
+        native_core.python_fallback("brain.privacy")
+        return _py_classify_all(items, known)
+    try:
+        kind, level = engine.classify_all([str(text or "") for text in items], [str(name) for name in known])
+    except ValueError:
+        return _py_classify_all(items, known)
+    return _py_classify_all(items, known) if kind == "defer" else level

@@ -10,3 +10,4 @@ publish.workspace = true
 workspace = true
 
 [dependencies]
+regex = "1"

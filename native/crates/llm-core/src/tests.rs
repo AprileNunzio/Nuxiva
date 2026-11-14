@@ -89,3 +89,41 @@ fn retrieval_keeps_core_agents_and_top_k() -> Check {
     assert_eq!(names, ["laws", "mid", "near"]);
     Ok(())
 }
+
+#[test]
+fn privacy_levels() -> Check {
+    use crate::{Level, PrivacyDetector, Verdict};
+    let detector = PrivacyDetector::new()?;
+    let level = |text: &str, names: &[&str]| {
+        let owned = [text.to_owned()];
+        let people: Vec<String> = names.iter().map(|name| (*name).to_owned()).collect();
+        detector.classify_all(&owned, &people)
+    };
+    assert_eq!(level("ciao a tutti", &[])?, Verdict::Level(Level::Public));
+    assert_eq!(
+        level("la mia password è questa", &[])?,
+        Verdict::Level(Level::Sensitive)
+    );
+    assert_eq!(
+        level("carta 4111 1111 1111 1111", &[])?,
+        Verdict::Level(Level::Sensitive)
+    );
+    assert_eq!(
+        level("carta 4111 1111 1111 1112", &[])?,
+        Verdict::Level(Level::Public)
+    );
+    assert_eq!(
+        level("scrivi a mario.rossi@example.com", &[])?,
+        Verdict::Level(Level::Personal)
+    );
+    assert_eq!(
+        level("chiama il 333 1234567", &[])?,
+        Verdict::Level(Level::Personal)
+    );
+    assert_eq!(
+        level("ha chiamato giulia", &["giulia"])?,
+        Verdict::Level(Level::Personal)
+    );
+    assert_eq!(level("日本語", &[])?, Verdict::Defer);
+    Ok(())
+}

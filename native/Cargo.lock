@@ -1949,6 +1949,9 @@ dependencies = [
 [[package]]
 name = "nuxiva-llm-core"
 version = "5.8.0"
+dependencies = [
+ "regex",
+]
 
 [[package]]
 name = "nuxiva-loop-core"
