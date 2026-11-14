@@ -120,9 +120,7 @@ private fun CodeForm(model: AppViewModel) {
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
         )
-        Button(onClick = { model.offerCode(server, code); code = "" }, enabled = server.isNotBlank() && code.length == CODE_LIMIT) {
-            Text(stringResource(R.string.enroll_continue))
-        }
+        PrimaryAction(stringResource(R.string.enroll_continue), { model.offerCode(server, code); code = "" }, enabled = server.isNotBlank() && code.length == CODE_LIMIT)
     }
 }
 

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "App Android: codice a 6 cifre con la nuova grafica",
+    "en": "Android app: 6-digit code with the new look",
+    "fr": "Application Android : code à 6 chiffres avec le nouveau style",
+    "es": "Aplicación Android: código de 6 cifras con el nuevo estilo"
+  },
+  "features": [
+    {
+      "it": "L'abbinamento con codice a 6 cifre usa lo stesso pulsante luminoso delle altre schermate dell'app.",
+      "en": "Pairing with the 6-digit code uses the same luminous button as the other app screens.",
+      "fr": "L'appairage avec le code à 6 chiffres utilise le même bouton lumineux que les autres écrans de l'application.",
+      "es": "El emparejamiento con el código de 6 cifras usa el mismo botón luminoso que las demás pantallas de la aplicación."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Evitato un errore di compilazione dell'app Android dopo l'unione dell'abbinamento a 6 cifre con la nuova grafica.",
+      "en": "Avoided an Android app build error after merging the 6-digit pairing with the new look.",
+      "fr": "Évité une erreur de compilation de l'application Android après la fusion de l'appairage à 6 chiffres avec le nouveau style.",
+      "es": "Evitado un error de compilación de la aplicación Android tras unir el emparejamiento de 6 cifras con el nuevo estilo."
+    }
+  ]
+}
