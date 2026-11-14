@@ -47,7 +47,7 @@
     hero.innerHTML = `<span class="ws-icon">${ctx.icon(inst.simple.icon)}</span>`
       + `<span class="ws-text"><span class="ws-title">${ctx.esc(title)}</span>`
       + `${line.text ? `<span class="ws-say${line.tone ? ` say-${line.tone}` : ""}">${ctx.esc(line.text)}</span>` : ""}</span>`
-      + `${collapsible ? `<span class="ws-more">${ctx.esc(expanded ? less : more)}${ctx.icon("chevron")}</span>` : ""}`;
+      + `${collapsible ? `<span class="ws-more" aria-label="${ctx.esc(expanded ? less : more)}" title="${ctx.esc(expanded ? less : more)}"><span class="ws-more-label">${ctx.esc(expanded ? less : more)}</span>${ctx.icon("chevron")}</span>` : ""}`;
     if (collapsible) {
       hero.setAttribute("aria-expanded", expanded ? "true" : "false");
       hero.onclick = () => {

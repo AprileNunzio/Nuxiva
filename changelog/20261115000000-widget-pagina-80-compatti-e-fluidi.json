@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Widget della pagina 80 compatti, eleganti e fluidi",
+    "en": "Compact, elegant and fluid page 80 widgets",
+    "fr": "Widgets de la page 80 compacts, élégants et fluides",
+    "es": "Widgets de la página 80 compactos, elegantes y fluidos"
+  },
+  "features": [
+    {
+      "it": "I widget si adattano alla loro larghezza: testi proporzionati su qualsiasi schermo, mai spezzati a metà parola, icone morbide e colori a semaforo chiari anche per un bambino.",
+      "en": "Widgets adapt to their own width: proportioned text on any screen, never broken mid-word, soft icons and traffic-light colours a child can read.",
+      "fr": "Les widgets s'adaptent à leur largeur : textes proportionnés sur tout écran, jamais coupés au milieu d'un mot, icônes douces et couleurs de feu tricolore lisibles même par un enfant.",
+      "es": "Los widgets se adaptan a su ancho: textos proporcionados en cualquier pantalla, nunca cortados a mitad de palabra, iconos suaves y colores de semáforo claros hasta para un niño."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto il testo gigante e spezzato («Guard/o come stai») nei widget della pagina 80.",
+      "en": "Fixed the giant, broken text (\"Guard/o come stai\") in page 80 widgets.",
+      "fr": "Correction du texte géant et coupé (« Guard/o come stai ») dans les widgets de la page 80.",
+      "es": "Corregido el texto gigante y cortado («Guard/o come stai») en los widgets de la página 80."
+    }
+  ]
+}

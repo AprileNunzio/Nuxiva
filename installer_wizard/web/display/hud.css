@@ -21,22 +21,22 @@
 .wk-chip.ok { color: var(--green); }
 
 .wk-hero { display: flex; align-items: flex-end; gap: 12px; }
-.wk-num { font-size: 46px; font-weight: 200; line-height: 0.9; letter-spacing: -0.04em; color: var(--hud-text); font-variant-numeric: tabular-nums; }
+.wk-num { font-size: var(--wg-fs-hero); font-weight: 200; line-height: 0.9; letter-spacing: -0.04em; color: var(--hud-text); font-variant-numeric: tabular-nums; }
 .wk-num small, .wk-num sup { font-size: 0.42em; font-weight: 300; letter-spacing: 0; color: var(--text-dim); }
 .wk-num sup { vertical-align: top; }
-.wk-num.sm { font-size: 30px; }
-.wk-big { font-size: 40px; color: var(--hud-text); opacity: 0.9; line-height: 1; }
+.wk-num.sm { font-size: var(--wg-fs-value); }
+.wk-big { font-size: var(--wg-fs-hero); color: var(--hud-text); opacity: 0.9; line-height: 1; }
 .wk-big .wk-svg { stroke-width: 1.2; }
-.wk-sub { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
-.wk-text { font-size: 13.5px; line-height: 1.55; color: var(--text); }
-.wk-title { font-size: 15px; font-weight: 500; color: var(--hud-text); line-height: 1.35; }
+.wk-sub { font-size: var(--wg-fs-label); color: var(--text-dim); line-height: 1.5; }
+.wk-text { font-size: var(--wg-fs-body); line-height: 1.55; color: var(--text); }
+.wk-title { font-size: var(--wg-fs-value); font-weight: 500; color: var(--hud-text); line-height: 1.35; }
 .wk-faint, .wk-kv dd.wk-faint { color: var(--text-faint); }
 .wk-accent, .wk-kv dd.wk-accent { color: rgb(var(--tone)); }
 .wk-mono { font-family: var(--mono); }
 
 .wk-kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0; font-size: 12.5px; }
 .wk-kv dt { font: 500 9.5px/1.9 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-faint); }
-.wk-kv dd { margin: 0; text-align: right; color: var(--text); font-variant-numeric: tabular-nums; min-width: 0; overflow-wrap: anywhere; }
+.wk-kv dd { margin: 0; text-align: right; color: var(--text); font-variant-numeric: tabular-nums; min-width: 0; overflow-wrap: break-word; }
 .wk-kv dd.mono { font-family: var(--mono); color: var(--hud-text); }
 
 .wk-list { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
