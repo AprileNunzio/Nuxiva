@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Assistente Windows autonomo: voce locale offline",
+    "en": "Autonomous Windows assistant: offline local voice",
+    "fr": "Assistant Windows autonome : voix locale hors ligne",
+    "es": "Asistente de Windows autónomo: voz local sin conexión"
+  },
+  "features": [
+    {
+      "it": "L'assistente Windows ora ascolta e parla anche senza server: riconosce il suo nome o quello che hai scelto, trascrive sul PC e risponde con la voce di Windows. Se il server c'è lo usa, altrimenti passa da solo al locale.",
+      "en": "The Windows assistant now listens and speaks even without the server: it recognises its name or the one you chose, transcribes on the PC and answers with the Windows voice. It uses the server when present and switches to local on its own otherwise.",
+      "fr": "L'assistant Windows écoute et parle désormais sans serveur : il reconnaît son nom ou celui que tu as choisi, transcrit sur le PC et répond avec la voix de Windows. Il utilise le serveur s'il est là, sinon il passe seul en local.",
+      "es": "El asistente de Windows ahora escucha y habla también sin servidor: reconoce su nombre o el que elegiste, transcribe en el PC y responde con la voz de Windows. Usa el servidor si está y, si no, pasa solo al modo local."
+    },
+    {
+      "it": "Nuxiva sceglie da sola il riconoscimento adatto alla potenza del PC, dal più leggero al più potente, e usa Whisper se è presente.",
+      "en": "Nuxiva picks the recognition model that fits the PC's power on its own, from the lightest to the strongest, and uses Whisper when it is present.",
+      "fr": "Nuxiva choisit seule le modèle de reconnaissance adapté à la puissance du PC, du plus léger au plus puissant, et utilise Whisper s'il est présent.",
+      "es": "Nuxiva elige sola el reconocimiento adecuado a la potencia del PC, del más ligero al más potente, y usa Whisper si está presente."
+    }
+  ],
+  "fixes": []
+}
