@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Test di ripresa della coda compiti reso stabile",
+    "en": "Task queue resume test made stable",
+    "fr": "Test de reprise de la file de tâches rendu stable",
+    "es": "Prueba de reanudación de la cola de tareas estabilizada"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Il test di ripresa della coda dei compiti non fallisce più per scadenze troppo strette quando la macchina è sotto carico.",
+      "en": "The task queue resume test no longer fails because of overly tight deadlines when the machine is under load.",
+      "fr": "Le test de reprise de la file de tâches n'échoue plus à cause d'échéances trop serrées quand la machine est chargée.",
+      "es": "La prueba de reanudación de la cola de tareas ya no falla por plazos demasiado ajustados cuando la máquina está cargada."
+    }
+  ]
+}

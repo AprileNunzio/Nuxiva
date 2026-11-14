@@ -339,10 +339,12 @@ fn resumes_after_crash_without_losing_tasks() {
         )
         .expect("e1");
         for i in 0..20 {
-            e.submit(spec(&format!("t{i}"), Class::Background, 1))
-                .expect("submit");
+            let mut task = spec(&format!("t{i}"), Class::Background, 1);
+            task.budget.wall_ms = 600_000;
+            e.submit(task).expect("submit");
         }
         let mut high = spec("risky", Class::Maintenance, 1);
+        high.budget.wall_ms = 600_000;
         high.risk_max = Risk::High;
         e.submit(high).expect("risky");
         wait_state(&e, "risky", TaskState::Running);
