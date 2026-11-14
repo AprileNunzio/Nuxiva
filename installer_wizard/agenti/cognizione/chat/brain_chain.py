@@ -4,6 +4,7 @@ from dataclasses import replace
 from itertools import groupby
 from typing import Any, Awaitable, Callable, Dict, List, Optional
 
+import native_core
 from state import store
 from tasks import background
 
@@ -38,9 +39,22 @@ def _scanner():
     return engine_scanner
 
 
-def valid(candidate: Dict[str, Any]) -> bool:
-    text = str(candidate.get("text") or "").strip()
+def _py_valid(text: str) -> bool:
+    text = text.strip()
     return bool(text) and not text.lower().startswith("errore")
+
+
+def _exotic(text: str) -> bool:
+    return any("\x1c" <= char <= "\x1f" for char in text)
+
+
+def valid(candidate: Dict[str, Any]) -> bool:
+    text = str(candidate.get("text") or "")
+    native = native_core.symbol("llm_valid_text")
+    if native is None:
+        native_core.python_fallback("llm.brain_chain")
+        return _py_valid(text)
+    return _py_valid(text) if _exotic(text) else native(text)
 
 
 class CorticalBrainChain:
@@ -74,6 +88,12 @@ class CorticalBrainChain:
             return confidence
         critic = await critic_fn(candidate, self.limbic)
         candidate["critic"] = round(float(critic), 3)
+        native = native_core.symbol("llm_score")
+        if native is not None:
+            try:
+                return native(confidence, float(critic), CONFIDENCE_WEIGHT, CRITIC_WEIGHT)
+            except ValueError:
+                pass
         return confidence * CONFIDENCE_WEIGHT + float(critic) * CRITIC_WEIGHT
 
     async def _sequential(self, query: str, context: Dict[str, Any], generators: List[Generator],
@@ -193,6 +213,16 @@ async def _run_candidate(candidate_type: str, item: Any, query: str, device: str
 
 
 def _candidates(models: List[str]) -> List[tuple]:
+    native = native_core.symbol("llm_group_models")
+    if native is not None:
+        try:
+            return [(kind, names[0] if kind == "cloud" else names) for kind, names in native([(m, bool(is_cloud(m))) for m in models])]
+        except ValueError:
+            pass
+    return _py_candidates(models)
+
+
+def _py_candidates(models: List[str]) -> List[tuple]:
     out = []
     for cloud, group in groupby(models, key=is_cloud):
         names = list(group)

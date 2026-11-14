@@ -1,11 +1,17 @@
 import math
+
 import httpx
+
+import native_core
 
 from config import ollama_url
 from agenti.team import roster
 
 import json
 from config import STATE_DIR
+
+CORE_AGENTS = frozenset({"laws", "home_assistant", "mind", "understanding", "team", "capabilities"})
+
 
 class ToolRouter:
     def __init__(self) -> None:
@@ -47,6 +53,15 @@ class ToolRouter:
         return []
 
     def cosine_similarity(self, v1: list[float], v2: list[float]) -> float:
+        native = native_core.symbol("llm_cosine")
+        if native is not None:
+            try:
+                return native(v1, v2)
+            except (ValueError, TypeError, OverflowError):
+                pass
+        return self._py_cosine(v1, v2)
+
+    def _py_cosine(self, v1: list[float], v2: list[float]) -> float:
         if not v1 or not v2:
             return 0.0
         dot_product = sum(a * b for a, b in zip(v1, v2))
@@ -79,17 +94,20 @@ class ToolRouter:
         if not prompt_emb:
             return set(roster.ids())  # Fallback to all agents if embedding fails
             
+        native = native_core.symbol("llm_retrieve")
+        if native is not None:
+            try:
+                return set(native(prompt_emb, list(self.embeddings_cache.items()), top_k, sorted(CORE_AGENTS)))
+            except (ValueError, TypeError, OverflowError):
+                pass
+        return self._py_retrieve(prompt_emb, top_k)
+
+    def _py_retrieve(self, prompt_emb: list[float], top_k: int) -> set[str]:
         scores = []
         for agent_id, agent_emb in self.embeddings_cache.items():
-            score = self.cosine_similarity(prompt_emb, agent_emb)
-            scores.append((score, agent_id))
-            
+            scores.append((self._py_cosine(prompt_emb, agent_emb), agent_id))
         scores.sort(key=lambda x: x[0], reverse=True)
-        
-        # Core agents that should always be present
-        core_agents = {"laws", "home_assistant", "mind", "understanding", "team", "capabilities"}
         retrieved = set(agent_id for _, agent_id in scores[:top_k])
-        
-        return core_agents.union(retrieved)
+        return set(CORE_AGENTS).union(retrieved)
 
 tool_router = ToolRouter()

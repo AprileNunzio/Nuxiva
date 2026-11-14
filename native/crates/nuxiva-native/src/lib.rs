@@ -46,6 +46,7 @@ mod initiative;
 mod jev;
 mod language;
 mod learner;
+mod llm;
 mod lyrics;
 mod mastery;
 mod matter;
@@ -172,6 +173,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     face::register(m)?;
     face_look::register(m)?;
     chat::register(m)?;
+    llm::register(m)?;
     dialog::register(m)?;
     dialogue::register(m)?;
     transcript::register(m)?;

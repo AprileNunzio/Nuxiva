@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "La scelta delle risposte e degli agenti ora gira in Rust",
+    "en": "Answer selection and agent ranking now run in Rust",
+    "fr": "Le choix des réponses et des agents tourne désormais en Rust",
+    "es": "La elección de respuestas y agentes ahora funciona en Rust"
+  },
+  "features": [
+    {
+      "it": "Il controllo delle risposte dei modelli, il punteggio e la scelta degli agenti più adatti usano un motore in Rust, più rapido e con gli stessi risultati di prima.",
+      "en": "Checking model answers, scoring them and picking the most suitable agents use a Rust engine, faster and with the same results as before.",
+      "fr": "La vérification des réponses des modèles, leur notation et le choix des agents les plus adaptés utilisent un moteur Rust, plus rapide et avec les mêmes résultats qu'avant.",
+      "es": "La comprobación de las respuestas de los modelos, su puntuación y la elección de los agentes más adecuados usan un motor en Rust, más rápido y con los mismos resultados de antes."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Valori non numerici nei confronti tra agenti non possono più alterare la classifica: si passa al metodo precedente.",
+      "en": "Non-numeric values in agent comparisons can no longer distort the ranking: the previous method takes over.",
+      "fr": "Les valeurs non numériques dans les comparaisons d'agents ne peuvent plus fausser le classement : la méthode précédente prend le relais.",
+      "es": "Los valores no numéricos en las comparaciones de agentes ya no pueden alterar la clasificación: se usa el método anterior."
+    }
+  ]
+}
