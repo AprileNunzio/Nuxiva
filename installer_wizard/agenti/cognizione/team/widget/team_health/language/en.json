@@ -15,6 +15,7 @@
     "alert_engine_unavailable": "Multi-agent engine unavailable",
     "alert_decision_drift": "Decisions differ from the CEO",
     "alert_engine_errors": "The engine reported errors",
-    "alert_memory_cold": "Hot memory not loaded yet"
+    "alert_memory_cold": "Hot memory not loaded yet",
+    "simple_title": "How the team is doing"
   }
 }

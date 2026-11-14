@@ -15,6 +15,7 @@
     "alert_engine_unavailable": "Motore multi-agente non disponibile",
     "alert_decision_drift": "Le decisioni si discostano dal CEO",
     "alert_engine_errors": "Il motore ha segnalato errori",
-    "alert_memory_cold": "Memoria calda non ancora caricata"
+    "alert_memory_cold": "Memoria calda non ancora caricata",
+    "simple_title": "Come sta la squadra"
   }
 }

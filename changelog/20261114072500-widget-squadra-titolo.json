@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Widget «Salute della squadra»: titolo semplice nelle 4 lingue",
+    "en": "\"Team health\" widget: simple title in 4 languages",
+    "fr": "Widget « Santé de l'équipe » : titre simple en 4 langues",
+    "es": "Widget «Salud del equipo»: título sencillo en 4 idiomas"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Il widget «Salute della squadra» ora ha il titolo semplice in italiano, inglese, francese e spagnolo, come richiesto dai controlli dei widget.",
+      "en": "The \"Team health\" widget now has its simple title in Italian, English, French and Spanish, as the widget checks require.",
+      "fr": "Le widget « Santé de l'équipe » a maintenant son titre simple en italien, anglais, français et espagnol, comme l'exigent les contrôles des widgets.",
+      "es": "El widget «Salud del equipo» ya tiene su título sencillo en italiano, inglés, francés y español, como exigen las comprobaciones de los widgets."
+    }
+  ]
+}
