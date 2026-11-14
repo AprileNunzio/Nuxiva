@@ -36,6 +36,7 @@ mod forma;
 mod gait_core;
 mod gesture;
 mod governors;
+mod graph;
 mod guard;
 mod home_rules;
 mod initiative;
@@ -157,6 +158,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     ear::register(m)?;
     sensory::register(m)?;
     capture::register(m)?;
+    graph::register(m)?;
     ear_array::register(m)?;
     ear_music::register(m)?;
     lyrics::register(m)?;

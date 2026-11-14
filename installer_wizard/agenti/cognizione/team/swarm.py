@@ -1,3 +1,4 @@
+import atexit
 import hashlib
 import itertools
 import json
@@ -7,6 +8,7 @@ import threading
 import time
 
 from agenti.team import routing
+from agenti.team.shadow_store import ShadowStore, default_store
 from agenti.team.board import board
 
 log = logging.getLogger("nuxiva.team.swarm")
@@ -47,7 +49,9 @@ def _dump(value) -> str:
 
 
 class Swarm:
-    def __init__(self) -> None:
+    def __init__(self, store: ShadowStore | None = None) -> None:
+        self.store = store
+        self.last_plan: dict | None = None
         self._lock = threading.Lock()
         self._factory = _factory()
         self._key = ""
@@ -56,7 +60,7 @@ class Swarm:
         self._learned_key: object = None
         self._pressure = 0
         self._handlers: dict = {}
-        self.stats = {"compared": 0, "matched": 0, "mismatched": 0, "errors": 0}
+        self.stats = dict(store.totals) if store is not None else {"compared": 0, "matched": 0, "mismatched": 0, "errors": 0}
 
     @property
     def available(self) -> bool:
@@ -121,7 +125,7 @@ class Swarm:
             self._sync_learned(engine, learned, version)
             return json.loads(engine.admit(text, self._meta(graph_ref=graph_ref), int(time.time() * 1000)))
         except (ValueError, RuntimeError) as exc:
-            self.stats["errors"] += 1
+            self._error()
             log.warning("ammissione dello sciame fallita: %s", exc)
             return None
 
@@ -140,6 +144,8 @@ class Swarm:
         )
         self.stats["compared"] += 1
         self.stats["matched" if same else "mismatched"] += 1
+        if self.store is not None:
+            self.store.record(same)
         if not same:
             log.warning(
                 "sciame e CEO divergono: sciame %s/%s, CEO %s/%s",
@@ -154,12 +160,18 @@ class Swarm:
         try:
             report = json.loads(engine.execute(_dump(reply["task"]), _dump(reply["plan"]), int(now_ms if now_ms is not None else time.time() * 1000)))
         except (ValueError, RuntimeError) as exc:
-            self.stats["errors"] += 1
+            self._error()
             log.warning("esecuzione dello sciame fallita: %s", exc)
             return None
+        self.last_plan = {"at": int(time.time() * 1000), "task": reply.get("task"), "plan": reply.get("plan"), "report": report}
         for step in report["steps"]:
             board.post("swarm", "tutti", f"passo {step['step']}: {step['outcome']}", "esito")
         return report
+
+    def _error(self) -> None:
+        self.stats["errors"] += 1
+        if self.store is not None:
+            self.store.record(error=True)
 
     def apply_pressure(self, rank: int) -> None:
         self._pressure = max(0, min(3, int(rank)))
@@ -177,4 +189,5 @@ class Swarm:
             engine.cancel()
 
 
-swarm = Swarm()
+swarm = Swarm(default_store())
+atexit.register(swarm.store.flush)

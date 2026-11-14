@@ -1684,6 +1684,7 @@ dependencies = [
  "nuxiva-forma-core",
  "nuxiva-gait-core",
  "nuxiva-gesture-core",
+ "nuxiva-graph-core",
  "nuxiva-guard-core",
  "nuxiva-initiative-core",
  "nuxiva-langid",

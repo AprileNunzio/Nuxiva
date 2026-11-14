@@ -8,7 +8,9 @@ import { AgentDetail } from './components/AgentDetail';
 import { AgentList, isOperative } from './components/AgentList';
 import { CreateAgentDialog } from './components/CreateAgentDialog';
 import { CreateKind, TeamHeader } from './components/TeamHeader';
+import { GraphPanel } from './components/GraphPanel';
 import { MemoryPanel } from './components/MemoryPanel';
+import { useGraph } from './hooks/useGraph';
 import { useObservability } from './hooks/useObservability';
 import { ExpertsSection } from './experts/ExpertsSection';
 import { panelClass, useAgentsI18n } from './scope';
@@ -18,6 +20,7 @@ export const View: React.FC = () => {
   const handle = useTeam();
   const { team } = handle;
   const observability = useObservability();
+  const graph = useGraph();
   const [selected, setSelected] = useState<string | null>(null);
   const [creating, setCreating] = useState<CreateKind | null>(null);
   const toolCount = useMemo(() => {
@@ -53,6 +56,7 @@ export const View: React.FC = () => {
         onAutonomy={(enabled) => void handle.run('autonomy', () => setAgentMode('forge', enabled ? '1' : '0'), 'team_mode_failed')}
       />
       {observability && <MemoryPanel data={observability} />}
+      {graph && <GraphPanel data={graph} />}
       <div className="grid gap-4 lg:grid-cols-[20rem_minmax(0,1fr)] 3xl:grid-cols-[22rem_minmax(0,1fr)_26rem]">
         <aside className={panelClass} aria-label={t('team_list')}>
           <AgentList agents={members} selected={agent?.id ?? null} toolCount={toolCount} onSelect={setSelected} />

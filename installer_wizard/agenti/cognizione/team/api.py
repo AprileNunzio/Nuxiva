@@ -1,8 +1,11 @@
+import asyncio
+
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from access import require_admin
 from agenti.agent import registry as tools
-from agenti.team import observability, roster
+from agenti.team import graph_view, observability, roster
+from agenti.team.graph import graph as project_graph
 from agenti.team.board import board
 from agenti.team.control import control
 from state import store
@@ -57,6 +60,16 @@ def _overview() -> dict:
 @admin_routes.get("/api/team/observability")
 async def team_observability(_: str = Depends(require_admin)):
     return observability.snapshot()
+
+
+@admin_routes.get("/api/team/graph")
+async def team_graph(_: str = Depends(require_admin)):
+    return await asyncio.to_thread(graph_view.snapshot)
+
+
+@admin_routes.get("/api/team/graph/explore")
+async def team_graph_explore(mode: str = "neighbors", target: str = "", depth: int = 2, other: str = "", _: str = Depends(require_admin)):
+    return await asyncio.to_thread(project_graph.explore, "pannello", mode, target, depth, other)
 
 
 @admin_routes.get("/api/team")

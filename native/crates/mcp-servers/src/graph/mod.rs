@@ -1,3 +1,4 @@
+mod dir;
 mod spec;
 
 use std::sync::{Arc, Mutex, PoisonError};
@@ -7,6 +8,8 @@ use serde_json::{Map, Value};
 
 use nuxiva_graph_core::{Cache, FileSource, Graph, GraphError, GraphSettings};
 use nuxiva_mcp_core::{Implementation, McpError, McpResult, ToolOutput, ToolServer};
+
+pub use dir::DirSource;
 
 const MAX_TARGET: usize = 512;
 

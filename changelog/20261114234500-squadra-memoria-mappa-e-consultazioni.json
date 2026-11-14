@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Squadra e memoria: mappa del progetto, piano e consultazioni",
+    "en": "Team and memory: project map, plan and consultations",
+    "fr": "Équipe et mémoire : carte du projet, plan et consultations",
+    "es": "Equipo y memoria: mapa del proyecto, plan y consultas"
+  },
+  "features": [
+    {
+      "it": "Il pannello Squadra e memoria mostra ora la mappa del progetto (file, funzioni, collegamenti), il piano in corso, un'area per esplorarla (cosa è collegato, cosa dipende da cosa, cerca, percorso più breve) e il registro di chi ha consultato cosa.",
+      "en": "The Team and memory panel now shows the project map (files, functions, links), the current plan, an area to explore it (what is connected, what depends on what, search, shortest path) and the log of who consulted what.",
+      "fr": "Le panneau Équipe et mémoire affiche désormais la carte du projet (fichiers, fonctions, liens), le plan en cours, une zone pour l'explorer (ce qui est lié, ce qui dépend de quoi, recherche, chemin le plus court) et le journal de qui a consulté quoi.",
+      "es": "El panel Equipo y memoria muestra ahora el mapa del proyecto (archivos, funciones, enlaces), el plan en curso, una zona para explorarlo (qué está conectado, qué depende de qué, búsqueda, camino más corto) y el registro de quién consultó qué."
+    },
+    {
+      "it": "I confronti in ombra tra il motore Rust e il CEO ora si salvano su disco e continuano dopo il riavvio, con giorni osservati, giorni senza differenze e serie di risultati uguali.",
+      "en": "Shadow comparisons between the Rust engine and the CEO are now saved to disk and continue after a restart, with days observed, days without differences and runs of equal results.",
+      "fr": "Les comparaisons en ombre entre le moteur Rust et le CEO sont désormais enregistrées sur disque et continuent après un redémarrage, avec jours observés, jours sans différence et séries de résultats identiques.",
+      "es": "Las comparaciones en sombra entre el motor Rust y el CEO ahora se guardan en disco y continúan tras reiniciar, con días observados, días sin diferencias y rachas de resultados iguales."
+    }
+  ],
+  "fixes": []
+}
