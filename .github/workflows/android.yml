@@ -98,7 +98,7 @@ jobs:
             key_alias=nuxiva
             key_pass="$store_pass"
             keytool -genkeypair -keystore "$keystore" -storetype PKCS12 -storepass "$store_pass" -keypass "$key_pass" \
-              -alias "$key_alias" -keyalg RSA -keysize 4096 -validity 9125 -dname "CN=Nuxiva Node,O=Nuxiva"
+              -alias "$key_alias" -keyalg RSA -keysize 4096 -validity 9125 -dname "CN=Nuxiva,O=Nuxiva"
             echo "persistent=false" >> "$GITHUB_OUTPUT"
           fi
           echo "::add-mask::$store_pass"
@@ -122,17 +122,17 @@ jobs:
           "$tools/apksigner" verify --verbose --print-certs "$built"
           "$tools/zipalign" -c -P 16 4 "$built" || "$tools/zipalign" -c 4 "$built"
           mkdir -p build/release
-          cp "$built" build/release/Nuxiva_Node.apk
-          sha256sum build/release/Nuxiva_Node.apk | cut -d' ' -f1 > build/release/Nuxiva_Node.apk.sha256
-          echo "sha256=$(cat build/release/Nuxiva_Node.apk.sha256)" >> "$GITHUB_OUTPUT"
+          cp "$built" build/release/Nuxiva.apk
+          sha256sum build/release/Nuxiva.apk | cut -d' ' -f1 > build/release/Nuxiva.apk.sha256
+          echo "sha256=$(cat build/release/Nuxiva.apk.sha256)" >> "$GITHUB_OUTPUT"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Nuxiva_Node
+          name: Nuxiva
           path: |
-            client_apk/build/release/Nuxiva_Node.apk
-            client_apk/build/release/Nuxiva_Node.apk.sha256
+            client_apk/build/release/Nuxiva.apk
+            client_apk/build/release/Nuxiva.apk.sha256
           if-no-files-found: error
           retention-days: 30
 
@@ -146,9 +146,9 @@ jobs:
         run: |
           set -euo pipefail
           if [ "$PERSISTENT" = "true" ]; then
-            notes="Nuxiva Node $VERSION for Android. Install it, then add the device from Nodes and Server in Nuxiva with the one-time code. SHA-256 $SHA256."
+            notes="Nuxiva $VERSION for Android. Install it, then add the device from Nodes and Server in Nuxiva with the one-time code. SHA-256 $SHA256."
           else
-            notes="Nuxiva Node $VERSION for Android, signed with a temporary key because the signing secrets are not set. It cannot update an older build in place: uninstall the old one first. SHA-256 $SHA256."
+            notes="Nuxiva $VERSION for Android, signed with a temporary key because the signing secrets are not set. It cannot update an older build in place: uninstall the old one first. SHA-256 $SHA256."
           fi
-          gh release create "android-v$VERSION" build/release/Nuxiva_Node.apk build/release/Nuxiva_Node.apk.sha256 \
-            --title "Nuxiva Node $VERSION" --notes "$notes"
+          gh release create "android-v$VERSION" build/release/Nuxiva.apk build/release/Nuxiva.apk.sha256 \
+            --title "Nuxiva $VERSION" --notes "$notes"

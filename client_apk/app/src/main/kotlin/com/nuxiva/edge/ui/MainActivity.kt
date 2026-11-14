@@ -20,6 +20,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         handle(intent, fresh = savedInstanceState == null)
+        if (savedInstanceState == null && intent?.action == Intent.ACTION_MAIN && model.shouldOpenHub()) {
+            com.nuxiva.edge.hub.HubActivity.start(this)
+        }
         setContent { NuxivaTheme { AppScaffold(model) } }
     }
 

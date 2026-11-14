@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "App Android Nuxiva: hub a schermo intero per telefono, tablet e TV",
+    "en": "Nuxiva Android app: full-screen hub for phone, tablet and TV",
+    "fr": "Application Android Nuxiva : hub plein écran pour téléphone, tablette et téléviseur",
+    "es": "Aplicación Android Nuxiva: hub a pantalla completa para teléfono, tableta y televisor"
+  },
+  "features": [
+    {
+      "it": "L'app si chiama solo Nuxiva e il file da scaricare è Nuxiva.apk. Dopo il collegamento, il tasto Apri l'hub mostra agente e widget della pagina del tuo server a schermo intero.",
+      "en": "The app is now simply called Nuxiva and the download is Nuxiva.apk. After linking, the Open the hub button shows the agent and widgets from your server's page full screen.",
+      "fr": "L'application s'appelle simplement Nuxiva et le fichier à télécharger est Nuxiva.apk. Après la liaison, le bouton Ouvrir le hub affiche l'agent et les widgets de la page de votre serveur en plein écran.",
+      "es": "La aplicación se llama simplemente Nuxiva y el archivo para descargar es Nuxiva.apk. Tras vincular, el botón Abrir el hub muestra el agente y los widgets de la página de tu servidor a pantalla completa."
+    },
+    {
+      "it": "Funziona su telefono, tablet e Android TV con telecomando, resta acceso, segue la rotazione dello schermo e si ricollega da solo se il server non risponde.",
+      "en": "It works on phone, tablet and Android TV with a remote, stays awake, follows screen rotation and reconnects by itself when the server does not answer.",
+      "fr": "Il fonctionne sur téléphone, tablette et Android TV avec télécommande, reste allumé, suit la rotation de l'écran et se reconnecte tout seul si le serveur ne répond pas.",
+      "es": "Funciona en teléfono, tableta y Android TV con mando, se mantiene encendido, sigue la rotación de la pantalla y se reconecta solo si el servidor no responde."
+    },
+    {
+      "it": "Microfono e fotocamera sono spenti di default: puoi consentirli alla pagina del tuo server dal menu dell'hub, con indicatore rosso visibile quando sono permessi. Il numero di lavori condivisi in parallelo è ora limitabile.",
+      "en": "Microphone and camera are off by default: you can allow them for your server's page from the hub menu, with a visible red indicator when allowed. The number of shared jobs run in parallel can now be limited.",
+      "fr": "Microphone et caméra sont désactivés par défaut : vous pouvez les autoriser pour la page de votre serveur depuis le menu du hub, avec un indicateur rouge visible quand ils sont autorisés. Le nombre de tâches partagées en parallèle est maintenant limitable.",
+      "es": "Micrófono y cámara están desactivados de forma predeterminada: puedes permitirlos a la página de tu servidor desde el menú del hub, con un indicador rojo visible cuando están permitidos. El número de trabajos compartidos en paralelo ahora se puede limitar."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il codice di abbinamento è letto anche se incollato con spazi, a capo, virgolette o senza il prefisso, e gli indirizzi con trattino basso o IPv6 sono accettati.",
+      "en": "The pairing code is read even when pasted with spaces, line breaks, quotes or without the prefix, and addresses with underscores or IPv6 are accepted.",
+      "fr": "Le code d'appairage est lu même collé avec des espaces, des retours à la ligne, des guillemets ou sans préfixe, et les adresses avec tiret bas ou IPv6 sont acceptées.",
+      "es": "El código de emparejamiento se lee aunque se pegue con espacios, saltos de línea, comillas o sin el prefijo, y se aceptan direcciones con guion bajo o IPv6."
+    }
+  ]
+}

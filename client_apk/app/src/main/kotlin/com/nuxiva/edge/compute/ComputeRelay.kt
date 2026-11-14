@@ -18,7 +18,6 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -34,6 +33,7 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 class ComputeRelay(
     private val http: NodeHttp,
@@ -52,9 +52,9 @@ class ComputeRelay(
     fun sharing(): Boolean = decision() == ShareDecision.Allowed && ollama.read().available
 
     suspend fun run() = coroutineScope {
-        val slots = Semaphore(MAX_WORKERS)
+        val active = AtomicInteger(0)
         while (currentCoroutineContext().isActive) {
-            val free = freeSlots(slots)
+            val free = (settings().jobLimit - active.get()).coerceAtLeast(0)
             if (!withContext(Dispatchers.IO) { sharing() }) {
                 delay(RETRY_MILLIS)
                 continue
@@ -69,7 +69,7 @@ class ComputeRelay(
                 }
                 val jobs = (reply["jobs"] as? JsonArray).orEmpty().take(free)
                 jobs.forEach { raw ->
-                    slots.acquire()
+                    active.incrementAndGet()
                     launch(Dispatchers.IO) {
                         try {
                             execute(raw)
@@ -78,7 +78,7 @@ class ComputeRelay(
                         } catch (failure: Exception) {
                             Log.e(TAG, "Compute job failed", failure)
                         } finally {
-                            slots.release()
+                            active.decrementAndGet()
                         }
                     }
                 }
@@ -93,8 +93,6 @@ class ComputeRelay(
             }
         }
     }
-
-    private fun freeSlots(slots: Semaphore): Int = minOf(slots.availablePermits, MAX_WORKERS)
 
     private suspend fun execute(raw: kotlinx.serialization.json.JsonElement) {
         val item = raw as? JsonObject
@@ -186,7 +184,6 @@ class ComputeRelay(
 
     private companion object {
         const val TAG = "NuxivaCompute"
-        const val MAX_WORKERS = 2
         const val READ_SIZE = 1 shl 16
         const val FLUSH_BYTES = 1 shl 14
         const val FLUSH_NANOS = 50_000_000L

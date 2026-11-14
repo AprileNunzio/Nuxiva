@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Nuxiva Node</string>
+    <string name="app_name">Nuxiva</string>
     <string name="channel_audio_name">Background listening</string>
     <string name="channel_audio_description">Keeps the wake word detector active on the local microphone.</string>
     <string name="channel_node_name">Node link</string>
     <string name="channel_node_description">Shows that this device is connected to your Nuxiva server.</string>
-    <string name="notification_node_title">Nuxiva node active</string>
+    <string name="notification_node_title">Nuxiva is connected</string>
     <string name="notification_node_text">Connected to %1$d of %2$d servers</string>
     <string name="notification_action_stop">Stop</string>
     <string name="notification_action_kill">Stop sharing now</string>
@@ -137,4 +137,19 @@
     <string name="engine_version">Version</string>
     <string name="engine_models">Models</string>
     <string name="engine_hint">Sharing needs an Ollama-compatible engine listening on 127.0.0.1:11434 on this device, for example inside Termux. Without it nothing is shared.</string>
+    <string name="hub_title">Nuxiva Hub</string>
+    <string name="hub_body">Full-screen agent and widgets from your server, like the Nuxiva display page, on this phone, tablet or TV.</string>
+    <string name="hub_open">Open the hub</string>
+    <string name="hub_connecting">Connecting to your server</string>
+    <string name="hub_failed_title">The hub is not reachable</string>
+    <string name="hub_failed_body">It retries by itself every few seconds. Code: %1$s</string>
+    <string name="hub_no_server">Link this device to a Nuxiva server first.</string>
+    <string name="hub_menu_title">Hub</string>
+    <string name="hub_menu_reload">Reload</string>
+    <string name="hub_menu_close">Close the hub</string>
+    <string name="hub_mic">Let the page use the microphone</string>
+    <string name="hub_camera">Let the page use the camera</string>
+    <string name="hub_mic_on">Microphone allowed</string>
+    <string name="hub_camera_on">Camera allowed</string>
+    <string name="hub_privacy_hint">Both are off by default. Only your own server page can ask for them, and Android also shows its own indicator while they are in use.</string>
 </resources>

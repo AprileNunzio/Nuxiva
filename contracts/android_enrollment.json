@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "now": 1000,
+  "cases": [
+    {
+      "name": "lan_ip",
+      "payload": {
+        "server": "https://192.168.1.20:8443",
+        "token": "Zk3-_Q9xZk3-_Q9xZk3-_Q9xZk3-_Q9xZk3-_Q9xabc",
+        "pin": "2a730b6bb9e9da2751672b97bc23c547121319d4f52ec0d93eeaea8d6f33c41e",
+        "expires": 4102444800
+      },
+      "link": "nuxiva://enroll?d=eyJzZXJ2ZXIiOiJodHRwczovLzE5Mi4xNjguMS4yMDo4NDQzIiwidG9rZW4iOiJaazMtX1E5eFprMy1fUTl4WmszLV9ROXhaazMtX1E5eFprMy1fUTl4YWJjIiwicGluIjoiMmE3MzBiNmJiOWU5ZGEyNzUxNjcyYjk3YmMyM2M1NDcxMjEzMTlkNGY1MmVjMGQ5M2VlYWVhOGQ2ZjMzYzQxZSIsImV4cGlyZXMiOjQxMDI0NDQ4MDB9"
+    },
+    {
+      "name": "hostname",
+      "payload": {
+        "server": "https://nuxiva.local:8443",
+        "token": "Zk3-_Q9xZk3-_Q9xZk3-_Q9xZk3-_Q9xZk3-_Q9xabc",
+        "pin": "2a730b6bb9e9da2751672b97bc23c547121319d4f52ec0d93eeaea8d6f33c41e",
+        "expires": 4102444800
+      },
+      "link": "nuxiva://enroll?d=eyJzZXJ2ZXIiOiJodHRwczovL251eGl2YS5sb2NhbDo4NDQzIiwidG9rZW4iOiJaazMtX1E5eFprMy1fUTl4WmszLV9ROXhaazMtX1E5eFprMy1fUTl4YWJjIiwicGluIjoiMmE3MzBiNmJiOWU5ZGEyNzUxNjcyYjk3YmMyM2M1NDcxMjEzMTlkNGY1MmVjMGQ5M2VlYWVhOGQ2ZjMzYzQxZSIsImV4cGlyZXMiOjQxMDI0NDQ4MDB9"
+    },
+    {
+      "name": "default_port",
+      "payload": {
+        "server": "https://nuxiva.example.org",
+        "token": "Zk3-_Q9xZk3-_Q9xZk3-_Q9xZk3-_Q9xZk3-_Q9xabc",
+        "pin": "2a730b6bb9e9da2751672b97bc23c547121319d4f52ec0d93eeaea8d6f33c41e",
+        "expires": 4102444800
+      },
+      "link": "nuxiva://enroll?d=eyJzZXJ2ZXIiOiJodHRwczovL251eGl2YS5leGFtcGxlLm9yZyIsInRva2VuIjoiWmszLV9ROXhaazMtX1E5eFprMy1fUTl4WmszLV9ROXhaazMtX1E5eGFiYyIsInBpbiI6IjJhNzMwYjZiYjllOWRhMjc1MTY3MmI5N2JjMjNjNTQ3MTIxMzE5ZDRmNTJlYzBkOTNlZWFlYThkNmYzM2M0MWUiLCJleHBpcmVzIjo0MTAyNDQ0ODAwfQ"
+    },
+    {
+      "name": "ipv6",
+      "payload": {
+        "server": "https://[fe80::1234]:8443",
+        "token": "Zk3-_Q9xZk3-_Q9xZk3-_Q9xZk3-_Q9xZk3-_Q9xabc",
+        "pin": "2a730b6bb9e9da2751672b97bc23c547121319d4f52ec0d93eeaea8d6f33c41e",
+        "expires": 4102444800
+      },
+      "link": "nuxiva://enroll?d=eyJzZXJ2ZXIiOiJodHRwczovL1tmZTgwOjoxMjM0XTo4NDQzIiwidG9rZW4iOiJaazMtX1E5eFprMy1fUTl4WmszLV9ROXhaazMtX1E5eFprMy1fUTl4YWJjIiwicGluIjoiMmE3MzBiNmJiOWU5ZGEyNzUxNjcyYjk3YmMyM2M1NDcxMjEzMTlkNGY1MmVjMGQ5M2VlYWVhOGQ2ZjMzYzQxZSIsImV4cGlyZXMiOjQxMDI0NDQ4MDB9"
+    }
+  ]
+}

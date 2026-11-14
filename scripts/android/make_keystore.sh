@@ -11,7 +11,7 @@ fi
 
 password=$(openssl rand -hex 24)
 keytool -genkeypair -keystore "$out" -storetype PKCS12 -storepass "$password" -keypass "$password" \
-    -alias "$alias" -keyalg RSA -keysize 4096 -validity 9125 -dname "CN=Nuxiva Node,O=Nuxiva"
+    -alias "$alias" -keyalg RSA -keysize 4096 -validity 9125 -dname "CN=Nuxiva,O=Nuxiva"
 chmod 600 "$out"
 
 printf 'NUXIVA_ANDROID_KEYSTORE_BASE64=%s\n' "$(base64 < "$out" | tr -d '\n')"

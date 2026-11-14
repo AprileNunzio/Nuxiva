@@ -96,6 +96,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun remove(nodeId: String) {
         graph.profiles.remove(nodeId)
+        android.webkit.CookieManager.getInstance().removeAllCookies(null)
         if (graph.profiles.profiles.value.none { it.enabled }) NodeService.stop(getApplication())
     }
 
@@ -115,6 +116,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun updateShare(change: (ShareSettings) -> ShareSettings) = graph.shareSettings.update(change)
+
+    fun shouldOpenHub(): Boolean =
+        graph.hub.settings.value.openOnLaunch && graph.profiles.profiles.value.any { it.enabled }
 
     fun defaultNodeName(): String = Build.MODEL.orEmpty()
 }

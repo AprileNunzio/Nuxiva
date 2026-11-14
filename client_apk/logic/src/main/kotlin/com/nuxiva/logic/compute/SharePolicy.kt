@@ -9,7 +9,15 @@ public data class ShareSettings(
     val maxBatteryTempC: Int = 40,
     val unmeteredOnly: Boolean = true,
     val restOnly: Boolean = true,
-)
+    val maxJobs: Int = 1,
+) {
+    val jobLimit: Int get() = maxJobs.coerceIn(MIN_JOBS, MAX_JOBS)
+
+    public companion object {
+        public const val MIN_JOBS: Int = 1
+        public const val MAX_JOBS: Int = 4
+    }
+}
 
 public data class PowerSnapshot(
     val batteryPercent: Int,

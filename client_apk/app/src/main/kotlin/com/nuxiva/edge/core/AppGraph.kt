@@ -15,6 +15,7 @@ import com.nuxiva.edge.node.ReportBuilder
 class AppGraph(app: Application) {
     val profiles = ProfileStore(app, KeystoreCipher())
     val shareSettings = ShareSettingsStore(app)
+    val hub = com.nuxiva.edge.hub.HubSettings(app)
     val orientation = OrientationMonitor(app)
     val power = PowerMonitor(app)
     val ollama = OllamaProbe()

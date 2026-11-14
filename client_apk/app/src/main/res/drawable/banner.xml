@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <path
+        android:fillColor="@color/nuxiva_icon_background"
+        android:pathData="M0,0h320v180h-320z" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M160,90m-44,0a44,44 0,1 1,88 0a44,44 0,1 1,-88 0"
+        android:strokeColor="@color/nuxiva_icon_accent"
+        android:strokeWidth="5" />
+    <path
+        android:fillColor="@color/nuxiva_icon_accent"
+        android:pathData="M160,90m-14,0a14,14 0,1 1,28 0a14,14 0,1 1,-28 0" />
+</vector>

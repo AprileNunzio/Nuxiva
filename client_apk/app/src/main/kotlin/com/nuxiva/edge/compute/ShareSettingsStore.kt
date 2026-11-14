@@ -25,6 +25,7 @@ class ShareSettingsStore(context: Context) {
             .putInt(TEMP, next.maxBatteryTempC)
             .putBoolean(UNMETERED, next.unmeteredOnly)
             .putBoolean(REST, next.restOnly)
+            .putInt(JOBS, next.maxJobs)
             .apply()
         state.value = next
     }
@@ -40,6 +41,7 @@ class ShareSettingsStore(context: Context) {
             maxBatteryTempC = prefs.getInt(TEMP, defaults.maxBatteryTempC),
             unmeteredOnly = prefs.getBoolean(UNMETERED, defaults.unmeteredOnly),
             restOnly = prefs.getBoolean(REST, defaults.restOnly),
+            maxJobs = prefs.getInt(JOBS, defaults.maxJobs),
         )
     }
 
@@ -53,5 +55,6 @@ class ShareSettingsStore(context: Context) {
         const val TEMP = "temp"
         const val UNMETERED = "unmetered"
         const val REST = "rest"
+        const val JOBS = "jobs"
     }
 }

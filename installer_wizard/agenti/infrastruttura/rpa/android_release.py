@@ -7,7 +7,8 @@ import httpx
 from agenti.rpa import releases
 
 log = logging.getLogger("nuxiva.rpa")
-APK = "Nuxiva_Node.apk"
+APK = "Nuxiva.apk"
+LEGACY_APK = "Nuxiva_Node.apk"
 TAG_RE = re.compile(r"android-v(\d+(?:\.\d+){1,3})")
 CACHE_SECONDS = 3600
 _cache: tuple[float, dict] = (0.0, {})
@@ -21,16 +22,17 @@ def newest(items: list) -> dict:
         if not match or release.get("draft") or release.get("prerelease"):
             continue
         assets = {a.get("name"): a for a in release.get("assets") or [] if isinstance(a, dict)}
-        asset = assets.get(APK)
+        name = APK if APK in assets else LEGACY_APK
+        asset = assets.get(name)
         url = asset.get("browser_download_url") if asset else None
-        if not isinstance(url, str) or url.casefold() != releases._official(tag, APK).casefold():
+        if not isinstance(url, str) or url.casefold() != releases._official(tag, name).casefold():
             continue
         digest = releases._digest(asset.get("digest"))
         if not digest:
             continue
         key = tuple(int(n) for n in match.group(1).split("."))
         if not best or key > best["key"]:
-            best = {"key": key, "version": match.group(1), "name": APK, "url": url, "sha256": digest}
+            best = {"key": key, "version": match.group(1), "name": name, "url": url, "sha256": digest}
     return {k: v for k, v in best.items() if k != "key"}
 
 

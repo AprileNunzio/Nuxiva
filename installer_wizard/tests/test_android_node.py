@@ -59,7 +59,7 @@ class EnrollmentLinkTest(unittest.TestCase):
         patches = [mock.patch.object(enrollment_module, "TOKENS_FILE", directory / "tokens.json"),
                    mock.patch.object(android_enroll.trust, "ca_pin", return_value="a" * 64),
                    mock.patch.dict(android_enroll.secure._active, {"port": 8443}),
-                   mock.patch.object(android_enroll.android_release, "info", mock.AsyncMock(return_value={"version": "5.8.2", "name": "Nuxiva_Node.apk", "url": f"{BASE}/android-v5.8.2/Nuxiva_Node.apk", "sha256": "ab" * 32}))]
+                   mock.patch.object(android_enroll.android_release, "info", mock.AsyncMock(return_value={"version": "5.8.2", "name": "Nuxiva.apk", "url": f"{BASE}/android-v5.8.2/Nuxiva.apk", "sha256": "ab" * 32}))]
         for patcher in patches:
             patcher.start()
             self.addCleanup(patcher.stop)
@@ -121,3 +121,26 @@ class HardwareTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ContractTest(unittest.TestCase):
+    FIXTURE = Path(__file__).resolve().parents[2] / "contracts" / "android_enrollment.json"
+
+    def test_server_links_match_the_shared_fixture_read_by_the_app(self):
+        data = json.loads(self.FIXTURE.read_text(encoding="utf-8"))
+        self.assertTrue(data["cases"])
+        for case in data["cases"]:
+            self.assertEqual(android_enroll.enrollment_link(case["payload"]), case["link"], case["name"])
+            self.assertEqual(set(case["payload"]), {"server", "token", "pin", "expires"})
+            self.assertIsInstance(case["payload"]["expires"], int)
+
+    def test_origin_brackets_ipv6_hosts(self):
+        from agenti.nodes import trust
+        self.assertEqual(trust.https_origin("fe80::1234", 8443), "https://[fe80::1234]:8443")
+        self.assertEqual(trust.https_origin("nuxiva.local", 443), "https://nuxiva.local")
+
+    def test_previous_asset_name_is_still_offered_until_a_new_release_exists(self):
+        old = release("android-v5.8.3", name=android_release.LEGACY_APK)
+        self.assertEqual(android_release.newest([old])["name"], android_release.LEGACY_APK)
+        both = {"tag_name": "android-v5.8.4", "assets": release("android-v5.8.4")["assets"]}
+        self.assertEqual(android_release.newest([old, both])["name"], android_release.APK)

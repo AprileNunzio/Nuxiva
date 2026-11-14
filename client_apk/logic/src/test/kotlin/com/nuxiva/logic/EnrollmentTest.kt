@@ -27,12 +27,30 @@ class EnrollmentTest {
         assertEquals("enroll_file_expired", assertFailsWith<EnrollmentException> { EnrollmentParser.parse(json(expires = 10L), 1_000L) }.code)
         listOf(
             "", "{", "[]", json(server = "http://192.168.1.10"), json(server = "https://user@host"),
-            json(server = "https://host/path"), json(server = "https://host?x=1"), json(extra = ",\"extra\":1"),
+            json(server = "https://host/path"), json(server = "https://host?x=1"), json(server = "https://host:99999"),
             json().replace(token, "short"), json().replace(pin, "AB".repeat(32)),
             "nuxiva://enroll", "nuxiva://other?d=e30", "nuxiva://enroll?d=@@@",
         ).forEach { raw ->
             assertEquals("enroll_file_invalid", assertFailsWith<EnrollmentException>(raw) { EnrollmentParser.parse(raw, 1_000L) }.code)
         }
+    }
+
+    @Test
+    fun toleratesWhatPeopleActuallyPaste() {
+        val expected = EnrollmentParser.parse(json(), 1_000L)
+        val encoded = Base64.getUrlEncoder().withoutPadding().encodeToString(json().toByteArray())
+        val padded = Base64.getUrlEncoder().encodeToString(json().toByteArray())
+        listOf(
+            "  nuxiva://enroll?d=$encoded\n", "NUXIVA://ENROLL?d=$encoded", "nuxiva://enroll?d=$padded", "nuxiva://enroll?d=${encoded.take(20)}\n${encoded.drop(20)}",
+            "nuxiva://enroll?d=${padded.replace("=", "%3D")}", encoded, padded, "\"nuxiva://enroll?d=$encoded\"", json(extra = ",\"v\":1"),
+            json().replace("2000", "2000.0"),
+        ).forEach { raw -> assertEquals(expected, EnrollmentParser.parse(raw, 1_000L), raw) }
+    }
+
+    @Test
+    fun acceptsHostsThatJavaUriRejects() {
+        assertEquals("https://nuxiva_pc.lan:8443", EnrollmentParser.parse(json(server = "https://nuxiva_pc.lan:8443"), 1_000L).server)
+        assertEquals("https://[fe80::1]:8443", EnrollmentParser.parse(json(server = "https://[fe80::1]:8443"), 1_000L).server)
     }
 
     @Test

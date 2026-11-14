@@ -20,6 +20,8 @@ def ca_fingerprint() -> str:
 def https_origin(host: str | None, port: int) -> str:
     if not host or host in ("localhost", "127.0.0.1", "::1") or not port:
         return ""
+    if ":" in host and not host.startswith("["):
+        host = f"[{host}]"
     return f"https://{host}" if port == 443 else f"https://{host}:{port}"
 
 

@@ -42,6 +42,7 @@ fun NodesScreen(model: AppViewModel, onAdd: () -> Unit) {
     val running by model.running.collectAsState()
     val failure by model.loadFailure.collectAsState()
     var pending by remember { mutableStateOf<NodeProfile?>(null) }
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(340.dp),
@@ -49,6 +50,14 @@ fun NodesScreen(model: AppViewModel, onAdd: () -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        if (profiles.any { it.enabled }) {
+            fullSpan("hub") {
+                InfoCard(stringResource(R.string.hub_title)) {
+                    Text(stringResource(R.string.hub_body), style = MaterialTheme.typography.bodyMedium)
+                    Button(onClick = { com.nuxiva.edge.hub.HubActivity.start(context) }) { Text(stringResource(R.string.hub_open)) }
+                }
+            }
+        }
         fullSpan("service") {
             InfoCard(stringResource(R.string.service_title)) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {

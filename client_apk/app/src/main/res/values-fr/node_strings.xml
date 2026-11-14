@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Nuxiva Nœud</string>
+    <string name="app_name">Nuxiva</string>
     <string name="channel_audio_name">Écoute en arrière-plan</string>
     <string name="channel_audio_description">Garde le détecteur de mot d\'activation actif sur le microphone local.</string>
     <string name="channel_node_name">Liaison du nœud</string>
     <string name="channel_node_description">Indique que cet appareil est connecté à votre serveur Nuxiva.</string>
-    <string name="notification_node_title">Nœud Nuxiva actif</string>
+    <string name="notification_node_title">Nuxiva est connecté</string>
     <string name="notification_node_text">Connecté à %1$d serveurs sur %2$d</string>
     <string name="notification_action_stop">Arrêter</string>
     <string name="notification_action_kill">Arrêter le partage</string>
@@ -137,4 +137,19 @@
     <string name="engine_version">Version</string>
     <string name="engine_models">Modèles</string>
     <string name="engine_hint">Le partage nécessite un moteur compatible Ollama à l\'écoute sur 127.0.0.1:11434 sur cet appareil, par exemple dans Termux. Sans lui, rien n\'est partagé.</string>
+    <string name="hub_title">Nuxiva Hub</string>
+    <string name="hub_body">Agent et widgets en plein écran depuis votre serveur, comme la page d\'affichage de Nuxiva, sur ce téléphone, cette tablette ou ce téléviseur.</string>
+    <string name="hub_open">Ouvrir le hub</string>
+    <string name="hub_connecting">Connexion à votre serveur</string>
+    <string name="hub_failed_title">Le hub est injoignable</string>
+    <string name="hub_failed_body">Il réessaie tout seul toutes les quelques secondes. Code : %1$s</string>
+    <string name="hub_no_server">Liez d\'abord cet appareil à un serveur Nuxiva.</string>
+    <string name="hub_menu_title">Hub</string>
+    <string name="hub_menu_reload">Recharger</string>
+    <string name="hub_menu_close">Fermer le hub</string>
+    <string name="hub_mic">Autoriser la page à utiliser le microphone</string>
+    <string name="hub_camera">Autoriser la page à utiliser la caméra</string>
+    <string name="hub_mic_on">Microphone autorisé</string>
+    <string name="hub_camera_on">Caméra autorisée</string>
+    <string name="hub_privacy_hint">Ils sont désactivés par défaut. Seule la page de votre serveur peut les demander et Android affiche aussi son indicateur pendant l\'utilisation.</string>
 </resources>
