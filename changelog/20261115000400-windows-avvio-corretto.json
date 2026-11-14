@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "App Windows: avvio corretto",
+    "en": "Windows app: startup fixed",
+    "fr": "Application Windows : démarrage corrigé",
+    "es": "Aplicación de Windows: inicio corregido"
+  },
+  "features": [
+    {
+      "it": "L'installer controlla ora anche che tutti i componenti principali dell'app si carichino prima di essere pubblicato.",
+      "en": "The installer build now also checks that every main component of the app loads before it is published.",
+      "fr": "La compilation de l'installateur vérifie maintenant aussi que tous les composants principaux de l'application se chargent avant la publication.",
+      "es": "La compilación del instalador comprueba ahora también que todos los componentes principales de la aplicación se carguen antes de publicarla."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto l'arresto all'avvio dell'app Windows causato dall'ordine di caricamento dei suoi componenti: ora l'assistente parte regolarmente.",
+      "en": "Fixed the Windows app crash at startup caused by the order in which its components were loaded: the assistant now starts normally.",
+      "fr": "Correction de l'arrêt au démarrage de l'application Windows causé par l'ordre de chargement de ses composants : l'assistant démarre maintenant normalement.",
+      "es": "Corregido el cierre al iniciar la aplicación de Windows causado por el orden de carga de sus componentes: el asistente arranca ahora con normalidad."
+    }
+  ]
+}

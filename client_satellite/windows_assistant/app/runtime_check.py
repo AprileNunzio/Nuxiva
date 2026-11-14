@@ -60,7 +60,7 @@ def smoke() -> int:
     code = ensure(interactive=False)
     if code:
         return code
-    for module in ("ui.theme", "ui.pairing_view", "ui.panel"):
+    for module in ("ui.theme", "ui.pairing_view", "ui.panel", "app.interface", "app.conversation", "app.voice", "app.assistant"):
         try:
             importlib.import_module(module)
         except (ImportError, OSError) as exc:

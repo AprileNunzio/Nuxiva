@@ -84,7 +84,7 @@ class Assistant:
     def _ui_actions(self) -> dict:
         return {
             "ask": lambda text: self.conversation.ask(text), "listen": lambda: self.voice.listen(),
-            "stop": self.conversation.stop, "quit": self.quit, "is_muted": lambda: self.voice.mic.muted,
+            "stop": lambda: self.conversation.stop(), "quit": self.quit, "is_muted": lambda: self.voice.mic.muted,
             "mute": lambda muted: self.voice.set_muted(muted), "save": lambda: store.save(self.cfg),
             "autostart": autostart.enabled, "fingerprint": lambda: tls.short(self.cfg["pin"]),
             "settings_saved": self._settings_saved, "unpair": self.unpair, "policy": lambda: self.policy,
