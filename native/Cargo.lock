@@ -1659,6 +1659,7 @@ name = "nuxiva-chat-core"
 version = "5.8.0"
 dependencies = [
  "regex",
+ "unicode-normalization",
 ]
 
 [[package]]

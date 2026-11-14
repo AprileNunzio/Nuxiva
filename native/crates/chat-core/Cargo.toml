@@ -11,3 +11,4 @@ workspace = true
 
 [dependencies]
 regex = "1"
+unicode-normalization = "0.1"

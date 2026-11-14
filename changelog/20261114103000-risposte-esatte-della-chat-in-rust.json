@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Calcoli e ordinamenti della chat ora girano in Rust",
+    "en": "Chat calculations and sorting now run in Rust",
+    "fr": "Les calculs et tris du chat tournent désormais en Rust",
+    "es": "Los cálculos y ordenaciones del chat ahora funcionan en Rust"
+  },
+  "features": [
+    {
+      "it": "Le richieste semplici come \"quanto fa 12 per 12\" o \"ordina in ordine alfabetico\" ricevono una risposta esatta e immediata da un motore scritto in Rust.",
+      "en": "Simple requests such as \"what is 12 times 12\" or \"sort alphabetically\" get an exact, instant answer from an engine written in Rust.",
+      "fr": "Les demandes simples comme « combien font 12 fois 12 » ou « trie par ordre alphabétique » reçoivent une réponse exacte et immédiate d'un moteur écrit en Rust.",
+      "es": "Las peticiones simples como «cuánto es 12 por 12» u «ordena alfabéticamente» reciben una respuesta exacta e inmediata de un motor escrito en Rust."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "I casi con caratteri insoliti passano al motore precedente invece di dare un risultato diverso, così le risposte restano identiche.",
+      "en": "Cases with unusual characters fall back to the previous engine instead of giving a different result, so answers stay identical.",
+      "fr": "Les cas avec des caractères inhabituels passent au moteur précédent au lieu de donner un résultat différent, donc les réponses restent identiques.",
+      "es": "Los casos con caracteres inusuales pasan al motor anterior en lugar de dar un resultado distinto, así las respuestas siguen siendo idénticas."
+    }
+  ]
+}

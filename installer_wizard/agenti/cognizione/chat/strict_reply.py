@@ -1,7 +1,10 @@
 import json
 import operator
 import re
+import threading
 import unicodedata
+
+import native_core
 
 from agenti.chat.code import extract
 
@@ -14,7 +17,32 @@ JSON_ONLY = re.compile(r"^(?:estrai|rispondi(?:\s+con)?|restituisci|extract|retu
 CHAT_ONLY = re.compile(r"\b(?:(?:soltanto|solo)\s+in\s+chat|(?:only|just)\s+in\s+chat|non\s+creare\s+(?:alcun\s+)?file|do not create (?:any )?files)\b", re.I)
 
 
+_native = None
+_lock = threading.Lock()
+
+
+def _engine():
+    global _native
+    if _native is None:
+        with _lock:
+            if _native is None:
+                factory = native_core.symbol("RustStrictReply")
+                _native = factory() if factory is not None else False
+    return _native or None
+
+
 def deterministic(text: str) -> str | None:
+    engine = _engine()
+    if engine is None:
+        native_core.python_fallback("chat.strict_reply")
+        return _py_deterministic(text)
+    kind, value = engine.deterministic(text)
+    if kind == "defer":
+        return _py_deterministic(text)
+    return value
+
+
+def _py_deterministic(text: str) -> str | None:
     if match := NUMBER.fullmatch(text.strip()):
         left, operation, right = match.groups()
         return str(OPERATIONS[operation.lower()](int(left), int(right)))
