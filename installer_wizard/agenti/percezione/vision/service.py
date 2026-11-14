@@ -22,6 +22,7 @@ from objects import ObjectDetector
 from shared_frames import SharedEncoder
 from tracks import Track, facing, iou, reliable_unknown
 from observer import Observer, router as observer_router
+from capture_api import attach as attach_capture, summary as capture_summary
 from remote_probe import router as remote_probe_router
 from bodies import router as bodies_router
 from posture import PostureWatch, router as posture_router
@@ -280,6 +281,7 @@ class Vision:
                                     "y": round((by + bh / 2) / h, 3)}})
         people.sort(key=lambda p: -p["proximity"])
         return {"status": self.status, "error": self.error, "people": people, "objects": self.visible_objects(),
+                "capture": capture_summary(getattr(self, "capture", None)),
                 "frame": [int(self.size[0] or 0), int(self.size[1] or 0)],
                 "ir": self.ir.view(), "vitals_cost": self.vitals.cost(), "time": now}
 
@@ -339,6 +341,7 @@ vision = Vision(gallery)
 app = FastAPI(title="Nuxiva Vision", docs_url=None, redoc_url=None, openapi_url=None)
 vision.views = views = Views(vision, gallery, MODELS)
 threading.Thread(target=views.backfill, daemon=True, name="segni-particolari").start()
+attach_capture(app, vision, selection._cfg)
 app.include_router(views_router(views))
 app.include_router(observer_router(Observer(views, gallery)))
 app.include_router(bodies_router(lambda: vision.objects))

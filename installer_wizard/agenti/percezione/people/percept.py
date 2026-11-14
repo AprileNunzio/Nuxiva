@@ -64,6 +64,41 @@ def from_mood(slug: str, valence: float, arousal: float, source: str = "umore", 
            "arousal": max(0, min(1000, round(arousal * 1000))), "source": source, "at_ms": now}, now)
 
 
+MOOD_AXES = {"felice": (0.8, 0.6), "sereno": (0.5, 0.2), "entusiasta": (0.9, 0.9), "innamorato": (0.9, 0.7), "grato": (0.7, 0.4),
+             "neutro": (0.0, 0.3), "stanco": (-0.3, 0.1), "annoiato": (-0.3, 0.2), "stressato": (-0.6, 0.8),
+             "preoccupato": (-0.5, 0.6), "triste": (-0.8, 0.2), "arrabbiato": (-0.7, 0.9), "malato": (-0.6, 0.2)}
+
+
+def _guarded(call, *args) -> None:
+    if not enabled():
+        return
+    try:
+        call(*args)
+    except (OSError, ValueError, RuntimeError) as exc:
+        log.error("Osservazione scartata dalla percezione: %s", exc)
+
+
+def note_speaker(slug: str, confidence: float) -> None:
+    _guarded(from_ear, slug, confidence)
+
+
+def note_people(slugs: list) -> None:
+    _guarded(from_people, [s for s in slugs if s])
+
+
+def note_scene(ref: str | None) -> None:
+    if ref:
+        _guarded(from_vision, ref)
+
+
+def note_mood(slug: str, mood: str, intensity: int, source: str) -> None:
+    axes = MOOD_AXES.get(mood)
+    if axes is None:
+        return
+    scale = max(1, min(5, int(intensity))) / 5
+    _guarded(from_mood, slug, axes[0] * scale, axes[1] * scale, source)
+
+
 def context_for(text: str, present: list, speaker: str = "", channel: str = "text", lang: str = "it") -> str:
     if not enabled():
         return hot.context_for(present, lang=lang)

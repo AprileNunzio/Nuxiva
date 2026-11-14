@@ -65,7 +65,7 @@ pub struct VisualBuffer {
     policy: Policy,
     frames: VecDeque<Frame>,
     dim: Option<usize>,
-    last_push: Option<u64>,
+    last_push: [Option<u64>; 2],
 }
 
 fn unit(v: &[f32]) -> Option<Vec<f32>> {
@@ -93,7 +93,7 @@ impl VisualBuffer {
             policy: policy.sanitized(),
             frames: VecDeque::new(),
             dim: None,
-            last_push: None,
+            last_push: [None; 2],
         }
     }
 
@@ -108,10 +108,15 @@ impl VisualBuffer {
         }
     }
 
+    #[must_use]
+    pub fn screens(&self, app: &str, title: &str) -> bool {
+        !self.policy.consent || self.policy.is_sensitive(app, title)
+    }
+
     pub fn wipe(&mut self) {
         self.frames.clear();
         self.dim = None;
-        self.last_push = None;
+        self.last_push = [None; 2];
     }
 
     pub fn expire(&mut self, now_ms: u64) {
@@ -135,8 +140,15 @@ impl VisualBuffer {
         if self.policy.is_sensitive(&meta.app, &meta.title) {
             return PushOutcome::Rejected(Rejection::Sensitive);
         }
+        let lane = match meta.source {
+            Source::Screen => 0,
+            Source::Webcam => 1,
+        };
         if self
             .last_push
+            .get(lane)
+            .copied()
+            .flatten()
             .is_some_and(|t| meta.at_ms.saturating_sub(t) < self.policy.interval_ms)
         {
             return PushOutcome::Rejected(Rejection::TooSoon);
@@ -158,7 +170,9 @@ impl VisualBuffer {
             at_ms: meta.at_ms,
             vector,
         });
-        self.last_push = Some(meta.at_ms);
+        if let Some(slot) = self.last_push.get_mut(lane) {
+            *slot = Some(meta.at_ms);
+        }
         PushOutcome::Stored
     }
 

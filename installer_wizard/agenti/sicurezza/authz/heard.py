@@ -36,6 +36,8 @@ class HeardLog:
             self._items.append(VoiceProof(slug, float(score), normalize(text), moment, device))
         from agenti.places.locate import locator
         locator.note(slug, "voice", device, min(1.0, max(0.3, float(score))), moment)
+        from agenti.people import percept
+        percept.note_speaker(slug, min(1.0, max(0.0, float(score))))
 
     def tap(self, message: str | bytes, device: str = "mic:local") -> None:
         if not isinstance(message, str) or '"transcript"' not in message:

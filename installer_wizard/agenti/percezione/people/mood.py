@@ -53,6 +53,8 @@ def record(slug: str, mood: str, intensity=3, note: str = "", source: str = "man
         archive(profile, journal[:-MAX_ENTRIES])
         profile["mood_journal"] = journal[-MAX_ENTRIES:]
         people.save(profile)
+    from agenti.people import percept
+    percept.note_mood(slug, entry["mood"], entry["intensity"], "umore")
     return entry
 
 

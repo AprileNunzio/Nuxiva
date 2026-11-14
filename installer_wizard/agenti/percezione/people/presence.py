@@ -227,6 +227,11 @@ class PresenceMonitor:
         if signature == getattr(self, "_bus_sig", None) and now - getattr(self, "_bus_at", 0.0) < 10:
             return
         self._bus_sig, self._bus_at = signature, now
+        from agenti.people import percept
+        percept.note_people([p["slug"] for p in people if p.get("known")])
+        capture = data.get("capture")
+        if isinstance(capture, dict) and capture.get("active"):
+            percept.note_scene(capture.get("scene"))
         try:
             from nuxiva_bus import BusError, nuxiva_bus
             nuxiva_bus.publish("vision.presence", {"people": people}, origin="vision", retain=True)

@@ -27,7 +27,8 @@
     "Webcam a doppio sensore (colori + infrarosso) riconosciute al collegamento, senza riavvio",
     "Anti-foto e anti-schermo con l'infrarosso",
     "Gemelli e volti somiglianti distinti con un margine più severo, senza mischiare i loro campioni",
-    "Il riconoscimento migliora da solo: campioni diversi, soglie per persona, infrarosso"
+    "Il riconoscimento migliora da solo: campioni diversi, soglie per persona, infrarosso",
+    "Memoria visiva a consenso: schermo e webcam diventano vettori temporanei, app sensibili mai guardate"
   ],
   "settings": [
     {
@@ -205,6 +206,89 @@
       "label": "Peso dell'infrarosso nel riconoscimento (0 - 0,8)",
       "type": "number",
       "default": "0.35",
+      "apply": [
+        "vision"
+      ]
+    },
+    {
+      "key": "NUXIVA_CAPTURE_CONSENT",
+      "label": "Memoria visiva: schermo e webcam in un buffer temporaneo, solo su tuo consenso",
+      "type": "select",
+      "default": "0",
+      "apply": [
+        "vision"
+      ],
+      "options": [
+        {
+          "value": "0",
+          "label": "No: non guardo lo schermo né la webcam per ricordare"
+        },
+        {
+          "value": "1",
+          "label": "Sì: tengo solo vettori numerici per pochi minuti, mai immagini"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_CAPTURE_SOURCES",
+      "label": "Fonti della memoria visiva (screen, webcam o screen,webcam)",
+      "type": "text",
+      "default": "screen,webcam",
+      "apply": [
+        "vision"
+      ]
+    },
+    {
+      "key": "NUXIVA_CAPTURE_INTERVAL",
+      "label": "Intervallo minimo tra due catture in millisecondi (250 - 120000)",
+      "type": "number",
+      "default": "2000",
+      "apply": [
+        "vision"
+      ]
+    },
+    {
+      "key": "NUXIVA_CAPTURE_CEILING",
+      "label": "Intervallo massimo quando nulla cambia, in millisecondi",
+      "type": "number",
+      "default": "30000",
+      "apply": [
+        "vision"
+      ]
+    },
+    {
+      "key": "NUXIVA_CAPTURE_EMBEDDER",
+      "label": "Come trasformare ogni immagine in numeri",
+      "type": "select",
+      "default": "tile",
+      "apply": [
+        "vision"
+      ],
+      "options": [
+        {
+          "value": "tile",
+          "label": "Veloce e locale: forme e colori"
+        },
+        {
+          "value": "vlm",
+          "label": "Modello visivo locale: descrive la scena e ne ricava i numeri"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_CAPTURE_VLM_MODEL",
+      "label": "Modello visivo locale (solo con embedder vlm)",
+      "type": "text",
+      "default": "",
+      "apply": [
+        "vision"
+      ]
+    },
+    {
+      "key": "NUXIVA_CAPTURE_EMBED_MODEL",
+      "label": "Modello locale di embedding del testo (solo con embedder vlm)",
+      "type": "text",
+      "default": "",
       "apply": [
         "vision"
       ]

@@ -10,6 +10,7 @@ mod attribution;
 mod audio;
 mod authz;
 mod bus;
+mod capture;
 mod ceo;
 mod coderloop;
 mod compute_lease;
@@ -155,6 +156,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     home_rules::register(m)?;
     ear::register(m)?;
     sensory::register(m)?;
+    capture::register(m)?;
     ear_array::register(m)?;
     ear_music::register(m)?;
     lyrics::register(m)?;

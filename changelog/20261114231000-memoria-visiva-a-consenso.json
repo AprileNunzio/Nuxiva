@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Memoria visiva a consenso: schermo e webcam",
+    "en": "Consent-based visual memory: screen and webcam",
+    "fr": "Mémoire visuelle sur consentement : écran et webcam",
+    "es": "Memoria visual con consentimiento: pantalla y webcam"
+  },
+  "features": [
+    {
+      "it": "Con il tuo consenso (NUXIVA_CAPTURE_CONSENT=1) Nuxiva guarda schermo e webcam a intervalli che si allungano da soli quando nulla cambia, e tiene per pochi minuti soltanto numeri, mai immagini. Le app sensibili, come password e banca, non vengono mai nemmeno catturate.",
+      "en": "With your consent (NUXIVA_CAPTURE_CONSENT=1) Nuxiva looks at the screen and webcam at intervals that lengthen on their own when nothing changes, and keeps only numbers for a few minutes, never images. Sensitive apps, such as passwords and banking, are never even captured.",
+      "fr": "Avec ton consentement (NUXIVA_CAPTURE_CONSENT=1), Nuxiva regarde l'écran et la webcam à des intervalles qui s'allongent seuls quand rien ne change, et ne garde que des nombres quelques minutes, jamais d'images. Les applis sensibles, comme mots de passe et banque, ne sont jamais capturées.",
+      "es": "Con tu consentimiento (NUXIVA_CAPTURE_CONSENT=1) Nuxiva mira la pantalla y la webcam a intervalos que se alargan solos cuando nada cambia, y guarda solo números unos minutos, nunca imágenes. Las apps sensibles, como contraseñas y banca, nunca se capturan."
+    },
+    {
+      "it": "Voce, presenze, umore e scena visiva arrivano ora tutti alla stessa percezione, così le risposte usano ciò che Nuxiva sa davvero in quel momento e nascondono i dati personali quando c'è un ospite.",
+      "en": "Voice, presence, mood and the visual scene now all reach the same perception, so answers use what Nuxiva actually knows at that moment and hide personal data when a guest is present.",
+      "fr": "Voix, présences, humeur et scène visuelle arrivent désormais à la même perception : les réponses utilisent ce que Nuxiva sait vraiment à cet instant et masquent les données personnelles en présence d'un invité.",
+      "es": "Voz, presencias, estado de ánimo y escena visual llegan ahora a la misma percepción, así las respuestas usan lo que Nuxiva sabe de verdad en ese momento y ocultan los datos personales si hay un invitado."
+    }
+  ],
+  "fixes": []
+}

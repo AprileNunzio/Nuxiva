@@ -320,6 +320,14 @@ impl RustVisualBuffer {
         ))
     }
 
+    fn screens(&self, app: &str, title: &str) -> PyResult<bool> {
+        Ok(self
+            .inner
+            .lock()
+            .map_err(|_| poisoned())?
+            .screens(app, title))
+    }
+
     fn expire(&self, now_ms: u64) -> PyResult<()> {
         self.inner.lock().map_err(|_| poisoned())?.expire(now_ms);
         Ok(())
