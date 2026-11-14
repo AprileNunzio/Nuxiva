@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Piccola correzione ai controlli interni",
+    "en": "Small fix to internal checks",
+    "fr": "Petite correction des contrôles internes",
+    "es": "Pequeña corrección de las comprobaciones internas"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Sistemata una verifica interna dei test della voce in streaming.",
+      "en": "Fixed an internal check in the streaming voice tests.",
+      "fr": "Correction d'une vérification interne des tests de la voix en streaming.",
+      "es": "Corregida una comprobación interna de las pruebas de la voz en streaming."
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import asyncio
 import unittest
 
-from agenti.ear import duplex, speech_stream
+from agenti.ear import speech_stream
 
 try:
     import nuxiva_native
