@@ -86,6 +86,13 @@
     "units_masked": "Unità lasciata invariata (mascherata o collegata dall'amministratore): %s",
     "units_invalid": "Unità ignorata perché non valida: %s",
     "units_failed": "Impossibile aggiornare l'unità di sistema: %s",
-    "units_reload_failed": "systemd non ha ricaricato le unità aggiornate"
+    "units_reload_failed": "systemd non ha ricaricato le unità aggiornate",
+    "collaudo_usage": "Uso: nuxivactl collaudo on [--save] | off | status | mode on|off | mark ETICHETTA | events [filtro=valore...] | stream [filtro=valore...] | verify | baseline [minuti] | report [minuti] | smoke [prova...] | scenario NOME [secondi] | diagnose",
+    "collaudo_need_token": "Token mancante: esegui «sudo nuxivactl collaudo on» ed esporta NUXIVA_COLLAUDO_TOKEN, oppure usa --save",
+    "collaudo_unreachable": "Il supervisore non risponde",
+    "collaudo_refused": "Richiesta rifiutata",
+    "collaudo_saved": "Token salvato in",
+    "collaudo_token_note": "Token mostrato una sola volta: esportalo in NUXIVA_COLLAUDO_TOKEN. L'accesso è solo da localhost.",
+    "collaudo_disarmed": "Collaudo disattivato e token revocato"
   }
 }

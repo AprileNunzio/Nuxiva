@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Telemetria di collaudo in tempo reale per verificare Nuxiva su una macchina vera",
+    "en": "Real-time commissioning telemetry to verify Nuxiva on a real machine",
+    "fr": "Télémétrie de recette en temps réel pour vérifier Nuxiva sur une vraie machine",
+    "es": "Telemetría de puesta a punto en tiempo real para verificar Nuxiva en una máquina real"
+  },
+  "features": [
+    {
+      "it": "Nuovo flusso unico di eventi che unisce Sentinella, ascolto, errori, bus e risorse, senza dati personali, con registro a rotazione protetto da catena di integrità e accesso solo da localhost con token.",
+      "en": "New single event stream joining Sentinel, listening, errors, bus and resources, with no personal data, a rotating log protected by an integrity chain and access only from localhost with a token.",
+      "fr": "Nouveau flux unique d'événements réunissant Sentinelle, écoute, erreurs, bus et ressources, sans données personnelles, avec un journal à rotation protégé par une chaîne d'intégrité et un accès local uniquement avec jeton.",
+      "es": "Nuevo flujo único de eventos que une Centinela, escucha, errores, bus y recursos, sin datos personales, con un registro rotativo protegido por una cadena de integridad y acceso solo desde localhost con token."
+    },
+    {
+      "it": "Il comando «nuxivactl collaudo» offre flusso in diretta, rapporto, confronto con la base, prove sul dispositivo (webcam, microfono, ascolto, MCP, sandbox) e «diagnose» con esito per codice di uscita.",
+      "en": "The \"nuxivactl collaudo\" command offers a live stream, a report, comparison with a baseline, device checks (webcam, microphone, listening, MCP, sandbox) and \"diagnose\" with the result as exit code.",
+      "fr": "La commande « nuxivactl collaudo » propose un flux en direct, un rapport, une comparaison avec une base, des tests sur l'appareil (webcam, micro, écoute, MCP, bac à sable) et « diagnose » avec le résultat en code de sortie.",
+      "es": "El comando «nuxivactl collaudo» ofrece flujo en vivo, informe, comparación con una base, pruebas del dispositivo (webcam, micrófono, escucha, MCP, entorno aislado) y «diagnose» con el resultado como código de salida."
+    }
+  ],
+  "fixes": []
+}

@@ -86,6 +86,13 @@
     "units_masked": "Unité laissée intacte (masquée ou liée par l'administrateur) : %s",
     "units_invalid": "Unité ignorée car non valide : %s",
     "units_failed": "Impossible de mettre à jour l'unité système : %s",
-    "units_reload_failed": "systemd n'a pas rechargé les unités mises à jour"
+    "units_reload_failed": "systemd n'a pas rechargé les unités mises à jour",
+    "collaudo_usage": "Usage : nuxivactl collaudo on [--save] | off | status | mode on|off | mark ÉTIQUETTE | events [filtre=valeur...] | stream [filtre=valeur...] | verify | baseline [minutes] | report [minutes] | smoke [test...] | scenario NOM [secondes] | diagnose",
+    "collaudo_need_token": "Jeton manquant : lancez « sudo nuxivactl collaudo on » et exportez NUXIVA_COLLAUDO_TOKEN, ou utilisez --save",
+    "collaudo_unreachable": "Le superviseur ne répond pas",
+    "collaudo_refused": "Requête refusée",
+    "collaudo_saved": "Jeton enregistré dans",
+    "collaudo_token_note": "Jeton affiché une seule fois : exportez-le dans NUXIVA_COLLAUDO_TOKEN. Accès en local uniquement.",
+    "collaudo_disarmed": "Recette désactivée et jeton révoqué"
   }
 }

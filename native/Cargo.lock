@@ -1655,6 +1655,17 @@ name = "nuxiva-bus-core"
 version = "5.8.0"
 
 [[package]]
+name = "nuxiva-collaudo-core"
+version = "5.8.0"
+dependencies = [
+ "blake3",
+ "getrandom 0.3.4",
+ "serde",
+ "serde_json",
+ "zeroize",
+]
+
+[[package]]
 name = "nuxiva-config-core"
 version = "5.8.0"
 dependencies = [
@@ -2016,6 +2027,7 @@ dependencies = [
  "agency-forge",
  "agency-scheduler",
  "agency-thought",
+ "blake3",
  "ed25519-dalek",
  "nuxiva-access-core",
  "nuxiva-admin-os",
@@ -2024,6 +2036,7 @@ dependencies = [
  "nuxiva-audio-dsp",
  "nuxiva-authz-core",
  "nuxiva-bus-core",
+ "nuxiva-collaudo-core",
  "nuxiva-config-core",
  "nuxiva-context-core",
  "nuxiva-core-brain",

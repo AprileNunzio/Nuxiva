@@ -55,6 +55,7 @@ nuxiva-guard-core = { path = "../guard-core" }
 nuxiva-seal-core = { path = "../seal-core" }
 nuxiva-config-core = { path = "../config-core" }
 nuxiva-telemetry-core = { path = "../telemetry-core" }
+nuxiva-collaudo-core = { path = "../collaudo-core" }
 nuxiva-supervisor-core = { path = "../supervisor-core" }
 nuxiva-authz-core = { path = "../authz-core" }
 nuxiva-ear-core = { path = "../ear-core" }
@@ -79,6 +80,7 @@ nuxiva-matter-core = { path = "../matter-core" }
 pyo3 = { version = "0.28.3", features = ["abi3-py310"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+blake3 = { version = "1", default-features = false, features = ["std", "pure"] }
 zeroize = "1"
 ed25519-dalek = "2"
 ureq = { version = "3", default-features = false, features = ["rustls", "json"] }

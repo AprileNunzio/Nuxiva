@@ -1,0 +1,35 @@
+{
+  "capabilities": [
+    "Eventi tipizzati con id di correlazione, senza dati personali",
+    "Registro a rotazione con catena di integrità e indice",
+    "Flusso in tempo reale con token, solo su localhost",
+    "Rapporto di diagnosi e test di fumo del dispositivo"
+  ],
+  "category": "sistema",
+  "description": "Flusso unico e strutturato di eventi di Sentinella, ascolto, visione, supervisore, MCP ed errori per il collaudo su macchina reale, con rapporto di diagnosi e test di fumo.",
+  "icon": "📡",
+  "icon3d": "./icon.png",
+  "id": "collaudo",
+  "name": "Telemetria di collaudo",
+  "profile": {
+    "heavy": false,
+    "ram_mb": 64,
+    "vram_mb": 0
+  },
+  "routing": {
+    "nouns": [
+      "collaudo",
+      "telemetria",
+      "diagnosi"
+    ],
+    "phrases": [],
+    "verbs": []
+  },
+  "skills": [],
+  "tools": [
+    "collaudo_describe"
+  ],
+  "version": "1.0.0",
+  "widgets": [],
+  "api": "api.py"
+}

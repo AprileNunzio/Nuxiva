@@ -78,6 +78,9 @@ case "${1:-status}" in
           "\($title): \(.background.done)/\(.background.total) — \(.background.progress)%\(if .background.paused then " (in pausa)" else "" end)",
           (.background.items[] | "  \(if .status == "done" then "●" elif .status == "running" then "◐" else "○" end) \(.title) (\(.size_gb) GB): \(.status)")'
         ;;
+    collaudo)
+        exec bash "$SCRIPT_DIR/collaudo.sh" "${@:2}"
+        ;;
     version)
         git -c safe.directory='*' -C /opt/Nuxiva log -1 --format='%h %ci %s'
         ;;

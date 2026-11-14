@@ -1,0 +1,37 @@
+{
+  "capabilities": [
+    "Eventi tipizzati con id di correlazione, senza dati personali",
+    "Registro a rotazione con catena di integrità e indice",
+    "Flusso in tempo reale con token, solo su localhost",
+    "Rapporto di diagnosi e test di fumo del dispositivo"
+  ],
+  "description": "Flusso unico e strutturato di eventi di Sentinella, ascolto, visione, supervisore, MCP ed errori per il collaudo su macchina reale, con rapporto di diagnosi e test di fumo.",
+  "dictionary": {
+    "description": "Flusso unico e strutturato di eventi di Sentinella, ascolto, visione, supervisore, MCP ed errori per il collaudo su macchina reale, con rapporto di diagnosi e test di fumo.",
+    "name": "Telemetria di collaudo"
+  },
+  "hints": {
+    "aec_erle": "La cancellazione dell'eco è debole",
+    "barge_in": "L'interruzione della voce è troppo lenta",
+    "bus_roundtrip": "Il bus interno non risponde in tempo: guarda il supervisore",
+    "camera_frame": "La webcam non fornisce immagini: verifica il servizio visione e /dev/video",
+    "collaudo_chain": "Il registro di collaudo è stato alterato",
+    "ear_roundtrip": "Il servizio di ascolto non è pronto o è lento",
+    "mcp_discovery": "Nessuno strumento scoperto tramite MCP",
+    "microphone_level": "Il microfono è muto o saturo: verifica il dispositivo audio e il guadagno",
+    "music_rejected": "La musica è stata accettata come comando",
+    "no_runtime_errors": "Ci sono errori durante l'esecuzione: leggi gli eventi di dominio error",
+    "owner_voice_accepted": "La voce del proprietario non è stata accettata",
+    "parity": "Un test di parità tra Rust e Python è fallito",
+    "radio_rejected": "Una radio o un programma audio è stato accettato come comando",
+    "sandbox_exec": "Il comando nel sandbox non è riuscito",
+    "sentinel_chain": "La catena del registro di Sentinella è incrinata",
+    "services": "Controlla che i servizi nuxiva siano attivi con systemctl status",
+    "voice_first_audio": "Il primo suono della risposta arriva troppo tardi"
+  },
+  "meta": {
+    "locale": "it"
+  },
+  "name": "Telemetria di collaudo",
+  "scope": "features/collaudo"
+}

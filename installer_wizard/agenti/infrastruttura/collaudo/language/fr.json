@@ -1,0 +1,37 @@
+{
+  "capabilities": [
+    "Événements typés avec identifiants de corrélation, sans données personnelles",
+    "Journal à rotation avec chaîne d'intégrité et index",
+    "Flux en temps réel avec jeton, en local uniquement",
+    "Rapport de diagnostic et tests de fumée de l'appareil"
+  ],
+  "description": "Flux unique et structuré d'événements de Sentinelle, d'écoute, de vision, de superviseur, de MCP et d'erreurs pour tester sur une vraie machine, avec rapport de diagnostic et tests de fumée.",
+  "dictionary": {
+    "description": "Flux unique et structuré d'événements de Sentinelle, d'écoute, de vision, de superviseur, de MCP et d'erreurs pour tester sur une vraie machine, avec rapport de diagnostic et tests de fumée.",
+    "name": "Télémétrie de recette"
+  },
+  "hints": {
+    "aec_erle": "L'annulation d'écho est faible",
+    "barge_in": "L'interruption de la voix est trop lente",
+    "bus_roundtrip": "Le bus interne n'a pas répondu à temps : regardez le superviseur",
+    "camera_frame": "La webcam ne fournit pas d'images : vérifiez le service de vision et /dev/video",
+    "collaudo_chain": "Le journal de recette a été altéré",
+    "ear_roundtrip": "Le service d'écoute n'est pas prêt ou est lent",
+    "mcp_discovery": "Aucun outil découvert via MCP",
+    "microphone_level": "Le microphone est muet ou saturé : vérifiez le périphérique audio et le gain",
+    "music_rejected": "La musique a été acceptée comme commande",
+    "no_runtime_errors": "Des erreurs sont survenues à l'exécution : lisez les événements du domaine error",
+    "owner_voice_accepted": "La voix du propriétaire n'a pas été acceptée",
+    "parity": "Un test de parité entre Rust et Python a échoué",
+    "radio_rejected": "Une radio ou un programme audio a été accepté comme commande",
+    "sandbox_exec": "La commande dans le bac à sable a échoué",
+    "sentinel_chain": "La chaîne du journal de Sentinelle est rompue",
+    "services": "Vérifiez que les services nuxiva sont actifs avec systemctl status",
+    "voice_first_audio": "Le premier son de la réponse arrive trop tard"
+  },
+  "meta": {
+    "locale": "fr"
+  },
+  "name": "Télémétrie de recette",
+  "scope": "features/collaudo"
+}

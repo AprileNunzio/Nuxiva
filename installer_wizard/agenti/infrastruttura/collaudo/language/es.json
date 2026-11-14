@@ -1,0 +1,37 @@
+{
+  "capabilities": [
+    "Eventos tipados con ids de correlación, sin datos personales",
+    "Registro rotativo con cadena de integridad e índice",
+    "Flujo en tiempo real con token, solo en local",
+    "Informe de diagnóstico y pruebas de humo del dispositivo"
+  ],
+  "description": "Flujo único y estructurado de eventos de Centinela, escucha, visión, supervisor, MCP y errores para probar en una máquina real, con informe de diagnóstico y pruebas de humo.",
+  "dictionary": {
+    "description": "Flujo único y estructurado de eventos de Centinela, escucha, visión, supervisor, MCP y errores para probar en una máquina real, con informe de diagnóstico y pruebas de humo.",
+    "name": "Telemetría de puesta a punto"
+  },
+  "hints": {
+    "aec_erle": "La cancelación de eco es débil",
+    "barge_in": "La interrupción de la voz es demasiado lenta",
+    "bus_roundtrip": "El bus interno no respondió a tiempo: revisa el supervisor",
+    "camera_frame": "La webcam no da imágenes: revisa el servicio de visión y /dev/video",
+    "collaudo_chain": "El registro de puesta a punto fue alterado",
+    "ear_roundtrip": "El servicio de escucha no está listo o va lento",
+    "mcp_discovery": "No se descubrió ninguna herramienta mediante MCP",
+    "microphone_level": "El micrófono está mudo o saturado: revisa el dispositivo de audio y la ganancia",
+    "music_rejected": "La música se aceptó como comando",
+    "no_runtime_errors": "Hubo errores en ejecución: lee los eventos del dominio error",
+    "owner_voice_accepted": "No se aceptó la voz del propietario",
+    "parity": "Falló una prueba de paridad entre Rust y Python",
+    "radio_rejected": "Una radio o programa de audio se aceptó como comando",
+    "sandbox_exec": "El comando en el entorno aislado falló",
+    "sentinel_chain": "La cadena del registro de Centinela está rota",
+    "services": "Comprueba que los servicios nuxiva estén activos con systemctl status",
+    "voice_first_audio": "El primer sonido de la respuesta llega demasiado tarde"
+  },
+  "meta": {
+    "locale": "es"
+  },
+  "name": "Telemetría de puesta a punto",
+  "scope": "features/collaudo"
+}

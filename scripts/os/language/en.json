@@ -86,6 +86,13 @@
     "units_masked": "Unit left untouched (masked or linked by the administrator): %s",
     "units_invalid": "Unit skipped because it is not valid: %s",
     "units_failed": "Could not update the system unit: %s",
-    "units_reload_failed": "systemd did not reload the updated units"
+    "units_reload_failed": "systemd did not reload the updated units",
+    "collaudo_usage": "Usage: nuxivactl collaudo on [--save] | off | status | mode on|off | mark LABEL | events [filter=value...] | stream [filter=value...] | verify | baseline [minutes] | report [minutes] | smoke [probe...] | scenario NAME [seconds] | diagnose",
+    "collaudo_need_token": "Token missing: run \"sudo nuxivactl collaudo on\" and export NUXIVA_COLLAUDO_TOKEN, or use --save",
+    "collaudo_unreachable": "The supervisor is not responding",
+    "collaudo_refused": "Request refused",
+    "collaudo_saved": "Token saved to",
+    "collaudo_token_note": "Token shown only once: export it as NUXIVA_COLLAUDO_TOKEN. Access is localhost only.",
+    "collaudo_disarmed": "Commissioning disabled and token revoked"
   }
 }

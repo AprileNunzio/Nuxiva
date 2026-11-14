@@ -1,0 +1,37 @@
+{
+  "capabilities": [
+    "Typed events with correlation ids and no personal data",
+    "Rotating log with integrity chain and index",
+    "Real-time stream with token, localhost only",
+    "Diagnostic report and device smoke tests"
+  ],
+  "description": "A single structured stream of Sentinel, listening, vision, supervisor, MCP and error events for testing on a real machine, with a diagnostic report and smoke tests.",
+  "dictionary": {
+    "description": "A single structured stream of Sentinel, listening, vision, supervisor, MCP and error events for testing on a real machine, with a diagnostic report and smoke tests.",
+    "name": "Commissioning telemetry"
+  },
+  "hints": {
+    "aec_erle": "Echo cancellation is weak",
+    "barge_in": "Voice interruption is too slow",
+    "bus_roundtrip": "The internal bus did not answer in time: look at the supervisor",
+    "camera_frame": "The webcam gives no images: check the vision service and /dev/video",
+    "collaudo_chain": "The commissioning log was tampered with",
+    "ear_roundtrip": "The listening service is not ready or is slow",
+    "mcp_discovery": "No tool was discovered through MCP",
+    "microphone_level": "The microphone is silent or saturated: check the audio device and gain",
+    "music_rejected": "Music was accepted as a command",
+    "no_runtime_errors": "Errors occurred at runtime: read the error domain events",
+    "owner_voice_accepted": "The owner's voice was not accepted",
+    "parity": "A Rust versus Python parity test failed",
+    "radio_rejected": "A radio or audio programme was accepted as a command",
+    "sandbox_exec": "The sandboxed command failed",
+    "sentinel_chain": "The Sentinel log chain is broken",
+    "services": "Check that the nuxiva services are active with systemctl status",
+    "voice_first_audio": "The first sound of the reply arrives too late"
+  },
+  "meta": {
+    "locale": "en"
+  },
+  "name": "Commissioning telemetry",
+  "scope": "features/collaudo"
+}

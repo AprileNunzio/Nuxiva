@@ -23,18 +23,17 @@ import licensing_api
 import health
 from loops import supervisor as loop_supervisor
 import pages
-import registry_api
-import setup_api
+import registry_api, setup_api
 import packages_api
 import system_api
 import os_api, resource_api
 from os_memory import memory_manager
 from resource_manager import resource_manager
 import mesh_api
-import node_api
-import node_commands_api
+import node_api, node_commands_api
 from agenti.update_center import api as update_center_api
 import updater
+from agenti.collaudo import service as collaudo_service
 from config import ADMIN_PORT, PUBLIC_PORT, VERSION, env_get
 from https_guard import HttpsGuard
 from origin_guard import OriginGuard
@@ -389,6 +388,7 @@ async def serve_optional(server) -> None:
 
 BACKGROUND = (
     ("telemetria", telemetry_loop, 0.0),
+    ("collaudo", collaudo_service.run, 0.0),
     ("motore-nativo", native_reload_loop, 0.0),
     ("risorse", governor.run, 0.0),
     ("memoria-os", memory_manager.run, 0.0),

@@ -14,6 +14,7 @@ mod bus;
 mod capture;
 mod ceo;
 mod coderloop;
+mod collaudo;
 mod compute_lease;
 mod config;
 mod context;
@@ -154,6 +155,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     mcp::register(m)?;
     config::register(m)?;
     telemetry::register(m)?;
+    collaudo::register(m)?;
     supervisor::register(m)?;
     authz::register(m)?;
     home_rules::register(m)?;

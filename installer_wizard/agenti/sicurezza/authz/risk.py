@@ -57,7 +57,7 @@ TOOLS: dict[str, Risk] = {
     "debian_processes": Risk.PERSONAL, "debian_network": Risk.PERSONAL, "apt_search": Risk.INFO, "ssh_public_key": Risk.PERSONAL,
     "system_file_read": Risk.PERSONAL, "system_file_write": Risk.CRITICAL, "apt_install": Risk.CRITICAL, "apt_remove": Risk.CRITICAL,
     "apt_maintain": Risk.CRITICAL, "service_control": Risk.CRITICAL, "power_control": Risk.CRITICAL, "ssh_exec": Risk.CRITICAL,
-    "debian_shell": Risk.CRITICAL, "process_kill": Risk.CRITICAL,
+    "debian_shell": Risk.CRITICAL, "process_kill": Risk.CRITICAL, "collaudo_describe": Risk.INFO,
 }
 
 CONNECTORS: dict[str, Risk] = {

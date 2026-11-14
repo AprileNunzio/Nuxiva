@@ -9,6 +9,11 @@ try:
 except ImportError:
     from delivery import enqueue, close_delivery
 
+try:
+    from .collaudo_tap import observe as collaudo_observe
+except ImportError:
+    from collaudo_tap import observe as collaudo_observe
+
 logger = logging.getLogger("nuxiva.ear.broadcast")
 
 SESSIONS: set = set()
@@ -35,6 +40,7 @@ def all_sessions() -> set:
 
 async def broadcast_event(origin: Any = None, **event: Any) -> None:
     raw = dict(event)
+    collaudo_observe(origin, raw)
     data = json.dumps(raw)
     mirror = json.dumps({**raw, "origin": False}) if "origin" not in raw else data
     now = time.time()

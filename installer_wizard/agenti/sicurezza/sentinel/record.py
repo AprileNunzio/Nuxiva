@@ -4,6 +4,7 @@ import logging
 import threading
 import time
 
+from agenti.collaudo.taps import sentinel_event
 from agenti.desktop.privacy import flag
 from agenti.sentinel import vault
 from agenti.sentinel.journal import SentinelUnavailable, journal, new_id
@@ -49,7 +50,9 @@ def record(kind: str, subject: dict, key: str, params: dict | None = None, sensi
              "place": place, "narrative": {"key": key, "params": {k: str(v)[:120] for k, v in (params or {}).items()}},
              "sensitivity": sensitivity if sensitivity in SENSITIVITY else "household", "source": source, "links": []}
     try:
-        return journal.append(event)
+        stored = journal.append(event)
+        sentinel_event(event)
+        return stored
     except SentinelUnavailable:
         if not _warned.is_set():
             _warned.set()
