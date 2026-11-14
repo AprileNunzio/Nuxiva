@@ -13,6 +13,7 @@ mod brain;
 mod bus;
 mod capture;
 mod ceo;
+mod chat;
 mod coderloop;
 mod collaudo;
 mod compute_lease;
@@ -168,6 +169,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     lyrics::register(m)?;
     face::register(m)?;
     face_look::register(m)?;
+    chat::register(m)?;
     dialog::register(m)?;
     dialogue::register(m)?;
     transcript::register(m)?;

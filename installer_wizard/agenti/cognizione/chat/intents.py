@@ -1,4 +1,7 @@
 import re
+import threading
+
+import native_core
 
 from agenti.chat.templates import predictable
 
@@ -48,11 +51,33 @@ INTENTS = [
 ]
 
 
-def detect_intent(text: str) -> str:
+_native = None
+_lock = threading.Lock()
+
+
+def _engine():
+    global _native
+    if _native is None:
+        with _lock:
+            if _native is None:
+                factory = native_core.symbol("RustIntents")
+                _native = factory() if factory is not None else False
+    return _native or None
+
+
+def _py_detect_intent(text: str) -> str:
     for name, pattern in INTENTS:
         if pattern.search(text):
             return name
     return "conversation"
+
+
+def detect_intent(text: str) -> str:
+    engine = _engine()
+    if engine is None:
+        native_core.python_fallback("chat.intents")
+        return _py_detect_intent(text)
+    return engine.detect(text)
 
 
 def predict(text: str) -> dict:

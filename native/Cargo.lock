@@ -1655,6 +1655,13 @@ name = "nuxiva-bus-core"
 version = "5.8.0"
 
 [[package]]
+name = "nuxiva-chat-core"
+version = "5.8.0"
+dependencies = [
+ "regex",
+]
+
+[[package]]
 name = "nuxiva-collaudo-core"
 version = "5.8.0"
 dependencies = [
@@ -2036,6 +2043,7 @@ dependencies = [
  "nuxiva-audio-dsp",
  "nuxiva-authz-core",
  "nuxiva-bus-core",
+ "nuxiva-chat-core",
  "nuxiva-collaudo-core",
  "nuxiva-config-core",
  "nuxiva-context-core",

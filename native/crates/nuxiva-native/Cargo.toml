@@ -62,6 +62,7 @@ nuxiva-ear-core = { path = "../ear-core" }
 nuxiva-lyrics-core = { path = "../lyrics-core" }
 nuxiva-face-core = { path = "../face-core" }
 nuxiva-dialog-core = { path = "../dialog-core" }
+nuxiva-chat-core = { path = "../chat-core" }
 nuxiva-rescue-core = { path = "../rescue-core" }
 nuxiva-defense-core = { path = "../defense-core" }
 nuxiva-resource-core = { path = "../resource-core" }

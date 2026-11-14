@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14T09:20:00Z",
+  "title": {
+    "it": "Il riconoscimento delle richieste in chat ora gira in Rust",
+    "en": "Chat request recognition now runs in Rust",
+    "fr": "La reconnaissance des demandes du chat tourne désormais en Rust",
+    "es": "El reconocimiento de peticiones del chat ahora funciona en Rust"
+  },
+  "features": [
+    {
+      "it": "Capire se chiedi meteo, ora, musica, telecamere o altro è più rapido e usa un motore scritto in Rust, con lo stesso risultato di prima.",
+      "en": "Understanding whether you ask about weather, time, music, cameras or more is faster and uses an engine written in Rust, with the same results as before.",
+      "fr": "Comprendre si tu demandes la météo, l'heure, la musique, les caméras ou autre est plus rapide et utilise un moteur écrit en Rust, avec les mêmes résultats qu'avant.",
+      "es": "Entender si pides el tiempo, la hora, música, cámaras u otra cosa es más rápido y usa un motor escrito en Rust, con los mismos resultados de antes."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Frasi molto lunghe o con caratteri strani non possono più rallentare il riconoscimento delle richieste.",
+      "en": "Very long phrases or odd characters can no longer slow down request recognition.",
+      "fr": "Les phrases très longues ou avec des caractères étranges ne peuvent plus ralentir la reconnaissance des demandes.",
+      "es": "Las frases muy largas o con caracteres extraños ya no pueden ralentizar el reconocimiento de peticiones."
+    }
+  ]
+}
