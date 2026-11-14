@@ -61,6 +61,7 @@ mod nvr;
 mod percept;
 mod planner;
 mod presence;
+mod proactivity;
 mod reflect;
 mod rescue;
 mod rescue_ear;
@@ -285,6 +286,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     coderloop::register(m)?;
     reflect::register(m)?;
     initiative::register(m)?;
+    proactivity::register(m)?;
     duplex::register(m)?;
     duplex_stream::register(m)?;
     m.add_function(wrap_pyfunction!(mastery::mastery_evaluate, m)?)?;

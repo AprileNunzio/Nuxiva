@@ -1,0 +1,19 @@
+{
+  "id": "proactive",
+  "name": "Iniziative di Nuxiva",
+  "icon": "💡",
+  "priority": 31,
+  "size": "s",
+  "intents": [
+    "nuxiva_proactive"
+  ],
+  "description": "Le iniziative che Nuxiva prende da sola, con il perché di ognuna e la possibilità di rifiutarle o annullarle.",
+  "ttl": 3600,
+  "tone": "amber",
+  "category": "info",
+  "chrome": false,
+  "simple": {
+    "icon": "brain",
+    "mode": "open"
+  }
+}

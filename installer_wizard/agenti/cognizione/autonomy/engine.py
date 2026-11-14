@@ -167,10 +167,16 @@ class Autonomy:
         for proposal in initiative.poll_projects():
             journal.write("idee", "Idea di Nuxiva", f"Proposta {proposal['summary_key']}: {proposal['subject']}")
 
+    async def _proactive(self) -> None:
+        from agenti.autonomy import proactivity
+        for decision in proactivity.tick():
+            journal.write("proattivita", "Iniziativa di Nuxiva", f"{decision['summary_key']}: {decision['rule']}")
+
     async def autopilot(self) -> None:
         for name, step in (
             ("salute", self._health),
             ("idee", self._ideas),
+            ("proattivita", self._proactive),
             ("studio", self._gaps),
             ("catalogo_3d", self._night_3d_catalog),
             ("riepilogo", self._digest),
@@ -183,6 +189,8 @@ class Autonomy:
 
 
     async def run(self) -> None:
+        from agenti.autonomy import proactivity_bridge
+        proactivity_bridge.install()
         await asyncio.sleep(60)
         while True:
             if enabled() and store.phase in ("READY", "DEGRADED"):

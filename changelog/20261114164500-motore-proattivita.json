@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Nuxiva prende l'iniziativa senza parola di attivazione",
+    "en": "Nuxiva takes the initiative without a wake word",
+    "fr": "Nuxiva prend l'initiative sans mot d'activation",
+    "es": "Nuxiva toma la iniciativa sin palabra de activación"
+  },
+  "features": [
+    {
+      "it": "Nuxiva ora osserva ciò che succede in casa (presenza, orari, calendario, salute, email, sicurezza) e decide da sola se e quando proporti qualcosa, senza bisogno di chiamarla. Ogni iniziativa ha un «Perché?» che spiega il motivo e, se è stata fatta da sola, un pulsante per annullarla.",
+      "en": "Nuxiva now watches what happens at home (presence, schedule, calendar, health, email, security) and decides by itself whether and when to suggest something, without being called. Every initiative has a «Why?» that explains the reason and, if it was done on its own, an undo button.",
+      "fr": "Nuxiva observe maintenant ce qui se passe à la maison (présence, horaires, agenda, santé, e-mails, sécurité) et décide seule si et quand te proposer quelque chose, sans qu'on l'appelle. Chaque initiative a un «Pourquoi ?» qui explique la raison et, si elle a été faite seule, un bouton pour l'annuler.",
+      "es": "Nuxiva ahora observa lo que pasa en casa (presencia, horarios, agenda, salud, correo, seguridad) y decide sola si y cuándo proponerte algo, sin que la llames. Cada iniciativa tiene un «¿Por qué?» que explica el motivo y, si se hizo sola, un botón para deshacerla."
+    },
+    {
+      "it": "Rispetta chi c'è in casa: i contenuti privati (salute, email) aspettano che tu sia da solo, con gli ospiti i dettagli vengono nascosti. Ci sono limiti di disturbo per ora e per persona, ore di silenzio, e le cose urgenti passano comunque.",
+      "en": "It respects who is at home: private content (health, email) waits until you are alone, and with guests the details are hidden. There are interruption limits per hour and per person, quiet hours, and urgent things still get through.",
+      "fr": "Elle respecte qui est à la maison : les contenus privés (santé, e-mails) attendent que tu sois seul, et avec des invités les détails sont masqués. Il y a des limites de dérangement par heure et par personne, des heures calmes, et les urgences passent quand même.",
+      "es": "Respeta a quien está en casa: los contenidos privados (salud, correo) esperan a que estés solo y, con invitados, los detalles se ocultan. Hay límites de molestia por hora y por persona, horas de silencio, y lo urgente pasa igualmente."
+    },
+    {
+      "it": "Impara dalle tue risposte: se accetti, si fida di più; se rifiuti o annulli, chiede prima o smette per un po'. Non apre mai porte né fa azioni irreversibili da sola, e ogni azione passa dagli strumenti protetti.",
+      "en": "It learns from your answers: if you accept it trusts more; if you refuse or undo it asks first or stops for a while. It never opens doors or does irreversible actions on its own, and every action goes through the protected tools.",
+      "fr": "Elle apprend de tes réponses : si tu acceptes elle a plus confiance ; si tu refuses ou annules elle demande d'abord ou s'arrête un moment. Elle n'ouvre jamais de portes ni ne fait d'actions irréversibles seule, et chaque action passe par les outils protégés.",
+      "es": "Aprende de tus respuestas: si aceptas confía más; si rechazas o deshaces pregunta antes o se detiene un tiempo. Nunca abre puertas ni hace acciones irreversibles sola, y cada acción pasa por las herramientas protegidas."
+    }
+  ],
+  "fixes": []
+}

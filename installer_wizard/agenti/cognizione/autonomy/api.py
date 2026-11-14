@@ -124,3 +124,50 @@ async def admin_idea_refuse(idea_id: int, _: str = Depends(require_admin)):
     if not initiative.refuse(idea_id):
         raise HTTPException(404, "idea_unknown")
     return {"ok": True}
+
+
+@admin_routes.get("/api/autonomy/proactive")
+async def admin_proactive(_: str = Depends(require_admin)):
+    from agenti.autonomy import proactivity
+    return proactivity.snapshot()
+
+
+@admin_routes.get("/api/autonomy/proactive/{decision_id}/why")
+async def admin_proactive_why(decision_id: int, _: str = Depends(require_admin)):
+    from agenti.autonomy import proactivity
+    found = proactivity.explain(decision_id)
+    if found is None:
+        raise HTTPException(404, "decision_unknown")
+    return found
+
+
+@admin_routes.post("/api/autonomy/proactive/{decision_id}/accept")
+async def admin_proactive_accept(decision_id: int, _: str = Depends(require_admin)):
+    from agenti.autonomy import proactivity
+    if not proactivity.accept(decision_id):
+        raise HTTPException(404, "decision_unknown")
+    return {"ok": True}
+
+
+@admin_routes.post("/api/autonomy/proactive/{decision_id}/refuse")
+async def admin_proactive_refuse(decision_id: int, _: str = Depends(require_admin)):
+    from agenti.autonomy import proactivity
+    if not proactivity.refuse(decision_id):
+        raise HTTPException(404, "decision_unknown")
+    return {"ok": True}
+
+
+@admin_routes.post("/api/autonomy/proactive/{decision_id}/undo")
+async def admin_proactive_undo(decision_id: int, _: str = Depends(require_admin)):
+    from agenti.autonomy import proactivity
+    if not proactivity.undo(decision_id):
+        raise HTTPException(404, "decision_unknown")
+    return {"ok": True}
+
+
+@admin_routes.post("/api/autonomy/proactive/{decision_id}/dismiss")
+async def admin_proactive_dismiss(decision_id: int, _: str = Depends(require_admin)):
+    from agenti.autonomy import proactivity
+    if not proactivity.dismiss(decision_id):
+        raise HTTPException(404, "decision_unknown")
+    return {"ok": True}

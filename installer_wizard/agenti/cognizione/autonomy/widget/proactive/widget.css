@@ -1,0 +1,6 @@
+.w-proactive .pa-list { margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.w-proactive .pa-card { display: flex; flex-direction: column; gap: 8px; }
+.w-proactive .pa-text { font-size: 14px; line-height: 1.35; }
+.w-proactive .pa-act { display: flex; gap: 8px; flex-wrap: wrap; }
+.w-proactive .pa-why { margin: 0; padding: 0 0 0 16px; font-size: 12px; opacity: 0.8; display: flex; flex-direction: column; gap: 4px; }
+.w-proactive .pa-sub { margin: 12px 0 0; font-size: 12px; opacity: 0.7; }

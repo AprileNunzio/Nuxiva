@@ -28,6 +28,7 @@
   },
   "surface": "hidden",
   "widgets": [
-    "ideas"
+    "ideas",
+    "proactive"
   ]
 }
