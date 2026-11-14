@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::sync::{Arc, Mutex, PoisonError};
 
 use nuxiva_mcp_core::{CallRequest, Hub, McpError};
@@ -47,9 +47,12 @@ impl Pending {
     }
 }
 
+pub type Declared = BTreeMap<String, BTreeSet<String>>;
+
 pub struct McpWorker {
     hub: Arc<Hub>,
     pending: Pending,
+    declared: Declared,
 }
 
 impl std::fmt::Debug for McpWorker {
@@ -71,21 +74,85 @@ fn kind_of(error: McpError) -> WorkerErrorKind {
     }
 }
 
+const TEXT_ARGS: [&str; 6] = ["goal", "query", "text", "prompt", "message", "input"];
+
+fn is_string(schema: &Value, name: &str) -> bool {
+    schema
+        .get("properties")
+        .and_then(|p| p.get(name))
+        .and_then(|p| p.get("type"))
+        .and_then(Value::as_str)
+        == Some("string")
+}
+
+#[must_use]
+pub fn arguments_for(schema: &Value, text: &str) -> Option<Map<String, Value>> {
+    let properties = schema.get("properties").and_then(Value::as_object);
+    let required: Vec<&str> = schema
+        .get("required")
+        .and_then(Value::as_array)
+        .map(|r| r.iter().filter_map(Value::as_str).collect())
+        .unwrap_or_default();
+    let strings: Vec<&str> = properties
+        .map(|p| {
+            p.keys()
+                .map(String::as_str)
+                .filter(|k| is_string(schema, k))
+                .collect()
+        })
+        .unwrap_or_default();
+    let target = TEXT_ARGS
+        .iter()
+        .copied()
+        .find(|k| strings.contains(k))
+        .or_else(|| match required.as_slice() {
+            [only] if strings.contains(only) => Some(*only),
+            [] => match strings.as_slice() {
+                [only] => Some(*only),
+                _ => None,
+            },
+            _ => None,
+        })?;
+    if required.iter().any(|r| *r != target) {
+        return None;
+    }
+    let mut arguments = Map::new();
+    arguments.insert(target.to_owned(), Value::String(text.to_owned()));
+    Some(arguments)
+}
+
 impl McpWorker {
     #[must_use]
-    pub fn new(hub: Arc<Hub>, pending: Pending) -> Self {
-        Self { hub, pending }
+    pub fn new(hub: Arc<Hub>, pending: Pending, declared: Declared) -> Self {
+        Self {
+            hub,
+            pending,
+            declared,
+        }
     }
 
-    fn pick(&self, intent: &str) -> Option<String> {
+    fn pick(&self, agent: &str, intent: &str) -> Result<(String, Value), &'static str> {
         let snapshot = self.hub.registry().snapshot();
-        let mut ids: Vec<&str> = snapshot
+        let names = self.declared.get(agent);
+        let mut owned: Vec<_> = snapshot
+            .iter()
+            .filter(|e| names.is_some_and(|n| n.contains(&e.remote_name)))
+            .collect();
+        if owned.is_empty() {
+            owned = snapshot.iter().filter(|e| e.server == agent).collect();
+        }
+        owned.sort_by(|a, b| a.id.cmp(&b.id));
+        let narrowed: Vec<_> = owned
             .iter()
             .filter(|e| e.id.contains(intent) || e.remote_name.contains(intent))
-            .map(|e| e.id.as_str())
             .collect();
-        ids.sort_unstable();
-        ids.first().map(|s| (*s).to_owned())
+        let chosen = match (owned.as_slice(), narrowed.as_slice()) {
+            ([], _) => return Err("no-tool"),
+            ([only], _) => only,
+            (_, [one]) => *one,
+            _ => return Err("ambiguous-tool"),
+        };
+        Ok((chosen.id.clone(), chosen.spec.input_schema.clone()))
     }
 }
 
@@ -95,12 +162,16 @@ impl Worker for McpWorker {
             let Some(utterance) = self.pending.get(context.task.id.as_str()) else {
                 return Err(error(&context, WorkerErrorKind::Invalid, "no-input"));
             };
-            let Some(tool) = self.pick(context.step.intent.as_str()) else {
-                return Err(error(&context, WorkerErrorKind::Unavailable, "no-tool"));
+            let (tool, schema) = self
+                .pick(
+                    context.step.worker_template.as_str(),
+                    context.step.intent.as_str(),
+                )
+                .map_err(|code| error(&context, WorkerErrorKind::Unavailable, code))?;
+            let Some(arguments) = arguments_for(&schema, &utterance.text) else {
+                return Err(error(&context, WorkerErrorKind::Invalid, "bad-arguments"));
             };
             context.charge_call()?;
-            let mut arguments = Map::new();
-            arguments.insert("goal".to_owned(), Value::String(utterance.text));
             let request = CallRequest {
                 tool: tool.clone(),
                 principal: utterance.principal,

@@ -136,8 +136,9 @@ fn expired_catalog_is_refused() {
 #[test]
 fn agents_come_from_the_existing_registry() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../installer_wizard/agenti");
-    let (catalog, _index) = load_agents(&root, &Settings::default()).expect("agents");
+    let (catalog, _index, declared) = load_agents(&root, &Settings::default()).expect("agents");
     assert!(!catalog.is_empty());
+    assert!(declared.values().any(|tools| !tools.is_empty()));
 }
 
 #[tokio::test]

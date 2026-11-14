@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Ogni agente usa solo i propri strumenti",
+    "en": "Each agent uses only its own tools",
+    "fr": "Chaque agent n'utilise que ses propres outils",
+    "es": "Cada agente usa solo sus propias herramientas"
+  },
+  "features": [
+    {
+      "it": "Il motore centrale sceglie gli strumenti tra quelli dichiarati dall'agente e compila gli argomenti secondo la loro descrizione. Se la scelta è ambigua, si ferma senza indovinare.",
+      "en": "The central engine picks tools among those the agent declares and fills the arguments according to their description. If the choice is ambiguous, it stops instead of guessing.",
+      "fr": "Le moteur central choisit parmi les outils déclarés par l'agent et remplit les arguments selon leur description. Si le choix est ambigu, il s'arrête sans deviner.",
+      "es": "El motor central elige entre las herramientas que declara el agente y rellena los argumentos según su descripción. Si la elección es ambigua, se detiene sin adivinar."
+    }
+  ]
+}

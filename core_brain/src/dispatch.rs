@@ -5,12 +5,12 @@ use std::sync::{Arc, PoisonError, RwLock};
 use nuxiva_agent_core::ceo::{self, Index, Learned};
 use nuxiva_mcp_core::Hub;
 use nuxiva_swarm_core::{
-    Admission, CancelToken, Catalog, Executor, Factory, GraphGate, Ident, Plan, Report, Request,
-    Settings, Supervisor, TaskEnvelope, Worker,
+    Admission, CancelToken, Catalog, Executor, Factory, GraphGate, Ident, Plan, Planner, Report,
+    Request, Settings, Supervisor, TaskEnvelope, Worker,
 };
 
 use crate::error::{BrainError, BrainResult};
-use crate::worker::{McpWorker, Pending, Utterance};
+use crate::worker::{Declared, McpWorker, Pending, Utterance};
 
 const MAX_TEXT_BYTES: usize = 8 * 1024;
 const RISK_CEILING: u8 = 2;
@@ -33,6 +33,7 @@ pub struct Dispatcher {
     pending: Pending,
     cancel: RwLock<CancelToken>,
     counter: AtomicU64,
+    planner: Option<Arc<dyn Planner>>,
 }
 
 impl std::fmt::Debug for Dispatcher {
@@ -51,9 +52,10 @@ impl Dispatcher {
         settings: Settings,
         index: Index,
         hub: Arc<Hub>,
+        declared: Declared,
     ) -> BrainResult<Self> {
         let pending = Pending::default();
-        let worker: Arc<dyn Worker> = Arc::new(McpWorker::new(hub, pending.clone()));
+        let worker: Arc<dyn Worker> = Arc::new(McpWorker::new(hub, pending.clone(), declared));
         let kinds: BTreeSet<String> = catalog.templates().map(|t| t.kind.clone()).collect();
         let mut factory = Factory::new();
         for kind in &kinds {
@@ -75,7 +77,14 @@ impl Dispatcher {
             pending,
             cancel: RwLock::new(CancelToken::new()),
             counter: AtomicU64::new(0),
+            planner: None,
         })
+    }
+
+    #[must_use]
+    pub fn with_planner(mut self, planner: Arc<dyn Planner>) -> Self {
+        self.planner = Some(planner);
+        self
     }
 
     pub fn cancel_all(&self) {
@@ -118,7 +127,7 @@ impl Dispatcher {
         };
         let plan = self
             .supervisor
-            .plan(&task, &decision, text, None, now_ms)
+            .plan(&task, &decision, text, self.planner.as_deref(), now_ms)
             .map_err(swarm)?;
         self.run(task, plan, text, principal, now_ms).await
     }

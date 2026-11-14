@@ -69,9 +69,15 @@ async fn assemble() -> BrainResult<Assembled> {
         public_key: env_path("NUXIVA_MCP_PUBLIC_KEY"),
     };
     let swarm_settings = SwarmSettings::default();
-    let (catalog, index) = load_agents(&paths.agents, &swarm_settings)?;
+    let (catalog, index, declared) = load_agents(&paths.agents, &swarm_settings)?;
     let (hub, _serial) = build_hub(&paths)?;
-    let dispatcher = Arc::new(Dispatcher::new(catalog, swarm_settings, index, hub)?);
+    let dispatcher = Arc::new(Dispatcher::new(
+        catalog,
+        swarm_settings,
+        index,
+        hub,
+        declared,
+    )?);
     let (supervisor, events) = Supervisor::start(pipeline, memory, SupervisorConfig::default());
     Ok(Assembled {
         supervisor,

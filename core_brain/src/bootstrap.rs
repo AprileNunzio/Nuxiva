@@ -8,6 +8,7 @@ use nuxiva_mcp_core::{Hub, SignedCatalog, verify_catalog};
 use nuxiva_swarm_core::{Catalog, Settings};
 
 use crate::error::{BrainError, BrainResult};
+use crate::worker::Declared;
 
 const MAX_CATALOG_BYTES: u64 = 1024 * 1024;
 
@@ -33,7 +34,7 @@ pub fn card_of(manifest: &Manifest) -> Card {
     }
 }
 
-pub fn load_agents(root: &Path, settings: &Settings) -> BrainResult<(Catalog, Index)> {
+pub fn load_agents(root: &Path, settings: &Settings) -> BrainResult<(Catalog, Index, Declared)> {
     let mut registry = Registry::new();
     registry.refresh(&[Root {
         path: root.to_path_buf(),
@@ -48,7 +49,11 @@ pub fn load_agents(root: &Path, settings: &Settings) -> BrainResult<(Catalog, In
         .collect();
     let catalog = Catalog::build(&manifests, settings).map_err(dispatch)?;
     let cards = manifests.iter().map(card_of).collect();
-    Ok((catalog, Index::new(cards)))
+    let declared = manifests
+        .iter()
+        .map(|m| (m.id.clone(), m.tools.iter().cloned().collect()))
+        .collect();
+    Ok((catalog, Index::new(cards), declared))
 }
 
 fn read_capped(path: &Path) -> BrainResult<Vec<u8>> {

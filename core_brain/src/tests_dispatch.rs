@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -84,9 +84,10 @@ fn hub(with_server: bool) -> Arc<Hub> {
 
 fn dispatcher(hub: Arc<Hub>) -> Dispatcher {
     let settings = Settings::default();
-    let raw = r#"{"id":"casa","name":"casa","capabilities":["Lavoro"],"worker":{"kind":"mcp","concurrency_max":2,"needs_graph":false}}"#;
+    let raw = r#"{"id":"casa","name":"casa","capabilities":["Lavoro"],"tools":["lavoro"],"worker":{"kind":"mcp","concurrency_max":2,"needs_graph":false}}"#;
     let manifest = validate(raw, "casa", None).manifest.expect("manifest");
     let catalog = Catalog::build(&[manifest], &settings).expect("catalog");
+    let declared = BTreeMap::from([("casa".to_owned(), BTreeSet::from(["lavoro".to_owned()]))]);
     let card = Card {
         id: "casa".into(),
         name: "casa".into(),
@@ -97,7 +98,7 @@ fn dispatcher(hub: Arc<Hub>) -> Dispatcher {
         phrases: vec![r"\blavoro\b".into()],
         ..Card::default()
     };
-    Dispatcher::new(catalog, settings, Index::new(vec![card]), hub).expect("dispatcher")
+    Dispatcher::new(catalog, settings, Index::new(vec![card]), hub, declared).expect("dispatcher")
 }
 
 async fn ready(hub: &Hub) {
@@ -217,5 +218,60 @@ async fn router_turns_heard_events_into_outcomes() {
             })
         )),
         "{seen:?}"
+    );
+}
+
+#[test]
+fn arguments_follow_the_tool_schema() {
+    use crate::arguments_for;
+    use serde_json::json;
+    let goal = json!({"type":"object","properties":{"goal":{"type":"string"}},"required":["goal"]});
+    assert_eq!(
+        arguments_for(&goal, "x").expect("a").get("goal"),
+        Some(&json!("x"))
+    );
+    let sole = json!({"type":"object","properties":{"cosa":{"type":"string"},"n":{"type":"integer"}},"required":["cosa"]});
+    assert!(arguments_for(&sole, "x").expect("a").contains_key("cosa"));
+    let two = json!({"type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"}},"required":["a","b"]});
+    assert!(arguments_for(&two, "x").is_none());
+    let extra = json!({"type":"object","properties":{"query":{"type":"string"},"limit":{"type":"integer"}},"required":["query","limit"]});
+    assert!(arguments_for(&extra, "x").is_none());
+    assert!(arguments_for(&json!({"type":"object"}), "x").is_none());
+}
+
+#[tokio::test]
+async fn tools_of_other_agents_are_never_used() {
+    let hub = hub(true);
+    ready(&hub).await;
+    let settings = Settings::default();
+    let raw = r#"{"id":"altro","name":"altro","capabilities":["Lavoro"],"worker":{"kind":"mcp","concurrency_max":2,"needs_graph":false}}"#;
+    let manifest = validate(raw, "altro", None).manifest.expect("manifest");
+    let catalog = Catalog::build(&[manifest], &settings).expect("catalog");
+    let card = Card {
+        id: "altro".into(),
+        name: "altro".into(),
+        capabilities: vec!["Lavoro".into()],
+        nouns: vec!["lavoro".into()],
+        phrases: vec![r"\blavoro\b".into()],
+        ..Card::default()
+    };
+    let d = Dispatcher::new(
+        catalog,
+        settings,
+        Index::new(vec![card]),
+        hub,
+        BTreeMap::new(),
+    )
+    .expect("d");
+    let out = d.dispatch("avvia il lavoro adesso", "nunzio", 1).await;
+    assert!(
+        matches!(
+            out,
+            Ok(Dispatched::Executed {
+                succeeded: false,
+                ..
+            }) | Err(BrainError::Dispatch(_))
+        ),
+        "{out:?}"
     );
 }

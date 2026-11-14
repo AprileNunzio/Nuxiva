@@ -26,7 +26,7 @@ pub use model::{ModelSpec, SPEAKER_MODEL, digest_hex};
 pub use router::{Outcome, route};
 pub use sensory::{Decision, Embedder, Frame, Layer, SensoryPipeline, SharedPipeline};
 pub use supervisor::{Event, Supervisor, SupervisorConfig};
-pub use worker::{McpWorker, Pending, Utterance};
+pub use worker::{Declared, McpWorker, Pending, Utterance, arguments_for};
 
 #[cfg(test)]
 #[allow(
