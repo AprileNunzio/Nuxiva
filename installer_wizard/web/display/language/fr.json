@@ -369,7 +369,7 @@
     "btn_agency": "Projets",
     "agency_title": "NunzioTech Agency",
     "agency_sub": "NunzioTech Agency · Bureau 3D Multi-Agents au travail",
-    "agency_office_kicker": "NunzioTech Agency · Bureau 3D Isométrique",
+    "agency_office_kicker": "NunzioTech Agency · Salle de laboratoire 3D",
     "agency_brain_title": "Cerveau Partagé",
     "agency_brain_rules": "{{n}} règles et instructions globales",
     "agency_brain_reviews": "{{n}} détails de révision",
@@ -519,6 +519,19 @@
     "wx_air_days": "Air et pollens les prochains jours",
     "wx_radar": "Radar de pluie",
     "wx_radar_credit": "Dernières images radar · RainViewer, OpenStreetMap",
-    "wx_model": "modèle {{model}}, le plus précis ici"
+    "wx_model": "modèle {{model}}, le plus précis ici",
+    "lab_state_working": "Au travail",
+    "lab_state_waiting": "En attente",
+    "lab_state_consulting": "Discute avec {{name}}",
+    "lab_state_review": "Attend la révision",
+    "lab_state_error": "A un problème",
+    "lab_state_done": "Terminé",
+    "lab_state_paused": "En pause",
+    "lab_state_idle": "Libre",
+    "lab_ceo_title": "Directeur",
+    "lab_brain_title": "Cerveau partagé",
+    "lab_brain_tip": "{{decisions}} décisions, {{questions}} questions ouvertes",
+    "lab_screen_attempts": "Essai {{n}}",
+    "lab_wall_kicker": "NunzioTech Agency"
   }
 }

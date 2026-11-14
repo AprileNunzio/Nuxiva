@@ -311,7 +311,7 @@
       toggle.hidden = !["running", "paused"].includes(p.status);
       window.PageText.bind(toggle, p.status === "paused" ? "agency_resume" : "agency_pause");
 
-      office3d.update(office);
+      office3d.update(office, { title: p.title, goal: p.goal, percent: p.percent || 0, status: p.status, counts: p.counts || {} });
       renderRoster(office);
       renderKanban(office);
       window.NuxivaAgencyGraph.render(svg, p.tasks || [], status);

@@ -64,6 +64,11 @@ Models installed manually are shown with "license unknown" until the administrat
   [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/), distributed with the three.js examples.
 - **Michelle** character and **X Bot** animations (idle, walk, run, agree, head shake, sad, sneak, samba) used by the
   animated 3D character: Adobe Mixamo assets, royalty-free, downloaded at runtime from the three.js examples (MIT).
+- **Mini Characters** by [Kenney](https://kenney.nl/assets/mini-characters), CC0 1.0 (no attribution required; credited anyway),
+  used as the agents of the 3D agency lab on page 80 (12 characters with idle, walk, sit and gesture animations), in the
+  meshopt-optimized copy of `@netforge/asset-library-files` (MIT package, CC0 art). Details in
+  `installer_wizard/web/display/agency/lab/assets/CREDITS.md`.
+- **meshoptimizer** decoder by Arseny Kapoulkine, MIT, bundled to read the compressed lab characters.
 - **Wikimedia Commons images** shown on the whiteboard and in presentations: only files under CC0, public domain, CC BY
   or CC BY-SA are used, and each one is captioned with its author and license (also in PDF exports).
 - **Wikipedia text** returned by web search: CC BY-SA 4.0, with source links.
