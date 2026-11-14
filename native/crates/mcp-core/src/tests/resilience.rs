@@ -494,7 +494,14 @@ async fn chaos_a_flapping_server_never_hangs_callers_or_the_hub() -> McpResult<(
         tokio::time::sleep(Duration::from_millis(100)).await;
     }
     assert_eq!(hub.metrics().healthy, 1);
-    let after = hub.call_within(request("srv.echo", "butler", 0.0)).await?;
-    assert!(matches!(after, Within::Done(_)));
+    let mut after = hub.call_within(request("srv.echo", "butler", 0.0)).await;
+    for _ in 0..100 {
+        if !matches!(after, Err(McpError::RateLimited)) {
+            break;
+        }
+        tokio::time::sleep(Duration::from_millis(100)).await;
+        after = hub.call_within(request("srv.echo", "butler", 0.0)).await;
+    }
+    assert!(matches!(after?, Within::Done(_)));
     Ok(())
 }

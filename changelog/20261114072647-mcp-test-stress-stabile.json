@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Test di stress MCP reso stabile",
+    "en": "MCP stress test made stable",
+    "fr": "Test de charge MCP rendu stable",
+    "es": "Prueba de estrés MCP estabilizada"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Il test di stress del server instabile nel client MCP non fallisce più per il limite di chiamate subito dopo la raffica.",
+      "en": "The MCP client flapping-server stress test no longer fails on the call rate limit right after the burst.",
+      "fr": "Le test de charge du serveur instable du client MCP n'échoue plus à cause de la limite de débit juste après la rafale.",
+      "es": "La prueba de estrés del servidor inestable del cliente MCP ya no falla por el límite de llamadas justo después de la ráfaga."
+    }
+  ]
+}
