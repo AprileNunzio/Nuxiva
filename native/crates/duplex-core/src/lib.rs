@@ -9,6 +9,7 @@ mod pipeline;
 mod session;
 mod settings;
 mod state;
+mod window;
 
 pub use barge::{
     Backchannel, BargeDetector, BargeSettings, BargeStats, Decision, Evidence, PreRoll, Risk,
@@ -22,6 +23,10 @@ pub use pipeline::{Metrics, Pipeline, Synth};
 pub use session::{CutReport, Event, EventKind, Interruption, Session, Snapshot};
 pub use settings::{MAX_SETTINGS_BYTES, PROTOCOL_VERSION, Settings};
 pub use state::{State, Trigger};
+pub use window::{
+    CONFIRM_WINDOWS, KNOWN_BONUS, MIN_RUNNER_GAP, WINDOW_MS, WindowInput, judge_window,
+    windowed_settings,
+};
 
 #[cfg(test)]
 #[allow(
@@ -68,3 +73,11 @@ mod tests_perf;
     clippy::cast_possible_truncation
 )]
 mod tests_stream;
+#[cfg(test)]
+#[allow(
+    clippy::expect_used,
+    clippy::arithmetic_side_effects,
+    clippy::panic,
+    clippy::indexing_slicing
+)]
+mod tests_window;

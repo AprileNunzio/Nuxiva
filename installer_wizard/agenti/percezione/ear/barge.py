@@ -1,11 +1,17 @@
 import json
 import logging
+import math
 from pathlib import Path
 
 log = logging.getLogger("nuxiva.ear.barge")
 CATALOG = Path(__file__).with_name("backchannel.json")
 VERDICTS = ("known", "guest", "broadcast", "uncertain")
 DEFAULTS = {"min_voiced_ms": 250, "duck_after_ms": 100, "duck_ms": 3000, "min_margin_permille": 600, "guest_may_interrupt": True, "cooldown_ms": 400, "pre_roll_ms": 600}
+
+
+WINDOWED = {"min_voiced_ms": 750, "duck_after_ms": 250, "duck_ms": 3000, "min_margin_permille": 120, "guest_may_interrupt": False, "cooldown_ms": 1500, "pre_roll_ms": 600}
+KNOWN_BONUS = 0.12
+MIN_RUNNER_GAP = 0.10
 
 
 def native():
@@ -21,8 +27,8 @@ def may_command(verdict: str, risk: str) -> bool:
 
 
 class PyBarge:
-    def __init__(self, settings_json: str = ""):
-        self._cfg = {**DEFAULTS, **(json.loads(settings_json) if settings_json else {})}
+    def __init__(self, settings_json: str = "", windowed: bool = False):
+        self._cfg = {**DEFAULTS, **(WINDOWED if windowed else json.loads(settings_json) if settings_json else {})}
         catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
         self._max_words, self._fillers = catalog["max_words"], {f.lower() for f in catalog["fillers"]}
         self._voiced, self._ducked, self._cooldown = 0, None, 0
@@ -74,6 +80,17 @@ class PyBarge:
     def tick(self, now: int) -> str:
         return self._restore(now)
 
+    @staticmethod
+    def judge_window(voiced: bool, has_match: bool, score: float, runner_up: float, limit: float, music: bool, programme: bool, echo_cancelled: bool) -> tuple:
+        if not voiced or not echo_cancelled or not all(math.isfinite(v) for v in (score, runner_up, limit)):
+            return "uncertain", 0
+        if music or programme:
+            return "broadcast", 0
+        over, gap = score - limit, score - runner_up
+        if not has_match or over < KNOWN_BONUS or gap < MIN_RUNNER_GAP:
+            return "uncertain", 0
+        return "known", int(round(max(0.0, min(1.0, over)) * 1000))
+
     def is_backchannel(self, text: str) -> bool:
         words = [w for w in (t.strip("".join(c for c in t if not (c.isalnum() or c == "'"))).lower() for t in text.split()) if w]
         return bool(words) and len(words) <= self._max_words and all(w in self._fillers for w in words)
@@ -100,6 +117,6 @@ class PyPreRoll:
         self._buf.clear()
 
 
-def build(settings_json: str = ""):
+def build(settings_json: str = "", windowed: bool = False):
     klass = native()
-    return klass(settings_json) if klass is not None else PyBarge(settings_json)
+    return klass(settings_json, windowed) if klass is not None else PyBarge(settings_json, windowed)

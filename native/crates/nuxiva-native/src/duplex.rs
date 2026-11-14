@@ -3,7 +3,7 @@ use std::sync::{Mutex, PoisonError};
 use nuxiva_duplex_core::{
     Audio, Backchannel, BargeDetector, BargeSettings, ChunkSettings, Chunker, Control, Decision,
     DuplexError, Evidence, IntentCatalog, InterruptedReply, PreRoll, Session, Settings, Trigger,
-    Verdict,
+    Verdict, WindowInput, judge_window, windowed_settings,
 };
 use nuxiva_taskq_core::CancelToken;
 use pyo3::exceptions::PyValueError;
@@ -208,9 +208,11 @@ fn decision_json(decision: &Decision) -> Result<String, DuplexError> {
 #[pymethods]
 impl RustBarge {
     #[new]
-    #[pyo3(signature = (settings_json=""))]
-    fn new(settings_json: &str) -> PyResult<Self> {
-        let settings = if settings_json.is_empty() {
+    #[pyo3(signature = (settings_json="", windowed=false))]
+    fn new(settings_json: &str, windowed: bool) -> PyResult<Self> {
+        let settings = if windowed {
+            windowed_settings()
+        } else if settings_json.is_empty() {
             BargeSettings::default()
         } else {
             BargeSettings::from_json(settings_json).map_err(fail)?
@@ -247,6 +249,37 @@ impl RustBarge {
     fn tick(&self, now_ms: u64) -> PyResult<String> {
         let mut detector = self.detector.lock().unwrap_or_else(PoisonError::into_inner);
         decision_json(&detector.tick(now_ms)).map_err(fail)
+    }
+
+    #[staticmethod]
+    #[allow(clippy::too_many_arguments, clippy::fn_params_excessive_bools)]
+    fn judge_window(
+        voiced: bool,
+        has_match: bool,
+        score: f32,
+        runner_up: f32,
+        limit: f32,
+        music: bool,
+        programme: bool,
+        echo_cancelled: bool,
+    ) -> (String, u16) {
+        let ev = judge_window(&WindowInput {
+            voiced,
+            has_match,
+            score,
+            runner_up,
+            limit,
+            music,
+            programme,
+            echo_cancelled,
+        });
+        let code = match ev.verdict {
+            Verdict::Known => "known",
+            Verdict::Guest => "guest",
+            Verdict::Broadcast => "broadcast",
+            Verdict::Uncertain => "uncertain",
+        };
+        (code.to_owned(), ev.margin_permille)
     }
 
     fn is_backchannel(&self, text: &str) -> bool {

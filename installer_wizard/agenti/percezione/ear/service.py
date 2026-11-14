@@ -22,6 +22,7 @@ import feedback
 import stt
 from broadcast import SESSIONS, broadcast_event, park_hidden, send_event
 from display_connection import handle_display
+from barge_gate import observe as gate_observe
 from duplex_link import link as duplex_link
 from enrollment import enroll_sample
 from ingress import RealtimeInput
@@ -174,6 +175,7 @@ class Session(AttestMixin):
         self.music.feed(frame, rms, self.noise, self.mode == "idle" and not self.nuxiva_speaking, now,
                         heard.music if self.scene.native else None)
         voiced = heard.voiced
+        await gate_observe(self, frame, voiced, heard.music or self.music.playing)
         if voiced:
             activity.voice()
         chunk = self.recorder.feed(frame, rms, voiced or self.in_speech, self.noise, now,

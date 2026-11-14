@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Interrompi Nuxiva con la tua voce, in sicurezza",
+    "en": "Interrupt Nuxiva with your voice, safely",
+    "fr": "Interromps Nuxiva avec ta voix, en sécurité",
+    "es": "Interrumpe a Nuxiva con tu voz, con seguridad"
+  },
+  "features": [
+    {
+      "it": "Con NUXIVA_DUPLEX=rust, mentre Nuxiva parla si ferma se riconosce con sicurezza la tua voce per tre momenti di fila. Radio, TV, musica, ospiti e voci incerte non la interrompono mai, e senza cancellazione dell'eco il taglio automatico resta spento.",
+      "en": "With NUXIVA_DUPLEX=rust, while Nuxiva speaks it stops if it confidently recognises your voice three moments in a row. Radio, TV, music, guests and uncertain voices never interrupt it, and without echo cancellation the automatic cut stays off.",
+      "fr": "Avec NUXIVA_DUPLEX=rust, pendant que Nuxiva parle, elle s'arrête si elle reconnaît ta voix avec certitude trois instants de suite. Radio, télé, musique, invités et voix incertaines ne l'interrompent jamais, et sans annulation d'écho la coupure automatique reste désactivée.",
+      "es": "Con NUXIVA_DUPLEX=rust, mientras Nuxiva habla se detiene si reconoce con seguridad tu voz tres momentos seguidos. Radio, TV, música, invitados y voces inciertas nunca la interrumpen, y sin cancelación de eco el corte automático queda desactivado."
+    }
+  ],
+  "fixes": []
+}

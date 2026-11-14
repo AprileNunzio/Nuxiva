@@ -3,6 +3,7 @@ import logging
 import os
 import time
 
+import barge
 import duplex
 
 log = logging.getLogger("nuxiva.ear.duplex_link")
@@ -19,7 +20,8 @@ class DuplexLink:
         self._clock = clock
         self._session = None
         self.last_cut = None
-        self.counts = {"replies": 0, "cuts": 0, "manual_cuts": 0, "timeouts": 0}
+        self._barge = None
+        self.counts = {"replies": 0, "cuts": 0, "manual_cuts": 0, "timeouts": 0, "voice_cuts": 0}
 
     def active(self) -> bool:
         return mode() == "rust"
@@ -70,6 +72,19 @@ class DuplexLink:
         self.last_cut = report
         self.counts["cuts"] += 1
         return report
+
+    def barge_step(self, verdict: str, margin: int, voiced: bool):
+        if not self.active():
+            return None
+        if self._barge is None:
+            self._barge = barge.build("", True)
+        s = self._get()
+        out = json.loads(self._barge.step(s, verdict, margin, voiced, 250, self._now()))
+        if out["decision"] == "cut":
+            self.last_cut = out["report"]
+            self.counts["cuts"] += 1
+            self.counts["voice_cuts"] += 1
+        return out["decision"]
 
     def tick(self):
         if not self.active():

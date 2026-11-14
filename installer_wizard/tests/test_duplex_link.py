@@ -104,7 +104,7 @@ class DuplexLinkTest(unittest.TestCase):
             self.clock.t += 3
             self.link.tick()
             health = self.link.health()
-            self.assertEqual(set(health), {"mode", "state", "generation", "bound_tokens", "replies", "cuts", "manual_cuts", "timeouts"})
+            self.assertEqual(set(health), {"mode", "state", "generation", "bound_tokens", "replies", "cuts", "manual_cuts", "timeouts", "voice_cuts"})
             self.assertEqual((health["replies"], health["cuts"], health["timeouts"]), (1, 1, 1))
             self.assertTrue(all(isinstance(v, (int, str)) for v in health.values()))
         with mock.patch.dict(os.environ, {"NUXIVA_DUPLEX": "legacy"}):
