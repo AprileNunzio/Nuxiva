@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "App Android per aggiungere telefoni e tablet come nodi",
+    "en": "Android app to add phones and tablets as nodes",
+    "fr": "Application Android pour ajouter téléphones et tablettes comme nœuds",
+    "es": "Aplicación Android para añadir teléfonos y tabletas como nodos"
+  },
+  "features": [
+    {
+      "it": "In Nodi e server c'è la scheda Android: scarichi l'APK firmato dalle versioni ufficiali e colleghi il dispositivo con un codice QR monouso a scadenza breve.",
+      "en": "Nodes and Server now has an Android card: download the signed APK from the official releases and link the device with a short-lived one-time QR code.",
+      "fr": "Nœuds et serveur a maintenant une carte Android : téléchargez l'APK signé depuis les versions officielles et liez l'appareil avec un code QR à usage unique et de courte durée.",
+      "es": "Nodos y servidor tiene ahora una tarjeta Android: descarga el APK firmado de las versiones oficiales y vincula el dispositivo con un código QR de un solo uso y corta duración."
+    },
+    {
+      "it": "L'app è interamente Kotlin con Compose: riconosce il dispositivo (modello, chip, RAM, grafica, sensori), segue la rotazione e il suo verso e gestisce più nodi insieme.",
+      "en": "The app is fully Kotlin with Compose: it recognises the device (model, chip, RAM, graphics, sensors), follows the rotation and its direction and manages several nodes together.",
+      "fr": "L'application est entièrement en Kotlin avec Compose : elle reconnaît l'appareil (modèle, puce, RAM, graphique, capteurs), suit la rotation et son sens et gère plusieurs nœuds ensemble.",
+      "es": "La aplicación es totalmente Kotlin con Compose: reconoce el dispositivo (modelo, chip, RAM, gráficos, sensores), sigue la rotación y su sentido y gestiona varios nodos a la vez."
+    },
+    {
+      "it": "A riposo il server può usare la potenza del dispositivo tramite un motore Ollama locale, solo con il tuo consenso, in carica, a schermo spento, senza surriscaldamento e con interruttore di emergenza.",
+      "en": "When idle, the server can borrow the device's power through a local Ollama engine, only with your consent, while charging, screen off, without overheating and with an emergency switch.",
+      "fr": "Au repos, le serveur peut emprunter la puissance de l'appareil via un moteur Ollama local, seulement avec votre accord, en charge, écran éteint, sans surchauffe et avec un interrupteur d'urgence.",
+      "es": "En reposo, el servidor puede usar la potencia del dispositivo mediante un motor Ollama local, solo con tu consentimiento, cargando, con la pantalla apagada, sin sobrecalentamiento y con interruptor de emergencia."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "L'app Android non usa più un token fisso né un indirizzo predefinito: ogni richiesta è firmata con una chiave del dispositivo e il certificato del server è verificato.",
+      "en": "The Android app no longer uses a fixed token or a default address: every request is signed with a device key and the server certificate is verified.",
+      "fr": "L'application Android n'utilise plus de jeton fixe ni d'adresse par défaut : chaque requête est signée avec une clé de l'appareil et le certificat du serveur est vérifié.",
+      "es": "La aplicación Android ya no usa un token fijo ni una dirección predeterminada: cada petición se firma con una clave del dispositivo y se verifica el certificado del servidor."
+    }
+  ]
+}

@@ -1,15 +1,17 @@
 import React from 'react';
-import { ChevronDown, Cpu, Laptop, Monitor, Terminal } from 'lucide-react';
+import { ChevronDown, Cpu, Laptop, Monitor, Smartphone, Terminal } from 'lucide-react';
 import { useScopedI18n } from '../../../shared/i18n/useScopedI18n';
 import { LinksHandle } from '../../../node_apps/client_link/hooks/useLinks';
 import { Btn } from '../../shared/kit';
 import { UsbPort } from '../types';
+import { AndroidEnroll } from './AndroidEnroll';
 import { PcLinkPanel } from './PcLinkPanel';
 import { WindowsDownload } from './WindowsDownload';
 
 const platforms = [
   { id: 'linux', icon: Terminal, steps: 3 },
   { id: 'windows', icon: Monitor, steps: 2 },
+  { id: 'android', icon: Smartphone, steps: 3 },
   { id: 'macos', icon: Laptop, steps: 3 },
   { id: 'esp32', icon: Cpu, steps: 3 },
 ] as const;
@@ -51,6 +53,7 @@ export const InstallationCards: React.FC<{
             </ol>
             {id === 'linux' && <PcLinkPanel handle={links} />}
             {id === 'windows' && <WindowsDownload />}
+            {id === 'android' && <AndroidEnroll />}
             {id === 'esp32' && (
               <div className="space-y-2">
                 <Btn busy={detectingUsb} onClick={detectUsb}>{t('install_esp32_start')}</Btn>

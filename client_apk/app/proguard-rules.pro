@@ -1,0 +1,11 @@
+-keepattributes *Annotation*,InnerClasses,Signature
+-keepclasseswithmembernames class * { native <methods>; }
+-keep class com.nuxiva.edge.features.audio_listener.NativeWake { *; }
+-keepclassmembers class kotlinx.serialization.json.** { *** Companion; }
+-keepclasseswithmembers class kotlinx.serialization.json.** { kotlinx.serialization.KSerializer serializer(...); }
+-keep,includedescriptorclasses class com.nuxiva.**$$serializer { *; }
+-keepclassmembers class com.nuxiva.** { *** Companion; }
+-keepclasseswithmembers class com.nuxiva.** { kotlinx.serialization.KSerializer serializer(...); }
+-dontwarn org.bouncycastle.**
+-dontwarn org.conscrypt.**
+-dontwarn org.openjsse.**

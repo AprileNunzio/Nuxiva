@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "nuxiva-edge-apk"
-include(":app")
+include(":app", ":logic")

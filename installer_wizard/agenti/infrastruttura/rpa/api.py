@@ -3,11 +3,12 @@ import os
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import RedirectResponse, StreamingResponse
 
-from agenti.rpa import enrolled_package, package, releases
+from agenti.rpa import android_enroll, enrolled_package, package, releases
 
 admin_routes = APIRouter(tags=["RPA"])
 public_routes = APIRouter(tags=["RPA"])
 admin_routes.include_router(enrolled_package.admin_routes)
+admin_routes.include_router(android_enroll.admin_routes)
 
 
 def _server_address(request: Request) -> str:

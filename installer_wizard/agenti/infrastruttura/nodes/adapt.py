@@ -23,6 +23,11 @@ ACCEL_KINDS = {"npu", "gpu", "tpu", "dsp"}
 TASKS = ("wake_word", "vad", "stt", "tts", "vision", "llm")
 TARGETS = {"edge", "server", "unavailable"}
 MAX_ACCELERATORS = 8
+MAX_SENSORS = 24
+DISPLAY_FIELDS = (("width", 32768), ("height", 32768), ("dpi", 2000), ("hz", 1000))
+ORIENTATION_MODES = ("portrait", "landscape")
+ORIENTATION_TURNS = ("none", "cw", "ccw", "flip")
+ORIENTATION_ANGLES = (0, 90, 180, 270)
 
 
 def text(value, limit: int = 60) -> str:
@@ -48,7 +53,35 @@ def clean_hardware(raw) -> dict | None:
     features = raw.get("cpu_features") if isinstance(raw.get("cpu_features"), list) else []
     out["cpu_features"] = sorted({token(f, 16) for f in features[:16] if token(f, 16)})
     out["accelerators"] = clean_accelerators(raw.get("accelerators"))
+    out["model"] = text(raw.get("model"), 80)
+    sensors = raw.get("sensors") if isinstance(raw.get("sensors"), list) else []
+    out["sensors"] = [text(i) for i in sensors[:MAX_SENSORS] if text(i)]
+    out["display"] = clean_display(raw.get("display"))
+    out["orientation"] = clean_orientation(raw.get("orientation"))
     return out
+
+
+def clean_display(raw) -> dict:
+    if not isinstance(raw, dict):
+        return {}
+    out = {}
+    for key, ceiling in DISPLAY_FIELDS:
+        value = raw.get(key)
+        if isinstance(value, int) and not isinstance(value, bool):
+            out[key] = max(0, min(value, ceiling))
+    return out
+
+
+def clean_orientation(raw) -> dict:
+    if not isinstance(raw, dict):
+        return {}
+    mode = raw.get("mode") if raw.get("mode") in ORIENTATION_MODES else ""
+    turn = raw.get("turn") if raw.get("turn") in ORIENTATION_TURNS else "none"
+    angle = raw.get("rotation")
+    rotation = angle if isinstance(angle, int) and not isinstance(angle, bool) and angle in ORIENTATION_ANGLES else None
+    if not mode or rotation is None:
+        return {}
+    return {"mode": mode, "rotation": rotation, "turn": turn}
 
 
 def token(value, limit: int = 32) -> str:
@@ -102,6 +135,9 @@ def diff(old: dict | None, new: dict) -> list[str]:
         changes.append(f"Memoria: da {old.get('ram_gb')} a {new.get('ram_gb')} GB")
     if old.get("cores") != new.get("cores"):
         changes.append(f"Processore: da {old.get('cores')} a {new.get('cores')} core")
+    before_o, after_o = old.get("orientation") or {}, new.get("orientation") or {}
+    if after_o and before_o.get("mode") != after_o.get("mode"):
+        changes.append(f"Orientamento: {after_o.get('mode')}")
     before = {a["id"]: a for a in old.get("accelerators", [])}
     after = {a["id"]: a for a in new.get("accelerators", [])}
     changes += [f"Acceleratore collegato: {after[i]['vendor'] or i} ({i})" for i in sorted(after.keys() - before.keys())]

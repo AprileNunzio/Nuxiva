@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="nuxiva_background">#F8FAFC</color>
+    <color name="nuxiva_icon_background">#030712</color>
+    <color name="nuxiva_icon_accent">#22D3EE</color>
+</resources>

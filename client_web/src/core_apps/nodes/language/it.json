@@ -144,6 +144,27 @@
     "onboard_error_ca_missing": "Certificato del server non trovato.",
     "onboard_error_already_enrolled": "Questo dispositivo è già abbinato.",
     "onboard_error_identity": "L’identità del dispositivo non corrisponde a quella registrata.",
-    "onboard_error_port_busy": "La porta USB è occupata da un altro programma."
+    "onboard_error_port_busy": "La porta USB è occupata da un altro programma.",
+    "install_android_title": "Android",
+    "install_android_guide": "Installa l'app una volta, poi aggiungi ogni telefono o tablet con un codice monouso. Il codice contiene l'indirizzo del server e l'impronta del certificato.",
+    "install_android_step_1": "Inquadra il primo codice con il telefono, oppure premi il pulsante, e installa l'APK (consenti le installazioni da questa fonte quando Android lo chiede).",
+    "install_android_step_2": "Premi Genera codice: compare un secondo codice, valido pochi minuti e utilizzabile una sola volta.",
+    "install_android_step_3": "Apri l'app Nuxiva Nodo, scegli Inquadra il codice e inquadra il secondo codice. Poi controlla l'impronta e conferma.",
+    "android_apk_title": "1. Installa l'app",
+    "android_apk_qr_alt": "Codice QR con il link all'app Android",
+    "android_download_version": "Scarica Nuxiva Nodo {version} per Android",
+    "android_apk_hint": "Il file arriva dalle versioni ufficiali ed è firmato. Confronta lo SHA-256 se vuoi verificarlo.",
+    "android_enroll_title": "2. Collega il telefono",
+    "android_generate": "Genera codice",
+    "android_enroll_qr_alt": "Codice QR con il codice di iscrizione monouso",
+    "android_expires": "Valido ancora per {time}",
+    "android_enroll_hint": "Tienilo privato: chi lo inquadra prima della scadenza può aggiungere un dispositivo. Vale una sola volta e il server ne controlla l'impronta.",
+    "android_copy_link": "Copia il link",
+    "android_copied": "Copiato",
+    "android_error_android_apk_unavailable": "L'app Android non è ancora pubblicata oppure le versioni non sono leggibili.",
+    "android_error_enroll_https_unavailable": "Apri la console dall'indirizzo sicuro del server (HTTPS) per generare un codice.",
+    "android_error_enroll_ca_missing": "Il server non ha ancora un'autorità di certificazione. Attiva prima la connessione sicura.",
+    "android_error_enroll_too_many_tokens": "Ci sono troppi codici in attesa. Attendi che scadano o usane uno.",
+    "android_error_generic": "Non è stato possibile generare il codice. Riprova tra poco."
   }
 }
