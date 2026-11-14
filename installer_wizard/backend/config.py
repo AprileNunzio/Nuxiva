@@ -82,6 +82,7 @@ EDITABLE_KEYS = {
     "NUXIVA_VOICEPRINT_ENFORCE": "Filtro anti-TV ed estranei: rispondi solo alle voci registrate (1/0)",
     "NUXIVA_EAR_ENHANCE_ENGINE": "Motore di pulizia audio e dereverberazione (auto, deepfilternet, spectral)",
     "NUXIVA_VISION": "Webcam e riconoscimento facciale (1/0)",
+    "NUXIVA_RUN_COMMAND": "Dove girano i comandi di terminale che modificano qualcosa: sandbox (default, isolato) oppure host (sul server)",
     "NUXIVA_CAPTURE_CONSENT": "Memoria visiva a consenso: schermo e webcam in un buffer temporaneo di vettori (1/0)",
     "NUXIVA_CAPTURE_SOURCES": "Fonti della memoria visiva (screen, webcam)",
     "NUXIVA_CAPTURE_INTERVAL": "Memoria visiva: intervallo minimo tra le catture in millisecondi (250 - 120000)",

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "I comandi del terminale girano in un ambiente isolato",
+    "en": "Terminal commands now run in an isolated environment",
+    "fr": "Les commandes du terminal s'exécutent dans un environnement isolé",
+    "es": "Los comandos de terminal se ejecutan en un entorno aislado"
+  },
+  "features": [
+    {
+      "it": "run_command esegue ora nel sandbox tutto ciò che può modificare qualcosa, senza rete e con limiti di memoria e tempo; sul server girano solo letture di stato (ls, df, systemctl status e simili), senza i tuoi segreti. Con NUXIVA_RUN_COMMAND=host torna il vecchio comportamento.",
+      "en": "run_command now runs anything that could change something inside the sandbox, with no network and memory and time limits; only status reads (ls, df, systemctl status and similar) run on the server, without your secrets. With NUXIVA_RUN_COMMAND=host the old behaviour returns.",
+      "fr": "run_command exécute désormais dans le bac à sable tout ce qui peut modifier quelque chose, sans réseau et avec des limites de mémoire et de temps ; seules les lectures d'état (ls, df, systemctl status…) tournent sur le serveur, sans tes secrets. Avec NUXIVA_RUN_COMMAND=host l'ancien comportement revient.",
+      "es": "run_command ejecuta ahora en el sandbox todo lo que pueda cambiar algo, sin red y con límites de memoria y tiempo; en el servidor solo corren lecturas de estado (ls, df, systemctl status y similares), sin tus secretos. Con NUXIVA_RUN_COMMAND=host vuelve el comportamiento anterior."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Le letture del server non possono più cancellare file né leggere chiavi: find con -delete o -exec, date -s, hostname, ip route flush e il file dei segreti sono rifiutati.",
+      "en": "Server reads can no longer delete files or read keys: find with -delete or -exec, date -s, hostname, ip route flush and the secrets file are refused.",
+      "fr": "Les lectures du serveur ne peuvent plus supprimer de fichiers ni lire des clés : find avec -delete ou -exec, date -s, hostname, ip route flush et le fichier des secrets sont refusés.",
+      "es": "Las lecturas del servidor ya no pueden borrar archivos ni leer claves: find con -delete o -exec, date -s, hostname, ip route flush y el archivo de secretos se rechazan."
+    }
+  ]
+}
