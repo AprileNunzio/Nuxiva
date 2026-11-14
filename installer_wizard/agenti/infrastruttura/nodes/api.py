@@ -4,11 +4,13 @@ import time
 from access import require_admin
 from config import EDITABLE_KEYS, NUXIVA_DIR, NODE, node_keys, read_global_env
 from fastapi import APIRouter, Depends, HTTPException, Request
+from pydantic import BaseModel, Field
 from fastapi.responses import FileResponse
 from state import store
 from config import PUBLIC_PORT
 
-from agenti.nodes import compute_routes, enroll_routes, server
+from agenti.nodes import compute_routes, deviceauth, enroll_routes, server, trust_routes
+from agenti.nodes.audit import audit
 from agenti.nodes.beacon import beacon
 from agenti.nodes.requests import requests
 from agenti.nodes.inbox import inbox
@@ -16,13 +18,14 @@ from agenti.nodes.registry import COMMANDS, TYPES, registry
 
 INBOX_WAIT = 25.0
 
-public_routes = APIRouter()
+public_routes = APIRouter(dependencies=[Depends(deviceauth.guard)])
 admin_routes = APIRouter()
 _failures: dict[str, list[float]] = {}
 public_routes.include_router(enroll_routes.public_routes)
 public_routes.include_router(compute_routes.public_routes)
 admin_routes.include_router(compute_routes.admin_routes)
 admin_routes.include_router(enroll_routes.admin_routes)
+admin_routes.include_router(trust_routes.admin_routes)
 
 
 def _ip(request: Request) -> str:
@@ -124,8 +127,20 @@ async def node_claim(request: Request):
     if _limited(ip):
         raise HTTPException(429, "Troppi tentativi: riprova tra qualche minuto")
     body = await _body(request)
+    claim_id = str(body.get("id") or "")
+    proven = False
+    if requests.is_signed(claim_id):
+        try:
+            if not getattr(request.state, "device_verified", False):
+                await deviceauth.verify(request, claim_id, requests.pubkey_of(claim_id))
+        except HTTPException:
+            _failures.setdefault(ip, []).append(time.time())
+            raise
+        proven = True
     try:
-        token = requests.claim(str(body.get("id") or ""), str(body.get("key") or ""))
+        token = requests.claim(claim_id, str(body.get("key") or ""), proven)
+        if token:
+            audit.record("node", claim_id, "pair.claim", ip)
     except PermissionError as exc:
         _failures.setdefault(ip, []).append(time.time())
         raise HTTPException(403, str(exc))
@@ -139,21 +154,30 @@ async def nodes_overview(_: str = Depends(require_admin)):
             "pending": requests.listing(), "found": [f for f in beacon.found() if f["id"] not in paired]}
 
 
+class ApproveBody(BaseModel):
+    profile: str = Field("satellite", max_length=16)
+    allow_second_server: bool = False
+    grants: list[str] = Field(default_factory=list, max_length=8)
+
+
 @admin_routes.post("/api/nodes/requests/{node_id}/approve")
-async def nodes_approve(node_id: str, user: str = Depends(require_admin)):
+async def nodes_approve(node_id: str, body: ApproveBody | None = None, user: str = Depends(require_admin)):
+    body = body or ApproveBody()
     try:
-        req = requests.approve(node_id)
+        req = requests.approve(node_id, body.profile, body.allow_second_server, body.grants)
     except KeyError:
         raise HTTPException(404, "Richiesta scaduta o inesistente")
     except (PermissionError, ValueError) as exc:
         raise HTTPException(400, str(exc))
     store.event("INFO", f"Nodo {req['name']} approvato da {user}", "nodes")
+    audit.record(user, node_id, "pair.approve", f"{body.profile} second_server={body.allow_second_server} grants={','.join(body.grants)}")
     return {"ok": True}
 
 
 @admin_routes.delete("/api/nodes/requests/{node_id}")
 async def nodes_reject(node_id: str, user: str = Depends(require_admin)):
     requests.reject(node_id)
+    audit.record(user, node_id, "pair.reject")
     store.event("INFO", f"Richiesta del nodo {node_id} rifiutata da {user}", "nodes")
     return {"ok": True}
 
@@ -294,6 +318,7 @@ async def nodes_remove(node_id: str, user: str = Depends(require_admin)):
         registry.remove(node_id)
     except ValueError as exc:
         raise HTTPException(400, str(exc))
+    audit.record(user, node_id, "node.revoke")
     store.event("INFO", f"Nodo {node_id} rimosso da {user}: il suo token non vale più", "nodes")
     return {"nodes": registry.listing()}
 

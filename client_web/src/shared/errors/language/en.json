@@ -173,6 +173,8 @@
     "error_brain_privacy_failed": "Privacy rule not saved: check your choices.",
     "error_people_face_insight_failed": "Face print unavailable.",
     "error_people_look_failed": "Learned look unavailable.",
-    "error_people_look_feedback_failed": "Detail correction not saved."
+    "error_people_look_feedback_failed": "Detail correction not saved.",
+    "error_node_trust_failed": "Access mode not changed.",
+    "error_node_audit_unavailable": "Security log unavailable."
   }
 }

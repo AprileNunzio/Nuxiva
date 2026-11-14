@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Un PC collegato è un satellite o un secondo server, a tua scelta",
+    "en": "A linked PC is a satellite or a second server, your choice",
+    "fr": "Un PC relié est un satellite ou un second serveur, à votre choix",
+    "es": "Un PC vinculado es un satélite o un segundo servidor, a tu elección"
+  },
+  "features": [
+    {
+      "it": "Ogni PC abbinato ha una modalità: solo satellite (accesso limitato), secondo server (usa tutte le sue risorse) o automatico. Il secondo server si attiva solo con la tua approvazione esplicita.",
+      "en": "Every paired PC has a mode: satellite only (limited access), second server (uses all its resources) or automatic. Second server turns on only with your explicit approval.",
+      "fr": "Chaque PC associé a un mode : satellite seul (accès limité), second serveur (utilise toutes ses ressources) ou automatique. Le second serveur ne s'active qu'avec votre approbation explicite.",
+      "es": "Cada PC vinculado tiene un modo: solo satélite (acceso limitado), segundo servidor (usa todos sus recursos) o automático. El segundo servidor solo se activa con tu aprobación explícita."
+    },
+    {
+      "it": "I nuovi dispositivi si abbinano con una chiave propria e ogni richiesta è firmata: un token rubato non basta. Puoi vedere i permessi attivi, revocare il dispositivo e controllare il registro di sicurezza.",
+      "en": "New devices pair with their own key and every request is signed: a stolen token is not enough. You can see active permissions, revoke the device and check the security log.",
+      "fr": "Les nouveaux appareils s'associent avec leur propre clé et chaque requête est signée : un jeton volé ne suffit pas. Vous voyez les autorisations actives, révoquez l'appareil et consultez le journal de sécurité.",
+      "es": "Los dispositivos nuevos se vinculan con su propia clave y cada solicitud va firmada: un token robado no basta. Puedes ver los permisos activos, revocar el dispositivo y revisar el registro de seguridad."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "I PC già collegati con il vecchio sistema continuano a funzionare come satelliti; per renderli secondo server vanno abbinati di nuovo.",
+      "en": "PCs already linked with the old system keep working as satellites; to make them a second server they must be paired again.",
+      "fr": "Les PC déjà reliés avec l'ancien système continuent de fonctionner comme satellites ; pour en faire un second serveur, il faut les associer de nouveau.",
+      "es": "Los PC ya vinculados con el sistema anterior siguen funcionando como satélites; para convertirlos en segundo servidor hay que vincularlos de nuevo."
+    }
+  ]
+}

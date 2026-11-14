@@ -2,9 +2,10 @@ import hashlib
 import secrets
 import time
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse
 
+from agenti.nodes import deviceauth
 from agenti.nodes.registry import registry
 from state import store
 
@@ -13,7 +14,7 @@ LINK_TTL = 60
 SESSION_TTL = 30 * 86400
 MAX_SESSIONS = 64
 
-public_routes = APIRouter()
+public_routes = APIRouter(dependencies=[Depends(deviceauth.guard)])
 
 
 def _hash(value: str) -> str:
@@ -70,6 +71,7 @@ async def node_display_link(request: Request):
         node = registry.authenticate(request.headers.get("x-nuxiva-node", ""), auth.removeprefix("Bearer ").strip())
     except PermissionError as exc:
         raise HTTPException(401, str(exc))
+    deviceauth.require_scope(node, "display.render")
     return {"path": f"/screen/open?t={links.issue(node['id'])}", "expires_in": LINK_TTL}
 
 

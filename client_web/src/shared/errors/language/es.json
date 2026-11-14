@@ -173,6 +173,8 @@
     "error_brain_privacy_failed": "Regla de privacidad no guardada: revisa tus opciones.",
     "error_people_face_insight_failed": "Huella del rostro no disponible.",
     "error_people_look_failed": "Aspecto aprendido no disponible.",
-    "error_people_look_feedback_failed": "Corrección del detalle no guardada."
+    "error_people_look_feedback_failed": "Corrección del detalle no guardada.",
+    "error_node_trust_failed": "Modo de acceso no modificado.",
+    "error_node_audit_unavailable": "Registro de seguridad no disponible."
   }
 }

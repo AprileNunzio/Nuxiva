@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Check, Loader2, Radio, X } from 'lucide-react';
 import { Panel } from '../../shared/components/ModuleFrame';
 import { approveRequest, rejectRequest } from '../data/linkApi';
+import { NodeProfile, PROFILES } from '../data/trustApi';
 import { LinksHandle, useNow } from '../hooks/useLinks';
 import { relativeTime, useLinkI18n } from '../scope';
 
 export const RequestsPanel: React.FC<{ readonly handle: LinksHandle }> = ({ handle }) => {
   const { t, lang } = useLinkI18n();
   const now = useNow(5000);
+  const [choice, setChoice] = useState<Readonly<Record<string, NodeProfile>>>({});
   const pending = handle.overview?.pending ?? [];
   const found = handle.overview?.found ?? [];
   if (pending.length === 0 && found.length === 0) {
@@ -25,11 +27,29 @@ export const RequestsPanel: React.FC<{ readonly handle: LinksHandle }> = ({ hand
             <p className="mt-1 text-[11px] text-slate-400">
               {t('request_fingerprint')} <span className="font-mono text-amber-100">{request.fingerprint}</span>
             </p>
+            <label className="mt-2 block text-[11px] text-slate-400">
+              {t('request_profile')}
+              <select
+                value={request.signed ? (choice[request.id] ?? 'satellite') : 'satellite'}
+                disabled={!request.signed}
+                onChange={(event) => setChoice({ ...choice, [request.id]: PROFILES.find((p) => p === event.target.value) ?? 'satellite' })}
+                className="mt-1 block w-full rounded-lg border border-slate-700 bg-slate-950 px-2 py-1.5 text-xs text-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+              >
+                {PROFILES.map((profile) => (
+                  <option key={profile} value={profile}>
+                    {t(`profile_${profile}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p className="mt-1 text-[11px] text-slate-400">
+              {request.signed ? t(`profile_${choice[request.id] ?? 'satellite'}_hint`) : t('request_legacy')}
+            </p>
             <div className="mt-2 flex gap-2">
               <button
                 type="button"
                 disabled={handle.busy !== null}
-                onClick={() => void handle.run(`approve:${request.id}`, () => approveRequest(request.id), 'node_request_approve_failed')}
+                onClick={() => void handle.run(`approve:${request.id}`, () => approveRequest(request.id, request.signed ? (choice[request.id] ?? 'satellite') : 'satellite'), 'node_request_approve_failed')}
                 className="flex items-center gap-1.5 rounded-lg bg-emerald-400 px-3 py-1.5 text-xs font-bold text-slate-950 transition hover:bg-emerald-300 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-100"
               >
                 {handle.busy === `approve:${request.id}` ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" /> : <Check className="h-3.5 w-3.5" aria-hidden="true" />}

@@ -173,6 +173,8 @@
     "error_brain_privacy_failed": "Regola di privacy non salvata: controlla le scelte.",
     "error_people_face_insight_failed": "Impronta del volto non disponibile.",
     "error_people_look_failed": "Aspetto imparato non disponibile.",
-    "error_people_look_feedback_failed": "Correzione del dettaglio non salvata."
+    "error_people_look_feedback_failed": "Correzione del dettaglio non salvata.",
+    "error_node_trust_failed": "Modalità di accesso non modificata.",
+    "error_node_audit_unavailable": "Registro di sicurezza non disponibile."
   }
 }

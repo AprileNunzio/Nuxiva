@@ -2,11 +2,13 @@ import React from 'react';
 import { Cable, Loader2 } from 'lucide-react';
 import { ControlScope } from '../console/data/nodeConsoleApi';
 import { ModuleFrame, Notice } from '../shared/components/ModuleFrame';
+import { AuditPanel } from './components/AuditPanel';
 import { EdgePanel } from './components/EdgePanel';
 import { LinkStatusPanel } from './components/LinkStatusPanel';
 import { LinksPanel } from './components/LinksPanel';
 import { PairingPanel } from './components/PairingPanel';
 import { RequestsPanel } from './components/RequestsPanel';
+import { TrustPanel } from './components/TrustPanel';
 import { useLinks } from './hooks/useLinks';
 import { useLinkI18n } from './scope';
 
@@ -36,14 +38,20 @@ export const View: React.FC<Props> = ({ nodeId = '', scope = 'mesh' }) => {
             <PairingPanel />
             <RequestsPanel handle={handle} />
           </div>
-          <LinksPanel nodes={overview.nodes} />
+          <div className="flex min-w-0 flex-col gap-4">
+            <LinksPanel nodes={overview.nodes} />
+            <AuditPanel />
+          </div>
         </div>
       )}
       {scope === 'paired' && overview && !node && <Notice tone="warn">{t('notice_removed')}</Notice>}
       {scope === 'paired' && node && (
         <div className="grid gap-4 xl:grid-cols-2">
           <LinkStatusPanel node={node} handle={handle} />
-          <EdgePanel node={node} />
+          <div className="flex min-w-0 flex-col gap-4">
+            <TrustPanel node={node} handle={handle} />
+            <EdgePanel node={node} />
+          </div>
         </div>
       )}
     </ModuleFrame>

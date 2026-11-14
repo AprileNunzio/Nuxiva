@@ -1,4 +1,5 @@
 import { NodeModuleError, asRecord, asString, asStringList, requestJson } from '../../shared/data/http';
+import { NodeProfile, NodeTrust, parseTrust } from './trustApi';
 
 export const METRICS = ['cpu', 'ram', 'disk', 'temp'] as const;
 export type MetricKey = (typeof METRICS)[number];
@@ -38,6 +39,7 @@ export interface LinkNode {
   readonly soc: string | null;
   readonly accelerators: readonly EdgeAccelerator[];
   readonly offload: readonly EdgeStep[];
+  readonly trust: NodeTrust;
 }
 
 export interface PendingRequest {
@@ -47,6 +49,7 @@ export interface PendingRequest {
   readonly room: string | null;
   readonly ip: string | null;
   readonly fingerprint: string;
+  readonly signed: boolean;
   readonly expires: number;
 }
 
@@ -140,6 +143,7 @@ function parseNode(value: unknown): LinkNode | null {
     soc: parseSoc(n.hardware),
     accelerators: parseAccelerators(asRecord(n.hardware).accelerators),
     offload: parseOffload(n.offload),
+    trust: parseTrust(n.trust),
   };
 }
 
@@ -156,6 +160,7 @@ function parsePending(value: unknown): PendingRequest | null {
     room: asString(r.room, 60),
     ip: ip(r.ip),
     fingerprint: asString(r.fingerprint, 40) ?? '',
+    signed: r.signed === true,
     expires: num(r.expires),
   };
 }
@@ -190,8 +195,11 @@ const guard = (id: string): string => {
   return encodeURIComponent(id);
 };
 
-export async function approveRequest(id: string): Promise<void> {
-  await requestJson(`/api/nodes/requests/${guard(id)}/approve`, { method: 'POST' });
+export async function approveRequest(id: string, profile: NodeProfile = 'satellite'): Promise<void> {
+  await requestJson(`/api/nodes/requests/${guard(id)}/approve`, {
+    method: 'POST',
+    body: JSON.stringify({ profile, allow_second_server: profile !== 'satellite', grants: [] }),
+  });
 }
 
 export async function rejectRequest(id: string): Promise<void> {

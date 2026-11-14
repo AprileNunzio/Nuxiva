@@ -1,0 +1,2352 @@
+{
+ "announce": [
+  {
+   "expect": {
+    "ok": {
+     "cpu_cores": 8,
+     "full_host": true,
+     "ram_mb": 16384,
+     "rejected": [
+      "BAD",
+      "admin.users"
+     ],
+     "scopes": [
+      "audio.capture",
+      "node.host_full"
+     ]
+    }
+   },
+   "raw": "{\"capabilities\":[{\"scope\":\"audio.capture\"},{\"scope\":\"audio.capture\"},{\"scope\":\"admin.users\"},{\"scope\":\"BAD\"},{\"scope\":\"node.host_full\"}],\"hardware\":{\"cpu_cores\":8,\"ram_mb\":16384}}"
+  },
+  {
+   "expect": {
+    "ok": {
+     "cpu_cores": 4096,
+     "full_host": false,
+     "ram_mb": 16777216,
+     "rejected": [],
+     "scopes": []
+    }
+   },
+   "raw": "{\"hardware\":{\"cpu_cores\":99999999,\"ram_mb\":18446744073709551615}}"
+  },
+  {
+   "expect": {
+    "ok": {
+     "cpu_cores": 0,
+     "full_host": false,
+     "ram_mb": 0,
+     "rejected": [],
+     "scopes": []
+    }
+   },
+   "raw": "{}"
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "[]"
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "not json"
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "{\"capabilities\":null}"
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "{\"capabilities\":[{\"x\":1}]}"
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "{\"capabilities\":[1]}"
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "{\"capabilities\":[{\"scope\":\"a.b\"}],\"hardware\":{\"cpu_cores\":-1}}"
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "{\"hardware\":{\"cpu_cores\":1.5}}"
+  },
+  {
+   "expect": {
+    "ok": {
+     "cpu_cores": 0,
+     "full_host": false,
+     "ram_mb": 0,
+     "rejected": [
+      "Z.z"
+     ],
+     "scopes": [
+      "a.b",
+      "b.c"
+     ]
+    }
+   },
+   "raw": "{\"capabilities\":[{\"scope\":\"b.c\"},{\"scope\":\"a.b\"},{\"scope\":\"Z.z\"}]}"
+  },
+  {
+   "expect": {
+    "ok": {
+     "cpu_cores": 0,
+     "full_host": false,
+     "ram_mb": 0,
+     "rejected": [
+      "badscope"
+     ],
+     "scopes": []
+    }
+   },
+   "raw": "{\"capabilities\":[{\"scope\":\"bad\\u0001scope\"}]}"
+  },
+  {
+   "expect": {
+    "error": "node.error.too_many"
+   },
+   "raw": "{\"capabilities\": [{\"scope\": \"a.b0\"}, {\"scope\": \"a.b1\"}, {\"scope\": \"a.b2\"}, {\"scope\": \"a.b3\"}, {\"scope\": \"a.b4\"}, {\"scope\": \"a.b5\"}, {\"scope\": \"a.b6\"}, {\"scope\": \"a.b7\"}, {\"scope\": \"a.b8\"}, {\"scope\": \"a.b9\"}, {\"scope\": \"a.b10\"}, {\"scope\": \"a.b11\"}, {\"scope\": \"a.b12\"}, {\"scope\": \"a.b13\"}, {\"scope\": \"a.b14\"}, {\"scope\": \"a.b15\"}, {\"scope\": \"a.b16\"}, {\"scope\": \"a.b17\"}, {\"scope\": \"a.b18\"}, {\"scope\": \"a.b19\"}, {\"scope\": \"a.b20\"}, {\"scope\": \"a.b21\"}, {\"scope\": \"a.b22\"}, {\"scope\": \"a.b23\"}, {\"scope\": \"a.b24\"}, {\"scope\": \"a.b25\"}, {\"scope\": \"a.b26\"}, {\"scope\": \"a.b27\"}, {\"scope\": \"a.b28\"}, {\"scope\": \"a.b29\"}, {\"scope\": \"a.b30\"}, {\"scope\": \"a.b31\"}, {\"scope\": \"a.b32\"}, {\"scope\": \"a.b33\"}, {\"scope\": \"a.b34\"}, {\"scope\": \"a.b35\"}, {\"scope\": \"a.b36\"}, {\"scope\": \"a.b37\"}, {\"scope\": \"a.b38\"}, {\"scope\": \"a.b39\"}, {\"scope\": \"a.b40\"}, {\"scope\": \"a.b41\"}, {\"scope\": \"a.b42\"}, {\"scope\": \"a.b43\"}, {\"scope\": \"a.b44\"}, {\"scope\": \"a.b45\"}, {\"scope\": \"a.b46\"}, {\"scope\": \"a.b47\"}, {\"scope\": \"a.b48\"}, {\"scope\": \"a.b49\"}, {\"scope\": \"a.b50\"}, {\"scope\": \"a.b51\"}, {\"scope\": \"a.b52\"}, {\"scope\": \"a.b53\"}, {\"scope\": \"a.b54\"}, {\"scope\": \"a.b55\"}, {\"scope\": \"a.b56\"}, {\"scope\": \"a.b57\"}, {\"scope\": \"a.b58\"}, {\"scope\": \"a.b59\"}, {\"scope\": \"a.b60\"}, {\"scope\": \"a.b61\"}, {\"scope\": \"a.b62\"}, {\"scope\": \"a.b63\"}, {\"scope\": \"a.b64\"}]}"
+  },
+  {
+   "expect": {
+    "ok": {
+     "cpu_cores": 0,
+     "full_host": false,
+     "ram_mb": 0,
+     "rejected": [],
+     "scopes": [
+      "a.b0",
+      "a.b1",
+      "a.b10",
+      "a.b11",
+      "a.b12",
+      "a.b13",
+      "a.b14",
+      "a.b15",
+      "a.b16",
+      "a.b17",
+      "a.b18",
+      "a.b19",
+      "a.b2",
+      "a.b20",
+      "a.b21",
+      "a.b22",
+      "a.b23",
+      "a.b24",
+      "a.b25",
+      "a.b26",
+      "a.b27",
+      "a.b28",
+      "a.b29",
+      "a.b3",
+      "a.b30",
+      "a.b31",
+      "a.b32",
+      "a.b33",
+      "a.b34",
+      "a.b35",
+      "a.b36",
+      "a.b37",
+      "a.b38",
+      "a.b39",
+      "a.b4",
+      "a.b40",
+      "a.b41",
+      "a.b42",
+      "a.b43",
+      "a.b44",
+      "a.b45",
+      "a.b46",
+      "a.b47",
+      "a.b48",
+      "a.b49",
+      "a.b5",
+      "a.b50",
+      "a.b51",
+      "a.b52",
+      "a.b53",
+      "a.b54",
+      "a.b55",
+      "a.b56",
+      "a.b57",
+      "a.b58",
+      "a.b59",
+      "a.b6",
+      "a.b60",
+      "a.b61",
+      "a.b62",
+      "a.b63",
+      "a.b7",
+      "a.b8",
+      "a.b9"
+     ]
+    }
+   },
+   "raw": "{\"capabilities\": [{\"scope\": \"a.b0\"}, {\"scope\": \"a.b1\"}, {\"scope\": \"a.b2\"}, {\"scope\": \"a.b3\"}, {\"scope\": \"a.b4\"}, {\"scope\": \"a.b5\"}, {\"scope\": \"a.b6\"}, {\"scope\": \"a.b7\"}, {\"scope\": \"a.b8\"}, {\"scope\": \"a.b9\"}, {\"scope\": \"a.b10\"}, {\"scope\": \"a.b11\"}, {\"scope\": \"a.b12\"}, {\"scope\": \"a.b13\"}, {\"scope\": \"a.b14\"}, {\"scope\": \"a.b15\"}, {\"scope\": \"a.b16\"}, {\"scope\": \"a.b17\"}, {\"scope\": \"a.b18\"}, {\"scope\": \"a.b19\"}, {\"scope\": \"a.b20\"}, {\"scope\": \"a.b21\"}, {\"scope\": \"a.b22\"}, {\"scope\": \"a.b23\"}, {\"scope\": \"a.b24\"}, {\"scope\": \"a.b25\"}, {\"scope\": \"a.b26\"}, {\"scope\": \"a.b27\"}, {\"scope\": \"a.b28\"}, {\"scope\": \"a.b29\"}, {\"scope\": \"a.b30\"}, {\"scope\": \"a.b31\"}, {\"scope\": \"a.b32\"}, {\"scope\": \"a.b33\"}, {\"scope\": \"a.b34\"}, {\"scope\": \"a.b35\"}, {\"scope\": \"a.b36\"}, {\"scope\": \"a.b37\"}, {\"scope\": \"a.b38\"}, {\"scope\": \"a.b39\"}, {\"scope\": \"a.b40\"}, {\"scope\": \"a.b41\"}, {\"scope\": \"a.b42\"}, {\"scope\": \"a.b43\"}, {\"scope\": \"a.b44\"}, {\"scope\": \"a.b45\"}, {\"scope\": \"a.b46\"}, {\"scope\": \"a.b47\"}, {\"scope\": \"a.b48\"}, {\"scope\": \"a.b49\"}, {\"scope\": \"a.b50\"}, {\"scope\": \"a.b51\"}, {\"scope\": \"a.b52\"}, {\"scope\": \"a.b53\"}, {\"scope\": \"a.b54\"}, {\"scope\": \"a.b55\"}, {\"scope\": \"a.b56\"}, {\"scope\": \"a.b57\"}, {\"scope\": \"a.b58\"}, {\"scope\": \"a.b59\"}, {\"scope\": \"a.b60\"}, {\"scope\": \"a.b61\"}, {\"scope\": \"a.b62\"}, {\"scope\": \"a.b63\"}]}"
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "{\"hardware\":{\"ram_mb\":99999999999999999999999}}"
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "{\"hardware\":null}"
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "{\"hardware\":[]}"
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "{\"capabilities\":{}}"
+  },
+  {
+   "expect": {
+    "ok": {
+     "cpu_cores": 0,
+     "full_host": false,
+     "ram_mb": 0,
+     "rejected": [],
+     "scopes": [
+      "a.b"
+     ]
+    }
+   },
+   "raw": "{\"capabilities\":[{\"scope\":\"a.b\",\"extra\":true}],\"unknown\":1}"
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "\"text\""
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "null"
+  },
+  {
+   "expect": {
+    "error": "node.error.payload"
+   },
+   "raw": "{\"hardware\":{\"cpu_cores\":true}}"
+  },
+  {
+   "expect": {
+    "error": "node.error.too_large"
+   },
+   "raw": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 "
+  }
+ ],
+ "audit_seal": [
+  {
+   "args": [
+    "0000000000000000000000000000000000000000000000000000000000000000",
+    1,
+    101,
+    "admin",
+    "pc-1",
+    "pair.approve",
+    "ok"
+   ],
+   "expect": {
+    "action": "pair.approve",
+    "actor": "admin",
+    "detail": "ok",
+    "hash": "6b0f419d6fe48d134e1f1d299c07e9b5e58ddc29a4cf9ada8b6a9339b5f8e2df",
+    "node": "pc-1",
+    "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+    "seq": 1,
+    "ts": 101
+   }
+  },
+  {
+   "args": [
+    "6b0f419d6fe48d134e1f1d299c07e9b5e58ddc29a4cf9ada8b6a9339b5f8e2df",
+    2,
+    102,
+    "admin",
+    "pc-1",
+    "profile.set",
+    "second_server"
+   ],
+   "expect": {
+    "action": "profile.set",
+    "actor": "admin",
+    "detail": "second_server",
+    "hash": "53ee841b03a5e7c5d5cda05e74ecac8d81e3183c61f9ad5024d2be9544410151",
+    "node": "pc-1",
+    "prev": "6b0f419d6fe48d134e1f1d299c07e9b5e58ddc29a4cf9ada8b6a9339b5f8e2df",
+    "seq": 2,
+    "ts": 102
+   }
+  },
+  {
+   "args": [
+    "53ee841b03a5e7c5d5cda05e74ecac8d81e3183c61f9ad5024d2be9544410151",
+    3,
+    103,
+    "a\nb",
+    "n",
+    "x",
+    "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+   ],
+   "expect": {
+    "action": "x",
+    "actor": "ab",
+    "detail": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "hash": "8b97cf64cf72744e72505a4ec9522a607329e804c209e2ed29de27ffd956bbfb",
+    "node": "n",
+    "prev": "53ee841b03a5e7c5d5cda05e74ecac8d81e3183c61f9ad5024d2be9544410151",
+    "seq": 3,
+    "ts": 103
+   }
+  }
+ ],
+ "audit_verify": [
+  {
+   "anchor": "0000000000000000000000000000000000000000000000000000000000000000",
+   "entries": [
+    {
+     "action": "pair.approve",
+     "actor": "admin",
+     "detail": "ok",
+     "hash": "6b0f419d6fe48d134e1f1d299c07e9b5e58ddc29a4cf9ada8b6a9339b5f8e2df",
+     "node": "pc-1",
+     "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+     "seq": 1,
+     "ts": 101
+    },
+    {
+     "action": "profile.set",
+     "actor": "admin",
+     "detail": "second_server",
+     "hash": "53ee841b03a5e7c5d5cda05e74ecac8d81e3183c61f9ad5024d2be9544410151",
+     "node": "pc-1",
+     "prev": "6b0f419d6fe48d134e1f1d299c07e9b5e58ddc29a4cf9ada8b6a9339b5f8e2df",
+     "seq": 2,
+     "ts": 102
+    },
+    {
+     "action": "x",
+     "actor": "ab",
+     "detail": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+     "hash": "8b97cf64cf72744e72505a4ec9522a607329e804c209e2ed29de27ffd956bbfb",
+     "node": "n",
+     "prev": "53ee841b03a5e7c5d5cda05e74ecac8d81e3183c61f9ad5024d2be9544410151",
+     "seq": 3,
+     "ts": 103
+    }
+   ],
+   "expect": -1
+  },
+  {
+   "anchor": "0000000000000000000000000000000000000000000000000000000000000000",
+   "entries": [
+    {
+     "action": "pair.approve",
+     "actor": "admin",
+     "detail": "ok",
+     "hash": "6b0f419d6fe48d134e1f1d299c07e9b5e58ddc29a4cf9ada8b6a9339b5f8e2df",
+     "node": "pc-1",
+     "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+     "seq": 1,
+     "ts": 101
+    },
+    {
+     "action": "profile.set",
+     "actor": "admin",
+     "detail": "satellite",
+     "hash": "53ee841b03a5e7c5d5cda05e74ecac8d81e3183c61f9ad5024d2be9544410151",
+     "node": "pc-1",
+     "prev": "6b0f419d6fe48d134e1f1d299c07e9b5e58ddc29a4cf9ada8b6a9339b5f8e2df",
+     "seq": 2,
+     "ts": 102
+    },
+    {
+     "action": "x",
+     "actor": "ab",
+     "detail": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+     "hash": "8b97cf64cf72744e72505a4ec9522a607329e804c209e2ed29de27ffd956bbfb",
+     "node": "n",
+     "prev": "53ee841b03a5e7c5d5cda05e74ecac8d81e3183c61f9ad5024d2be9544410151",
+     "seq": 3,
+     "ts": 103
+    }
+   ],
+   "expect": 1
+  },
+  {
+   "anchor": "0000000000000000000000000000000000000000000000000000000000000000",
+   "entries": [
+    {
+     "action": "profile.set",
+     "actor": "admin",
+     "detail": "second_server",
+     "hash": "53ee841b03a5e7c5d5cda05e74ecac8d81e3183c61f9ad5024d2be9544410151",
+     "node": "pc-1",
+     "prev": "6b0f419d6fe48d134e1f1d299c07e9b5e58ddc29a4cf9ada8b6a9339b5f8e2df",
+     "seq": 2,
+     "ts": 102
+    },
+    {
+     "action": "x",
+     "actor": "ab",
+     "detail": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+     "hash": "8b97cf64cf72744e72505a4ec9522a607329e804c209e2ed29de27ffd956bbfb",
+     "node": "n",
+     "prev": "53ee841b03a5e7c5d5cda05e74ecac8d81e3183c61f9ad5024d2be9544410151",
+     "seq": 3,
+     "ts": 103
+    }
+   ],
+   "expect": 0
+  },
+  {
+   "anchor": "6b0f419d6fe48d134e1f1d299c07e9b5e58ddc29a4cf9ada8b6a9339b5f8e2df",
+   "entries": [
+    {
+     "action": "profile.set",
+     "actor": "admin",
+     "detail": "second_server",
+     "hash": "53ee841b03a5e7c5d5cda05e74ecac8d81e3183c61f9ad5024d2be9544410151",
+     "node": "pc-1",
+     "prev": "6b0f419d6fe48d134e1f1d299c07e9b5e58ddc29a4cf9ada8b6a9339b5f8e2df",
+     "seq": 2,
+     "ts": 102
+    },
+    {
+     "action": "x",
+     "actor": "ab",
+     "detail": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+     "hash": "8b97cf64cf72744e72505a4ec9522a607329e804c209e2ed29de27ffd956bbfb",
+     "node": "n",
+     "prev": "53ee841b03a5e7c5d5cda05e74ecac8d81e3183c61f9ad5024d2be9544410151",
+     "seq": 3,
+     "ts": 103
+    }
+   ],
+   "expect": -1
+  },
+  {
+   "anchor": "0000000000000000000000000000000000000000000000000000000000000000",
+   "entries": [],
+   "expect": -1
+  }
+ ],
+ "authorize": [
+  {
+   "args": [
+    [
+     "audio.capture"
+    ],
+    "audio.capture"
+   ],
+   "expect": [
+    true,
+    ""
+   ]
+  },
+  {
+   "args": [
+    [
+     "audio.capture"
+    ],
+    "compute.lease"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_not_granted"
+   ]
+  },
+  {
+   "args": [
+    [
+     "audio.capture"
+    ],
+    "admin.users"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_forbidden"
+   ]
+  },
+  {
+   "args": [
+    [
+     "audio.capture"
+    ],
+    "BAD"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_invalid"
+   ]
+  },
+  {
+   "args": [
+    [
+     "audio.capture"
+    ],
+    "fs.read"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_not_granted"
+   ]
+  },
+  {
+   "args": [
+    [
+     "audio.capture"
+    ],
+    ""
+   ],
+   "expect": [
+    false,
+    "node.error.scope_invalid"
+   ]
+  },
+  {
+   "args": [
+    [
+     "audio.capture"
+    ],
+    "a.b.c.d"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_invalid"
+   ]
+  },
+  {
+   "args": [
+    [
+     "audio.capture"
+    ],
+    "audio.capture\n"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_invalid"
+   ]
+  },
+  {
+   "args": [
+    [],
+    "audio.capture"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_not_granted"
+   ]
+  },
+  {
+   "args": [
+    [],
+    "compute.lease"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_not_granted"
+   ]
+  },
+  {
+   "args": [
+    [],
+    "admin.users"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_forbidden"
+   ]
+  },
+  {
+   "args": [
+    [],
+    "BAD"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_invalid"
+   ]
+  },
+  {
+   "args": [
+    [],
+    "fs.read"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_not_granted"
+   ]
+  },
+  {
+   "args": [
+    [],
+    ""
+   ],
+   "expect": [
+    false,
+    "node.error.scope_invalid"
+   ]
+  },
+  {
+   "args": [
+    [],
+    "a.b.c.d"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_invalid"
+   ]
+  },
+  {
+   "args": [
+    [],
+    "audio.capture\n"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_invalid"
+   ]
+  },
+  {
+   "args": [
+    [
+     "compute.lease",
+     "fs.read"
+    ],
+    "audio.capture"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_not_granted"
+   ]
+  },
+  {
+   "args": [
+    [
+     "compute.lease",
+     "fs.read"
+    ],
+    "compute.lease"
+   ],
+   "expect": [
+    true,
+    ""
+   ]
+  },
+  {
+   "args": [
+    [
+     "compute.lease",
+     "fs.read"
+    ],
+    "admin.users"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_forbidden"
+   ]
+  },
+  {
+   "args": [
+    [
+     "compute.lease",
+     "fs.read"
+    ],
+    "BAD"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_invalid"
+   ]
+  },
+  {
+   "args": [
+    [
+     "compute.lease",
+     "fs.read"
+    ],
+    "fs.read"
+   ],
+   "expect": [
+    true,
+    ""
+   ]
+  },
+  {
+   "args": [
+    [
+     "compute.lease",
+     "fs.read"
+    ],
+    ""
+   ],
+   "expect": [
+    false,
+    "node.error.scope_invalid"
+   ]
+  },
+  {
+   "args": [
+    [
+     "compute.lease",
+     "fs.read"
+    ],
+    "a.b.c.d"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_invalid"
+   ]
+  },
+  {
+   "args": [
+    [
+     "compute.lease",
+     "fs.read"
+    ],
+    "audio.capture\n"
+   ],
+   "expect": [
+    false,
+    "node.error.scope_invalid"
+   ]
+  }
+ ],
+ "effective": [
+  {
+   "args": [
+    "satellite",
+    [
+     "audio.capture",
+     "compute.lease",
+     "fs.write",
+     "mcp.serve"
+    ],
+    []
+   ],
+   "expect": [
+    "audio.capture"
+   ]
+  },
+  {
+   "args": [
+    "satellite",
+    [
+     "audio.capture",
+     "compute.lease",
+     "fs.write",
+     "mcp.serve"
+    ],
+    [
+     "fs.write"
+    ]
+   ],
+   "expect": [
+    "audio.capture"
+   ]
+  },
+  {
+   "args": [
+    "satellite",
+    [
+     "audio.capture",
+     "compute.lease",
+     "fs.write",
+     "mcp.serve"
+    ],
+    [
+     "fs.write",
+     "process.exec",
+     "admin.users"
+    ]
+   ],
+   "expect": [
+    "audio.capture"
+   ]
+  },
+  {
+   "args": [
+    "satellite",
+    [
+     "audio.capture",
+     "compute.lease",
+     "fs.write",
+     "process.exec",
+     "mcp.serve",
+     "node.host_full"
+    ],
+    []
+   ],
+   "expect": [
+    "audio.capture"
+   ]
+  },
+  {
+   "args": [
+    "satellite",
+    [
+     "audio.capture",
+     "compute.lease",
+     "fs.write",
+     "process.exec",
+     "mcp.serve",
+     "node.host_full"
+    ],
+    [
+     "fs.write"
+    ]
+   ],
+   "expect": [
+    "audio.capture"
+   ]
+  },
+  {
+   "args": [
+    "satellite",
+    [
+     "audio.capture",
+     "compute.lease",
+     "fs.write",
+     "process.exec",
+     "mcp.serve",
+     "node.host_full"
+    ],
+    [
+     "fs.write",
+     "process.exec",
+     "admin.users"
+    ]
+   ],
+   "expect": [
+    "audio.capture"
+   ]
+  },
+  {
+   "args": [
+    "satellite",
+    [
+     "admin.users",
+     "vault.read",
+     "identity.rotate"
+    ],
+    []
+   ],
+   "expect": []
+  },
+  {
+   "args": [
+    "satellite",
+    [
+     "admin.users",
+     "vault.read",
+     "identity.rotate"
+    ],
+    [
+     "fs.write"
+    ]
+   ],
+   "expect": []
+  },
+  {
+   "args": [
+    "satellite",
+    [
+     "admin.users",
+     "vault.read",
+     "identity.rotate"
+    ],
+    [
+     "fs.write",
+     "process.exec",
+     "admin.users"
+    ]
+   ],
+   "expect": []
+  },
+  {
+   "args": [
+    "satellite",
+    [
+     "BAD",
+     "a..b",
+     "x.y.z.w",
+     "audio.capture",
+     "audio.capture"
+    ],
+    []
+   ],
+   "expect": [
+    "audio.capture"
+   ]
+  },
+  {
+   "args": [
+    "satellite",
+    [
+     "BAD",
+     "a..b",
+     "x.y.z.w",
+     "audio.capture",
+     "audio.capture"
+    ],
+    [
+     "fs.write"
+    ]
+   ],
+   "expect": [
+    "audio.capture"
+   ]
+  },
+  {
+   "args": [
+    "satellite",
+    [
+     "BAD",
+     "a..b",
+     "x.y.z.w",
+     "audio.capture",
+     "audio.capture"
+    ],
+    [
+     "fs.write",
+     "process.exec",
+     "admin.users"
+    ]
+   ],
+   "expect": [
+    "audio.capture"
+   ]
+  },
+  {
+   "args": [
+    "satellite",
+    [],
+    []
+   ],
+   "expect": []
+  },
+  {
+   "args": [
+    "satellite",
+    [],
+    [
+     "fs.write"
+    ]
+   ],
+   "expect": []
+  },
+  {
+   "args": [
+    "satellite",
+    [],
+    [
+     "fs.write",
+     "process.exec",
+     "admin.users"
+    ]
+   ],
+   "expect": []
+  },
+  {
+   "args": [
+    "second_server",
+    [
+     "audio.capture",
+     "compute.lease",
+     "fs.write",
+     "mcp.serve"
+    ],
+    []
+   ],
+   "expect": [
+    "audio.capture",
+    "compute.lease",
+    "mcp.serve"
+   ]
+  },
+  {
+   "args": [
+    "second_server",
+    [
+     "audio.capture",
+     "compute.lease",
+     "fs.write",
+     "mcp.serve"
+    ],
+    [
+     "fs.write"
+    ]
+   ],
+   "expect": [
+    "audio.capture",
+    "compute.lease",
+    "fs.write",
+    "mcp.serve"
+   ]
+  },
+  {
+   "args": [
+    "second_server",
+    [
+     "audio.capture",
+     "compute.lease",
+     "fs.write",
+     "mcp.serve"
+    ],
+    [
+     "fs.write",
+     "process.exec",
+     "admin.users"
+    ]
+   ],
+   "expect": [
+    "audio.capture",
+    "compute.lease",
+    "fs.write",
+    "mcp.serve"
+   ]
+  },
+  {
+   "args": [
+    "second_server",
+    [
+     "audio.capture",
+     "compute.lease",
+     "fs.write",
+     "process.exec",
+     "mcp.serve",
+     "node.host_full"
+    ],
+    []
+   ],
+   "expect": [
+    "audio.capture",
+    "compute.lease",
+    "mcp.serve",
+    "node.host_full"
+   ]
+  },
+  {
+   "args": [
+    "second_server",
+    [
+     "audio.capture",
+     "compute.lease",
+     "fs.write",
+     "process.exec",
+     "mcp.serve",
+     "node.host_full"
+    ],
+    [
+     "fs.write"
+    ]
+   ],
+   "expect": [
+    "audio.capture",
+    "compute.lease",
+    "fs.write",
+    "mcp.serve",
+    "node.host_full"
+   ]
+  },
+  {
+   "args": [
+    "second_server",
+    [
+     "audio.capture",
+     "compute.lease",
+     "fs.write",
+     "process.exec",
+     "mcp.serve",
+     "node.host_full"
+    ],
+    [
+     "fs.write",
+     "process.exec",
+     "admin.users"
+    ]
+   ],
+   "expect": [
+    "audio.capture",
+    "compute.lease",
+    "fs.write",
+    "mcp.serve",
+    "node.host_full",
+    "process.exec"
+   ]
+  },
+  {
+   "args": [
+    "second_server",
+    [
+     "admin.users",
+     "vault.read",
+     "identity.rotate"
+    ],
+    []
+   ],
+   "expect": []
+  },
+  {
+   "args": [
+    "second_server",
+    [
+     "admin.users",
+     "vault.read",
+     "identity.rotate"
+    ],
+    [
+     "fs.write"
+    ]
+   ],
+   "expect": []
+  },
+  {
+   "args": [
+    "second_server",
+    [
+     "admin.users",
+     "vault.read",
+     "identity.rotate"
+    ],
+    [
+     "fs.write",
+     "process.exec",
+     "admin.users"
+    ]
+   ],
+   "expect": []
+  },
+  {
+   "args": [
+    "second_server",
+    [
+     "BAD",
+     "a..b",
+     "x.y.z.w",
+     "audio.capture",
+     "audio.capture"
+    ],
+    []
+   ],
+   "expect": [
+    "audio.capture"
+   ]
+  },
+  {
+   "args": [
+    "second_server",
+    [
+     "BAD",
+     "a..b",
+     "x.y.z.w",
+     "audio.capture",
+     "audio.capture"
+    ],
+    [
+     "fs.write"
+    ]
+   ],
+   "expect": [
+    "audio.capture"
+   ]
+  },
+  {
+   "args": [
+    "second_server",
+    [
+     "BAD",
+     "a..b",
+     "x.y.z.w",
+     "audio.capture",
+     "audio.capture"
+    ],
+    [
+     "fs.write",
+     "process.exec",
+     "admin.users"
+    ]
+   ],
+   "expect": [
+    "audio.capture"
+   ]
+  },
+  {
+   "args": [
+    "second_server",
+    [],
+    []
+   ],
+   "expect": []
+  },
+  {
+   "args": [
+    "second_server",
+    [],
+    [
+     "fs.write"
+    ]
+   ],
+   "expect": []
+  },
+  {
+   "args": [
+    "second_server",
+    [],
+    [
+     "fs.write",
+     "process.exec",
+     "admin.users"
+    ]
+   ],
+   "expect": []
+  }
+ ],
+ "identity": {
+  "code": "493670",
+  "code_two": "380443",
+  "fingerprint": "FE81-2C12-F3AB",
+  "fingerprint_two": "DBC2-9825-1C51"
+ },
+ "keys": {
+  "one": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+  "two": "fd1724385aa0c75b64fb78cd602fa1d991fdebf76b13c58ed702eac835e9f618"
+ },
+ "mode": [
+  {
+   "args": [
+    "satellite",
+    8,
+    16384,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    8,
+    16384,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    8,
+    16384,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    8,
+    16384,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    2,
+    2048,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    2,
+    2048,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    2,
+    2048,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    2,
+    2048,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    4,
+    8192,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    4,
+    8192,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    4,
+    8192,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    4,
+    8192,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    3,
+    99999,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    3,
+    99999,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    3,
+    99999,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "satellite",
+    3,
+    99999,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "second_server",
+    8,
+    16384,
+    true,
+    true
+   ],
+   "expect": "second_server"
+  },
+  {
+   "args": [
+    "second_server",
+    8,
+    16384,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "second_server",
+    8,
+    16384,
+    false,
+    true
+   ],
+   "expect": "second_server"
+  },
+  {
+   "args": [
+    "second_server",
+    8,
+    16384,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "second_server",
+    2,
+    2048,
+    true,
+    true
+   ],
+   "expect": "second_server"
+  },
+  {
+   "args": [
+    "second_server",
+    2,
+    2048,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "second_server",
+    2,
+    2048,
+    false,
+    true
+   ],
+   "expect": "second_server"
+  },
+  {
+   "args": [
+    "second_server",
+    2,
+    2048,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "second_server",
+    4,
+    8192,
+    true,
+    true
+   ],
+   "expect": "second_server"
+  },
+  {
+   "args": [
+    "second_server",
+    4,
+    8192,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "second_server",
+    4,
+    8192,
+    false,
+    true
+   ],
+   "expect": "second_server"
+  },
+  {
+   "args": [
+    "second_server",
+    4,
+    8192,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "second_server",
+    3,
+    99999,
+    true,
+    true
+   ],
+   "expect": "second_server"
+  },
+  {
+   "args": [
+    "second_server",
+    3,
+    99999,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "second_server",
+    3,
+    99999,
+    false,
+    true
+   ],
+   "expect": "second_server"
+  },
+  {
+   "args": [
+    "second_server",
+    3,
+    99999,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    8,
+    16384,
+    true,
+    true
+   ],
+   "expect": "second_server"
+  },
+  {
+   "args": [
+    "auto",
+    8,
+    16384,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    8,
+    16384,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    8,
+    16384,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    2,
+    2048,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    2,
+    2048,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    2,
+    2048,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    2,
+    2048,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    4,
+    8192,
+    true,
+    true
+   ],
+   "expect": "second_server"
+  },
+  {
+   "args": [
+    "auto",
+    4,
+    8192,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    4,
+    8192,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    4,
+    8192,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    3,
+    99999,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    3,
+    99999,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    3,
+    99999,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "auto",
+    3,
+    99999,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    8,
+    16384,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    8,
+    16384,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    8,
+    16384,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    8,
+    16384,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    2,
+    2048,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    2,
+    2048,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    2,
+    2048,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    2,
+    2048,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    4,
+    8192,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    4,
+    8192,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    4,
+    8192,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    4,
+    8192,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    3,
+    99999,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    3,
+    99999,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    3,
+    99999,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "root",
+    3,
+    99999,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    8,
+    16384,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    8,
+    16384,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    8,
+    16384,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    8,
+    16384,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    2,
+    2048,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    2,
+    2048,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    2,
+    2048,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    2,
+    2048,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    4,
+    8192,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    4,
+    8192,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    4,
+    8192,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    4,
+    8192,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    3,
+    99999,
+    true,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    3,
+    99999,
+    true,
+    false
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    3,
+    99999,
+    false,
+    true
+   ],
+   "expect": "satellite"
+  },
+  {
+   "args": [
+    "",
+    3,
+    99999,
+    false,
+    false
+   ],
+   "expect": "satellite"
+  }
+ ],
+ "verify": [
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "d882b34f8c90fd5c68e6434fb855c0f20a5e0fd4da1cd191f76aea9a1f52fa0aa3b7d8a9c6bf0372d794eab9f60816416f6aa521f98a92e2527133f4eb1d230c",
+    "pc-uno",
+    "POST",
+    "/api/nodes/heartbeat",
+    1800000000,
+    "0123456789abcdef0123",
+    "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    1800000005
+   ],
+   "expect": {
+    "ok": true
+   },
+   "name": "valid"
+  },
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "e6ad390b4a28e99f299390893f20ab490c7eb0dfb8eb152ec461a93adf53ff36df1a9e91b7233e59bc3fce93e54491a21b05136c9fcc2e0f546b7a45fa459e01",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1799999940
+   ],
+   "expect": {
+    "ok": true
+   },
+   "name": "future_edge"
+  },
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "e6ad390b4a28e99f299390893f20ab490c7eb0dfb8eb152ec461a93adf53ff36df1a9e91b7233e59bc3fce93e54491a21b05136c9fcc2e0f546b7a45fa459e01",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000060
+   ],
+   "expect": {
+    "ok": true
+   },
+   "name": "past_edge"
+  },
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "e6ad390b4a28e99f299390893f20ab490c7eb0dfb8eb152ec461a93adf53ff36df1a9e91b7233e59bc3fce93e54491a21b05136c9fcc2e0f546b7a45fa459e01",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1799999939
+   ],
+   "expect": {
+    "error": "node.error.clock"
+   },
+   "name": "future_skew"
+  },
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "e6ad390b4a28e99f299390893f20ab490c7eb0dfb8eb152ec461a93adf53ff36df1a9e91b7233e59bc3fce93e54491a21b05136c9fcc2e0f546b7a45fa459e01",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000061
+   ],
+   "expect": {
+    "error": "node.error.clock"
+   },
+   "name": "past_skew"
+  },
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "6a54812ef0b0ffa6e8c804b8d87509d3c530873b7e6fcb3bc8e4c09ac658acac9133c8411f1f1561ac84f7996ffe3603a5ea35fd6aab34118d2f4d13c22fe604",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000000
+   ],
+   "expect": {
+    "error": "node.error.signature"
+   },
+   "name": "wrong_node"
+  },
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "b2e86ba0dac4ad2dc2f6d725a78ea5507943381d46aec5842ade924cf68b53c4df7a12158f194313a5c1c5bf9640011a79c855a562f0f0a3fb3fb21aebf5fa0f",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000000
+   ],
+   "expect": {
+    "error": "node.error.signature"
+   },
+   "name": "wrong_path"
+  },
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "d1e63d026b64b580968420b60d762ec3e18a0f8f255016358ef84474a4702f1d81fbf49316520577fb76f5dcab0e7673e15f44cbe8aed92f90a3256f26657f02",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000000
+   ],
+   "expect": {
+    "error": "node.error.signature"
+   },
+   "name": "wrong_method"
+  },
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "75df195ebf6d8e12055c8f7c3599b75c6f4c258d42b9af53822089625fa6c1f94f156a8cc3bc72debee3a2849fec1f0e92e665bdf25a3fde0be09da12bf48905",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",
+    1800000000
+   ],
+   "expect": {
+    "error": "node.error.signature"
+   },
+   "name": "wrong_body"
+  },
+  {
+   "args": [
+    "fd1724385aa0c75b64fb78cd602fa1d991fdebf76b13c58ed702eac835e9f618",
+    "e6ad390b4a28e99f299390893f20ab490c7eb0dfb8eb152ec461a93adf53ff36df1a9e91b7233e59bc3fce93e54491a21b05136c9fcc2e0f546b7a45fa459e01",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000000
+   ],
+   "expect": {
+    "error": "node.error.signature"
+   },
+   "name": "wrong_key"
+  },
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "abcd",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000000
+   ],
+   "expect": {
+    "error": "node.error.signature"
+   },
+   "name": "short_sig"
+  },
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000000
+   ],
+   "expect": {
+    "error": "node.error.hex"
+   },
+   "name": "nonhex_sig"
+  },
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "E6AD390B4A28E99F299390893F20AB490C7EB0DFB8EB152EC461A93ADF53FF36DF1A9E91B7233E59BC3FCE93E54491A21B05136C9FCC2E0F546B7A45FA459E01",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000000
+   ],
+   "expect": {
+    "error": "node.error.hex"
+   },
+   "name": "upper_sig"
+  },
+  {
+   "args": [
+    "zz",
+    "e6ad390b4a28e99f299390893f20ab490c7eb0dfb8eb152ec461a93adf53ff36df1a9e91b7233e59bc3fce93e54491a21b05136c9fcc2e0f546b7a45fa459e01",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000000
+   ],
+   "expect": {
+    "error": "node.error.hex"
+   },
+   "name": "bad_key_hex"
+  },
+  {
+   "args": [
+    "0000000000000000000000000000000000000000000000000000000000000000",
+    "e6ad390b4a28e99f299390893f20ab490c7eb0dfb8eb152ec461a93adf53ff36df1a9e91b7233e59bc3fce93e54491a21b05136c9fcc2e0f546b7a45fa459e01",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000000
+   ],
+   "expect": {
+    "error": "node.error.key"
+   },
+   "name": "zero_key"
+  },
+  {
+   "args": [
+    "0100000000000000000000000000000000000000000000000000000000000000",
+    "e6ad390b4a28e99f299390893f20ab490c7eb0dfb8eb152ec461a93adf53ff36df1a9e91b7233e59bc3fce93e54491a21b05136c9fcc2e0f546b7a45fa459e01",
+    "pc-uno",
+    "POST",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000000
+   ],
+   "expect": {
+    "error": "node.error.key"
+   },
+   "name": "identity_point"
+  },
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "e6ad390b4a28e99f299390893f20ab490c7eb0dfb8eb152ec461a93adf53ff36df1a9e91b7233e59bc3fce93e54491a21b05136c9fcc2e0f546b7a45fa459e01",
+    "pc-uno",
+    "post",
+    "/p",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000000
+   ],
+   "expect": {
+    "error": "node.error.field"
+   },
+   "name": "lowercase_method"
+  },
+  {
+   "args": [
+    "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+    "e6ad390b4a28e99f299390893f20ab490c7eb0dfb8eb152ec461a93adf53ff36df1a9e91b7233e59bc3fce93e54491a21b05136c9fcc2e0f546b7a45fa459e01",
+    "pc-uno",
+    "POST",
+    "/p\nx",
+    1800000000,
+    "0123456789abcdef0123",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    1800000000
+   ],
+   "expect": {
+    "error": "node.error.field"
+   },
+   "name": "newline_path"
+  }
+ ]
+}

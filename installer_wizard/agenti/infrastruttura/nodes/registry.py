@@ -9,7 +9,8 @@ import time
 from config import STATE_DIR, node_keys, read_global_env
 from state import store
 
-from agenti.nodes import adapt, compute
+from agenti.nodes import adapt, compute, trustpolicy, zerotrust
+from agenti.nodes.audit import audit
 
 NODES_FILE = STATE_DIR / "nodes.json"
 PAIR_TTL = 600
@@ -46,8 +47,10 @@ class Registry:
     @staticmethod
     def _load() -> dict:
         if not NODES_FILE.exists():
-            return {"nodes": {}}
-        return json.loads(NODES_FILE.read_text(encoding="utf-8"))
+            return {"nodes": {}, "revoked": []}
+        data = json.loads(NODES_FILE.read_text(encoding="utf-8"))
+        data.setdefault("revoked", [])
+        return data
 
     def _save(self) -> None:
         tmp = NODES_FILE.with_suffix(".tmp")
@@ -70,9 +73,19 @@ class Registry:
         node_id = clean_id(node_id)
         if node_id not in self.data["nodes"] and len(self.data["nodes"]) >= MAX_NODES:
             raise ValueError("Numero massimo di nodi raggiunto")
+        pubkey = ""
+        if info.get("pubkey"):
+            try:
+                zerotrust.fingerprint(str(info["pubkey"]))
+            except ValueError:
+                raise ValueError("node.error.key") from None
+            pubkey = str(info["pubkey"])
+            if _hash(pubkey) in self.data["revoked"]:
+                raise PermissionError("node.error.revoked")
         token = secrets.token_urlsafe(32)
         kind = info.get("type") if info.get("type") in TYPES else "other"
-        self.data["nodes"][node_id] = {"id": node_id, "name": clean_text(info.get("name")) or node_id, "type": kind,
+        self.data["nodes"][node_id] = {"pubkey": pubkey, "profile": "satellite", "second_server_allowed": False, "grants": [],
+                                       "id": node_id, "name": clean_text(info.get("name")) or node_id, "type": kind,
                                        "room": clean_text(info.get("room")), "token": _hash(token),
                                        "paired_at": time.time(), "last_seen": 0, "commands": []}
         self._save()
@@ -94,9 +107,30 @@ class Registry:
                     metrics={k: round(float(v), 1) for k, v in metrics.items()
                              if k in ("cpu", "ram", "disk", "temp", "uptime") and isinstance(v, (int, float))})
         self._adapt(node, report)
+        self._announce(node, report.get("announce"))
         commands, node["commands"] = node.get("commands", []), []
         self._save()
         return commands
+
+    @staticmethod
+    def _announce(node: dict, raw) -> None:
+        if not isinstance(raw, dict):
+            return
+        try:
+            parsed = zerotrust.parse_announce(json.dumps(raw))
+        except (ValueError, TypeError) as exc:
+            audit.record("node", node["id"], "announce.reject", str(exc))
+            return
+        if (node.get("announce") or {}).get("scopes") != parsed["scopes"]:
+            audit.record("node", node["id"], "announce.update", ",".join(parsed["scopes"]))
+        node["announce"] = parsed
+
+    def set_trust(self, node_id: str, profile: str, allow: bool, grants: list) -> dict:
+        node = self.data["nodes"][clean_id(node_id)]
+        profile, allow, clean = trustpolicy.validate_change(node, profile, allow, grants)
+        node.update(profile=profile, second_server_allowed=allow, grants=clean)
+        self._save()
+        return trustpolicy.state(node)
 
     @staticmethod
     def _adapt(node: dict, report: dict) -> None:
@@ -161,14 +195,17 @@ class Registry:
         self._save()
 
     def remove(self, node_id: str) -> None:
-        self.data["nodes"].pop(clean_id(node_id), None)
+        node = self.data["nodes"].pop(clean_id(node_id), None)
+        if node and node.get("pubkey"):
+            self.data["revoked"] = [*self.data["revoked"], _hash(node["pubkey"])][-512:]
         self._save()
 
     def listing(self) -> list[dict]:
         now = time.time()
         out = []
         for node in self.data["nodes"].values():
-            public = {k: v for k, v in node.items() if k != "token"}
+            public = {k: v for k, v in node.items() if k not in ("token", "pubkey")}
+            public["trust"] = trustpolicy.state(node)
             public["online"] = now - node.get("last_seen", 0) < OFFLINE_AFTER
             public["type_label"] = TYPES.get(node["type"], node["type"])
             out.append(public)

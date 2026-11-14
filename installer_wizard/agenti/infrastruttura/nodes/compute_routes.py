@@ -3,6 +3,7 @@ from fastapi.responses import StreamingResponse
 from access import require_admin
 from state import store
 
+from agenti.nodes import deviceauth
 from agenti.nodes.compute import ollama_ready
 from agenti.nodes.relay import RelayError, relay
 from agenti.nodes.registry import registry
@@ -24,6 +25,7 @@ def _node(request: Request) -> dict:
 @public_routes.post("/api/nodes/compute/next")
 async def compute_next(request: Request):
     node = _node(request)
+    deviceauth.require_scope(node, "compute.lease")
     raw = request.query_params.get("capacity", "2")
     if raw not in {"1", "2"}:
         raise HTTPException(400, "compute_invalid_capacity")
@@ -33,6 +35,7 @@ async def compute_next(request: Request):
 @public_routes.post("/api/nodes/compute/chunk")
 async def compute_chunk(request: Request):
     node = _node(request)
+    deviceauth.require_scope(node, "compute.lease")
     if int(request.headers.get("content-length") or 0) > CHUNK_LIMIT:
         raise HTTPException(413, "payload_too_large")
     body = await request.json()

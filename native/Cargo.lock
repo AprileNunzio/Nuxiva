@@ -2076,6 +2076,7 @@ dependencies = [
  "nuxiva-mcp-servers",
  "nuxiva-memory-core",
  "nuxiva-molecule-core",
+ "nuxiva-node-core",
  "nuxiva-nvr-core",
  "nuxiva-percept-core",
  "nuxiva-presence-core",
@@ -2112,6 +2113,16 @@ dependencies = [
  "serde",
  "serde_json",
  "socket2",
+]
+
+[[package]]
+name = "nuxiva-node-core"
+version = "5.8.0"
+dependencies = [
+ "ed25519-dalek",
+ "serde",
+ "serde_json",
+ "sha2",
 ]
 
 [[package]]
