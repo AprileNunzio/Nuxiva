@@ -38,7 +38,11 @@ OutputBaseFilename=Nuxiva_Setup
 SetupIconFile=..\build\nuxiva.ico
 UninstallDisplayIcon={app}\{#AppExe}
 UninstallDisplayName={#AppName}
-LicenseFile=..\..\..\LICENSE
+DisableWelcomePage=yes
+DisableReadyPage=yes
+DisableFinishedPage=yes
+DisableReadyMemo=yes
+AllowNoIcons=yes
 Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
@@ -53,16 +57,14 @@ Name: "en"; MessagesFile: "compiler:Default.isl"
 Name: "fr"; MessagesFile: "compiler:Languages\French.isl"
 Name: "es"; MessagesFile: "compiler:Languages\Spanish.isl"
 
-[Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
-
 [Files]
 Source: "{#DistDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\..\..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{autoprograms}\{#AppName}\{#AppName}"; Filename: "{app}\{#AppExe}"; IconFilename: "{app}\{#AppExe}"; Comment: "{#AppName}"
 Name: "{autoprograms}\{#AppName}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
-Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; IconFilename: "{app}\{#AppExe}"; Tasks: desktopicon
+Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; IconFilename: "{app}\{#AppExe}"
 
 [InstallDelete]
 Type: files; Name: "{userprograms}\NUXIVA Assistente.lnk"
@@ -79,8 +81,7 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueName: 
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\ATENA_is1"; Flags: deletekey
 
 [Run]
-Filename: "{app}\{#AppExe}"; Parameters: "{code:EnrollmentParameters}"; Description: "{cm:LaunchProgram,{#AppName}}"; Flags: nowait postinstall skipifsilent
-Filename: "{app}\{#AppExe}"; Flags: nowait; Check: WizardSilent
+Filename: "{app}\{#AppExe}"; Parameters: "{code:EnrollmentParameters}"; Flags: nowait
 
 [UninstallRun]
 Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""Nuxiva"" /F"; Flags: runhidden; RunOnceId: "RemoveAutostartTask"

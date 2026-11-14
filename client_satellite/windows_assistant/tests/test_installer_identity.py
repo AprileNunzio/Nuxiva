@@ -46,7 +46,7 @@ class InstallerScriptTest(unittest.TestCase):
 
     def test_installs_as_admin_into_start_menu_with_icon(self):
         for needle in ("PrivilegesRequired=admin", "{autopf}", "{autoprograms}", "{autodesktop}", "SetupIconFile=",
-                       "UninstallDisplayIcon=", "AppPublisher=", "VersionInfoVersion=", "LicenseFile=", "MinVersion=10.0",
+                       "UninstallDisplayIcon=", "AppPublisher=", "VersionInfoVersion=", "DisableFinishedPage=yes", "DisableWelcomePage=yes", "DisableReadyPage=yes", "MinVersion=10.0",
                        "AppSupportURL=", "AppUpdatesURL=", "AppCopyright="):
             self.assertIn(needle, self.iss)
         self.assertNotIn("PrivilegesRequired=lowest", self.iss)

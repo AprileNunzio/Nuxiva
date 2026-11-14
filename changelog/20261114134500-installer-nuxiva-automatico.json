@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Installer di Nuxiva completamente automatico",
+    "en": "Fully automatic Nuxiva installer",
+    "fr": "Programme d'installation de Nuxiva entièrement automatique",
+    "es": "Instalador de Nuxiva totalmente automático"
+  },
+  "features": [
+    {
+      "it": "Nuxiva_Setup.exe si installa da solo: nessuna pagina di benvenuto, licenza o conferma, icona sul desktop inclusa e avvio di Nuxiva appena terminata l'installazione.",
+      "en": "Nuxiva_Setup.exe installs by itself: no welcome, license or confirmation pages, desktop icon included, and Nuxiva starts as soon as the installation ends.",
+      "fr": "Nuxiva_Setup.exe s'installe tout seul : aucune page d'accueil, de licence ou de confirmation, icône du bureau incluse et démarrage de Nuxiva dès la fin de l'installation.",
+      "es": "Nuxiva_Setup.exe se instala solo: sin páginas de bienvenida, licencia o confirmación, con icono de escritorio y arranque de Nuxiva al terminar la instalación."
+    }
+  ],
+  "fixes": []
+}
