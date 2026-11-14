@@ -41,7 +41,7 @@ export const View: React.FC = () => {
           </div>
         </div>
       </Panel>
-      <div className={`grid gap-4 ${selected ? 'lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]' : ''}`}>
+      <div className={`grid gap-4 ${selected ? 'cq-lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]' : ''}`}>
         <Panel
           title={t('list_title')}
           actions={

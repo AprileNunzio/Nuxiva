@@ -401,7 +401,7 @@ export function View() {
           {filteredEntities.length === 0 ? (
             <Empty>{t('no_devices')}</Empty>
           ) : (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-3 cq-sm:grid-cols-2 cq-lg:grid-cols-3 cq-xl:grid-cols-4">
               {filteredEntities.map((entity) => {
                 const isOn = entity.state === 'on';
                 const isControllable = entity.controllable;
@@ -556,7 +556,7 @@ export function View() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 cq-md:grid-cols-2 cq-xl:grid-cols-3">
             {rooms.map((room) => (
               <Panel
                 key={room.area_id}
@@ -684,7 +684,7 @@ export function View() {
           {sceneEntities.length === 0 ? (
             <Empty>Nessuna scena configurata in Home Assistant</Empty>
           ) : (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 cq-sm:grid-cols-2 cq-md:grid-cols-3">
               {sceneEntities.map((scene) => (
                 <div
                   key={scene.entity_id}
@@ -725,7 +725,7 @@ export function View() {
               </Btn>
             }
           >
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 cq-md:grid-cols-3">
               <div className="rounded-2xl border border-amber-500/40 bg-gradient-to-br from-amber-950/40 to-slate-50 p-4 text-center">
                 <div className="text-xs font-semibold uppercase tracking-wider text-amber-700">
                   {t('instant_power')}
@@ -895,7 +895,7 @@ export function View() {
           }
         >
           <div className="space-y-3">
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 cq-sm:grid-cols-2">
               <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
                 <div className="text-[10px] font-semibold uppercase text-slate-500">{t('ha_url')}</div>
                 <div className="mt-1 font-mono text-xs font-bold text-slate-800">

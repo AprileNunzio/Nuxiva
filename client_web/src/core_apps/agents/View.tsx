@@ -57,7 +57,7 @@ export const View: React.FC = () => {
       />
       {observability && <MemoryPanel data={observability} />}
       {graph && <GraphPanel data={graph} />}
-      <div className="grid gap-4 lg:grid-cols-[20rem_minmax(0,1fr)] 3xl:grid-cols-[22rem_minmax(0,1fr)_26rem]">
+      <div className="grid gap-4 cq-lg:grid-cols-[20rem_minmax(0,1fr)] cq-3xl:grid-cols-[22rem_minmax(0,1fr)_26rem]">
         <aside className={panelClass} aria-label={t('team_list')}>
           <AgentList agents={members} selected={agent?.id ?? null} toolCount={toolCount} onSelect={setSelected} />
         </aside>

@@ -58,7 +58,7 @@ export function createSportModule(config: SportModuleConfig) {
               <p className="text-xs text-slate-500">Tornei principali, campionati e circuiti mondiali</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 cq-sm:grid-cols-2 cq-md:grid-cols-3 gap-3">
               {config.competitions.map((c) => (
                 <div
                   key={c.code}
@@ -199,7 +199,7 @@ export function createSportModule(config: SportModuleConfig) {
               <p className="text-xs text-slate-500">Rendimento, parziali e cronaca in tempo reale</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 cq-md:grid-cols-2 gap-4">
               <div className="rounded-xl border border-slate-200 bg-white/40 p-4">
                 <h4 className="text-xs font-bold text-slate-900 mb-3">Parziali e Risultati</h4>
                 <div className="flex flex-col gap-2 text-xs">
@@ -268,7 +268,7 @@ export function createSportModule(config: SportModuleConfig) {
               <p className="text-xs text-slate-500">Scegli gli atleti o le squadre per cui ricevere avvisi vocali istantanei</p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 cq-sm:grid-cols-3 gap-2">
               {config.defaultFavorites.map((fav) => {
                 const isFav = favorites.includes(fav);
                 return (

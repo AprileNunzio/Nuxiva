@@ -104,8 +104,8 @@ export const LiveRepairCoPilot: React.FC<LiveRepairCoPilotProps> = ({
         </div>
       </header>
 
-      <div className="grid flex-1 grid-cols-1 gap-3 overflow-y-auto p-3 text-xs md:grid-cols-12">
-        <div className="flex flex-col gap-2 rounded-xl border border-slate-800/80 bg-slate-900/50 p-2.5 md:col-span-5">
+      <div className="grid flex-1 grid-cols-1 gap-3 overflow-y-auto p-3 text-xs cq-md:grid-cols-12">
+        <div className="flex flex-col gap-2 rounded-xl border border-slate-800/80 bg-slate-900/50 p-2.5 cq-md:col-span-5">
           <div className="flex items-center gap-1.5 font-semibold text-emerald-300">
             <Compass className="h-3.5 w-3.5" aria-hidden="true" />
             <span>{t('copilot_advice_header')}</span>
@@ -126,7 +126,7 @@ export const LiveRepairCoPilot: React.FC<LiveRepairCoPilotProps> = ({
           )}
         </div>
 
-        <div className="flex flex-col justify-between gap-2 rounded-xl border border-slate-800/80 bg-slate-900/50 p-2.5 md:col-span-7">
+        <div className="flex flex-col justify-between gap-2 rounded-xl border border-slate-800/80 bg-slate-900/50 p-2.5 cq-md:col-span-7">
           <div className="flex max-h-36 flex-col gap-1.5 overflow-y-auto pr-1">
             {notes.length === 0 ? (
               <div className="flex items-center gap-2 text-slate-400">

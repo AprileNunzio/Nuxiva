@@ -87,7 +87,7 @@ export const ModelTab: React.FC<{ readonly agent: Agent }> = ({ agent }) => {
         <p className="mt-1 font-mono text-sm text-slate-950">{current ? describe(current) : t('model_none')}</p>
         <p className="mt-1 text-xs text-slate-600">{t(state.ref ? 'model_custom_hint' : 'model_default_hint')}</p>
       </div>
-      <div role="radiogroup" aria-label={t('model_source')} className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      <div role="radiogroup" aria-label={t('model_source')} className="grid gap-2 cq-sm:grid-cols-2 cq-lg:grid-cols-4">
         {SOURCES.map((item) => (
           <button
             key={item.id}

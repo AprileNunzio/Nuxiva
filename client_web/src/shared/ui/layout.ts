@@ -1,2 +1,3 @@
-export const PAGE_CLASS =
-  'mx-auto flex w-full max-w-[1800px] flex-col gap-4 px-3 py-4 sm:px-6 3xl:max-w-[2400px] 4xl:max-w-none 4xl:px-10 8k:px-16';
+export const PAGE_CLASS = 'flex w-full min-w-0 flex-col gap-4 px-3 py-4 cq-sm:px-6 cq-4xl:px-10 cq-8k:px-16';
+
+export const TILE_CLASS = 'os-tiles';

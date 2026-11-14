@@ -114,7 +114,7 @@ export const ExpertProfile: React.FC<ExpertProfileProps> = ({ expert, skills, to
             {expert.skills.length === 0 ? (
               <p className="text-xs text-slate-500">{t('skills_empty')}</p>
             ) : (
-              <ul className="grid gap-2 xl:grid-cols-2">
+              <ul className="grid gap-2 cq-xl:grid-cols-2">
                 {expert.skills.map((id) => {
                   const skill = byId.get(id);
                   return skill ? <SkillCard key={id} skill={skill} color={expert.color} /> : null;
@@ -122,7 +122,7 @@ export const ExpertProfile: React.FC<ExpertProfileProps> = ({ expert, skills, to
               </ul>
             )}
           </div>
-          <div className="grid gap-4 xl:grid-cols-2">
+          <div className="grid gap-4 cq-xl:grid-cols-2">
             <div>
               <h3 className={labelClass}>
                 <BookOpen className="h-3.5 w-3.5 text-cyan-700" aria-hidden="true" />
@@ -157,7 +157,7 @@ export const ExpertProfile: React.FC<ExpertProfileProps> = ({ expert, skills, to
       )}
 
       {editing && (
-        <div className="relative mt-5 grid gap-3 xl:grid-cols-2">
+        <div className="relative mt-5 grid gap-3 cq-xl:grid-cols-2">
           <label className="grid gap-1 text-xs text-slate-600">
             {t('instructions')}
             <textarea value={instructions} maxLength={1200} rows={4} onChange={(e) => setInstructions(e.target.value)} className={fieldClass} />
@@ -166,9 +166,9 @@ export const ExpertProfile: React.FC<ExpertProfileProps> = ({ expert, skills, to
             {t('knowledge_hint')}
             <textarea value={knowledge} rows={4} onChange={(e) => setKnowledge(e.target.value)} className={fieldClass} />
           </label>
-          <fieldset className="xl:col-span-2">
+          <fieldset className="cq-xl:col-span-2">
             <legend className="mb-2 text-xs text-slate-600">{t('skills_pick', { count: chosenSkills.length })}</legend>
-            <div className="grid gap-1.5 sm:grid-cols-2 3xl:grid-cols-3">
+            <div className="grid gap-1.5 cq-sm:grid-cols-2 cq-3xl:grid-cols-3">
               {skills.map((s) => (
                 <label key={s.id} className="flex cursor-pointer items-start gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs hover:border-indigo-300">
                   <input type="checkbox" checked={chosenSkills.includes(s.id)} onChange={() => setChosenSkills((prev) => flip(prev, s.id, 12))} className="mt-0.5 accent-indigo-400" />
@@ -180,10 +180,10 @@ export const ExpertProfile: React.FC<ExpertProfileProps> = ({ expert, skills, to
               ))}
             </div>
           </fieldset>
-          <fieldset className="xl:col-span-2">
+          <fieldset className="cq-xl:col-span-2">
             <legend className="mb-2 text-xs text-slate-600">{t('tools_pick', { count: chosen.length })}</legend>
             <input type="search" value={filter} onChange={(e) => setFilter(e.target.value)} placeholder={t('tools_search')} aria-label={t('tools_search')} className={`${fieldClass} mb-2 w-full`} />
-            <div className="grid max-h-64 gap-1.5 overflow-y-auto pr-1 sm:grid-cols-2 3xl:grid-cols-3">
+            <div className="grid max-h-64 gap-1.5 overflow-y-auto pr-1 cq-sm:grid-cols-2 cq-3xl:grid-cols-3">
               {visible.map((x) => (
                 <label key={x.name} className="flex cursor-pointer items-start gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs hover:border-cyan-300">
                   <input type="checkbox" checked={chosen.includes(x.name)} onChange={() => setChosen((prev) => flip(prev, x.name, 24))} className="mt-0.5 accent-cyan-400" />
@@ -195,7 +195,7 @@ export const ExpertProfile: React.FC<ExpertProfileProps> = ({ expert, skills, to
               ))}
             </div>
           </fieldset>
-          <div className="flex justify-end gap-2 xl:col-span-2">
+          <div className="flex justify-end gap-2 cq-xl:col-span-2">
             <button type="button" onClick={() => setEditing(false)} className="rounded-xl px-4 py-2 text-sm text-slate-700 hover:text-slate-950">
               {t('cancel')}
             </button>

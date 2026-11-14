@@ -110,7 +110,7 @@ export const SectionCards: React.FC<Props> = ({ sections, overview, roleLabel, o
       {GROUPS.map((g) => (
         <section key={g} aria-labelledby={`idg-${g}`} className="flex flex-col gap-3">
           <h3 id={`idg-${g}`} className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{t(`id_group_${g}`)}</h3>
-          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5">
+          <ul className="grid grid-cols-1 gap-3 cq-sm:grid-cols-2 cq-lg:grid-cols-3 cq-2xl:grid-cols-4 cq-3xl:grid-cols-5">
             {groups[g].map((card) => (
               <li key={card.id}>
                 <Card card={card} onOpen={onOpen} />

@@ -45,7 +45,7 @@ export const AccessPanel: React.FC<AccessPanelProps> = ({ data, t, onChanged }) 
       icon={<Network className="h-4 w-4 text-blue-700" aria-hidden="true" />}
       actions={<Pill tone={online ? 'emerald' : 'rose'}>{online ? t('service_on') : t('service_off')}</Pill>}
     >
-      <div className="grid gap-2 lg:grid-cols-2">
+      <div className="grid gap-2 cq-lg:grid-cols-2">
         <Line label={t('windows_path')} value={data.unc} copyLabel={t('copy')} />
         <Line label={t('unix_path')} value={`smb://${data.ip}/condivisa`} copyLabel={t('copy')} />
         <Line label={t('user')} value={data.user} copyLabel={t('copy')} />

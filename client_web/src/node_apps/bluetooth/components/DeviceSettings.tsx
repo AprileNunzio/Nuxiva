@@ -38,7 +38,7 @@ export const DeviceSettings: React.FC<{ readonly device: BluetoothDevice; readon
                 <p className="text-[11px] leading-relaxed text-slate-500">{t(`group_${group}_hint`)}</p>
               </span>
             </header>
-            <div className="grid gap-2 md:grid-cols-2">
+            <div className="grid gap-2 cq-md:grid-cols-2">
               {specs.map((spec) => (
                 <SettingField
                   key={spec.key}

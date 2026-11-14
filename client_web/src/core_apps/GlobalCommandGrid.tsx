@@ -431,7 +431,7 @@ export const GlobalCommandGrid: React.FC<{
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-8 5xl:grid-cols-10 gap-3.5">
+                <div className="grid grid-cols-1 cq-sm:grid-cols-2 cq-md:grid-cols-3 cq-lg:grid-cols-4 cq-xl:grid-cols-5 cq-3xl:grid-cols-6 cq-4xl:grid-cols-8 cq-5xl:grid-cols-10 gap-3.5">
                   {groupApps.map((app) => (
                     <CoreAppCard
                       key={app.id}
@@ -446,7 +446,7 @@ export const GlobalCommandGrid: React.FC<{
           })}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7 4xl:grid-cols-8 5xl:grid-cols-10 gap-3.5">
+        <div className="grid grid-cols-1 cq-sm:grid-cols-2 cq-md:grid-cols-3 cq-lg:grid-cols-4 cq-xl:grid-cols-5 cq-2xl:grid-cols-6 cq-3xl:grid-cols-7 cq-4xl:grid-cols-8 cq-5xl:grid-cols-10 gap-3.5">
           {processedApps.map((app) => (
             <CoreAppCard
               key={app.id}

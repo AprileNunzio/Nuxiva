@@ -32,7 +32,7 @@ export const CatalogTab: React.FC<CatalogTabProps> = ({ catalog, t, onChanged })
   const total = catalog.entries.length;
 
   return (
-    <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+    <div className="grid gap-4 cq-xl:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
       <section className="flex min-w-0 flex-col gap-3" aria-label={t('catalog_title')}>
         <OSFilterTabs
           ariaLabel={t('catalog_title')}

@@ -194,7 +194,7 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 cq-sm:grid-cols-2 cq-md:grid-cols-3">
             {leagues.map((lg) => (
               <div
                 key={lg.code}
@@ -451,7 +451,7 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 cq-sm:grid-cols-2 cq-lg:grid-cols-3 gap-3">
             {teams.map((t) => {
               const isFav = favoriteTeams.includes(t.name);
               return (
@@ -494,7 +494,7 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 cq-sm:grid-cols-2 cq-md:grid-cols-3 gap-3">
             {[
               { name: 'Sky Sport Calcio HD', desc: 'Serie A, Premier League, Champions League', icon: '📺' },
               { name: 'DAZN 1 HD', desc: 'Tutte le 10 partite di Serie A per ogni turno', icon: '⚽' },
@@ -567,7 +567,7 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
 
           <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 flex flex-col gap-4">
             <h4 className="text-xs font-bold text-slate-900">Opzioni di Sistema e Notifiche Vocali</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 cq-sm:grid-cols-2 gap-3">
               <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 cursor-pointer">
                 <div className="flex items-center gap-3">
                   <Volume2 className="h-5 w-5 text-cyan-600" />
@@ -622,7 +622,7 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
 
           <div className="rounded-2xl border border-slate-200 bg-white/80 p-5">
             <h4 className="text-xs font-bold text-slate-900 mb-3">Tutte le 20 Squadre della Serie A</h4>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-2 cq-sm:grid-cols-3 cq-md:grid-cols-4 gap-2.5">
               {teams.map((team) => {
                 const isFav = favoriteTeams.includes(team.name);
                 return (

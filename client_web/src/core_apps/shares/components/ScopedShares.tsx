@@ -121,7 +121,7 @@ export const ScopedShares: React.FC = () => {
         !resource.data ? <Loading label={t('loading')} /> :
         share ? <Directory key={share.id} share={share} close={() => setSelected(null)} /> :
         available.length ? (
-          <ul className="grid gap-3 sm:grid-cols-2">
+          <ul className="grid gap-3 cq-sm:grid-cols-2">
             {available.map((item) => (
               <li key={item.id}><Btn onClick={() => setSelected(item.id)}>
                 <Folder className="h-4 w-4 shrink-0" aria-hidden="true" />{item.name}

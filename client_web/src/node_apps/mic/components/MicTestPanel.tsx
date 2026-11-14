@@ -65,7 +65,7 @@ export const MicTestPanel: React.FC<MicTestPanelProps> = ({ ear, eq }) => {
           </span>
           <span className="font-mono text-slate-400">{meter.level ? `${rmsDb.toFixed(1)} dBFS` : '—'}</span>
         </div>
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="grid gap-2 cq-sm:grid-cols-2">
           <button
             type="button"
             onClick={metering ? meter.stop : meter.start}

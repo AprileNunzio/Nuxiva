@@ -38,7 +38,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_jobs')} value={metrics.running_jobs} />
       </StatRow>
       {quarantined.length > 0 ? <Pill tone="rose">{t('quarantined', { list: quarantined.join(', ') })}</Pill> : null}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 cq-lg:grid-cols-2">
         <ServersPanel servers={servers} t={t} />
         <AreasPanel areas={areas} t={t} />
       </div>

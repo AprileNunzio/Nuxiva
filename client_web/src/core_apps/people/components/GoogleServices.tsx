@@ -24,7 +24,7 @@ export const GoogleServices: React.FC<Props> = ({ slug, services, linked, availa
   };
 
   return (
-    <ul className="grid gap-2 sm:grid-cols-2" aria-label={t('gg_services')}>
+    <ul className="grid gap-2 cq-sm:grid-cols-2" aria-label={t('gg_services')}>
       {services.map((service) => (
         <li key={service.id} className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm">
           <span aria-hidden="true">{service.icon}</span>

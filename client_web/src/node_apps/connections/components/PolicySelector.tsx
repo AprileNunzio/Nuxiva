@@ -28,7 +28,7 @@ export const PolicySelector: React.FC<PolicySelectorProps> = ({ currentPolicy, u
       {updating && <span className="text-xs text-blue-600 font-medium animate-pulse">{t('applying_policy')}...</span>}
     </div>
 
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-3 cq-sm:grid-cols-2 cq-lg:grid-cols-4">
       {POLICIES.map(({ id, icon: Icon }) => {
         const isSelected = currentPolicy === id;
         return (

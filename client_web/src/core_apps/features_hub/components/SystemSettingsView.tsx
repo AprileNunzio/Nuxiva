@@ -173,7 +173,7 @@ export const SystemSettingsView: React.FC<SystemSettingsViewProps> = ({ t, onBac
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 cq-lg:grid-cols-2">
         <div className="flex flex-col rounded-2xl border border-cyan-300 bg-gradient-to-b from-white to-white p-5 shadow-xl shadow-cyan-950/20 backdrop-blur-md">
           <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-2.5">

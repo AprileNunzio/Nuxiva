@@ -59,7 +59,7 @@ export const PriorityPanel: React.FC<{ readonly handle: BluetoothHandle }> = ({ 
   return (
     <Panel title={t('priority_title')}>
       <p className="mb-3 text-xs text-slate-500">{t('priority_hint')}</p>
-      <div className="grid gap-4 sm:grid-cols-2">{AUDIO_SIDES.map(column)}</div>
+      <div className="grid gap-4 cq-sm:grid-cols-2">{AUDIO_SIDES.map(column)}</div>
     </Panel>
   );
 };

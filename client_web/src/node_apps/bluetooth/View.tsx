@@ -41,13 +41,13 @@ const LocalBluetooth: React.FC = () => {
   const toggle = (mac: string) => setOpenMac((current) => (current === mac ? null : mac));
 
   return (
-    <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] xl:grid-rows-[auto_1fr]">
-      <div className="flex min-w-0 flex-col gap-4 xl:col-start-1 xl:row-start-1">
+    <div className="grid items-start gap-4 cq-xl:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] xl:grid-rows-[auto_1fr]">
+      <div className="flex min-w-0 flex-col gap-4 cq-xl:col-start-1 xl:row-start-1">
         {!handle.reachable && <Notice tone="warn">{t('unreachable')}</Notice>}
         <AdapterPanel state={state} handle={handle} />
       </div>
       {handle.ready && (
-        <div className="flex min-w-0 flex-col gap-4 xl:col-start-2 xl:row-span-2 xl:row-start-1">
+        <div className="flex min-w-0 flex-col gap-4 cq-xl:col-start-2 cq-xl:row-span-2 xl:row-start-1">
           <DeviceSection
             title={t('paired_title', { count: paired.length })}
             empty={t('paired_empty')}
@@ -67,7 +67,7 @@ const LocalBluetooth: React.FC = () => {
         </div>
       )}
       {handle.ready && (
-        <div className="flex min-w-0 flex-col gap-4 xl:col-start-1 xl:row-start-2">
+        <div className="flex min-w-0 flex-col gap-4 cq-xl:col-start-1 xl:row-start-2">
           <BehaviorPanel handle={handle} />
           <PriorityPanel handle={handle} />
         </div>

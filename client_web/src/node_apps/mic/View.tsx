@@ -29,7 +29,7 @@ export const View: React.FC<Props> = ({ nodeId = '', scope = 'mesh' }) => {
     <ModuleFrame icon={Mic} title={t('title')} subtitle={t('description')} badge={t(`scope_${scope}`)}>
       {scope === 'mesh' && <Notice tone="warn">{t('notice_unpaired')}</Notice>}
       {scope !== 'mesh' && (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid gap-4 cq-lg:grid-cols-2">
           <div className="flex min-w-0 flex-col gap-4">
             <WakeWordPanel />
             {local && <AudioChannelPanel side="input" audio={audio} t={t} />}

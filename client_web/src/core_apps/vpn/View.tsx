@@ -42,7 +42,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_tools')} value={`${Object.values(data.tools).filter(Boolean).length}/${Object.keys(data.tools).length}`} tone="amber" />
       </StatRow>
       {data.guard_error ? <Pill tone="rose">{data.guard_error}</Pill> : null}
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+      <div className="grid gap-4 cq-lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <Panel title={t('profiles_title')} icon={<Network className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
           {data.profiles.length === 0 ? (
             <Empty>{t('profiles_empty')}</Empty>

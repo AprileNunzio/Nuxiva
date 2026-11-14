@@ -33,7 +33,7 @@ export const View: React.FC<Props> = ({ nodeId = '', scope = 'mesh' }) => {
         </p>
       )}
       {scope === 'local' && overview && (
-        <div className="grid gap-4 xl:grid-cols-2">
+        <div className="grid gap-4 cq-xl:grid-cols-2">
           <div className="flex min-w-0 flex-col gap-4">
             <PairingPanel />
             <RequestsPanel handle={handle} />
@@ -46,7 +46,7 @@ export const View: React.FC<Props> = ({ nodeId = '', scope = 'mesh' }) => {
       )}
       {scope === 'paired' && overview && !node && <Notice tone="warn">{t('notice_removed')}</Notice>}
       {scope === 'paired' && node && (
-        <div className="grid gap-4 xl:grid-cols-2">
+        <div className="grid gap-4 cq-xl:grid-cols-2">
           <LinkStatusPanel node={node} handle={handle} />
           <div className="flex min-w-0 flex-col gap-4">
             <TrustPanel node={node} handle={handle} />

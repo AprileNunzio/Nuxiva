@@ -38,7 +38,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ sourceId, refreshKey
       {photos.length === 0 ? (
         <p className="text-sm text-slate-500">{t('photos_empty')}</p>
       ) : (
-        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-2 cq-sm:grid-cols-3 cq-xl:grid-cols-4">
           {photos.map((photo) => (
             <li key={photo.name} className="group relative overflow-hidden rounded-xl border border-slate-800/80 bg-black">
               <a href={photoUrl(sourceId, photo.name)} target="_blank" rel="noopener noreferrer">

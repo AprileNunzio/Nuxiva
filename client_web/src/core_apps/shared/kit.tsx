@@ -26,7 +26,7 @@ const INK: Record<Tone, string> = {
 export const panelClass = 'md-enter rounded-3xl bg-surface-container-low p-4 text-on-surface sm:p-5';
 export const inputClass =
   'w-full rounded-xl border border-outline bg-surface-container-lowest px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30';
-export const gridClass = 'grid gap-4 lg:grid-cols-2 3xl:grid-cols-3';
+export const gridClass = 'grid gap-4 cq-lg:grid-cols-2 cq-3xl:grid-cols-3';
 
 interface FrameProps {
   readonly title: string;
@@ -90,7 +90,7 @@ export const Stat: React.FC<{ readonly label: string; readonly value: React.Reac
 );
 
 export const StatRow: React.FC<{ readonly children: React.ReactNode }> = ({ children }) => (
-  <div className="md-stagger grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-6">{children}</div>
+  <div className="md-stagger grid grid-cols-2 gap-3 cq-sm:grid-cols-3 cq-xl:grid-cols-4 cq-3xl:grid-cols-6">{children}</div>
 );
 
 export const Pill: React.FC<{ readonly tone?: Tone; readonly children: React.ReactNode }> = ({ tone = 'slate', children }) => (

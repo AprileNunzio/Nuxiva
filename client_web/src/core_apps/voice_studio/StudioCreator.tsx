@@ -40,7 +40,7 @@ export const StudioCreator: React.FC<Props> = ({ status, busy, run, onSuccess })
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 cq-sm:grid-cols-2">
         <Field label={t('name')}>
           <input
             className={inputClass}
@@ -70,7 +70,7 @@ export const StudioCreator: React.FC<Props> = ({ status, busy, run, onSuccess })
 
       <div className="rounded-2xl border border-slate-300 bg-white p-5 shadow-lg">
         <span className="mb-3 block text-xs font-bold text-cyan-700">Caratteristiche Vocali:</span>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 cq-sm:grid-cols-2">
           {Object.entries(status.choices).map(([key, options]) => (
             <Field key={key} label={t(key)}>
               <select

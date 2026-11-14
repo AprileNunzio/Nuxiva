@@ -710,7 +710,7 @@ export const View: React.FC = () => {
                         <Clock className="h-4 w-4 text-sky-600" />
                         <span>{t('recent_tracks')}</span>
                       </h3>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                      <div className="grid grid-cols-2 cq-sm:grid-cols-3 cq-md:grid-cols-4 cq-lg:grid-cols-6 gap-3">
                         {homeData.recent.slice(0, 6).map((track) => (
                           <div
                             key={track.id}
@@ -758,7 +758,7 @@ export const View: React.FC = () => {
                           {t('all_tracks')} ({tracks.length}) →
                         </button>
                       </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                      <div className="grid grid-cols-2 cq-sm:grid-cols-3 cq-md:grid-cols-4 cq-lg:grid-cols-6 gap-3">
                         {tracks.slice(0, 6).map((track) => (
                           <div
                             key={track.id}
@@ -811,7 +811,7 @@ export const View: React.FC = () => {
                     {playlists.length === 0 ? (
                       <Empty>{t('empty_playlists')}</Empty>
                     ) : (
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                      <div className="grid grid-cols-2 cq-sm:grid-cols-3 cq-md:grid-cols-4 cq-lg:grid-cols-5 gap-3">
                         {playlists.map((pl) => (
                           <div
                             key={pl.id}
@@ -975,7 +975,7 @@ export const View: React.FC = () => {
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-2 cq-sm:grid-cols-3 cq-md:grid-cols-4 cq-lg:grid-cols-5 gap-4">
                     {playlists.map((pl) => (
                       <div
                         key={pl.id}
@@ -1138,7 +1138,7 @@ export const View: React.FC = () => {
                   {settingsLoading ? (
                     <Loading label={t('loading')} />
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="grid grid-cols-1 cq-md:grid-cols-2 gap-5">
                       {/* Section 1: Scanner della Libreria */}
                       <div className="rounded-xl border border-slate-200 bg-white/60 p-4 flex flex-col gap-4">
                         <div className="flex items-center gap-2 text-cyan-600 font-bold text-xs uppercase tracking-wider border-b border-slate-200/80 pb-2">

@@ -57,7 +57,7 @@ export const NewExpertDialog: React.FC<NewExpertDialogProps> = ({ templates, han
         <Sparkles className="h-3.5 w-3.5 text-cyan-700" aria-hidden="true" />
         {t('templates')}
       </h3>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2 cq-sm:grid-cols-2">
         {templates.map((tpl) => (
           <button
             key={tpl.id}
@@ -81,7 +81,7 @@ export const NewExpertDialog: React.FC<NewExpertDialogProps> = ({ templates, han
         <UserPlus className="h-3.5 w-3.5 text-cyan-700" aria-hidden="true" />
         {t('custom')}
       </h3>
-      <form onSubmit={submit} className="grid gap-3 sm:grid-cols-[5rem_5rem_minmax(0,1fr)]">
+      <form onSubmit={submit} className="grid gap-3 cq-sm:grid-cols-[5rem_5rem_minmax(0,1fr)]">
         <label className="grid gap-1 text-xs text-slate-600">
           {t('icon')}
           <input value={icon} maxLength={4} onChange={(e) => setIcon(e.target.value)} className={`${fieldClass} text-center text-lg`} />
@@ -94,16 +94,16 @@ export const NewExpertDialog: React.FC<NewExpertDialogProps> = ({ templates, han
           {t('role')}
           <input value={role} maxLength={80} required placeholder={t('role_hint')} onChange={(e) => setRole(e.target.value)} className={fieldClass} />
         </label>
-        <label className="grid gap-1 text-xs text-slate-600 sm:col-span-3">
+        <label className="grid gap-1 text-xs text-slate-600 cq-sm:col-span-3">
           {t('specialty')}
           <input value={specialty} maxLength={240} required onChange={(e) => setSpecialty(e.target.value)} className={fieldClass} />
         </label>
-        <label className="grid gap-1 text-xs text-slate-600 sm:col-span-3">
+        <label className="grid gap-1 text-xs text-slate-600 cq-sm:col-span-3">
           {t('knowledge_hint')}
           <textarea value={knowledge} rows={3} onChange={(e) => setKnowledge(e.target.value)} className={fieldClass} />
         </label>
-        <p className="text-[0.6875rem] text-slate-500 sm:col-span-3">{t('custom_tools_hint')}</p>
-        <div className="flex justify-end gap-2 sm:col-span-3">
+        <p className="text-[0.6875rem] text-slate-500 cq-sm:col-span-3">{t('custom_tools_hint')}</p>
+        <div className="flex justify-end gap-2 cq-sm:col-span-3">
           <button type="button" onClick={() => onClose()} className="rounded-xl px-4 py-2 text-sm text-slate-700 hover:text-slate-950">
             {t('cancel')}
           </button>

@@ -139,7 +139,7 @@ export const EqualizerController: React.FC<Props> = ({
           {t('voice_controller_title')}
         </h5>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid gap-5 cq-sm:grid-cols-2 cq-lg:grid-cols-3 cq-xl:grid-cols-5">
           {/* Pitch */}
           <Field label={`${t('pitch')}: ${fx.pitch > 0 ? `+${fx.pitch.toFixed(1)}` : fx.pitch.toFixed(1)} st`}>
             <input

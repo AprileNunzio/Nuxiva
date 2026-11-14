@@ -32,7 +32,7 @@ export const Filters: React.FC<Props> = ({ filters, people, t, onChange }) => (
         { id: 'wrong', label: t('verdict_wrong') },
       ]}
     />
-    <div className="grid gap-2 sm:grid-cols-2">
+    <div className="grid gap-2 cq-sm:grid-cols-2">
       <select className={inputClass} value={filters.speaker} aria-label={t('filter_speaker')} onChange={(event) => onChange({ speaker: event.target.value })}>
         <option value="">{t('filter_speaker_all')}</option>
         {people.map((person) => (

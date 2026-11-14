@@ -165,7 +165,7 @@ export const LiveMicrophoneCloner: React.FC<Props> = ({ sentences, busy, run, on
       </div>
 
       {/* Dati Voce */}
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 cq-sm:grid-cols-2">
         <Field label={t('name')}>
           <input
             className={inputClass}

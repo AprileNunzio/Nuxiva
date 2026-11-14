@@ -41,7 +41,7 @@ export const LearnedPanel: React.FC<Props> = ({ slug, busy, run }) => {
       </h3>
       <p className="text-xs text-slate-700">{t(enabled ? 'learned_hint' : 'learned_off')}</p>
       {rows !== null && rows.length === 0 && <p className="text-sm text-slate-500">{t('learned_empty')}</p>}
-      <ul className="grid gap-2 xl:grid-cols-2">
+      <ul className="grid gap-2 cq-xl:grid-cols-2">
         {(rows ?? []).slice(0, 20).map((row) => (
           <li key={row.id} className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2">
             <div className="min-w-0 flex-1">

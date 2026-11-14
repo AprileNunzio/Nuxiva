@@ -48,7 +48,7 @@ export const HouseHabits: React.FC = () => {
         <Stat label={t('house_stat_foresight_hits')} value={data.foresight_hits} tone="purple" />
       </StatRow>
       {note ? <Pill tone="emerald">{note}</Pill> : null}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 cq-lg:grid-cols-2">
         <Panel title={t('house_proposals_title')} icon={<Lightbulb className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
           {open.length === 0 ? (
             <Empty>{t('house_proposals_empty')}</Empty>

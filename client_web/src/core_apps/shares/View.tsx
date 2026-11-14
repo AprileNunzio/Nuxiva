@@ -40,7 +40,7 @@ const AdminShares: React.FC = () => {
         <Stat label={t('stat_access')} value={data.settings.readonly ? t('readonly') : t('readwrite')} tone={data.settings.readonly ? 'amber' : 'cyan'} />
       </StatRow>
       <AccessPanel data={data} t={t} onChanged={reload} />
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 cq-lg:grid-cols-2">
         <SessionsPanel sessions={data.sessions} t={t} />
         <FoldersPanel folders={data.folders} root={data.root} t={t} />
       </div>

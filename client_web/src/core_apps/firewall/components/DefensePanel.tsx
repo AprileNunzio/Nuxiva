@@ -76,7 +76,7 @@ export const DefensePanel: React.FC<Props> = ({ policy, state, busy, lang, t, ru
             </Row>
           ))}
         </List>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <div className="mt-3 grid gap-3 cq-sm:grid-cols-2">
           <Field label={t('country_threshold')}>
             <input className={inputClass} type="number" min={1} max={1000} value={policy.country_threshold} disabled={busy}
               onChange={(event) => change({ country_threshold: Number(event.target.value) })} />

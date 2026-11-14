@@ -1,3 +1,4 @@
+import { PAGE_CLASS } from '../../shared/ui/layout';
 import React, { useState } from 'react';
 import { 
   Cpu, 
@@ -92,7 +93,7 @@ export const ControlDeckView: React.FC<ControlDeckViewProps> = ({ nodes, onRefre
   ];
 
   return (
-    <div className="w-full max-w-7xl 3xl:max-w-[1800px] 4xl:max-w-[2400px] 5xl:max-w-[3600px] 8k:max-w-[7200px] mx-auto px-3 sm:px-6 8k:px-16 py-4 sm:py-8 8k:py-16 space-y-6 sm:space-y-8 8k:space-y-12">
+    <div className={`${PAGE_CLASS} gap-6`}>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-3xl 8k:text-5xl font-['Rajdhani'] font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400">
@@ -106,8 +107,8 @@ export const ControlDeckView: React.FC<ControlDeckViewProps> = ({ nodes, onRefre
       </div>
 
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 4xl:grid-cols-4 8k:grid-cols-6 gap-5 sm:gap-6 8k:gap-10">
-        <div className="lg:col-span-2 4xl:col-span-3 8k:col-span-4 space-y-5 sm:space-y-6 8k:space-y-10">
+      <div className="grid grid-cols-1 cq-lg:grid-cols-3 cq-4xl:grid-cols-4 cq-8k:grid-cols-6 gap-5 sm:gap-6 8k:gap-10">
+        <div className="cq-lg:col-span-2 cq-4xl:col-span-3 cq-8k:col-span-4 space-y-5 sm:space-y-6 8k:space-y-10">
           {/* Agent pool */}
           <div className="bg-slate-900/60 border border-slate-800 rounded-2xl 8k:rounded-3xl p-4 sm:p-5 8k:p-8 backdrop-blur-md">
             <div className="flex items-center justify-between mb-4 8k:mb-6">
@@ -179,7 +180,7 @@ export const ControlDeckView: React.FC<ControlDeckViewProps> = ({ nodes, onRefre
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 4xl:grid-cols-3 gap-3 8k:gap-5 max-h-64 8k:max-h-96 overflow-y-auto pr-1">
+            <div className="grid grid-cols-1 cq-sm:grid-cols-2 cq-4xl:grid-cols-3 gap-3 8k:gap-5 max-h-64 8k:max-h-96 overflow-y-auto pr-1">
               {nodes.map((node) => (
                 <div key={node.id} className="bg-slate-950/60 border border-slate-800 p-3 8k:p-5 rounded-xl 8k:rounded-2xl flex items-start space-x-3 8k:space-x-4">
                   <div className="p-2 8k:p-3 rounded-lg 8k:rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shrink-0">

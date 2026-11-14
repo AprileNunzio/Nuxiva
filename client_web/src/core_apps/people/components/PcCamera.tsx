@@ -62,7 +62,7 @@ export const PcCamera: React.FC<Props> = ({ slug, busy, coverage, act }) => {
       <DeviceAccess kind="camera" state={access.state} devices={access.devices} deviceId={access.deviceId} active={access.stream !== null}
         onRequest={(id) => void access.request(id)} onRelease={access.release} />
       {access.stream && (
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_16rem]">
+        <div className="grid gap-3 cq-lg:grid-cols-[minmax(0,1fr)_16rem]">
           <div className="relative overflow-hidden rounded-xl bg-black">
             <video ref={video} autoPlay playsInline muted className="aspect-video max-h-[26rem] w-full -scale-x-100 object-cover" aria-label={t('pc_cam_preview')} />
             <span className="pointer-events-none absolute inset-x-0 bottom-2 mx-auto w-fit rounded-full bg-black/60 px-3 py-1 text-xs text-white">{t(`view_${kind}`)}</span>

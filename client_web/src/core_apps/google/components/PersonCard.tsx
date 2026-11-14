@@ -71,7 +71,7 @@ export const PersonCard: React.FC<PersonCardProps> = ({ person, services, defaul
       </div>
       {person.granted.length ? <p className="mt-1 text-[11px] text-slate-500">{person.granted.join(' · ')}</p> : null}
       {view ? (
-        <div className="mt-2 grid gap-2 sm:grid-cols-3">
+        <div className="mt-2 grid gap-2 cq-sm:grid-cols-3">
           {Object.entries(view).map(([group, items]) => (
             <div key={group} className="rounded-lg border border-slate-200 bg-white p-2">
               <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">{t(`group_${group}`)} ({items.length})</div>

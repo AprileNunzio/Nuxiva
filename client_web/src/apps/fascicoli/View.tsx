@@ -20,7 +20,7 @@ export const View: React.FC = () => {
 
   return (
     <AppFrame title={t('title')} description={t('description')} onReload={list.reload}>
-      <div className={`grid gap-4 ${selected ? 'lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]' : ''}`}>
+      <div className={`grid gap-4 ${selected ? 'cq-lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]' : ''}`}>
         <Panel title={t('list_title')}>
           {list.loading && items.length === 0 ? (
             <Loading label={t('loading')} />

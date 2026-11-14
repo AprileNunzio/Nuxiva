@@ -30,7 +30,7 @@ export function View() {
           <p className="text-sm">{t('empty')}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 cq-sm:grid-cols-2 cq-lg:grid-cols-3">
           {games.map((game) => {
             const gameTitle = getScopedString(game.scope, lang, 'title', game.name);
             return (

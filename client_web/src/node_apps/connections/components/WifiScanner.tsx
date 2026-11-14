@@ -165,7 +165,7 @@ export const WifiScanner: React.FC<WifiScannerProps> = ({
               {t('cancel')}
             </button>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 cq-sm:grid-cols-2">
             <div>
               <label className="text-[11px] font-mono uppercase text-slate-500 block mb-1">SSID</label>
               <input
@@ -293,7 +293,7 @@ export const WifiScanner: React.FC<WifiScannerProps> = ({
         </div>
       )}
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 cq-sm:grid-cols-2">
         {networks.map((net: WifiNetwork) => {
           const isConnected = net.is_connected || net.ssid === currentSsid;
           const isSecured = net.security && !net.security.toLowerCase().includes('open');

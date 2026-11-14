@@ -192,7 +192,7 @@ export const GuideManifestSection: React.FC<DeveloperGuideProps> = ({ t }) => {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 cq-md:grid-cols-3 gap-4">
         <div className="p-4 rounded-2xl bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)] space-y-2">
           <div className="flex items-center gap-2 text-indigo-400 font-bold text-xs">
             <Compass className="w-4 h-4" />

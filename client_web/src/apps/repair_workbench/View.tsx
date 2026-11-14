@@ -151,8 +151,8 @@ export const View: React.FC<WorkbenchViewProps> = ({ initialPayload }) => {
         onResume={async (id) => { launchAttempted.current = true; await resumeProject(id); }}
         onClose={async (id) => { launchAttempted.current = true; await closeProject(id); }} />
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-12">
-        <div className="min-h-[18rem] lg:col-span-8">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-3 cq-lg:grid-cols-12">
+        <div className="min-h-[18rem] cq-lg:col-span-8">
           <ARVideoStage
             t={t}
             cameras={cameras}
@@ -171,7 +171,7 @@ export const View: React.FC<WorkbenchViewProps> = ({ initialPayload }) => {
           />
         </div>
 
-        <div className="min-h-[16rem] lg:col-span-4">
+        <div className="min-h-[16rem] cq-lg:col-span-4">
           <BoardDossierPanel
             t={t}
             sessionId={session?.session_id}

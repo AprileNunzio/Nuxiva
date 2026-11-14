@@ -53,7 +53,7 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
             <p className="text-xs text-slate-500">Calendario ufficiale dei 24 Gran Premi, circuiti storici e format Sprint</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 cq-sm:grid-cols-2 gap-3">
             {grandPrixList.map((gp) => (
               <div
                 key={gp.name}
@@ -168,7 +168,7 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
             <p className="text-xs text-slate-500">Distacchi sui settori, velocità di punta (Speed Trap) e usura gomme</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 cq-md:grid-cols-2 gap-4">
             <div className="rounded-xl border border-slate-200 bg-white/40 p-4">
               <h4 className="text-xs font-bold text-slate-900 mb-3">Leaderboard & Distacchi</h4>
               <div className="flex flex-col gap-2 font-mono text-xs">
@@ -220,7 +220,7 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
             <p className="text-xs text-slate-500">Diretta ufficiale, commento tecnico e feed onboard piloti</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 cq-sm:grid-cols-2 cq-md:grid-cols-3 gap-3">
             {[
               { name: 'Sky Sport F1 HD', desc: 'Gara in 4K HDR con telecronaca di Carlo Vanzini e Marc Gené' },
               { name: 'Onboard Ferrari #16', desc: 'Telecamera sul casco di Charles Leclerc con team radio live' },
@@ -258,7 +258,7 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
             <p className="text-xs text-slate-500">Ricevi notifiche quando il tuo pilota fa la pole o sale sul podio</p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 cq-sm:grid-cols-3 gap-2">
             {['Charles Leclerc', 'Lewis Hamilton', 'Max Verstappen', 'Lando Norris', 'Carlos Sainz', 'Fernando Alonso'].map(
               (driver) => {
                 const isFav = favoriteDrivers.includes(driver);

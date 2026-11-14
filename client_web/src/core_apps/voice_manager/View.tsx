@@ -99,7 +99,7 @@ export const View: React.FC = () => {
           />
         </Panel>
         <Panel title={t('library_title')}>
-          <div className="mb-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mb-3 grid gap-3 cq-sm:grid-cols-2 cq-lg:grid-cols-4">
             <Field label={t('filter_language')}>
               <select className={inputClass} value={lang} onChange={(event) => { setLang(event.target.value); setLimit(PAGE); }}>
                 <option value="">{t('all')}</option>

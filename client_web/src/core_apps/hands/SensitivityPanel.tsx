@@ -32,7 +32,7 @@ interface SensitivityPanelProps {
 
 export const SensitivityPanel: React.FC<SensitivityPanelProps> = ({ t, profile, onChange }) => (
   <Panel title={t('sensitivity_title')}>
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="grid gap-4 cq-sm:grid-cols-2">
       {SLIDERS.map((slider) => {
         const value = slider.read(profile);
         return (

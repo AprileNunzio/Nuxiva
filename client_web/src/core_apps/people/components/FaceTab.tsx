@@ -79,7 +79,7 @@ export const FaceTab: React.FC<FaceTabProps> = ({ slug, quality, busy, run }) =>
       <div>
         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">{t('scan_title')}</p>
         <p className="mb-3 text-xs text-slate-500">{t('scan_hint')}</p>
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 xl:grid-cols-9">
+        <div className="grid grid-cols-3 gap-2 cq-sm:grid-cols-5 cq-xl:grid-cols-9">
           {PHOTO_KINDS.map((kind: PhotoKind) => {
             const count = coverage[kind] ?? 0;
             return (
@@ -105,7 +105,7 @@ export const FaceTab: React.FC<FaceTabProps> = ({ slug, quality, busy, run }) =>
         {photos.length === 0 ? (
           <p className="text-sm text-slate-500">{t('gallery_empty')}</p>
         ) : (
-          <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4 xl:grid-cols-6 3xl:grid-cols-8 5xl:grid-cols-12">
+          <ul className="grid grid-cols-3 gap-2 cq-sm:grid-cols-4 cq-xl:grid-cols-6 cq-3xl:grid-cols-8 cq-5xl:grid-cols-12">
             {photos.map((photo) => (
               <li key={photo.id} className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white">
                 <img src={photo.url} alt={t(`view_${photo.kind}`)} loading="lazy" className="aspect-square w-full object-cover" />

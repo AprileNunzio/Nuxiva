@@ -22,7 +22,7 @@ export const InstallationCards: React.FC<{
 }> = ({ links, usbPorts, detectingUsb, detectUsb }) => {
   const { t } = useScopedI18n('core_apps/nodes');
   return (
-    <section aria-label={t('install_platforms')} className="grid items-start gap-3 sm:grid-cols-2">
+    <section aria-label={t('install_platforms')} className="grid items-start gap-3 cq-sm:grid-cols-2">
       {platforms.map(({ id, icon: Icon, steps }) => (
         <details key={id} className="group min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <summary className="flex min-h-16 cursor-pointer list-none items-center gap-3 px-4 py-3 font-semibold hover:bg-cyan-50 focus-visible:outline focus-visible:outline-2 dark:hover:bg-slate-800 [&::-webkit-details-marker]:hidden">

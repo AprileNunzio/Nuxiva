@@ -34,7 +34,7 @@ const Debian: React.FC<{ readonly d: DebianLive; readonly color: string }> = ({ 
       <p className="text-xs text-slate-600">
         <span className="font-semibold text-slate-800">{d.os}</span> · {d.kernel} · {d.host} · {t('uptime', { h: Math.floor(d.uptime / 3600), m: Math.floor((d.uptime % 3600) / 60) })}
       </p>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 cq-sm:grid-cols-4">
         <Gauge label={t('memory')} value={pct(d.memory.used, d.memory.total)} detail={`${gb(d.memory.used)} / ${gb(d.memory.total)} GiB`} color={color} />
         <Gauge label={t('disk')} value={pct(d.disk.used, d.disk.total)} detail={`${gb(d.disk.used)} / ${gb(d.disk.total)} GiB`} color={color} />
         <Gauge label={t('load')} value={pct(load, d.cpus || 1)} detail={`${d.load.join(' · ')} / ${d.cpus} CPU`} color={color} />
@@ -44,7 +44,7 @@ const Debian: React.FC<{ readonly d: DebianLive; readonly color: string }> = ({ 
           <div className="flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-2 text-center text-[0.6875rem] text-slate-500">{t('temperature_none')}</div>
         )}
       </div>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2 cq-sm:grid-cols-2">
         <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs">
           <span className="block text-[0.625rem] uppercase tracking-[0.16em] text-slate-500">{t('failed_units')}</span>
           {d.failed === null ? (
@@ -102,7 +102,7 @@ const Football: React.FC<{ readonly d: FootballLive }> = ({ d }) => {
   if (d.matches.length === 0) {
     return <p className="text-sm text-slate-500">{t('football_empty')}</p>;
   }
-  return <ul className="grid gap-2 2xl:grid-cols-2">{d.matches.map((m) => <MatchRow key={m.id} m={m} />)}</ul>;
+  return <ul className="grid gap-2 cq-2xl:grid-cols-2">{d.matches.map((m) => <MatchRow key={m.id} m={m} />)}</ul>;
 };
 
 const Feed: React.FC<{ readonly a: Activity }> = ({ a }) => {

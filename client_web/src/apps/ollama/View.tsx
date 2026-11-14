@@ -1,3 +1,4 @@
+import { PAGE_CLASS } from '../../shared/ui/layout';
 import React from 'react';
 import { AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
 import { useScopedI18n } from '../../shared/i18n/useScopedI18n';
@@ -38,7 +39,7 @@ export const View: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-4 md:p-6 max-w-6xl mx-auto w-full text-foreground">
+    <div className={`${PAGE_CLASS} text-foreground`}>
       {error && (
         <div className="flex items-center gap-2 p-3 rounded-xl border border-destructive/30 bg-destructive/10 text-destructive text-xs">
           <AlertCircle className="w-4 h-4 shrink-0" />

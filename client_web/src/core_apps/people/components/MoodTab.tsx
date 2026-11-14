@@ -63,7 +63,7 @@ export const MoodTab: React.FC<Props> = ({ slug, busy, run }) => {
           ))}
         </div>
       )}
-      <form onSubmit={submit} className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_10rem] xl:grid-cols-[minmax(0,1fr)_12rem_minmax(0,2fr)_auto]">
+      <form onSubmit={submit} className="grid gap-2 cq-sm:grid-cols-[minmax(0,1fr)_10rem] cq-xl:grid-cols-[minmax(0,1fr)_12rem_minmax(0,2fr)_auto]">
         <select value={mood} onChange={(event) => setMood(event.target.value)} aria-label={t('mood')} className={fieldClass}>
           <option value="">{t('mood_pick')}</option>
           {moods.map((m) => (
@@ -84,7 +84,7 @@ export const MoodTab: React.FC<Props> = ({ slug, busy, run }) => {
         </button>
       </form>
       {journal !== null && journal.length === 0 && <p className="text-sm text-slate-500">{t('mood_empty')}</p>}
-      <ul className="grid gap-2 xl:grid-cols-2 4xl:grid-cols-3">
+      <ul className="grid gap-2 cq-xl:grid-cols-2 cq-4xl:grid-cols-3">
         {(journal ?? []).map((e) => (
           <li key={e.id} className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
             <span className={`mt-1 h-3 w-3 shrink-0 rounded-full ${TONE[e.mood] ?? 'bg-slate-500'}`} aria-hidden="true" />

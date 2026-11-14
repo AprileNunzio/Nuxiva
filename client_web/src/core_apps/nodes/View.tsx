@@ -68,7 +68,7 @@ export const View: React.FC = () => {
       onReload={() => void load()}
     >
       <ResourcesPanel />
-      <div className="grid gap-4 xl:grid-cols-2">
+      <div className="grid gap-4 cq-xl:grid-cols-2">
         <Panel title={t('install_platforms')}>
           <InstallationCards links={links} usbPorts={usbPorts} detectingUsb={detectingUsb} detectUsb={() => void detectUsb()} />
         </Panel>

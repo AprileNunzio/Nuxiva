@@ -41,7 +41,7 @@ export const LiveAffect: React.FC<Props> = ({ live }) => {
               <span className="absolute top-1/2 h-5 w-1.5 -translate-y-1/2 rounded bg-white transition-all" style={{ left: `calc(${Math.round(live.arousal)}% - 3px)` }} />
             </div>
           </div>
-          <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+          <ul className="grid grid-cols-2 gap-2 cq-lg:grid-cols-4">
             {AREAS.map((area) => (
               <li key={area} className={`rounded-lg border px-3 py-2 text-xs transition ${area === live.area ? `${TONE[area]} ring-2 ring-offset-1 ring-current` : 'border-slate-200 text-slate-600'}`} aria-current={area === live.area}>
                 <div className="font-semibold">{t(`wb_area_${area}`)}</div>

@@ -96,8 +96,8 @@ export const AvatarLibraryPanel: React.FC<{ readonly handle: AvatarsHandle }> = 
           ),
         )}
       </ul>
-      <form onSubmit={submit} className="mt-4 grid gap-2 border-t border-slate-800/80 pt-3 sm:grid-cols-2">
-        <p className="text-xs text-slate-500 sm:col-span-2">{t('upload_hint', { max: megabytes(library.maxBytes) })}</p>
+      <form onSubmit={submit} className="mt-4 grid gap-2 border-t border-slate-800/80 pt-3 cq-sm:grid-cols-2">
+        <p className="text-xs text-slate-500 cq-sm:col-span-2">{t('upload_hint', { max: megabytes(library.maxBytes) })}</p>
         <label className="flex flex-col gap-1 text-xs text-slate-400">
           {t('upload_name')}
           <input
@@ -125,14 +125,14 @@ export const AvatarLibraryPanel: React.FC<{ readonly handle: AvatarsHandle }> = 
           />
         </label>
         {tooBig && (
-          <p role="alert" className="text-xs text-rose-300 sm:col-span-2">
+          <p role="alert" className="text-xs text-rose-300 cq-sm:col-span-2">
             {t('upload_too_big')}
           </p>
         )}
         <button
           type="submit"
           disabled={busy !== null || !file || tooBig || !AVATAR_NAME.test(name)}
-          className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 px-4 py-2.5 text-sm font-bold text-slate-950 transition hover:brightness-110 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 sm:col-span-2"
+          className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 px-4 py-2.5 text-sm font-bold text-slate-950 transition hover:brightness-110 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 cq-sm:col-span-2"
         >
           {busy === 'upload' ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Upload className="h-4 w-4" aria-hidden="true" />}
           {t('upload_submit')}

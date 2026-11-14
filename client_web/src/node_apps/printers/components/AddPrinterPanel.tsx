@@ -32,7 +32,7 @@ export const AddPrinterPanel: React.FC<{ readonly onAdded: () => void }> = ({ on
 
   return (
     <Panel title={t('add_title')}>
-      <form onSubmit={submit} className="grid gap-2 sm:grid-cols-2">
+      <form onSubmit={submit} className="grid gap-2 cq-sm:grid-cols-2">
         <label className="flex flex-col gap-1 text-xs text-slate-400">
           {t('add_name')}
           <input required maxLength={60} value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} className={fieldClass} />
@@ -103,14 +103,14 @@ export const AddPrinterPanel: React.FC<{ readonly onAdded: () => void }> = ({ on
           </label>
         )}
         {failed && (
-          <p role="alert" className="text-xs text-rose-300 sm:col-span-2">
+          <p role="alert" className="text-xs text-rose-300 cq-sm:col-span-2">
             {t('add_failed')}
           </p>
         )}
         <button
           type="submit"
           disabled={saving}
-          className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 px-4 py-2.5 text-sm font-bold text-slate-950 transition hover:brightness-110 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 sm:col-span-2"
+          className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 px-4 py-2.5 text-sm font-bold text-slate-950 transition hover:brightness-110 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 cq-sm:col-span-2"
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Plus className="h-4 w-4" aria-hidden="true" />}
           {t('add_submit')}

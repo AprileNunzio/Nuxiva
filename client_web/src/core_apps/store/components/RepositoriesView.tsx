@@ -33,7 +33,7 @@ export const RepositoriesView: React.FC<RepositoriesViewProps> = ({
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 cq-md:grid-cols-2 gap-4">
         {repositories.map(repo => {
           const isOfficial = repo.official || repo.id === 'official';
           return (

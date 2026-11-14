@@ -109,7 +109,7 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
 
         {currentStep === 1 && (
           <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div className="grid grid-cols-1 cq-sm:grid-cols-2 gap-3.5">
               <div
                 onClick={() => setSelectedTarget('pc')}
                 className={`p-4 rounded-2xl border cursor-pointer transition-all ${
@@ -233,7 +233,7 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
 
         {currentStep === 3 && (
           <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 cq-sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
                   {t('node_name_label')}

@@ -49,7 +49,7 @@ export const DynamicWidgetDeck: React.FC = () => {
           {t("widgets_empty")}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 cq-md:grid-cols-2 cq-lg:grid-cols-3 gap-4">
           {widgets.map((widget) => (
             <WidgetCard
               key={widget.id}

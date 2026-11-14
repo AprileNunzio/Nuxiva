@@ -55,8 +55,8 @@ export const BindingsPanel: React.FC<BindingsPanelProps> = ({ t, bindings, catal
         {bindings.map((binding, index) => {
           const actionValid = IDENTIFIER.test(binding.action);
           return (
-            <li key={index} className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:grid-cols-2 xl:grid-cols-6">
-              <label className="flex flex-col gap-1 text-xs font-semibold text-slate-600 xl:col-span-2">
+            <li key={index} className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 cq-sm:grid-cols-2 cq-xl:grid-cols-6">
+              <label className="flex flex-col gap-1 text-xs font-semibold text-slate-600 cq-xl:col-span-2">
                 {t('binding_gesture')}
                 <select className={inputClass} value={binding.gesture} onChange={(e) => update(index, { gesture: e.target.value })}>
                   {catalog.map((id) => (
@@ -112,7 +112,7 @@ export const BindingsPanel: React.FC<BindingsPanelProps> = ({ t, bindings, catal
                   onChange={(e) => update(index, { action: e.target.value.trim().toLowerCase() })}
                 />
               </label>
-              <div className="flex flex-wrap items-center justify-between gap-3 sm:col-span-2 xl:col-span-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 cq-sm:col-span-2 cq-xl:col-span-6">
                 <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600">
                   <span className="flex items-center gap-2">
                     <Toggle checked={binding.enabled} onChange={(value) => update(index, { enabled: value })} label={t('binding_enabled')} />

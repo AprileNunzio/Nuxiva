@@ -745,7 +745,7 @@ export const View: React.FC = () => {
                     </div>
                   ) : (
                     <>
-                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                      <div className="grid grid-cols-1 gap-3 cq-sm:grid-cols-2 cq-md:grid-cols-3 cq-lg:grid-cols-4 cq-xl:grid-cols-5">
                         {channelRows.map((channel, idx) => (
                           <div
                             key={channel.id}
@@ -973,7 +973,7 @@ export const View: React.FC = () => {
                         </button>
                       </h4>
                       <form onSubmit={handleAddTunerSubmit} className="flex flex-col gap-3">
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 cq-sm:grid-cols-3 gap-3">
                           <div>
                             <label className="block text-[11px] font-bold text-slate-500 mb-1">{t('tuner_name')}</label>
                             <input
@@ -1056,7 +1056,7 @@ export const View: React.FC = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-4 cq-md:grid-cols-2 cq-lg:grid-cols-3">
                       {tunersList.map((tuner) => (
                         <div
                           key={tuner.id}

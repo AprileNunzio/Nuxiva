@@ -44,7 +44,7 @@ export const View: React.FC = () => {
       <SummaryBar summary={summary.data} />
       <FilterBar filters={filters} onChange={setFilters} />
       <BulkBar filters={filters} onDone={refresh} />
-      <div className={`grid gap-4 ${selected ? 'lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]' : ''}`}>
+      <div className={`grid gap-4 ${selected ? 'cq-lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]' : ''}`}>
         <Panel title={t('list_title')}>
           {list.loading && list.items.length === 0 ? (
             <Loading label={t('loading')} />

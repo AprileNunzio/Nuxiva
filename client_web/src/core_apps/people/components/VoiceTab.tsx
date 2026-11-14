@@ -33,7 +33,7 @@ export const VoiceTab: React.FC<VoiceTabProps> = ({ slug, profile, voices, busy,
   const dictionary = Array.isArray(training.dictionary) ? (training.dictionary as Record<string, unknown>[]) : [];
 
   return (
-    <div className="grid gap-4 xl:grid-cols-2">
+    <div className="grid gap-4 cq-xl:grid-cols-2">
       <section className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
         <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">{t('voice_speaks')}</h3>
         <label className="flex flex-col gap-1 text-xs text-slate-600">
@@ -71,7 +71,7 @@ export const VoiceTab: React.FC<VoiceTabProps> = ({ slug, profile, voices, busy,
           </p>
         )}
         {!stale && Object.keys(conditions).length > 0 && (
-          <ul className="grid gap-1 text-xs text-slate-700 sm:grid-cols-2">
+          <ul className="grid gap-1 text-xs text-slate-700 cq-sm:grid-cols-2">
             {Object.entries(conditions).map(([key, value]) => {
               const group = record(value);
               return (

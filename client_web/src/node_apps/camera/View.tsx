@@ -53,12 +53,12 @@ export const View: React.FC<Props> = ({ nodeId = '', scope = 'mesh' }) => {
           {sources.length === 0 ? (
             <Notice tone="info">{t('sources_empty')}</Notice>
           ) : (
-            <div className="grid gap-4 lg:grid-cols-[16rem_minmax(0,1fr)]">
+            <div className="grid gap-4 cq-lg:grid-cols-[16rem_minmax(0,1fr)]">
               <SourceList sources={sources} selected={selected?.id ?? null} onSelect={setSelectedId} />
               {selected && (
                 <div className="flex min-w-0 flex-col gap-4">
                   <LivePreview source={selected} onPhoto={() => setPhotoTick((value) => value + 1)} />
-                  <div className="grid gap-4 xl:grid-cols-2">
+                  <div className="grid gap-4 cq-xl:grid-cols-2">
                     <OptionsPanel source={selected} onSaved={refresh} />
                     {selected.controllable && <ControlsPanel sourceId={selected.id} />}
                   </div>

@@ -111,7 +111,7 @@ export const InterfaceCard: React.FC<InterfaceCardProps> = ({
           </button>
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-2 text-xs">
+        <div className="grid gap-2 cq-sm:grid-cols-2 text-xs">
           <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-2.5">
             <span className="block text-[10px] text-slate-500 uppercase font-semibold tracking-wider">{t('ip_address')}</span>
             <div className="mt-0.5 flex items-center justify-between">

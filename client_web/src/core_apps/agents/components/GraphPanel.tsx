@@ -42,10 +42,10 @@ export const GraphPanel: React.FC<{ readonly data: GraphSnapshot }> = ({ data })
         <Network className="h-4 w-4 text-cyan-700" aria-hidden="true" />
         {t('graph_title')}
       </h2>
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-5 cq-lg:grid-cols-2">
         <div>
           <Heading>{graph.available ? t('graph_map') : t('graph_unavailable')}</Heading>
-          <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <dl className="grid grid-cols-2 gap-3 cq-sm:grid-cols-3">
             <Stat label={t('graph_files')} value={number.format(graph.files)} />
             <Stat label={t('graph_packages')} value={number.format(graph.packages)} />
             <Stat label={t('graph_symbols')} value={number.format(graph.symbols)} />
@@ -139,7 +139,7 @@ export const GraphPanel: React.FC<{ readonly data: GraphSnapshot }> = ({ data })
         <Heading>
           {t('graph_shadow')} · {shadow.gate.ready ? t('graph_shadow_ready') : t('graph_shadow_waiting')}
         </Heading>
-        <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+        <dl className="grid grid-cols-2 gap-3 cq-sm:grid-cols-4 cq-lg:grid-cols-6">
           <Stat label={t('graph_shadow_compared')} value={number.format(shadow.compared)} />
           <Stat label={t('graph_shadow_diffs')} value={number.format(shadow.mismatched)} />
           <Stat label={t('graph_shadow_errors')} value={number.format(shadow.errors)} />

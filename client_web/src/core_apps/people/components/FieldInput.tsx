@@ -93,7 +93,7 @@ export const FieldInput: React.FC<FieldInputProps> = ({ field, value, people, on
       return (
         <div className="flex flex-col gap-2">
           {rows.map((row, index) => (
-            <div key={index} className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2 sm:grid-cols-2 3xl:grid-cols-3">
+            <div key={index} className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2 cq-sm:grid-cols-2 cq-3xl:grid-cols-3">
               {field.fields.map((sub) => (
                 <label key={sub.key} className="flex flex-col gap-1 text-[11px] text-slate-600">
                   {localLabel(t, lang, `field_${sub.key}`, sub.label)}

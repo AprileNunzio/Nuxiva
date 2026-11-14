@@ -20,7 +20,7 @@ export const HealthSources: React.FC<Props> = ({ state, busy, onSync, onConnecto
   const phones = state.devices.filter((d) => d.kind !== 'ble');
   const streaming = (rows: typeof state.devices) => rows.some((d) => d.state === 'streaming' || d.state === 'connected');
   return (
-    <section aria-labelledby="health-sources" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+    <section aria-labelledby="health-sources" className="grid gap-3 cq-sm:grid-cols-2 cq-xl:grid-cols-4">
       <h3 id="health-sources" className="sr-only">{t('hl_sources')}</h3>
       <article className="flex flex-col gap-2 rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-4">
         <header className="flex items-center gap-2">

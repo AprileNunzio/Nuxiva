@@ -47,7 +47,7 @@ export const MemoriesTab: React.FC<Props> = ({ slug, busy, run }) => {
       {memories === null ? null : memories.length === 0 ? (
         <p className="text-sm text-slate-500">{t('memories_empty')}</p>
       ) : (
-        <ul className="grid gap-2 xl:grid-cols-2 4xl:grid-cols-3">
+        <ul className="grid gap-2 cq-xl:grid-cols-2 cq-4xl:grid-cols-3">
           {memories.map((m) => (
             <li key={m.id} className="flex items-start gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
               <Brain className="mt-0.5 h-4 w-4 shrink-0 text-indigo-700" aria-hidden="true" />

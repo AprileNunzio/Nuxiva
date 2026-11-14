@@ -42,7 +42,7 @@ export const View: React.FC<Props> = ({ scope = 'mesh' }) => {
               {t('says', { text: handle.view.says })}
             </p>
           )}
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid gap-4 cq-lg:grid-cols-2">
             <OutputPanel handle={handle} />
             <SavesPanel handle={handle} />
           </div>

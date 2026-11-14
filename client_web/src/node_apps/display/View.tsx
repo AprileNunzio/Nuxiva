@@ -28,7 +28,7 @@ export const View: React.FC<Props> = ({ nodeId = '', scope = 'mesh' }) => {
       {scope === 'mesh' && <Notice tone="warn">{t('notice_unpaired')}</Notice>}
       {scope === 'paired' && <Notice tone="info">{t('notice_paired')}</Notice>}
       {scope !== 'mesh' && (
-        <div className="grid gap-4 xl:grid-cols-2">
+        <div className="grid gap-4 cq-xl:grid-cols-2">
           <div className="flex min-w-0 flex-col gap-4">
             {local && <ScreensPanel state={screens} />}
             <SettingsPanel title={t('appearance_title')} specs={APPEARANCE_SPECS} state={appearance} t={t} />

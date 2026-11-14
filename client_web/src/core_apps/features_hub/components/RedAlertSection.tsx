@@ -61,7 +61,7 @@ export const RedAlertSection: React.FC<RedAlertSectionProps> = ({ feature, t, on
       </Panel>
 
       <Panel title={t('redalert_behaviour')} icon={<Megaphone className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid gap-4 cq-lg:grid-cols-2">
           <Field label={t('mode')}>
             <select className={inputClass} disabled={busy} value={feature.state.mode} onChange={(event) => void run(() => setMode(feature.id, event.target.value), 'features_mode_failed')}>
               <option value="auto">{t('mode_auto')}</option>

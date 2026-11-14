@@ -90,7 +90,7 @@ export const VitalsCard: React.FC<Props> = ({ slug, busy, run }) => {
   const live = state.values.length > 0;
 
   return (
-    <section className={`${cardClass} xl:col-span-2`} aria-labelledby="connector-vitals">
+    <section className={`${cardClass} cq-xl:col-span-2`} aria-labelledby="connector-vitals">
       <header className="flex items-center gap-2">
         <HeartPulse className="h-4 w-4 text-rose-700" aria-hidden="true" />
         <h3 id="connector-vitals" className="font-semibold text-slate-900">
@@ -102,7 +102,7 @@ export const VitalsCard: React.FC<Props> = ({ slug, busy, run }) => {
       </header>
       <p className="text-xs text-slate-600">{t('vitals_hint')}</p>
       {live && (
-        <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <dl className="grid grid-cols-2 gap-3 cq-sm:grid-cols-3 cq-lg:grid-cols-6">
           {state.values.map((v) => (
             <div key={v.metric} className="rounded-lg border border-slate-200 bg-white px-3 py-2">
               <dt className="text-[11px] uppercase tracking-wide text-slate-600">{t(`vitals_${v.metric}`)}</dt>

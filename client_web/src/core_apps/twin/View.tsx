@@ -45,7 +45,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_rules')} value={`${active}/${data.available.length}`} />
         <Stat label={t('stat_verdicts')} value={data.history.length} tone="rose" />
       </StatRow>
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 cq-lg:grid-cols-2">
         <Panel title={t('rules_title')} icon={<Boxes className="h-4 w-4 text-purple-700" aria-hidden="true" />}>
           <List>
             {data.available.map((rule) => (

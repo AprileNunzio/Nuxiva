@@ -44,7 +44,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_last_export')} value={formatTime(data.last_export, lang)} tone="amber" />
       </StatRow>
       {result ? <Pill tone="emerald">{t('sync_done', { written: result.written, imported: result.imported })}</Pill> : null}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 cq-lg:grid-cols-2">
         <Panel title={t('files_title')} icon={<FolderLock className="h-4 w-4 text-rose-700" aria-hidden="true" />}>
           <p className="mb-3 break-all font-mono text-[11px] text-slate-500">{data.root}</p>
           {data.files.length === 0 ? (

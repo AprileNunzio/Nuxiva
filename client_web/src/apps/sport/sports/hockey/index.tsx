@@ -266,7 +266,7 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3.5 cq-sm:grid-cols-2">
             {leagues.map((lg) => (
               <div
                 key={lg.code}
@@ -517,7 +517,7 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 cq-md:grid-cols-2 gap-4">
             {/* WIDGET 1: PERIOD & POWER PLAY TRACKER */}
             <div className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-md flex flex-col justify-between">
               <div>
@@ -606,7 +606,7 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
             </div>
 
             {/* WIDGET 3: GOALTENDER DUEL */}
-            <div className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-md md:col-span-2">
+            <div className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-md cq-md:col-span-2">
               <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
                 <div className="flex items-center gap-2">
                   <Shield className="h-4 w-4 text-cyan-600" />
@@ -615,7 +615,7 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
                 <span className="text-xs text-slate-500">Statistiche Parate e Save Percentage (SV%)</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 cq-sm:grid-cols-2 gap-4">
                 <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-950 border border-cyan-800 font-mono font-bold text-cyan-700 text-xs">
@@ -663,7 +663,7 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+          <div className="grid grid-cols-1 cq-sm:grid-cols-2 cq-md:grid-cols-3 gap-3.5">
             {[
               { name: 'Sky Sport Arena', desc: 'Dirette esclusive NHL con telecronaca in italiano', icon: '📺' },
               { name: 'NHL.tv', desc: 'Tutte le oltre 1.300 partite della stagione regolare e Playoff', icon: '🏒' },
@@ -734,7 +734,7 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
 
           <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 flex flex-col gap-4">
             <h4 className="text-xs font-bold text-slate-900">Opzioni Vocali e Notifiche</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 cq-sm:grid-cols-2 gap-3">
               <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 cursor-pointer">
                 <div className="flex items-center gap-3">
                   <Volume2 className="h-5 w-5 text-cyan-600" />
@@ -789,7 +789,7 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
 
           <div className="rounded-2xl border border-slate-200 bg-white/80 p-5">
             <h4 className="text-xs font-bold text-slate-900 mb-3">Franchigie NHL & Squadre Selezionabili</h4>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-2 cq-sm:grid-cols-3 cq-md:grid-cols-4 gap-2.5">
               {[
                 'New York Rangers',
                 'Boston Bruins',

@@ -32,13 +32,13 @@ export const MemoryPanel: React.FC<{ readonly data: Observability }> = ({ data }
           ))}
         </ul>
       )}
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 cq-sm:grid-cols-2">
         <div>
           <h3 className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-slate-700">
             <Activity className="h-3.5 w-3.5 text-indigo-700" aria-hidden="true" />
             {t('memory_engine')} · {t(`memory_mode_${engine.mode}`)}
           </h3>
-          <dl className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+          <dl className="grid grid-cols-2 gap-3 cq-lg:grid-cols-3">
             <Stat label={t('memory_agents')} value={number.format(squad.agents)} />
             <Stat label={t('memory_workers')} value={number.format(squad.workers)} />
             <Stat label={t('memory_busy')} value={number.format(squad.busy)} />
@@ -52,7 +52,7 @@ export const MemoryPanel: React.FC<{ readonly data: Observability }> = ({ data }
             <Brain className="h-3.5 w-3.5 text-indigo-700" aria-hidden="true" />
             {t('memory_hot')} · {memory.loaded ? t('memory_loaded') : t('memory_cold')}
           </h3>
-          <dl className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+          <dl className="grid grid-cols-2 gap-3 cq-lg:grid-cols-3">
             <Stat label={t('memory_people')} value={number.format(memory.persons)} />
             <Stat label={t('memory_present')} value={number.format(memory.present)} />
             <Stat label={t('memory_version')} value={number.format(memory.version)} />

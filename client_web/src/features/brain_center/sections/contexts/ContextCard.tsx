@@ -65,7 +65,7 @@ export const ContextCard: React.FC<ContextCardProps> = ({ role, known }) => {
           {t('options')}
         </button>
         {open && (
-          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <div className="mt-3 grid gap-3 cq-sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-xs text-slate-600">
               {t('scope_label')}
               <select value={role.scope} disabled={busy} onChange={(e) => void setOption({ scope: SCOPES.find((s) => s === e.target.value) ?? 'anywhere' })} className={fieldClass}>

@@ -50,8 +50,8 @@ export const View: React.FC = () => {
         </div>
       </Panel>
       <div className={gridClass}>
-        <Panel title={t('nodes')} className="lg:col-span-2 3xl:col-span-2">
-          <ul className="grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
+        <Panel title={t('nodes')} className="cq-lg:col-span-2 cq-3xl:col-span-2">
+          <ul className="grid gap-3 cq-md:grid-cols-2 cq-2xl:grid-cols-3">
             {data.nodes.map((node) => (
               <NodeCard key={node.id} node={node} picked={data.draft.picks[node.id] ?? ''} changed={data.draft.picks[node.id] !== data.current[node.id]} disabled={busy || node.locked} t={t} onPick={(algorithm) => pick(node.id, algorithm)} />
             ))}

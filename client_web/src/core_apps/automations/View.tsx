@@ -31,7 +31,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_enabled')} value={data.automations.filter((item) => item.enabled).length} tone="emerald" />
         <Stat label={t('stat_running')} value={data.active.length} tone="amber" />
       </StatRow>
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+      <div className="grid gap-4 cq-lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <Panel title={t('list_title')} icon={<Workflow className="h-4 w-4 text-amber-500" aria-hidden="true" />}>
           {data.automations.length === 0 ? (
             <Empty>{t('list_empty')}</Empty>

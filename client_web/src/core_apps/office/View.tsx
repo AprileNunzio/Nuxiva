@@ -45,7 +45,7 @@ export const View: React.FC = () => {
         </form>
         <p className="mt-2 break-all text-xs text-slate-500">{data.root}</p>
       </Panel>
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 cq-lg:grid-cols-2">
         <Panel title={t('documents_title')}>
           {data.items.length === 0 ? (
             <Empty>{t('documents_empty')}</Empty>

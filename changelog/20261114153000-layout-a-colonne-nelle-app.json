@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Tutte le app tornano su piu colonne e si adattano alla finestra",
+    "en": "All apps use multiple columns again and adapt to their window",
+    "fr": "Toutes les apps reviennent sur plusieurs colonnes et s'adaptent a leur fenetre",
+    "es": "Todas las apps vuelven a usar varias columnas y se adaptan a su ventana"
+  },
+  "fixes": [
+    {
+      "it": "Dopo un aggiornamento delle dipendenze le classi responsive non venivano piu applicate e ogni app mostrava una sola colonna stretta; ora funzionano di nuovo in tutta la console.",
+      "en": "After a dependency update the responsive classes stopped being applied and every app showed a single narrow column; they work again across the whole console.",
+      "fr": "Apres une mise a jour des dependances, les classes responsives n'etaient plus appliquees et chaque app affichait une seule colonne etroite; elles fonctionnent de nouveau dans toute la console.",
+      "es": "Tras una actualizacion de dependencias las clases responsivas dejaron de aplicarse y cada app mostraba una sola columna estrecha; vuelven a funcionar en toda la consola."
+    }
+  ],
+  "features": [
+    {
+      "it": "Le colonne di ogni app dipendono ora dalla larghezza reale della finestra e non dallo schermo, e le pagine usano tutto lo spazio senza margini vuoti ai lati.",
+      "en": "Columns in every app now depend on the real width of the window rather than the screen, and pages use all the space without empty side margins.",
+      "fr": "Les colonnes de chaque app dependent maintenant de la largeur reelle de la fenetre et non de l'ecran, et les pages utilisent tout l'espace sans marges vides sur les cotes.",
+      "es": "Las columnas de cada app dependen ahora del ancho real de la ventana y no de la pantalla, y las paginas usan todo el espacio sin margenes vacios a los lados."
+    }
+  ]
+}

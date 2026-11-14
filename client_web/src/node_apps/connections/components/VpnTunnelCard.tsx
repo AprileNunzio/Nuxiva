@@ -85,7 +85,7 @@ export const VpnTunnelCard: React.FC<VpnTunnelCardProps> = ({ vpn, toggling, onT
         </button>
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-3 text-xs">
+      <div className="grid gap-2 cq-sm:grid-cols-3 text-xs">
         <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-2.5">
           <span className="block text-[10px] text-slate-500 uppercase font-semibold tracking-wider">{t('mesh_virtual_ip')}</span>
           <strong className="mt-0.5 block font-mono text-blue-600 font-bold">{vpn.virtual_ip}</strong>

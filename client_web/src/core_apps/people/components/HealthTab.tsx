@@ -62,7 +62,7 @@ export const HealthTab: React.FC<Props> = ({ slug, busy, run, onConnectors }) =>
         <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-600">{t('hl_empty')}</div>
       ) : (
         <>
-          <section className="grid gap-3 lg:grid-cols-[auto_minmax(0,1fr)_auto]" aria-label={t('hl_overview')}>
+          <section className="grid gap-3 cq-lg:grid-cols-[auto_minmax(0,1fr)_auto]" aria-label={t('hl_overview')}>
             <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-900 to-slate-800 p-4 text-white">
               <Ring pct={state.recovery?.score ?? 0} tone={state.recovery ? BAND_TONE[state.recovery.band] : 'text-slate-500'} label={t('hl_recovery')}>
                 <b className="text-3xl font-light tabular-nums">{state.recovery ? state.recovery.score : '—'}</b>
@@ -117,7 +117,7 @@ export const HealthTab: React.FC<Props> = ({ slug, busy, run, onConnectors }) =>
                   <Icon className="h-4 w-4" aria-hidden="true" />
                   {t(`hg_${g}`)}
                 </h3>
-                <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="grid gap-2 cq-sm:grid-cols-2 cq-xl:grid-cols-4">
                   {rows.map((v) => (
                     <article key={v.metric} className="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
                       <span className="text-xs text-slate-600">{t(`hm_${v.metric}`)}</span>
@@ -136,7 +136,7 @@ export const HealthTab: React.FC<Props> = ({ slug, busy, run, onConnectors }) =>
         </>
       )}
       <HealthSources state={state} busy={busy} onSync={sync} onConnectors={onConnectors} onCamera={toggleCamera} />
-      <div className="grid gap-3 xl:grid-cols-2">
+      <div className="grid gap-3 cq-xl:grid-cols-2">
         <VitalsCard slug={slug} busy={busy} run={run} />
       </div>
     </div>

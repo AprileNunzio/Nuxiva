@@ -50,7 +50,7 @@ export const View: React.FC<Props> = ({ nodeId = '', scope = 'mesh' }) => {
         </>
       )}
       {local && list && (
-        <div className="grid gap-4 xl:grid-cols-2">
+        <div className="grid gap-4 cq-xl:grid-cols-2">
           <div className="flex min-w-0 flex-col gap-4">
             <Panel title={t('list_title', { count: printers.length })}>
               <ul className="flex flex-col gap-2">

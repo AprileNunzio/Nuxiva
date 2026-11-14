@@ -213,7 +213,7 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
 
         {summary && (
           <>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 cq-sm:grid-cols-2 cq-lg:grid-cols-3">
               <div className="rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur-md p-4 sm:p-5 flex flex-col justify-between gap-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
@@ -270,7 +270,7 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur-md p-4 sm:p-5 flex flex-col justify-between gap-3 sm:col-span-2 lg:col-span-1">
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur-md p-4 sm:p-5 flex flex-col justify-between gap-3 cq-sm:col-span-2 cq-lg:col-span-1">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-400/30 bg-emerald-400/10 text-emerald-300">
@@ -329,7 +329,7 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
                 </div>
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-3 cq-sm:grid-cols-2 cq-lg:grid-cols-4">
                 {CAPABILITIES.map((cap) => {
                   const Icon = cap.icon;
                   const isEnabled = Boolean(summary.capabilities?.[cap.key]);

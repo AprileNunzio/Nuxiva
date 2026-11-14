@@ -59,7 +59,7 @@ export const View: React.FC = () => {
         {data.status.detail}
         {data.status.topic ? ` · ${data.status.topic}` : ''}
       </p>
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+      <div className="grid gap-4 cq-lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <TopicsPanel data={data} busy={busy} t={t} run={run} />
         <div className="flex min-w-0 flex-col gap-4">
           <Panel title={t('settings_title')} icon={<Brain className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>

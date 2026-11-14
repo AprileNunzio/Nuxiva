@@ -70,7 +70,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_people')} value={data.people.length} tone="purple" />
       </StatRow>
       {note ? <Pill tone="emerald">{note}</Pill> : null}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 cq-lg:grid-cols-2">
         <Panel title={t('floors_title')} icon={<Layers className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
           {data.floors.length === 0 ? (
             <Empty>{t('floors_empty')}</Empty>

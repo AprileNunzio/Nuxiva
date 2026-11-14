@@ -156,8 +156,8 @@ export const PersonPage: React.FC<Props> = ({ summary, sections, voices, people,
         )}
       </header>
       {summary.scanned && !open && (
-        <div className="grid gap-2 rounded-3xl bg-amber-50 p-4 ring-1 ring-amber-200 lg:grid-cols-2">
-          <p className="flex items-center gap-2 text-sm text-amber-900 lg:col-span-2">
+        <div className="grid gap-2 rounded-3xl bg-amber-50 p-4 ring-1 ring-amber-200 cq-lg:grid-cols-2">
+          <p className="flex items-center gap-2 text-sm text-amber-900 cq-lg:col-span-2">
             <ScanFace className="h-4 w-4" aria-hidden="true" />
             {t('scanned_hint')}
           </p>

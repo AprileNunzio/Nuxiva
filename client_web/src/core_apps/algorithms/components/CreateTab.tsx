@@ -46,7 +46,7 @@ export const CreateTab: React.FC<CreateTabProps> = ({ categories, canGenerate, t
   const draft = (): AlgorithmDraft => ({ name, category, description: summary, patterns: lines(patterns), examples: lines(examples), code, probe });
 
   return (
-    <div className="grid gap-4 xl:grid-cols-2">
+    <div className="grid gap-4 cq-xl:grid-cols-2">
       <Panel title={t('generate_title')} icon={<Sparkles className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
         <p className="mb-3 text-xs text-slate-600">{canGenerate ? t('generate_hint') : t('generate_disabled')}</p>
         <textarea className={`${inputClass} h-32`} value={description} maxLength={500} aria-label={t('generate_title')} placeholder={t('generate_placeholder')} onChange={(event) => setDescription(event.target.value)} />
@@ -60,7 +60,7 @@ export const CreateTab: React.FC<CreateTabProps> = ({ categories, canGenerate, t
 
       <Panel title={t('manual_title')} icon={<Hammer className="h-4 w-4 text-blue-700" aria-hidden="true" />}>
         <div className="grid gap-3">
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 cq-sm:grid-cols-2">
             <Field label={t('field_name')}>
               <input className={inputClass} value={name} maxLength={60} onChange={(event) => setName(event.target.value)} />
             </Field>

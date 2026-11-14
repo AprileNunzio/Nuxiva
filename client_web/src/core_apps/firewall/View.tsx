@@ -68,7 +68,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_blocks')} value={data.blocks.length} tone="rose" />
       </StatRow>
       {data.status.error ? <Pill tone="rose">{data.status.error}</Pill> : null}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 cq-lg:grid-cols-2">
         <Panel title={t('policy_title')} icon={<ShieldCheck className="h-4 w-4 text-emerald-700" aria-hidden="true" />}>
           <Field label={t('policy_mode')}>
             <select className={inputClass} value={policy.mode} disabled={busy} onChange={(event) => change({ mode: event.target.value })}>
@@ -116,7 +116,7 @@ export const View: React.FC = () => {
           )}
         </Panel>
       </div>
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 cq-lg:grid-cols-2">
         <DefensePanel policy={policy} state={defense.data} busy={busy} lang={lang} t={t} run={run} reload={everything} />
         <TrustedPanel devices={trusted.data?.devices ?? []} busy={busy} lang={lang} t={t} run={run} reload={everything} />
       </div>

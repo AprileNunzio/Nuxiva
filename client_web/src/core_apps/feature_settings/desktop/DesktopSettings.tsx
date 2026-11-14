@@ -1,3 +1,4 @@
+import { PAGE_CLASS } from '../../../shared/ui/layout';
 import React from 'react';
 import { Check, Grid2X2, ShieldCheck, Unlock } from 'lucide-react';
 import { MD3SegmentedButton } from '../../../shared/components/MD3SegmentedButton';
@@ -18,7 +19,7 @@ export function DesktopSettings({ feature }: { readonly feature: FeatureRow }) {
   const failures = Object.entries(failed);
 
   return (
-    <div className="mx-auto max-w-6xl space-y-5">
+    <div className={`${PAGE_CLASS} gap-5`}>
       <header className="flex flex-wrap items-start justify-between gap-4 border-b border-outline-variant pb-5">
         <div className="flex min-w-0 items-start gap-3">
           <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-primary-container text-on-primary-container">

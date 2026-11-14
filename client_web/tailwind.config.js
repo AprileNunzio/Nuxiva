@@ -1,3 +1,4 @@
+import { layoutPlugin } from './design/layout/plugin.js';
 import { DARK_VARIANT, tonalPlugin, tonalTheme } from './design/tonal/plugin.js';
 
 const tonal = tonalTheme();
@@ -41,5 +42,5 @@ export default {
       }
     },
   },
-  plugins: [tonalPlugin],
+  plugins: [tonalPlugin, layoutPlugin],
 }

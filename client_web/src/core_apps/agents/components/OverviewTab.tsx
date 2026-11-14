@@ -33,7 +33,7 @@ export const OverviewTab: React.FC<{ readonly agent: Agent; readonly handle: Tea
     <div className="flex flex-col gap-4">
       <p className="text-sm text-slate-700">{agent.description || t('no_description')}</p>
       {agent.can.length > 0 && (
-        <ul className="grid gap-1.5 sm:grid-cols-2">
+        <ul className="grid gap-1.5 cq-sm:grid-cols-2">
           {agent.can.map((c) => (
             <li key={c} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-700">
               {c}

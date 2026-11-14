@@ -17,7 +17,7 @@ import type { DeveloperGuideProps } from './types';
 export const GuideOverviewSection: React.FC<DeveloperGuideProps> = ({ t }) => {
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 cq-sm:grid-cols-2 cq-lg:grid-cols-4 gap-4">
         <div className="p-4 rounded-2xl bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)] hover:border-blue-500/40 transition-all shadow-xs">
           <div className="flex items-center gap-2 mb-2 text-blue-400 font-bold text-xs">
             <Sparkles className="w-4 h-4 shrink-0" />
@@ -63,7 +63,7 @@ export const GuideOverviewSection: React.FC<DeveloperGuideProps> = ({ t }) => {
         <h3 className="text-sm font-bold text-[var(--md-sys-color-on-surface)] flex items-center gap-2">
           <span>Confronto Architetturale: Monolite vs Ecosistema Nuxiva</span>
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 cq-md:grid-cols-2 gap-4">
           <div className="p-4 rounded-2xl bg-red-950/20 border border-red-500/20 space-y-3">
             <div className="flex items-center gap-2 text-xs font-bold text-red-400">
               <XCircle className="w-4 h-4 shrink-0" />
@@ -112,7 +112,7 @@ export const GuideOverviewSection: React.FC<DeveloperGuideProps> = ({ t }) => {
         <h3 className="text-sm font-bold text-[var(--md-sys-color-on-surface)]">
           Le 4 Tipologie di Moduli Estensibili
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 cq-sm:grid-cols-2 cq-lg:grid-cols-4 gap-4">
           <div className="p-4 rounded-2xl bg-[var(--md-sys-color-surface)] border border-[var(--md-sys-color-outline-variant)] space-y-2">
             <div className="flex items-center gap-2 text-blue-400 font-bold text-xs">
               <Layers className="w-4 h-4" />

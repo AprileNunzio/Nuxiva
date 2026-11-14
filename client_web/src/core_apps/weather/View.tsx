@@ -32,7 +32,7 @@ export const View: React.FC = () => {
 
   return (
     <AppFrame title={t('title')} description={t('description')} onReload={reload}>
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 cq-lg:grid-cols-2">
         <Panel title={t('places_title')} icon={<MapPin className="h-4 w-4 text-rose-700" aria-hidden="true" />}>
           <div className="grid gap-4">
             <PlaceSearch t={t} onAdded={reload} />
@@ -43,7 +43,7 @@ export const View: React.FC = () => {
           {overview.preview ? <PreviewPanel preview={overview.preview} t={t} /> : <Empty>{t(overview.error === 'no_location' ? 'preview_no_location' : 'preview_unavailable')}</Empty>}
         </Panel>
         {shown ? (
-          <Panel className="lg:col-span-2" title={t('settings_title')} icon={<SlidersHorizontal className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
+          <Panel className="cq-lg:col-span-2" title={t('settings_title')} icon={<SlidersHorizontal className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
             <SettingsEditor
               key={shown.id}
               feature={shown}

@@ -54,7 +54,7 @@ export function EnginesTab({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 cq-md:grid-cols-2 cq-lg:grid-cols-3">
               {engines.map((engine) => {
                 const isActive = engine.id === activeId;
                 return (

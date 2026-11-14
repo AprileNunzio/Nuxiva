@@ -91,7 +91,7 @@ export const HabitsTab: React.FC<HabitsTabProps> = ({ summary, profile, section,
         )}
       </section>
       <p className="rounded-xl border border-blue-300 bg-blue-50 px-3 py-2 text-sm text-blue-900">{habits.summary || t('habits_none')}</p>
-      <dl className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+      <dl className="grid grid-cols-2 gap-2 cq-lg:grid-cols-4">
         {facts.map(([label, value]) => (
           <div key={label} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
             <dt className="text-[10px] uppercase tracking-wider text-slate-500">{label}</dt>
@@ -99,7 +99,7 @@ export const HabitsTab: React.FC<HabitsTabProps> = ({ summary, profile, section,
           </div>
         ))}
       </dl>
-      <div className="grid gap-3 xl:grid-cols-2">
+      <div className="grid gap-3 cq-xl:grid-cols-2">
         <Bars values={habits.arrivalHours} labels={hours} title={t('arrivals_by_hour')} />
         <Bars values={habits.weekdays} labels={days} title={t('arrivals_by_day')} />
       </div>

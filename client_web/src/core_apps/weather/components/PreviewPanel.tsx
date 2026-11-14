@@ -39,7 +39,7 @@ export const PreviewPanel: React.FC<Props> = ({ preview, t }) => {
         <Stat label={t('stat_uv')} value={preview.uv} tone="rose" />
         <Stat label={t('stat_air')} value={preview.aqi === null ? '—' : preview.aqi} tone="emerald" />
       </StatRow>
-      <ul className="grid gap-1.5 sm:grid-cols-2" aria-label={t('forecast')}>
+      <ul className="grid gap-1.5 cq-sm:grid-cols-2" aria-label={t('forecast')}>
         {preview.days.map((day) => (
           <li key={day.label} className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2 text-sm">
             <span className="text-slate-700">{day.label}</span>

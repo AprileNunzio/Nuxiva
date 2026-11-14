@@ -43,13 +43,13 @@ export const SectionForm: React.FC<SectionFormProps> = ({ slug, title, isPrivate
           </span>
         )}
       </h3>
-      <div className="grid gap-3 md:grid-cols-2 3xl:grid-cols-3">
+      <div className="grid gap-3 cq-md:grid-cols-2 cq-3xl:grid-cols-3">
         {fields.map((field) => {
           const id = `person-${slug}-${field.key}`;
           const label = localLabel(t, lang, `field_${field.key}`, field.label);
           const wide = field.type === 'list' || field.type === 'textarea' || field.type === 'tags';
           return (
-            <div key={field.key} className={`flex flex-col gap-1.5 ${wide ? 'md:col-span-2 3xl:col-span-3' : ''} ${field.type === 'bool' ? 'flex-row items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2' : ''}`}>
+            <div key={field.key} className={`flex flex-col gap-1.5 ${wide ? 'cq-md:col-span-2 cq-3xl:col-span-3' : ''} ${field.type === 'bool' ? 'flex-row items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2' : ''}`}>
               <label htmlFor={id} className="text-xs text-slate-600">
                 {label}
               </label>

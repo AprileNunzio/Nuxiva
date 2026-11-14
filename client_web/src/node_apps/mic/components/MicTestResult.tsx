@@ -51,7 +51,7 @@ export const MicTestResult: React.FC<MicTestResultProps> = ({ report, rawUrl, pr
           />
         ))}
       </div>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2 cq-sm:grid-cols-2">
         <figure className="flex min-w-0 flex-col gap-1">
           <figcaption className="text-xs font-semibold text-slate-300">{t('test_play_raw')}</figcaption>
           <audio controls preload="auto" src={rawUrl} className="w-full" aria-label={t('test_play_raw')} />
@@ -62,7 +62,7 @@ export const MicTestResult: React.FC<MicTestResultProps> = ({ report, rawUrl, pr
         </figure>
       </div>
       <p className="text-xs text-slate-500">{t(report.eqEnabled ? 'test_processed_hint_eq' : 'test_processed_hint')}</p>
-      <dl className="grid grid-cols-2 gap-2 lg:grid-cols-3">
+      <dl className="grid grid-cols-2 gap-2 cq-lg:grid-cols-3">
         <Stat label={t('test_stat_voice')} value={fmtDb(report.voiceDb)} />
         <Stat label={t('test_stat_noise')} value={fmtDb(report.noiseDb)} />
         <Stat label={t('test_stat_snr')} value={`${report.snrDb.toFixed(1)} dB`} />

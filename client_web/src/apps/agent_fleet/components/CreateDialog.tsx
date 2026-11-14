@@ -65,7 +65,7 @@ export const CreateDialog: React.FC<Props> = ({ onClose, onCreated }) => {
         <Field label={t('field_description')}>
           <input className={fieldClass} maxLength={400} value={description} onChange={(event) => setDescription(event.target.value)} />
         </Field>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 cq-sm:grid-cols-2">
           <Field label={t('field_kind')}>
             <select className={fieldClass} value={kind} onChange={(event) => setKind(event.target.value as AgentKind)}>
               {KINDS.map((option) => <option key={option} value={option}>{t(`kind_${option}`)}</option>)}

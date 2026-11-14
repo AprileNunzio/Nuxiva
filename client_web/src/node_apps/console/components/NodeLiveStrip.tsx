@@ -32,7 +32,7 @@ export const NodeLiveStrip: React.FC<NodeLiveStripProps> = ({ neuron }) => {
   ];
 
   return (
-    <dl className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+    <dl className="grid grid-cols-2 gap-2 cq-lg:grid-cols-4">
       {cells.map(({ key, icon: Icon, value, detail }) => (
         <div key={key} className="rounded-xl border border-slate-800/80 bg-slate-950/50 px-3 py-2.5">
           <dt className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">

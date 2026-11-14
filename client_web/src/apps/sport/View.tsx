@@ -426,7 +426,7 @@ export const View: React.FC = () => {
                   {filteredSports.length === 0 ? (
                     <Empty>Nessuno sport trovato corrispondente alla ricerca.</Empty>
                   ) : (
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 cq-sm:grid-cols-2 cq-lg:grid-cols-3 cq-xl:grid-cols-4">
                       {filteredSports.map((sp) => (
                         <div
                           key={sp.id}

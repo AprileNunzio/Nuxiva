@@ -52,10 +52,10 @@ export const ExpertsSection: React.FC = () => {
         </div>
       </header>
 
-      <div className="grid gap-4 lg:grid-cols-[18rem_minmax(0,1fr)] 3xl:grid-cols-[22rem_minmax(0,1fr)]">
+      <div className="grid gap-4 cq-lg:grid-cols-[18rem_minmax(0,1fr)] cq-3xl:grid-cols-[22rem_minmax(0,1fr)]">
         <ExpertRoster experts={overview.experts} selected={expert?.id ?? null} onSelect={setSelected} onCreate={() => setCreating(true)} />
         {expert ? (
-          <div className="grid min-w-0 gap-4 2xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+          <div className="grid min-w-0 gap-4 cq-2xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
             <div className="flex min-w-0 flex-col gap-4">
               <ExpertProfile key={`p-${expert.id}`} expert={expert} skills={overview.skills} tools={overview.tools} handle={handle} onDeleted={() => setSelected(null)} />
               <LivePanel key={`l-${expert.id}`} expert={expert} />

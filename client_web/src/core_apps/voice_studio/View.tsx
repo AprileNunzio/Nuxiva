@@ -251,7 +251,7 @@ export const View: React.FC = () => {
                 {status.voices.length === 0 ? (
                   <Empty>{t('empty')}</Empty>
                 ) : (
-                  <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                  <div className="grid gap-4 grid-cols-1 cq-sm:grid-cols-2 cq-lg:grid-cols-3 cq-xl:grid-cols-4 cq-2xl:grid-cols-5">
                     {status.voices.map((voice) => {
                       const isSelected = status.nuxiva_voice === voice.id;
                       return (

@@ -53,7 +53,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_fixed')} value={data.fixed.length} tone="rose" />
         <Stat label={t('stat_custom')} value={`${data.custom.length}/${data.max}`} tone="amber" />
       </StatRow>
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 cq-lg:grid-cols-2">
         <Panel title={t('fixed_title')} icon={<Scale className="h-4 w-4 text-rose-600 dark:text-rose-400" aria-hidden="true" />}>
           <List>
             {data.fixed.map((law) => (

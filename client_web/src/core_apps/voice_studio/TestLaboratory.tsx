@@ -65,7 +65,7 @@ export const TestLaboratory: React.FC<Props> = ({ voices, defaultVoiceId, eq, fx
       )}
 
       {/* Selezione Voce e Prompt Rapidi */}
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-5 cq-sm:grid-cols-2">
         <Field label={t('voice_to_test')}>
           <select
             className={inputClass}

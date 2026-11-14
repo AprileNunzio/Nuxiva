@@ -45,7 +45,7 @@ export const LinkStatusPanel: React.FC<{ readonly node: LinkNode; readonly handl
             </p>
           </div>
         </div>
-        <dl className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
+        <dl className="mt-4 grid grid-cols-2 gap-2 cq-sm:grid-cols-3">
           {facts.map(([key, value]) => (
             <div key={key} className="min-w-0 rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2">
               <dt className="text-[10px] uppercase tracking-wider text-slate-500">{t(key)}</dt>
@@ -59,7 +59,7 @@ export const LinkStatusPanel: React.FC<{ readonly node: LinkNode; readonly handl
         {METRICS.every((key) => node.metrics[key] === undefined) ? (
           <p className="text-sm text-slate-500">{t('metrics_empty')}</p>
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 cq-sm:grid-cols-2">
             {METRICS.map((key) => {
               const value = node.metrics[key];
               if (value === undefined) {

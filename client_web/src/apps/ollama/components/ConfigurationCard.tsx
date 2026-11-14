@@ -25,7 +25,7 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
         </span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 cq-sm:grid-cols-2 cq-lg:grid-cols-3 gap-4">
         <div className="flex flex-col gap-1.5 p-3 rounded-xl bg-background/50 border border-border/40">
           <label className="text-xs font-semibold text-foreground flex items-center justify-between">
             <span>{t('parallel_slots_label')}</span>

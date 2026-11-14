@@ -12,7 +12,7 @@ interface LibraryProps {
 export const Library: React.FC<LibraryProps> = ({ rows, t, onOpen, onDelete }) => {
   if (rows.length === 0) return <p className="py-4 text-center text-xs text-slate-400">{t('library_empty')}</p>;
   return (
-    <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+    <ul className="grid gap-2 cq-sm:grid-cols-2 cq-lg:grid-cols-3">
       {rows.map((row) => (
         <li key={row.id} className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm transition hover:border-sky-300 hover:shadow-md">
           <button type="button" onClick={() => onOpen(row.id)} className="flex min-w-0 flex-1 items-center gap-3 text-left">

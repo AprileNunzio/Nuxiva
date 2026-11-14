@@ -43,7 +43,7 @@ export const TeamHeader: React.FC<TeamHeaderProps> = ({ team, busy, onCreate, on
           </button>
         </div>
       </div>
-      <div className="relative mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="relative mt-4 grid grid-cols-2 gap-2 cq-sm:grid-cols-4">
         {stats.map(([Icon, label, value]) => (
           <div key={label} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
             <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-slate-500">

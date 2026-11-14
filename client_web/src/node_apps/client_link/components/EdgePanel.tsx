@@ -41,7 +41,7 @@ export const EdgePanel: React.FC<{ readonly node: LinkNode }> = ({ node }) => {
         )}
       </div>
       {node.offload.length > 0 && (
-        <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <ul className="mt-4 grid grid-cols-1 gap-2 cq-sm:grid-cols-2">
           {node.offload.map((step) => (
             <li key={step.task} className={`flex min-w-0 items-center justify-between gap-2 rounded-xl border px-3 py-2 ${TARGET_TONE[step.target]}`}>
               <span className="truncate text-xs">{t(`edge_task_${step.task}`)}</span>

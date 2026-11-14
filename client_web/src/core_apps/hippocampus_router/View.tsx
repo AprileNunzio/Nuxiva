@@ -48,7 +48,7 @@ export const View: React.FC = () => {
           </List>
         </Panel>
       ) : null}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 cq-lg:grid-cols-2">
         <Panel title={t('verdicts_title')} icon={<Gauge className="h-4 w-4 text-emerald-700" aria-hidden="true" />}>
           <div className="flex flex-wrap gap-2">
             {(['fast', 'grey', 'slow'] as const).map((verdict) => (

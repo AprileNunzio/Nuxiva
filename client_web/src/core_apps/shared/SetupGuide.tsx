@@ -51,7 +51,7 @@ export const SetupGuide: React.FC<Props> = ({ guide }) => {
       {items.length > 0 && (
         <div className="mt-3">
           {guide.items_title && <h3 className="mb-1.5 text-xs font-bold uppercase tracking-wide text-sky-900">{guide.items_title}</h3>}
-          <ul className="grid gap-1.5 sm:grid-cols-2">
+          <ul className="grid gap-1.5 cq-sm:grid-cols-2">
             {items.map((item) => (
               <li key={item.label} className="flex items-start gap-2 rounded-lg border border-sky-200 bg-white px-3 py-2 text-xs">
                 <span className="min-w-0 flex-1">

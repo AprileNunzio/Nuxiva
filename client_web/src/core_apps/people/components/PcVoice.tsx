@@ -80,7 +80,7 @@ export const PcVoice: React.FC<Props> = ({ slug, samples, onSaved }) => {
   const recording = phase === 'recording';
   const pct = Math.min(100, Math.round((count / TARGET) * 100));
   return (
-    <section aria-labelledby="pc-voice-title" className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 xl:col-span-2">
+    <section aria-labelledby="pc-voice-title" className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 cq-xl:col-span-2">
       <h3 id="pc-voice-title" className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
         <Mic className="h-4 w-4 text-teal-600" aria-hidden="true" />
         {t('pc_voice_title')}

@@ -58,7 +58,7 @@ export const BenchmarkCard: React.FC<BenchmarkCardProps> = ({
       </div>
 
       {result && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-border/60">
+        <div className="grid grid-cols-2 cq-sm:grid-cols-4 gap-3 pt-3 border-t border-border/60">
           <div className="p-3.5 rounded-xl bg-background/60 border border-border/60 flex flex-col shadow-xs">
             <span className="text-[11px] text-muted-foreground font-medium">{t('bench_speed')}</span>
             <span className="text-base font-bold text-primary font-mono mt-0.5">

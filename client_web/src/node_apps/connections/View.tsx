@@ -316,7 +316,7 @@ export const View: React.FC<ConnectionsViewProps> = ({ nodeId = '', scope = 'mes
                       {t('view_all_interfaces')} →
                     </button>
                   </div>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid gap-3 cq-sm:grid-cols-2 cq-lg:grid-cols-3">
                     {profile.interfaces.slice(0, 3).map((iface) => (
                       <div
                         key={iface.name}
@@ -349,7 +349,7 @@ export const View: React.FC<ConnectionsViewProps> = ({ nodeId = '', scope = 'mes
                   </h3>
                 </div>
 
-                <div className="grid gap-4 lg:grid-cols-2">
+                <div className="grid gap-4 cq-lg:grid-cols-2">
                   {profile.interfaces.map((iface) => (
                     <InterfaceCard
                       key={iface.name}
@@ -379,7 +379,7 @@ export const View: React.FC<ConnectionsViewProps> = ({ nodeId = '', scope = 'mes
             )}
 
             {activeTab === 'vpn_cellular' && (
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className="grid gap-4 cq-lg:grid-cols-2">
                 <VpnTunnelCard
                   vpn={profile.vpn}
                   toggling={togglingVpn}

@@ -53,7 +53,7 @@ export const CollaudoPanel: React.FC = () => {
           <p className={`mb-3 text-sm font-semibold ${result.all_passed ? 'text-emerald-400' : 'text-rose-400'}`} role="status">
             {t(result.all_passed ? 'collaudo_ok' : 'collaudo_ko', { when: formatDateTime(result.timestamp, lang) ?? '' })}
           </p>
-          <ul className="grid gap-2 sm:grid-cols-2">
+          <ul className="grid gap-2 cq-sm:grid-cols-2">
             {result.tests.map((check) => {
               const { icon: Icon, tone } = ICONS[check.status];
               const key = KNOWN_CHECKS.has(check.id) ? check.id : 'unknown';

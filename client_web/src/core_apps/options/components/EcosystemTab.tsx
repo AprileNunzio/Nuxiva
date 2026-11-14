@@ -84,7 +84,7 @@ export function EcosystemTab({ t }: EcosystemTabProps) {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 cq-md:grid-cols-2">
               {sec.items.map((entity) => {
                 const isExpanded = expandedId === entity.id;
                 return (

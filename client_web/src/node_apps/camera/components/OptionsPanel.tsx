@@ -33,7 +33,7 @@ export const OptionsPanel: React.FC<{ readonly source: CameraSource; readonly on
 
   return (
     <Panel title={t('options_title')}>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2 cq-sm:grid-cols-2">
         <label className="flex flex-col gap-1 text-xs text-slate-400">
           {t('option_alias')}
           <input className={field} maxLength={40} value={draft.alias} onChange={(event) => setDraft({ ...draft, alias: event.target.value })} />
@@ -65,7 +65,7 @@ export const OptionsPanel: React.FC<{ readonly source: CameraSource; readonly on
           />
         </label>
       </div>
-      <div className="mt-2 grid gap-2 sm:grid-cols-2">
+      <div className="mt-2 grid gap-2 cq-sm:grid-cols-2">
         {TOGGLES.map((key) => (
           <label key={key} className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2 text-sm text-slate-100">
             {t(`option_${key}`)}

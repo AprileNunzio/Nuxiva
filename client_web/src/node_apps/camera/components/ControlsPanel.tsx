@@ -63,7 +63,7 @@ export const ControlsPanel: React.FC<{ readonly sourceId: string }> = ({ sourceI
       ) : controls.length === 0 ? (
         <p className="text-sm text-slate-500">{t('controls_none')}</p>
       ) : (
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="grid gap-2 cq-sm:grid-cols-2">
           {controls.map((control) => {
             const label = control.name.replace(/_/g, ' ');
             return (

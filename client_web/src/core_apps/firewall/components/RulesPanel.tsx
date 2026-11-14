@@ -75,7 +75,7 @@ export const RulesPanel: React.FC<RulesPanelProps> = ({ rules, busy, t, run }) =
           ))}
         </List>
       )}
-      <form onSubmit={submit} className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+      <form onSubmit={submit} className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-200 pt-4 cq-sm:grid-cols-3">
         <Field label={t('field_action')}>
           <select className={inputClass} value={action} onChange={(event) => setAction(event.target.value)}>
             {ACTIONS.filter((item) => item !== 'limit').map((item) => (
@@ -112,7 +112,7 @@ export const RulesPanel: React.FC<RulesPanelProps> = ({ rules, busy, t, run }) =
         <Field label={t('field_comment')}>
           <input className={inputClass} value={comment} maxLength={80} onChange={(event) => setComment(event.target.value)} />
         </Field>
-        <div className="col-span-2 sm:col-span-3">
+        <div className="col-span-2 cq-sm:col-span-3">
           <Btn type="submit" busy={busy} disabled={!valid}>
             {t('add_rule')}
           </Btn>

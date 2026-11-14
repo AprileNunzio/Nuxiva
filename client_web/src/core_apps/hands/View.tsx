@@ -92,7 +92,7 @@ export const View: React.FC = () => {
             contexts={view.contexts}
             onChange={(bindings) => edit({ ...draft, bindings })}
           />
-          <div className="grid gap-4 xl:grid-cols-2">
+          <div className="grid gap-4 cq-xl:grid-cols-2">
             <SensitivityPanel t={t} profile={draft} onChange={edit} />
             <RecentPanel t={t} />
           </div>
