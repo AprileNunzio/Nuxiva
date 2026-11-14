@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/learned",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Ce que j'ai appris",
+    "say_none": "Je n'ai encore rien appris de nouveau.",
+    "say_some_one": "J'ai appris une chose",
+    "say_some_other": "J'ai appris {{n}} choses",
+    "count_one": "1 chose",
+    "count_other": "{{n}} choses",
+    "keep": "Oui, garde-le",
+    "forget": "Non, oublie",
+    "lesson_reminder_time": "J'ai remarqué que tu préfères les rappels {{value}}.",
+    "lesson_notify_channel": "J'ai remarqué que tu préfères les alertes {{value}}.",
+    "lesson_reply_length": "J'ai remarqué que tu préfères des réponses {{value}}.",
+    "lesson_reply_tone": "J'ai remarqué que tu préfères un ton {{value}}.",
+    "lesson_step_order": "J'ai remarqué que ça marche mieux ainsi : {{value}}.",
+    "lesson_other": "J'ai appris quelque chose de nouveau.",
+    "value_morning": "le matin",
+    "value_afternoon": "l'après-midi",
+    "value_evening": "le soir",
+    "value_voice": "à la voix",
+    "value_screen": "à l'écran",
+    "value_short": "courtes",
+    "value_long": "longues",
+    "value_warm": "chaleureux",
+    "value_neutral": "neutre",
+    "value_formal": "formel",
+    "value_tests_first": "les contrôles d'abord",
+    "value_build_first": "la construction d'abord",
+    "simple_title": "Ce que j'ai appris"
+  }
+}

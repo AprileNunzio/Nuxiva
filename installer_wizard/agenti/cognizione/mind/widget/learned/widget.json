@@ -1,0 +1,19 @@
+{
+  "id": "learned",
+  "name": "Cosa ho imparato",
+  "icon": "💡",
+  "priority": 34,
+  "size": "s",
+  "intents": [
+    "what_i_learned"
+  ],
+  "description": "Le abitudini e le preferenze che Nuxiva ha imparato, da tenere o da dimenticare.",
+  "ttl": 60,
+  "tone": "amber",
+  "category": "info",
+  "chrome": false,
+  "simple": {
+    "icon": "brain",
+    "mode": "collapse"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/learned",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Cosa ho imparato",
+    "say_none": "Per ora non ho imparato niente di nuovo.",
+    "say_some_one": "Ho imparato una cosa",
+    "say_some_other": "Ho imparato {{n}} cose",
+    "count_one": "1 cosa",
+    "count_other": "{{n}} cose",
+    "keep": "Sì, tienilo",
+    "forget": "No, dimentica",
+    "lesson_reminder_time": "Ho notato che preferisci i promemoria {{value}}.",
+    "lesson_notify_channel": "Ho notato che preferisci gli avvisi {{value}}.",
+    "lesson_reply_length": "Ho notato che preferisci risposte {{value}}.",
+    "lesson_reply_tone": "Ho notato che preferisci un tono {{value}}.",
+    "lesson_step_order": "Ho notato che funziona meglio così: {{value}}.",
+    "lesson_other": "Ho imparato una cosa nuova.",
+    "value_morning": "di mattina",
+    "value_afternoon": "di pomeriggio",
+    "value_evening": "di sera",
+    "value_voice": "a voce",
+    "value_screen": "sullo schermo",
+    "value_short": "brevi",
+    "value_long": "lunghe",
+    "value_warm": "caloroso",
+    "value_neutral": "neutro",
+    "value_formal": "formale",
+    "value_tests_first": "prima i controlli",
+    "value_build_first": "prima la costruzione",
+    "simple_title": "Cosa ho imparato"
+  }
+}

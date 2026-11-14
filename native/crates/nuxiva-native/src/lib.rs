@@ -50,6 +50,7 @@ mod nvr;
 mod percept;
 mod planner;
 mod presence;
+mod reflect;
 mod rescue;
 mod rescue_ear;
 mod resources;
@@ -262,6 +263,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     percept::register(m)?;
     taskq::register(m)?;
     coderloop::register(m)?;
+    reflect::register(m)?;
     m.add_function(wrap_pyfunction!(mastery::mastery_evaluate, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_verify, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_insights, m)?)?;

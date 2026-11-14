@@ -1,0 +1,4 @@
+.w-learned .ln-list { margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.w-learned .ln-text { font-size: 13px; line-height: 1.35; }
+.w-learned .ln-row { display: flex; flex-direction: column; gap: 6px; }
+.w-learned .ln-act { display: flex; gap: 8px; flex-wrap: wrap; }

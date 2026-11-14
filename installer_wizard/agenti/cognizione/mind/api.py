@@ -63,3 +63,25 @@ async def admin_mind_clear(_: str = Depends(require_admin)):
     return {"ok": True, "removed": n}
 
 
+
+
+@admin_routes.get("/api/mind/lessons")
+async def admin_lessons(_: str = Depends(require_admin)):
+    from agenti.mind import reflect
+    return reflect.snapshot()
+
+
+@admin_routes.post("/api/mind/lessons/{lesson_id}/keep")
+async def admin_lesson_keep(lesson_id: int, _: str = Depends(require_admin)):
+    from agenti.mind import reflect
+    if not reflect.keep(lesson_id):
+        raise HTTPException(404, "lesson_unknown")
+    return {"ok": True}
+
+
+@admin_routes.post("/api/mind/lessons/{lesson_id}/forget")
+async def admin_lesson_forget(lesson_id: int, _: str = Depends(require_admin)):
+    from agenti.mind import reflect
+    if not reflect.forget(lesson_id):
+        raise HTTPException(404, "lesson_unknown")
+    return {"ok": True}

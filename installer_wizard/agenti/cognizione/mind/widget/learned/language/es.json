@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/learned",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Qué he aprendido",
+    "say_none": "Todavía no he aprendido nada nuevo.",
+    "say_some_one": "He aprendido una cosa",
+    "say_some_other": "He aprendido {{n}} cosas",
+    "count_one": "1 cosa",
+    "count_other": "{{n}} cosas",
+    "keep": "Sí, guárdalo",
+    "forget": "No, olvídalo",
+    "lesson_reminder_time": "He notado que prefieres los recordatorios {{value}}.",
+    "lesson_notify_channel": "He notado que prefieres los avisos {{value}}.",
+    "lesson_reply_length": "He notado que prefieres respuestas {{value}}.",
+    "lesson_reply_tone": "He notado que prefieres un tono {{value}}.",
+    "lesson_step_order": "He notado que funciona mejor así: {{value}}.",
+    "lesson_other": "He aprendido algo nuevo.",
+    "value_morning": "por la mañana",
+    "value_afternoon": "por la tarde",
+    "value_evening": "por la noche",
+    "value_voice": "por voz",
+    "value_screen": "en pantalla",
+    "value_short": "cortas",
+    "value_long": "largas",
+    "value_warm": "cálido",
+    "value_neutral": "neutro",
+    "value_formal": "formal",
+    "value_tests_first": "primero las comprobaciones",
+    "value_build_first": "primero la construcción",
+    "simple_title": "Qué he aprendido"
+  }
+}

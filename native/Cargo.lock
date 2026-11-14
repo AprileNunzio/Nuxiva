@@ -1669,6 +1669,7 @@ dependencies = [
  "nuxiva-nvr-core",
  "nuxiva-percept-core",
  "nuxiva-presence-core",
+ "nuxiva-reflect-core",
  "nuxiva-rescue-core",
  "nuxiva-resource-core",
  "nuxiva-seal-core",
@@ -1729,6 +1730,14 @@ name = "nuxiva-presence-core"
 version = "5.8.0"
 dependencies = [
  "nuxiva-display-domain",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "nuxiva-reflect-core"
+version = "5.8.0"
+dependencies = [
  "serde",
  "serde_json",
 ]

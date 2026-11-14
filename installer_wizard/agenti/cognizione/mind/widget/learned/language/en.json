@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/learned",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "What I learned",
+    "say_none": "I have not learned anything new yet.",
+    "say_some_one": "I learned one thing",
+    "say_some_other": "I learned {{n}} things",
+    "count_one": "1 thing",
+    "count_other": "{{n}} things",
+    "keep": "Yes, keep it",
+    "forget": "No, forget it",
+    "lesson_reminder_time": "I noticed you like reminders {{value}}.",
+    "lesson_notify_channel": "I noticed you like alerts {{value}}.",
+    "lesson_reply_length": "I noticed you like {{value}} answers.",
+    "lesson_reply_tone": "I noticed you like a {{value}} tone.",
+    "lesson_step_order": "I noticed it works better this way: {{value}}.",
+    "lesson_other": "I learned something new.",
+    "value_morning": "in the morning",
+    "value_afternoon": "in the afternoon",
+    "value_evening": "in the evening",
+    "value_voice": "by voice",
+    "value_screen": "on the screen",
+    "value_short": "short",
+    "value_long": "long",
+    "value_warm": "warm",
+    "value_neutral": "neutral",
+    "value_formal": "formal",
+    "value_tests_first": "checks first",
+    "value_build_first": "building first",
+    "simple_title": "What I learned"
+  }
+}

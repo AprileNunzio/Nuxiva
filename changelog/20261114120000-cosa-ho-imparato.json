@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Nuxiva impara le tue abitudini e te lo dice con il widget «Cosa ho imparato»",
+    "en": "Nuxiva learns your habits and tells you through the \"What I learned\" widget",
+    "fr": "Nuxiva apprend tes habitudes et te le dit avec le widget « Ce que j'ai appris »",
+    "es": "Nuxiva aprende tus hábitos y te lo cuenta con el widget «Qué he aprendido»"
+  },
+  "features": [
+    {
+      "it": "Dopo ogni compito Nuxiva ripensa a com'è andata. Se nota una tua preferenza, come i promemoria di sera, la adotta solo dopo averla verificata sui compiti passati.",
+      "en": "After each task Nuxiva thinks back on how it went. If it notices a preference of yours, like evening reminders, it adopts it only after checking it against past tasks.",
+      "fr": "Après chaque tâche, Nuxiva repense à la façon dont ça s'est passé. S'il remarque une de tes préférences, comme les rappels du soir, il ne l'adopte qu'après l'avoir vérifiée sur les tâches passées.",
+      "es": "Después de cada tarea Nuxiva repasa cómo fue. Si nota una preferencia tuya, como los recordatorios por la noche, solo la adopta tras comprobarla con tareas pasadas."
+    },
+    {
+      "it": "Il widget mostra frasi semplici con due pulsanti, «Sì, tienilo» e «No, dimentica». Ogni cosa imparata si può annullare, e Nuxiva non cambia mai il proprio codice da sola.",
+      "en": "The widget shows simple sentences with two buttons, \"Yes, keep it\" and \"No, forget it\". Everything learned can be undone, and Nuxiva never changes its own code on its own.",
+      "fr": "Le widget montre des phrases simples avec deux boutons, « Oui, garde-le » et « Non, oublie ». Tout ce qui est appris peut être annulé, et Nuxiva ne modifie jamais son propre code toute seule.",
+      "es": "El widget muestra frases sencillas con dos botones, «Sí, guárdalo» y «No, olvídalo». Todo lo aprendido se puede deshacer, y Nuxiva nunca cambia su propio código por sí sola."
+    }
+  ],
+  "fixes": []
+}

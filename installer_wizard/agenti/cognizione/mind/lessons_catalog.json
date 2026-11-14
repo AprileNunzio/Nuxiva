@@ -1,0 +1,9 @@
+{
+  "kinds": {
+    "reminder_time": {"domain": "habits", "max_value_len": 16, "allowed_values": ["morning", "afternoon", "evening"]},
+    "notify_channel": {"domain": "habits", "max_value_len": 16, "allowed_values": ["voice", "screen"]},
+    "reply_length": {"domain": "voice", "max_value_len": 16, "allowed_values": ["short", "long"]},
+    "reply_tone": {"domain": "voice", "max_value_len": 16, "allowed_values": ["warm", "neutral", "formal"]},
+    "step_order": {"domain": "build", "max_value_len": 16, "allowed_values": ["tests_first", "build_first"]}
+  }
+}
