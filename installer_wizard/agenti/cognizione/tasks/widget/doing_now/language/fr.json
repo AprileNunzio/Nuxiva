@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/doing_now",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Ce que je fais",
+    "say_none": "Je ne fais rien en ce moment.",
+    "stop": "Arrêter",
+    "kind_build": "Je prépare le programme",
+    "kind_test": "Je vérifie que ça marche",
+    "kind_search": "Je cherche des informations",
+    "kind_check": "Je fais une vérification",
+    "kind_other": "Je travaille sur quelque chose",
+    "state_queued": "En attente",
+    "state_running": "Au travail",
+    "state_retrying": "J'essaie encore bientôt",
+    "state_done": "Terminé",
+    "state_failed": "Ça n'a pas marché",
+    "state_cancelled": "Arrêté",
+    "state_expired": "Trop tard",
+    "simple_title": "Ce que je fais",
+    "say_busy_one": "Je fais une chose",
+    "say_busy_other": "Je fais {{n}} choses",
+    "active_one": "1 en cours",
+    "active_other": "{{n}} en cours"
+  }
+}

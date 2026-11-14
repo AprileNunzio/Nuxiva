@@ -44,6 +44,7 @@
     "kanban_board",
     "notice",
     "pomodoro",
-    "reminder"
+    "reminder",
+    "doing_now"
   ]
 }

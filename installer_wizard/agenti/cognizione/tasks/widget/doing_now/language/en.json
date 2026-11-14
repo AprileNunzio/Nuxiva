@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/doing_now",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "What I am doing",
+    "say_none": "I am not doing anything right now.",
+    "stop": "Stop",
+    "kind_build": "I am getting the program ready",
+    "kind_test": "I am checking that it works",
+    "kind_search": "I am looking for information",
+    "kind_check": "I am running a check",
+    "kind_other": "I am working on something",
+    "state_queued": "Waiting",
+    "state_running": "Working",
+    "state_retrying": "Trying again soon",
+    "state_done": "Finished",
+    "state_failed": "It did not work",
+    "state_cancelled": "Stopped",
+    "state_expired": "Too late",
+    "simple_title": "What I am doing",
+    "say_busy_one": "I am doing one thing",
+    "say_busy_other": "I am doing {{n}} things",
+    "active_one": "1 in progress",
+    "active_other": "{{n}} in progress"
+  }
+}

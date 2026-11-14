@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/doing_now",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Cosa sto facendo",
+    "say_none": "Non sto facendo niente ora.",
+    "stop": "Ferma",
+    "kind_build": "Sto preparando il programma",
+    "kind_test": "Sto controllando se funziona",
+    "kind_search": "Sto cercando informazioni",
+    "kind_check": "Sto facendo un controllo",
+    "kind_other": "Sto lavorando a una cosa",
+    "state_queued": "In attesa",
+    "state_running": "Al lavoro",
+    "state_retrying": "Riprovo tra poco",
+    "state_done": "Finito",
+    "state_failed": "Non è andata",
+    "state_cancelled": "Fermato",
+    "state_expired": "Troppo tardi",
+    "simple_title": "Cosa sto facendo",
+    "say_busy_one": "Sto facendo una cosa",
+    "say_busy_other": "Sto facendo {{n}} cose",
+    "active_one": "1 in corso",
+    "active_other": "{{n}} in corso"
+  }
+}

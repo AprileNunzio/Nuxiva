@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from access import NO_CACHE, require_admin
+from agenti.tasks import queue as taskq
 from agenti.tasks import sources
 from agenti.tasks.registry import ID_RE, registry
 
@@ -20,6 +21,18 @@ async def snapshot() -> dict:
     active = [r for r in rows if r["state"] in ("queued", "running")]
     waiting = [r for r in rows if r["state"] == "done" and r.get("offer") and not r.get("answered")]
     return {"tasks": rows[:60], "active": len(active), "waiting": len(waiting)}
+
+
+@admin_routes.get("/queue")
+async def queue_overview(_: str = Depends(require_admin)):
+    return JSONResponse(taskq.snapshot(), headers=NO_CACHE)
+
+
+@admin_routes.post("/queue/{task_id}/cancel")
+async def queue_cancel(task_id: str, _: str = Depends(require_admin)):
+    if not taskq.ID_RE.fullmatch(task_id) or not taskq.cancel(task_id):
+        raise HTTPException(404, "task_unknown")
+    return {"ok": True}
 
 
 @admin_routes.get("")

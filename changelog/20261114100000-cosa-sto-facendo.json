@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Il widget «Cosa sto facendo» mostra il lavoro di Nuxiva in background",
+    "en": "The \"What I am doing\" widget shows Nuxiva's background work",
+    "fr": "Le widget « Ce que je fais » montre le travail de Nuxiva en arrière-plan",
+    "es": "El widget «Qué estoy haciendo» muestra el trabajo de Nuxiva en segundo plano"
+  },
+  "features": [
+    {
+      "it": "Nuova scheda con frasi semplici come «Sto controllando se funziona», una barra di avanzamento e un solo pulsante «Ferma» per interrompere tutto.",
+      "en": "New card with simple sentences like \"I am checking that it works\", a progress bar and a single \"Stop\" button to halt everything.",
+      "fr": "Nouvelle carte avec des phrases simples comme « Je vérifie que ça marche », une barre de progression et un seul bouton « Arrêter » pour tout interrompre.",
+      "es": "Nueva tarjeta con frases sencillas como «Estoy comprobando que funciona», una barra de progreso y un solo botón «Parar» para detenerlo todo."
+    },
+    {
+      "it": "La coda dei compiti è collegata al motore nativo; se non è disponibile funziona comunque con un ripiego.",
+      "en": "The task queue is connected to the native engine; if it is unavailable it still works through a fallback.",
+      "fr": "La file des tâches est reliée au moteur natif ; s'il n'est pas disponible, elle fonctionne quand même grâce à un repli.",
+      "es": "La cola de tareas está conectada al motor nativo; si no está disponible funciona igualmente con un respaldo."
+    }
+  ],
+  "fixes": []
+}

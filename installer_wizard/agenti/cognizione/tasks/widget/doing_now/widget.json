@@ -1,0 +1,19 @@
+{
+  "id": "doing_now",
+  "name": "Cosa sto facendo",
+  "icon": "🛠️",
+  "priority": 36,
+  "size": "s",
+  "intents": [
+    "what_i_am_doing"
+  ],
+  "description": "Le cose che Nuxiva sta facendo da sola in background, con un pulsante per fermarle.",
+  "ttl": 30,
+  "tone": "cyan",
+  "category": "work",
+  "chrome": false,
+  "simple": {
+    "icon": "list",
+    "mode": "collapse"
+  }
+}

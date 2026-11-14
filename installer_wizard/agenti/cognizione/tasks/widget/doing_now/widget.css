@@ -1,0 +1,5 @@
+.w-doing_now .dn-list { margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.w-doing_now .dn-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.w-doing_now .dn-main b { font-size: 13px; font-weight: 600; }
+.w-doing_now .dn-main small { font-size: 11.5px; opacity: 0.7; }
+.w-doing_now .dn-stop { margin-top: 12px; width: 100%; justify-content: center; }
