@@ -3,7 +3,6 @@ import unittest
 
 import native_core
 
-from agenti.brain.free_router import rate_limiter as module
 from agenti.brain.free_router.rate_limiter import ModelRate, RateLimiter
 
 NAMES = ["Retry-After", "x-ratelimit-remaining", "X-RateLimit-Remaining-Requests", "x-ratelimit-remaining-tokens",

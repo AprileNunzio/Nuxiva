@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Pulizia di un test del limitatore dei modelli",
+    "en": "Cleanup of a model rate limiter test",
+    "fr": "Nettoyage d'un test du limiteur de modèles",
+    "es": "Limpieza de una prueba del limitador de modelos"
+  },
+  "features": [
+    {
+      "it": "Nessuna novità visibile: è stato eliminato un riferimento inutilizzato in un test interno.",
+      "en": "No visible change: an unused reference in an internal test was removed.",
+      "fr": "Aucune nouveauté visible : une référence inutilisée dans un test interne a été supprimée.",
+      "es": "Sin novedades visibles: se eliminó una referencia sin usar en una prueba interna."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il controllo automatico del codice torna a passare, così gli aggiornamenti non vengono bloccati.",
+      "en": "The automatic code check passes again, so updates are not blocked.",
+      "fr": "Le contrôle automatique du code passe de nouveau, donc les mises à jour ne sont pas bloquées.",
+      "es": "La comprobación automática del código vuelve a pasar, así las actualizaciones no se bloquean."
+    }
+  ]
+}
