@@ -12,13 +12,22 @@ export async function fetchUsbPorts(): Promise<UsbPort[]> {
   return res.json();
 }
 
+export class OnboardError extends Error {
+  constructor(readonly code: string, readonly status: number) {
+    super(code);
+  }
+}
+
 export async function onboardNode(payload: OnboardPayload): Promise<OnboardResponse> {
   const res = await fetch('/api/v5/nodes/onboard', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+  if (!res.ok) {
+    const body: { detail?: unknown } = await res.json().catch(() => ({}));
+    throw new OnboardError(typeof body.detail === 'string' ? body.detail : '', res.status);
+  }
   return res.json();
 }
 

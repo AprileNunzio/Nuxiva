@@ -60,6 +60,7 @@ nuxiva-collaudo-core = { path = "../collaudo-core" }
 nuxiva-supervisor-core = { path = "../supervisor-core" }
 nuxiva-authz-core = { path = "../authz-core" }
 nuxiva-ear-core = { path = "../ear-core" }
+nuxiva-wakeword-core = { path = "../wakeword-core" }
 nuxiva-lyrics-core = { path = "../lyrics-core" }
 nuxiva-face-core = { path = "../face-core" }
 nuxiva-dialog-core = { path = "../dialog-core" }

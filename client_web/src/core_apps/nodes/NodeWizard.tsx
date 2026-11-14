@@ -15,7 +15,7 @@ import {
   X,
 } from 'lucide-react';
 import { useScopedI18n } from '../../shared/i18n/useScopedI18n';
-import { fetchNodes, onboardNode } from './api';
+import { fetchNodes, onboardNode, OnboardError } from './api';
 import { MeshNodeItem, UsbPort, HardwareTarget, OnboardResponse } from './types';
 import { PcLinkPanel } from './components/PcLinkPanel';
 import { reportError } from '../../shared/errors/errorBus';
@@ -43,10 +43,12 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
   const [rootPass, setRootPass] = useState<string>('');
   const [flashing, setFlashing] = useState<boolean>(false);
   const [onboardResult, setOnboardResult] = useState<OnboardResponse | null>(null);
+  const [errorCode, setErrorCode] = useState<string>('');
 
   const handleStartOnboard = async () => {
     try {
       setFlashing(true);
+      setErrorCode('');
       const res = await onboardNode({
         target: selectedTarget,
         name: nodeName || `${selectedTarget.toUpperCase()}-Node`,
@@ -63,6 +65,7 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
       const updatedNodes = await fetchNodes();
       onChanged(updatedNodes);
     } catch (err) {
+      setErrorCode(err instanceof OnboardError ? err.code.split('.').pop() ?? '' : '');
       reportError('nodes_onboard_failed', err);
     } finally {
       setFlashing(false);
@@ -325,6 +328,12 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
               )}
             </div>
 
+            {errorCode !== '' && (
+              <p role="alert" className="text-xs font-semibold text-rose-600 dark:text-rose-400">
+                {t(`onboard_error_${errorCode}`)}
+              </p>
+            )}
+
             <div className="flex justify-between pt-4">
               <button
                 onClick={() => setCurrentStep(2)}
@@ -360,10 +369,19 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                 <Terminal className="w-4 h-4 text-cyan-400" />
                 <span>{t('terminal_log')}</span>
               </div>
-              <div className="text-cyan-400">[PROVISION] Dispositivo: {onboardResult?.name}</div>
-              <div className="text-slate-300">[TIER] {onboardResult?.tier}</div>
-              <div className="text-slate-400">[LOG] {onboardResult?.log}</div>
-              <div className="text-emerald-400">[STATUS] HANDSHAKE CRITTOGRAFICO COMPLETATO (P2P DIRECT STREAM READY)</div>
+              <div className="text-cyan-400">{t('result_name')}: {onboardResult?.name}</div>
+              <div className="text-slate-300">{t('result_tier')}: {onboardResult?.tier}</div>
+              {onboardResult?.node_id && <div className="break-all text-slate-300">{t('result_id')}: {onboardResult.node_id}</div>}
+              {onboardResult?.fingerprint && <div className="break-all text-slate-300">{t('result_fingerprint')}: {onboardResult.fingerprint}</div>}
+              {onboardResult?.firmware && <div className="text-slate-300">{t('result_firmware')}: {onboardResult.firmware}</div>}
+              {onboardResult?.flash_encrypted !== undefined && (
+                <div className={onboardResult.flash_encrypted ? 'text-emerald-400' : 'text-amber-400'}>
+                  {t(onboardResult.flash_encrypted ? 'result_flash_encrypted' : 'result_flash_plain')}
+                </div>
+              )}
+              {onboardResult?.pairing_code && (
+                <div className="text-cyan-300">{t('result_pairing_code')}: {onboardResult.pairing_code}</div>
+              )}
             </div>
 
             <div className="flex justify-end pt-4">

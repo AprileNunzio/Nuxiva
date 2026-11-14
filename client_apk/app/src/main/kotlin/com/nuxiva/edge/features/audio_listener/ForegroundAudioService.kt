@@ -14,6 +14,8 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import java.io.File
+import com.nuxiva.edge.R
 
 class ForegroundAudioService : Service(), WakeWordDetector.WakeWordCallback {
 
@@ -21,7 +23,6 @@ class ForegroundAudioService : Service(), WakeWordDetector.WakeWordCallback {
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
     private val wakeDetector = WakeWordDetector()
-    private val biometricMatcher = VoiceBiometricMatcher()
     private val httpClient = OkHttpClient()
 
     private var audioRecord: AudioRecord? = null
@@ -30,6 +31,7 @@ class ForegroundAudioService : Service(), WakeWordDetector.WakeWordCallback {
     private val sampleRate = 16000
     private val channelConfig = AudioFormat.CHANNEL_IN_MONO
     private val audioFormat = AudioFormat.ENCODING_PCM_16BIT
+    private val WAKE_MODEL_FILE = "wakeword.nxwk"
     private var serverUrl = "http://192.168.1.100:8443/api/v1/command"
 
     override fun onCreate() {
@@ -44,15 +46,28 @@ class ForegroundAudioService : Service(), WakeWordDetector.WakeWordCallback {
             }
         }
 
+        val modelFile = File(filesDir, WAKE_MODEL_FILE)
+        val ready = modelFile.isFile && wakeDetector.loadModel(modelFile.readBytes()) == WakeWordDetector.State.Ready
         val notification: Notification = NotificationCompat.Builder(this, NuxivaApplication.AUDIO_CHANNEL_ID)
-            .setContentTitle("Nuxiva Edge - Ascolto Attivo")
-            .setContentText("Sempre in ascolto per 'Nuxiva' con biometria vocale.")
+            .setContentTitle("Nuxiva Edge")
+            .setContentText(
+                when {
+                    ready -> getString(R.string.wake_listening)
+                    wakeDetector.state == WakeWordDetector.State.MissingLibrary -> getString(R.string.wake_missing_library)
+                    wakeDetector.state == WakeWordDetector.State.InvalidModel -> getString(R.string.wake_invalid_model)
+                    else -> getString(R.string.wake_missing_model)
+                }
+            )
             .setSmallIcon(android.R.drawable.ic_btn_speak_now)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOngoing(true)
             .build()
 
         startForeground(1001, notification)
+        if (!ready) {
+            stopSelf()
+            return START_NOT_STICKY
+        }
         if (!isRecording) {
             startContinuousRecording()
         }
@@ -89,12 +104,10 @@ class ForegroundAudioService : Service(), WakeWordDetector.WakeWordCallback {
     }
 
     override fun onWakeWordDetected(confidence: Float, capturedPcm: ByteArray) {
-        val matchResult = biometricMatcher.identifySpeaker(capturedPcm)
-        if (!matchResult.isAuthorized) return
-
         serviceScope.launch {
             val json = JSONObject().apply {
-                put("query", "Attivazione vocale da Nuxiva Edge")
+                put("query", "")
+                put("wake_confidence", confidence.toDouble())
                 put("device_id", "apk_edge_tablet_phone")
                 put("voice_pcm_base64", android.util.Base64.encodeToString(capturedPcm, android.util.Base64.NO_WRAP))
             }

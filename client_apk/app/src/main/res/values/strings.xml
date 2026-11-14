@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wake_listening">Listening for the wake word.</string>
+    <string name="wake_missing_library">Wake word engine not installed: listening is off.</string>
+    <string name="wake_missing_model">No wake word model on this device: listening is off.</string>
+    <string name="wake_invalid_model">The wake word model is invalid: listening is off.</string>
+</resources>

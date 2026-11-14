@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wake_listening">Escuchando la palabra de activación.</string>
+    <string name="wake_missing_library">Motor de la palabra de activación no instalado: escucha desactivada.</string>
+    <string name="wake_missing_model">No hay modelo de la palabra de activación en este dispositivo: escucha desactivada.</string>
+    <string name="wake_invalid_model">El modelo de la palabra de activación no es válido: escucha desactivada.</string>
+</resources>

@@ -46,6 +46,10 @@ export interface OnboardResponse {
   parent_id: string;
   message: string;
   log?: string;
+  fingerprint?: string;
+  pairing_code?: string;
+  firmware?: string;
+  flash_encrypted?: boolean;
 }
 
 export type ResourceLevel = 'calm' | 'elevated' | 'high' | 'critical';

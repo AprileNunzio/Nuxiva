@@ -1,3 +1,5 @@
+import base64
+import binascii
 import json
 import os
 import time
@@ -9,7 +11,7 @@ from access import require_admin, require_display
 from config import env_get
 from agenti.desktop.desk import desk
 from agenti.people import people
-from agenti.ear import keycheck, proxy
+from agenti.ear import keycheck, proxy, wake_template
 from agenti.ear.journal_api import routes as journal_routes
 from agenti.ear.mictest_api import routes as mictest_routes
 from state import store
@@ -99,6 +101,34 @@ async def ear_stt_check(request: Request):
 
 
 desk.register_source("ear_widget", lambda: {"ear": True} if env_get("NUXIVA_EAR", "1") != "0" else None)
+
+
+WAKE_MODELS = Path(os.environ.get("NUXIVA_WAKEWORD_MODELS", "/opt/nuxiva-ear/wakeword"))
+
+
+@admin_routes.post("/api/ear/wake-template")
+async def ear_wake_template(request: Request):
+    require_admin(request)
+    if int(request.headers.get("content-length") or 0) > 2 * 1024 * 1024:
+        raise HTTPException(413, "payload_too_large")
+    body = await request.json()
+    raw = body.get("takes") if isinstance(body, dict) else None
+    if not isinstance(raw, list) or not 3 <= len(raw) <= wake_template.MAX_TAKES:
+        raise HTTPException(400, "wake.error.recordings")
+    try:
+        takes = [base64.b64decode(str(item), validate=True) for item in raw]
+    except (binascii.Error, ValueError):
+        raise HTTPException(400, "wake.error.recordings")
+    if not wake_template.available():
+        raise HTTPException(503, "wake.error.engine_unavailable")
+    from identity import assistant_name
+    try:
+        data = wake_template.enroll(takes)
+        wake_template.save(wake_template.model_path(WAKE_MODELS, wake_template.candidates(assistant_name(), os.environ.get("NUXIVA_WAKEWORD_MODEL", ""))[0]), data)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc))
+    store.event("INFO", "Parola di attivazione addestrata sulla voce dell'utente", "ear")
+    return {"ok": True, "takes": len(takes)}
 
 
 @public_routes.post("/api/ear/client")

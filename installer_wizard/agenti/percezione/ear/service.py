@@ -248,15 +248,15 @@ class Session(AttestMixin):
             await self._drop_caption()
         if self.awaiting_command:
             self.awaiting_command = False
-            learner.on_false_wake()
-            self.recorder.note("false_wake")
+            learner.on_false_wake(), self.recorder.note("false_wake")
         if self.conversation:
             await self.broadcast(type="conversation_end")
         await self.set_mode("idle")
 
     async def _instant_wake(self) -> None:
-        self.instant = True
-        self.awaiting_command = True
+        if not await asyncio.to_thread(self.wake.judge, voiceprints, earconf.flag("NUXIVA_VOICEPRINT_ENFORCE", False)):
+            return
+        self.instant = self.awaiting_command = True
         learner.on_wake(None, 0)
         self.recorder.note("wake", source="instant", score=round(self.wake.score, 2))
         if self.in_speech:

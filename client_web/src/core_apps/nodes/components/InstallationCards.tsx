@@ -32,7 +32,7 @@ export const InstallationCards: React.FC<{
             <span className="min-w-0 flex-1">
               <span className="block">{t(`install_${id}_title`)}</span>
               <span className="block text-xs font-normal text-slate-600 dark:text-slate-400">
-                {t(id === 'macos' || id === 'esp32' ? 'install_pending' : 'install_steps_count', { count: steps })}
+                {t(id === 'macos' ? 'install_pending' : 'install_steps_count', { count: steps })}
               </span>
             </span>
             <ChevronDown className="h-4 w-4 shrink-0 transition group-open:rotate-180" aria-hidden="true" />

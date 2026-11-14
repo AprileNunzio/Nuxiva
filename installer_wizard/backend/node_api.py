@@ -6,7 +6,7 @@ from pathlib import Path
 import subprocess
 import time
 from typing import Any, Dict, List, Optional
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from access import require_admin
@@ -149,9 +149,12 @@ def provision_node(node_id: str, req: ProvisionRequest) -> Dict[str, Any]:
 
 
 @router.post("/onboard")
-def onboard_node(req: OnboardNodeRequest) -> Dict[str, Any]:
+def onboard_node(req: OnboardNodeRequest, request: Request = None) -> Dict[str, Any]:
     if req.target not in VALID_TARGETS:
         raise HTTPException(status_code=400, detail=f"Invalid target '{req.target}'")
+    if req.target == "esp32":
+        from node_onboard_esp32 import onboard_esp32
+        return onboard_esp32(req, request, get_usb_ports(), TIER_MAP["esp32"])
     node_id = f"node-{req.target}-{int(time.time())}"
     tier = TIER_MAP[req.target]
     try:

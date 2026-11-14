@@ -86,6 +86,7 @@ mod update;
 mod vault_media;
 mod vitals;
 mod voice;
+mod wakeword;
 mod weather;
 mod workbench;
 
@@ -174,6 +175,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     knowledge::register(m)?;
     ear_array::register(m)?;
     ear_music::register(m)?;
+    wakeword::register(m)?;
     lyrics::register(m)?;
     face::register(m)?;
     face_look::register(m)?;

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Parola di attivazione reale e nodi ESP32 firmati",
+    "en": "Real wake word and signed ESP32 nodes",
+    "fr": "Mot d'activation réel et nœuds ESP32 signés",
+    "es": "Palabra de activación real y nodos ESP32 firmados"
+  },
+  "features": [
+    {
+      "it": "La parola di attivazione è ora un rilevatore vero in Rust, addestrato sulle tue registrazioni (3-10 ripetizioni) e unito alla verifica della voce. Su Android, senza modello l'ascolto resta spento invece di fingere.",
+      "en": "The wake word is now a real detector in Rust, trained on your recordings (3-10 repetitions) and combined with voice verification. On Android, without a model listening stays off instead of pretending.",
+      "fr": "Le mot d'activation est maintenant un vrai détecteur en Rust, entraîné sur vos enregistrements (3 à 10 répétitions) et combiné à la vérification de la voix. Sur Android, sans modèle l'écoute reste éteinte au lieu de faire semblant.",
+      "es": "La palabra de activación es ahora un detector real en Rust, entrenado con tus grabaciones (3-10 repeticiones) y unido a la verificación de la voz. En Android, sin modelo la escucha queda apagada en lugar de fingir."
+    },
+    {
+      "it": "Nuovo firmware ESP32 con microfono I2S, relè con spegnimento di sicurezza, richieste firmate con la chiave del dispositivo e aggiornamento firmato. Configurazione guidata da USB. Verificato in CI, non ancora provato su una scheda reale.",
+      "en": "New ESP32 firmware with I2S microphone, relays with a safety shutoff, requests signed with the device key and signed updates. Guided setup over USB. Verified in CI, not yet proven on a real board.",
+      "fr": "Nouveau micrologiciel ESP32 avec micro I2S, relais avec arrêt de sécurité, requêtes signées avec la clé de l'appareil et mise à jour signée. Configuration guidée par USB. Vérifié en CI, pas encore éprouvé sur une vraie carte.",
+      "es": "Nuevo firmware ESP32 con micrófono I2S, relés con apagado de seguridad, peticiones firmadas con la clave del dispositivo y actualización firmada. Configuración guiada por USB. Verificado en CI, aún no probado en una placa real."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Installa un nodo mostra ora il risultato reale (identificativo, impronta, firmware, cifratura) e gli errori veri al posto di un log finto.",
+      "en": "Install a node now shows the real result (identifier, fingerprint, firmware, encryption) and real errors instead of a fake log.",
+      "fr": "Installer un nœud affiche maintenant le résultat réel (identifiant, empreinte, firmware, chiffrement) et les vraies erreurs au lieu d'un faux journal.",
+      "es": "Instalar un nodo muestra ahora el resultado real (identificador, huella, firmware, cifrado) y los errores reales en lugar de un registro falso."
+    },
+    {
+      "it": "Rimosso il controllo biometrico finto dell'app Android, che autorizzava sempre.",
+      "en": "Removed the Android app's fake biometric check, which always authorized.",
+      "fr": "Suppression du faux contrôle biométrique de l'application Android, qui autorisait toujours.",
+      "es": "Eliminado el control biométrico falso de la app Android, que autorizaba siempre."
+    }
+  ]
+}

@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 
 import native_core
+import wake_template
 from learner import current_name
 from tuning import tuning
 
@@ -37,6 +38,13 @@ def model_name() -> str:
     return next((name for name in candidates if (MODELS / f"{name}.onnx").is_file()), candidates[-1] if candidates else "")
 
 
+def template_sensitivity() -> float:
+    try:
+        return max(0.5, min(1.6, float(os.environ.get("NUXIVA_WAKEWORD_SENSITIVITY", "1.0"))))
+    except ValueError:
+        return 1.0
+
+
 CHUNK = 1280
 COOLDOWN = 2.0
 
@@ -52,7 +60,14 @@ class WakeWord:
         self.pending = np.zeros(0, dtype=np.int16)
         self.last_hit = 0.0
         self.score = 0.0
+        self.template = None
         self.model_name = model_name()
+        if os.environ.get("NUXIVA_WAKEWORD", "1") != "0":
+            for candidate in _model_candidates():
+                self.template = wake_template.TemplateWake.load(wake_template.model_path(MODELS, candidate), template_sensitivity())
+                if self.template is not None:
+                    log.info("Rilevatore della parola di attivazione addestrato sulla tua voce attivo (%s)", candidate)
+                    return
         if not self.model_name:
             return
         files = [MODELS / f"{self.model_name}.onnx", MODELS / "melspectrogram.onnx", MODELS / "embedding_model.onnx"]
@@ -90,7 +105,7 @@ class WakeWord:
 
     @property
     def ready(self) -> bool:
-        return self.model is not None
+        return self.model is not None or self.template is not None
 
     def feed(self, frame: np.ndarray) -> bool:
         with self._model_lock:
@@ -100,6 +115,10 @@ class WakeWord:
             return self._feed(frame)
 
     def _feed(self, frame: np.ndarray) -> bool:
+        if self.template is not None:
+            hit = self.template.feed(frame)
+            self.score = self.template.score
+            return hit
         if self.model is None:
             return False
         pcm = (np.clip(frame, -1, 1) * 32767).astype(np.int16)
@@ -120,7 +139,7 @@ class WakeWord:
         return hit
 
     async def detect(self, frame: np.ndarray) -> bool:
-        if self.model is None:
+        if not self.ready:
             return False
         async with self._async_lock:
             generation = self._generation
@@ -139,7 +158,17 @@ class WakeWord:
         with self._model_lock:
             self._reset()
 
+    def judge(self, voiceprints, enforce: bool) -> bool:
+        if self.template is None:
+            return True
+        accepted, code = wake_template.judge(self.template, voiceprints, enforce)
+        if not accepted:
+            log.info("Attivazione scartata dopo il controllo del parlante: %s", code)
+        return accepted
+
     def _reset(self) -> None:
+        if self.template is not None:
+            self.template.reset()
         if self.model is not None:
             self.model.reset()
         self.pending = np.zeros(0, dtype=np.int16)

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wake_listening">In ascolto della parola di attivazione.</string>
+    <string name="wake_missing_library">Motore della parola di attivazione non installato: ascolto spento.</string>
+    <string name="wake_missing_model">Nessun modello della parola di attivazione su questo dispositivo: ascolto spento.</string>
+    <string name="wake_invalid_model">Il modello della parola di attivazione non è valido: ascolto spento.</string>
+</resources>

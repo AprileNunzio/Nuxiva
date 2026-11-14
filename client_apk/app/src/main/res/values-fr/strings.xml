@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wake_listening">À l\'écoute du mot d\'activation.</string>
+    <string name="wake_missing_library">Moteur du mot d\'activation non installé : écoute désactivée.</string>
+    <string name="wake_missing_model">Aucun modèle du mot d\'activation sur cet appareil : écoute désactivée.</string>
+    <string name="wake_invalid_model">Le modèle du mot d\'activation est invalide : écoute désactivée.</string>
+</resources>

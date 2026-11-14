@@ -79,3 +79,6 @@ target/
 
 !client_web/dist/
 !client_web/dist/**
+
+# android native libs
+client_apk/app/src/main/jniLibs/

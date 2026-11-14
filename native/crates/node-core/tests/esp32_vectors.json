@@ -1,0 +1,65 @@
+{
+ "identity": [
+  {
+   "fingerprint": "FE81-2C12-F3AB",
+   "pairing_code": "493670",
+   "public": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+   "seed": "0707070707070707070707070707070707070707070707070707070707070707"
+  },
+  {
+   "fingerprint": "90F2-8B80-BB24",
+   "pairing_code": "406028",
+   "public": "64af4921761e83a4c544669fa664b5fefbdc30b85f23a164f8566aa7b9bee0af",
+   "seed": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a15c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c"
+  },
+  {
+   "fingerprint": "4A67-330B-803D",
+   "pairing_code": "026696",
+   "public": "4cb5abf6ad79fbf5abbccafcc269d85cd2651ed4b885b5869f241aedf0a5ba29",
+   "seed": "0000000000000000000000000000000000000000000000000000000000000001"
+  }
+ ],
+ "manifest": {
+  "public": "0d7550754e0800a5d237eef5826035766b9b3e5a15868a940ab289958788e3b0",
+  "seed": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+  "sha256": "34398b85297bf7d9dfb59b8d511d8bbb44ab23e891570e4395e7871475fc8afb",
+  "sig": "7b5c4661a22ea1c12c1cddb2e0005b76b3112bc1222df0a146633bebadfe16f964d0ae80f49433097643fd85c6003fcf719b4d7a805c479b2219698c696a6407",
+  "size": 5000,
+  "version": "1.2.0"
+ },
+ "signatures": [
+  {
+   "body": "{}",
+   "canonical": "nuxiva-node-v1\npc-uno\nPOST\n/api/nodes/heartbeat\n1000\n0123456789abcdef0123\n44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+   "method": "POST",
+   "node": "pc-uno",
+   "nonce": "0123456789abcdef0123",
+   "path": "/api/nodes/heartbeat",
+   "seed": "0707070707070707070707070707070707070707070707070707070707070707",
+   "signature": "37734162b500b5797206ab132299af0d8b79d266b91018117cf5a85b8d498dfeb68171b7a36dcb3b7c63f686ecd875cc76b9ed6175608ebb281eb45a4abb9608",
+   "ts": 1000
+  },
+  {
+   "body": "{\"id\":\"esp32-cucina\",\"pubkey\":\"ab\"}",
+   "canonical": "nuxiva-node-v1\nesp32-cucina\nPOST\n/api/nodes/enroll\n1789000000\nnonce_ABC-1234567890\n41edcb3688cd68dd09f5148a735b906a429b41bf85d3672069a5b706d8afe1f2",
+   "method": "POST",
+   "node": "esp32-cucina",
+   "nonce": "nonce_ABC-1234567890",
+   "path": "/api/nodes/enroll",
+   "seed": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a15c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c",
+   "signature": "485a3acca4c73949a302244efef3c10ef51d086262fe772ce78f0160e1957dde2a3a1cf5491917eea8f9d67517c34b8a2ca83213e26829aac5974d33d36d130f",
+   "ts": 1789000000
+  },
+  {
+   "body": "",
+   "canonical": "nuxiva-node-v1\nesp32-sala\nPOST\n/api/nodes/inbox?x=1\n2000000000\nffffffffffffffffffffffffffffffff\ne3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "method": "POST",
+   "node": "esp32-sala",
+   "nonce": "ffffffffffffffffffffffffffffffff",
+   "path": "/api/nodes/inbox?x=1",
+   "seed": "0000000000000000000000000000000000000000000000000000000000000001",
+   "signature": "66a9f4694e20a9e5ca58d9296bae3f3bdc742d3be18ea8764892265dc46bb1fefb93917688d370122fc992d8c9b9a107753f4d471da74739a6927117b2721907",
+   "ts": 2000000000
+  }
+ ]
+}

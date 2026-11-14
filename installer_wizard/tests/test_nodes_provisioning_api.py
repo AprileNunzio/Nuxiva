@@ -1,6 +1,8 @@
+import json
 import unittest
 from pathlib import Path
 import sys
+from unittest import mock
 
 _ROOT = Path(__file__).resolve().parents[2]
 _BACKEND = _ROOT / "installer_wizard" / "backend"
@@ -26,32 +28,47 @@ class NodesProvisioningApiTests(unittest.TestCase):
             self.assertIn("device", p)
             self.assertIn("description", p)
 
-    def test_onboard_esp32_satellite(self):
-        req = OnboardNodeRequest(
-            target="esp32",
-            name="LivingRoom-Mic-ESP32",
-            parent_id="virtual_core",
-            parent_ip="192.168.1.10",
-            usb_port="/dev/ttyUSB0",
-            wifi_ssid="HomeMesh_5G",
-            wifi_key="secretpass123",
-        )
-        res = onboard_node(req)
-        self.assertEqual(res["target"], "esp32")
-        self.assertEqual(res["name"], "LivingRoom-Mic-ESP32")
-        self.assertEqual(res["status"], "provisioned")
-        self.assertIn("Tier-3", res["tier"])
-        self.assertIn("node-esp32", res["node_id"])
+    def test_onboard_esp32_refuses_ports_that_were_not_detected(self):
+        from fastapi import HTTPException
+        req = OnboardNodeRequest(target="esp32", name="Mic", usb_port="/dev/ttyUSB9", wifi_ssid="Casa", wifi_key="")
+        with mock.patch("node_api.get_usb_ports", return_value=[{"device": "/dev/ttyUSB0", "description": "x"}]):
+            with self.assertRaises(HTTPException) as ctx:
+                onboard_node(req, mock.Mock())
+        self.assertEqual((ctx.exception.status_code, ctx.exception.detail), (400, "esp32.error.port"))
 
-        # Verifica che sia presente nella lista nodi
-        nodes = list_nodes()
-        node_ids = [n["id"] for n in nodes]
-        self.assertIn(res["node_id"], node_ids)
+    def test_onboard_esp32_reports_the_real_provisioning_result(self):
+        from agenti.nodes import esp32
+        request = mock.Mock()
+        request.url.hostname = "nuxiva.local"
+        link = mock.Mock()
+        result = {"node_id": "esp32-mic-0a0a", "name": "Mic", "fingerprint": "AAAA", "pairing_code": "123456",
+                  "firmware": "1.0.0", "flash_encrypted": False}
+        req = OnboardNodeRequest(target="esp32", name="Mic", usb_port="/dev/ttyUSB0", wifi_ssid="Casa", wifi_key="")
+        with mock.patch("node_api.get_usb_ports", return_value=[{"device": "/dev/ttyUSB0", "description": "x"}]), \
+                mock.patch.object(esp32, "open_port", return_value=link), \
+                mock.patch.object(esp32, "provision", return_value=result) as provision, \
+                mock.patch.dict("agenti.secure.api._active", {"port": 8443}), mock.patch("state.store.event"):
+            res = onboard_node(req, request)
+        provision.assert_called_once_with(link, "nuxiva.local", 8443, "Casa", "", "Mic")
+        link.close.assert_called_once()
+        self.assertEqual((res["status"], res["node_id"], res["pairing_code"]), ("enrolled", "esp32-mic-0a0a", "123456"))
+        self.assertNotIn("Handshake", json.dumps(res))
 
-        # De-provisioning / rimozione
-        del_res = delete_node(res["node_id"])
-        self.assertTrue(del_res["removed"])
-        self.assertEqual(del_res["status"], "deleted")
+    def test_onboard_esp32_maps_provisioning_failures_to_conflicts(self):
+        from fastapi import HTTPException
+        from agenti.nodes import esp32
+        request = mock.Mock()
+        request.url.hostname = "nuxiva.local"
+        link = mock.Mock()
+        req = OnboardNodeRequest(target="esp32", name="Mic", usb_port="/dev/ttyUSB0", wifi_ssid="Casa", wifi_key="")
+        with mock.patch("node_api.get_usb_ports", return_value=[{"device": "/dev/ttyUSB0", "description": "x"}]), \
+                mock.patch.object(esp32, "open_port", return_value=link), \
+                mock.patch.object(esp32, "provision", side_effect=esp32.Esp32Error("esp32.error.timeout")), \
+                mock.patch.dict("agenti.secure.api._active", {"port": 8443}):
+            with self.assertRaises(HTTPException) as ctx:
+                onboard_node(req, request)
+        self.assertEqual((ctx.exception.status_code, ctx.exception.detail), (409, "esp32.error.timeout"))
+        link.close.assert_called_once()
 
     def test_onboard_pc_workstation(self):
         req = OnboardNodeRequest(

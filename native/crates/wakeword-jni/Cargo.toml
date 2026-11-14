@@ -1,0 +1,29 @@
+[package]
+name = "nuxiva-wakeword-jni"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "nuxiva_wakeword"
+crate-type = ["cdylib", "rlib"]
+
+[lints.rust]
+unsafe_code = "deny"
+missing_debug_implementations = "warn"
+unused_must_use = "deny"
+
+[lints.clippy]
+all = { level = "deny", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+indexing_slicing = "deny"
+arithmetic_side_effects = "deny"
+
+[dependencies]
+jni = "0.21"
+nuxiva-wakeword-core = { path = "../wakeword-core" }

@@ -159,7 +159,7 @@ jobs:
 
       - name: Native Parity and Bus Tests
         working-directory: ./installer_wizard
-        run: python -m unittest tests.test_bus_router tests.test_nuxiva_bus tests.test_nvr tests.test_nvr_archive_native tests.test_nvr_playback tests.test_nvr_transcription tests.test_nvr_search tests.test_nvr_privacy tests.test_language_native tests.test_stage tests.test_hands_engine tests.test_biometric_vault tests.test_update_guard tests.test_release_notes tests.test_presence_audience tests.test_presence_vouch tests.test_guard_native tests.test_seal_native tests.test_config_native tests.test_telemetry_native tests.test_loops_native tests.test_authz_native tests.test_home_risk_native tests.test_ear_clean_native tests.test_face_native tests.test_people_details tests.test_vitals_native tests.test_vital_checkup tests.test_setup_voice tests.test_ear_scene_native tests.test_ear_speaker_native tests.test_ear_attribution tests.test_ear_words_native tests.test_addressee_native tests.test_dialogue_native tests.test_dialogue_history tests.test_sentinel_memory tests.test_sentinel_watch tests.test_expr_native tests.test_expr tests.test_automations tests.test_rescue_native tests.test_rescue_listen tests.test_rescue_vision tests.test_ear_realtime tests.test_ear_array_native tests.test_ear_vote_native tests.test_ear_live tests.test_ear_conditioner tests.test_ear_modes tests.test_ear_host_mic tests.test_authz tests.test_authz_capability tests.test_access_matrix tests.test_config_secrets tests.test_env_sanitizer tests.test_backend_settings_security tests.test_https_guard tests.test_origin_guard tests.test_identity tests.test_first_boot tests.test_agent_registry_native tests.test_agent_layout_native tests.test_ceo_routing_native tests.test_ceo_routing tests.test_fascicoli_native tests.test_genesis tests.test_forma tests.test_creations tests.test_anatomy tests.test_cosmos tests.test_fascicoli tests.test_creator tests.test_mastery tests.test_defense_native tests.test_weather_native tests.test_music_presence_native tests.test_karaoke_native tests.test_sensory_native tests.test_context_hot tests.test_swarm_native tests.test_percept_native tests.test_team_observability tests.test_swarm_pressure tests.test_taskq_native tests.test_coderloop_native tests.test_reflect_native tests.test_initiative_native tests.test_proactivity_native tests.test_autonomy_health tests.test_duplex_native tests.test_speech_stream tests.test_barge_native tests.test_merge_native tests.test_duplex_link tests.test_barge_gate tests.test_capture_daemon tests.test_percept_feed tests.test_run_command_sandbox tests.test_team_graph tests.test_brain_native tests.test_duplex_voice tests.test_duplex_pcm tests.test_pcm_stream tests.test_window_gate_native tests.test_chat_intents_native tests.test_chat_strict_native tests.test_llm_native tests.test_privacy_native tests.test_rate_native tests.test_llm_http_native tests.test_host_origin -v
+        run: python -m unittest tests.test_bus_router tests.test_nuxiva_bus tests.test_nvr tests.test_nvr_archive_native tests.test_nvr_playback tests.test_nvr_transcription tests.test_nvr_search tests.test_nvr_privacy tests.test_language_native tests.test_stage tests.test_hands_engine tests.test_biometric_vault tests.test_update_guard tests.test_release_notes tests.test_presence_audience tests.test_presence_vouch tests.test_guard_native tests.test_seal_native tests.test_config_native tests.test_telemetry_native tests.test_loops_native tests.test_authz_native tests.test_home_risk_native tests.test_ear_clean_native tests.test_face_native tests.test_people_details tests.test_vitals_native tests.test_vital_checkup tests.test_setup_voice tests.test_ear_scene_native tests.test_ear_speaker_native tests.test_ear_attribution tests.test_ear_words_native tests.test_addressee_native tests.test_dialogue_native tests.test_dialogue_history tests.test_sentinel_memory tests.test_sentinel_watch tests.test_expr_native tests.test_expr tests.test_automations tests.test_rescue_native tests.test_rescue_listen tests.test_rescue_vision tests.test_ear_realtime tests.test_ear_array_native tests.test_ear_vote_native tests.test_ear_live tests.test_ear_conditioner tests.test_ear_modes tests.test_ear_host_mic tests.test_authz tests.test_authz_capability tests.test_access_matrix tests.test_config_secrets tests.test_env_sanitizer tests.test_backend_settings_security tests.test_https_guard tests.test_origin_guard tests.test_identity tests.test_first_boot tests.test_agent_registry_native tests.test_agent_layout_native tests.test_ceo_routing_native tests.test_ceo_routing tests.test_fascicoli_native tests.test_genesis tests.test_forma tests.test_creations tests.test_anatomy tests.test_cosmos tests.test_fascicoli tests.test_creator tests.test_mastery tests.test_defense_native tests.test_weather_native tests.test_music_presence_native tests.test_karaoke_native tests.test_sensory_native tests.test_context_hot tests.test_swarm_native tests.test_percept_native tests.test_team_observability tests.test_swarm_pressure tests.test_taskq_native tests.test_coderloop_native tests.test_reflect_native tests.test_initiative_native tests.test_proactivity_native tests.test_autonomy_health tests.test_duplex_native tests.test_speech_stream tests.test_barge_native tests.test_merge_native tests.test_duplex_link tests.test_barge_gate tests.test_capture_daemon tests.test_percept_feed tests.test_run_command_sandbox tests.test_team_graph tests.test_brain_native tests.test_duplex_voice tests.test_duplex_pcm tests.test_pcm_stream tests.test_window_gate_native tests.test_chat_intents_native tests.test_chat_strict_native tests.test_llm_native tests.test_privacy_native tests.test_rate_native tests.test_llm_http_native tests.test_host_origin tests.test_wakeword_native -v
 
       - name: Native Egress Proxy Tests
         working-directory: .
@@ -221,9 +221,68 @@ jobs:
           npm ci
           npm run build
 
+  esp32-firmware:
+    runs-on: ubuntu-latest
+    env:
+      NUXIVA_FW_PUBKEY_HEX: "0000000000000000000000000000000000000000000000000000000000000000"
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Firmware Core Host Tests
+        run: client_satellite/microcontrollers/esp32/test/host/run.sh
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PlatformIO
+        run: python -m pip install --upgrade pip platformio==6.1.16
+
+      - name: Build Firmware
+        working-directory: ./client_satellite/microcontrollers/esp32
+        run: PLATFORMIO_BUILD_FLAGS="-D NUXIVA_FW_PUBKEY_HEX=\\\"$NUXIVA_FW_PUBKEY_HEX\\\"" pio run
+
+  validate-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: JavaScript Syntax
+        run: for f in $(find installer_wizard -name "*.js"); do node --check "$f"; done
+
+      - name: Shell Syntax
+        run: for f in $(find scripts installer_wizard -name "*.sh") scripts/os/nuxivactl install.sh; do bash -n "$f"; done
+
+  validate-web-client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: client_web/package-lock.json
+
+      - name: Install and Build Frontend
+        working-directory: ./client_web
+        run: |
+          npm ci
+          npm run build
+
   ci-status:
     if: always()
-    needs: [validate-python, release-notes, tests, kernel-tests, native-core, validate-scripts, validate-web-client]
+    needs: [validate-python, release-notes, tests, kernel-tests, native-core, esp32-firmware, validate-scripts, validate-web-client]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository

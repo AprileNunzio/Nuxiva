@@ -137,6 +137,7 @@ a chi installa e usa Nuxiva.
 
 - **Solo uso non commerciale:** i modelli di base di openWakeWord (CC BY-NC-SA 4.0) e Qwen 2.5 3B (Qwen Research
   License). Alcune voci Piper hanno licenze di sola ricerca.
+- **Parola di attivazione propria:** il rilevatore a modelli personali (crate wakeword-core) è codice di Nuxiva sotto licenza MIT e non include modelli di terzi: il modello nasce dalle registrazioni dell'utente.
 - **Non concesso nell'Unione Europea:** Llama 3.2 Vision.
 - **Servizi non ufficiali** (Shazam, voci online di Edge): spenti finché non imposti `NUXIVA_UNOFFICIAL_SERVICES=1`.
 - **Uso commerciale:** con `NUXIVA_COMMERCIAL=1` i componenti non commerciali non si installano da soli e vengono
