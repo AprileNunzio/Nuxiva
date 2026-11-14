@@ -3,6 +3,7 @@ import time
 import customtkinter as ctk
 
 from i18n.strings import t
+from settings import agent_name
 from ui import theme
 from ui.orb import STATE_COLOR
 
@@ -19,8 +20,8 @@ def _icon_button(parent, text: str, command):
 
 
 class Panel:
-    def __init__(self, root, scale: float, hotkey: str, actions: dict) -> None:
-        self.root, self.scale, self.hotkey, self.actions = root, scale, hotkey, actions
+    def __init__(self, root, scale: float, hotkey: str, actions: dict, agent: str = "") -> None:
+        self.root, self.scale, self.hotkey, self.actions, self.agent = root, scale, hotkey, actions, agent
         self.last_activity = time.time()
         self.window = ctk.CTkToplevel(root, fg_color=theme.PANEL)
         self.window.overrideredirect(True)
@@ -35,10 +36,16 @@ class Panel:
         self._shortcuts()
         self._input()
 
+    def set_agent(self, name: str) -> None:
+        self.agent = name
+        self.title.configure(text=agent_name.display(name))
+
     def _header(self) -> None:
         head = ctk.CTkFrame(self.window, fg_color=theme.PANEL, corner_radius=0)
         head.pack(fill="x", padx=16, pady=(14, 0))
-        ctk.CTkLabel(head, text="NUXIVA", font=(theme.FONT, 15, "bold"), text_color=theme.TEXT).pack(side="left")
+        self.title = ctk.CTkLabel(head, text=agent_name.display(self.agent), font=(theme.FONT, 15, "bold"),
+                                  text_color=theme.TEXT)
+        self.title.pack(side="left")
         _icon_button(head, "✕", self.hide).pack(side="right")
         _icon_button(head, "⚙", self.actions["settings"]).pack(side="right")
         _icon_button(head, "🛡", self.actions["permissions"]).pack(side="right")

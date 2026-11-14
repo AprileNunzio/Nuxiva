@@ -2,23 +2,43 @@
   #define AppVersion "0.0.0"
 #endif
 #ifndef DistDir
-  #define DistDir "..\build\dist\NUXIVA"
+  #define DistDir "..\build\dist\Nuxiva"
 #endif
+#define AppName "Nuxiva"
+#define AppExe "Nuxiva.exe"
+#define Publisher "NunzioTech"
+#define SiteUrl "https://github.com/AprileNunzio/Nuxiva"
 
 [Setup]
 AppId={{6F2C8E41-7B3A-4C1D-9E55-A7E1D0C4B2F9}
-AppName=NUXIVA Assistente
+AppName={#AppName}
+AppVerName={#AppName} {#AppVersion}
 AppVersion={#AppVersion}
-AppPublisher=NunzioTech
-AppPublisherURL=https://github.com/AprileNunzio/NUXIVA
-DefaultDirName={localappdata}\Programs\NUXIVA
+AppPublisher={#Publisher}
+AppPublisherURL={#SiteUrl}
+AppSupportURL={#SiteUrl}/issues
+AppUpdatesURL={#SiteUrl}/releases
+AppCopyright=Copyright (c) 2026 {#Publisher}
+VersionInfoVersion={#AppVersion}.0
+VersionInfoCompany={#Publisher}
+VersionInfoProductName={#AppName}
+VersionInfoProductVersion={#AppVersion}
+VersionInfoDescription={#AppName} Setup
+VersionInfoCopyright=Copyright (c) 2026 {#Publisher}
+DefaultDirName={autopf}\{#AppName}
+DefaultGroupName={#AppName}
 DisableDirPage=yes
 DisableProgramGroupPage=yes
-PrivilegesRequired=lowest
+UsePreviousAppDir=yes
+PrivilegesRequired=admin
+MinVersion=10.0
+SetupMutex=NuxivaSetupMutex
 OutputDir=..\build\installer
-OutputBaseFilename=NUXIVA_Assistente_Setup
+OutputBaseFilename=Nuxiva_Setup
 SetupIconFile=..\build\nuxiva.ico
-UninstallDisplayIcon={app}\NUXIVA.exe
+UninstallDisplayIcon={app}\{#AppExe}
+UninstallDisplayName={#AppName}
+LicenseFile=..\..\..\LICENSE
 Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
@@ -31,6 +51,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 Name: "it"; MessagesFile: "compiler:Languages\Italian.isl"
 Name: "en"; MessagesFile: "compiler:Default.isl"
 Name: "fr"; MessagesFile: "compiler:Languages\French.isl"
+Name: "es"; MessagesFile: "compiler:Languages\Spanish.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
@@ -39,15 +60,25 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "{#DistDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{userprograms}\NUXIVA Assistente"; Filename: "{app}\NUXIVA.exe"
-Name: "{userdesktop}\NUXIVA Assistente"; Filename: "{app}\NUXIVA.exe"; Tasks: desktopicon
+Name: "{autoprograms}\{#AppName}\{#AppName}"; Filename: "{app}\{#AppExe}"; IconFilename: "{app}\{#AppExe}"; Comment: "{#AppName}"
+Name: "{autoprograms}\{#AppName}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
+Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; IconFilename: "{app}\{#AppExe}"; Tasks: desktopicon
+
+[InstallDelete]
+Type: files; Name: "{userprograms}\NUXIVA Assistente.lnk"
+Type: files; Name: "{userdesktop}\NUXIVA Assistente.lnk"
+Type: filesandordirs; Name: "{localappdata}\Programs\NUXIVA"
+
+[Registry]
+Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueName: "NUXIVA Assistente"; Flags: deletevalue
 
 [Run]
-Filename: "{app}\NUXIVA.exe"; Parameters: "{code:EnrollmentParameters}"; Description: "{cm:LaunchProgram,NUXIVA Assistente}"; Flags: nowait postinstall skipifsilent
-Filename: "{app}\NUXIVA.exe"; Flags: nowait; Check: WizardSilent
+Filename: "{app}\{#AppExe}"; Parameters: "{code:EnrollmentParameters}"; Description: "{cm:LaunchProgram,{#AppName}}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#AppExe}"; Flags: nowait; Check: WizardSilent
 
 [UninstallRun]
-Filename: "{cmd}"; Parameters: "/C reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v ""NUXIVA Assistente"" /f"; Flags: runhidden; RunOnceId: "RemoveAutostart"
+Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""Nuxiva"" /F"; Flags: runhidden; RunOnceId: "RemoveAutostartTask"
+Filename: "{cmd}"; Parameters: "/C reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v ""NUXIVA Assistente"" /f"; Flags: runhidden; RunOnceId: "RemoveLegacyAutostart"
 
 [Code]
 function EnrollmentParameters(Value: String): String;

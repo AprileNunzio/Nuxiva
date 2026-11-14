@@ -85,7 +85,7 @@ class Updater(threading.Thread):
         manifest.check_file(installer, release)
         if self.stop_flag.is_set():
             return
-        target = paths.DATA_DIR / "updates" / f"NUXIVA_Assistente_Setup_{release.version}.exe"
+        target = paths.DATA_DIR / "updates" / f"Nuxiva_Setup_{release.version}.exe"
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(installer)
         log.info("Aggiornamento %s verificato (firma e SHA-256): installazione", release.version)

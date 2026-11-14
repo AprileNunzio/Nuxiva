@@ -25,7 +25,7 @@ from permissions.gate import Gate
 from permissions.policy import Policy
 from senses import places
 from senses.windows import Focus
-from settings import autostart, paths, store
+from settings import agent_name, autostart, paths, shortcuts, store
 from updates.updater import Updater
 
 log = logging.getLogger("nuxiva")
@@ -87,6 +87,7 @@ class Assistant:
                 "compute": {"ollama": {**self.ollama.read(), "shared": self.compute.sharing()}}}
 
     def _on_reply(self, reply: dict) -> None:
+        self._agent_named(agent_name.clean(reply.get("assistant_name")))
         for command in reply.get("commands") or []:
             if command == "identify":
                 self.ui.dispatch.post(self.ui.show_panel)
@@ -97,6 +98,15 @@ class Assistant:
                 self.updater.check_now()
         if reply.get("actions"):
             self.ui.dispatch.post(self._actions, reply["actions"])
+
+    def _agent_named(self, name: str) -> None:
+        previous = self.cfg.get("agent_name", "")
+        if not name or name == previous:
+            return
+        self.cfg["agent_name"] = name
+        store.save(self.cfg)
+        self.ui.dispatch.post(self.ui.set_agent_name, name)
+        threading.Thread(target=shortcuts.sync, args=(previous, name), daemon=True, name="shortcuts").start()
 
     def _actions(self, actions: list) -> None:
         for action in actions[:4]:
@@ -162,12 +172,12 @@ class Assistant:
 
     def unpair(self, revoked: bool = False) -> None:
         from tkinter import messagebox
-        if not revoked and not messagebox.askyesno("NUXIVA", "Scollegare questo PC da NUXIVA? Dovrai abbinarlo di nuovo."):
+        if not revoked and not messagebox.askyesno("Nuxiva", "Scollegare questo PC da NUXIVA? Dovrai abbinarlo di nuovo."):
             return
         self.cfg.update(token="", pin="", ca="")
         store.save(self.cfg)
         if revoked:
-            messagebox.showwarning("NUXIVA", "Questo PC non è più autorizzato da NUXIVA. Riavvia l'assistente per abbinarlo di nuovo.")
+            messagebox.showwarning("Nuxiva", "Questo PC non è più autorizzato da NUXIVA. Riavvia l'assistente per abbinarlo di nuovo.")
         self.quit()
 
     def restart(self) -> None:

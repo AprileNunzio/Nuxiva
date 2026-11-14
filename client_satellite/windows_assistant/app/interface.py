@@ -4,6 +4,7 @@ import tkinter as tk
 import customtkinter as ctk
 
 from i18n.strings import t
+from settings import agent_name
 from permissions.catalog import Capability
 from permissions.gate import Answer, Request
 from ui import confirm_view, theme
@@ -19,7 +20,7 @@ class Interface:
         self.cfg, self.actions = cfg, actions
         self.root = ctk.CTk()
         self.root.withdraw()
-        self.root.title("NUXIVA")
+        self.root.title(agent_name.display(cfg.get("agent_name", "")))
         self.scale = theme.scale_of(self.root)
         self.dispatch = Dispatcher(self.root)
         self.muted = tk.BooleanVar(value=False)
@@ -28,7 +29,7 @@ class Interface:
         self.panel = Panel(self.root, self.scale, cfg["hotkey"],
                            {"ask": actions["ask"], "listen": actions["listen"], "stop": actions["stop"],
                             "settings": self.open_settings, "permissions": self.open_permissions,
-                            "widgets": actions["widgets"]})
+                            "widgets": actions["widgets"]}, cfg.get("agent_name", ""))
         self.root.after(1000, self._autohide)
 
     def _menu(self) -> list:
@@ -50,6 +51,11 @@ class Interface:
         self.root.after(1000, self._autohide)
         if self.orb.state == "idle" and self.panel.idle_too_long():
             self.panel.hide()
+
+    def set_agent_name(self, name: str) -> None:
+        self.cfg["agent_name"] = name
+        self.root.title(agent_name.display(name))
+        self.panel.set_agent(name)
 
     def run(self) -> None:
         self.root.mainloop()

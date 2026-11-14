@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Installer Windows come amministratore, tutto chiamato Nuxiva",
+    "en": "Windows installer as administrator, everything named Nuxiva",
+    "fr": "Installateur Windows en administrateur, tout nommé Nuxiva",
+    "es": "Instalador de Windows como administrador, todo llamado Nuxiva"
+  },
+  "features": [
+    {
+      "it": "L'installer di Windows chiede i permessi di amministratore, installa in Programmi, crea la cartella Nuxiva nel menu Start con icona e disinstallazione, e l'icona sul desktop a scelta. File, versione e collegamenti si chiamano Nuxiva.",
+      "en": "The Windows installer asks for administrator rights, installs in Program Files, creates the Nuxiva folder in the Start menu with icon and uninstall entry, and an optional desktop icon. Files, version info and shortcuts are all named Nuxiva.",
+      "fr": "L'installateur Windows demande les droits d'administrateur, s'installe dans Program Files, crée le dossier Nuxiva dans le menu Démarrer avec icône et désinstallation, et une icône de bureau facultative. Fichiers, version et raccourcis s'appellent tous Nuxiva.",
+      "es": "El instalador de Windows pide permisos de administrador, se instala en Archivos de programa, crea la carpeta Nuxiva en el menú Inicio con icono y desinstalación, y un icono de escritorio opcional. Archivos, versión y accesos se llaman Nuxiva."
+    },
+    {
+      "it": "Nuxiva parte con Windows con i privilegi più alti anche a batteria, tramite un'attività pianificata, e al primo contatto con il server prende il nome scelto da te per l'agente e lo mostra nel pannello e nel menu Start.",
+      "en": "Nuxiva starts with Windows at the highest privileges, even on battery, through a scheduled task, and on first contact with the server it takes the agent name you chose and shows it in the panel and the Start menu.",
+      "fr": "Nuxiva démarre avec Windows aux privilèges les plus élevés, même sur batterie, via une tâche planifiée, et au premier contact avec le serveur il prend le nom d'agent que tu as choisi et l'affiche dans le panneau et le menu Démarrer.",
+      "es": "Nuxiva arranca con Windows con los máximos privilegios, también con batería, mediante una tarea programada, y al primer contacto con el servidor toma el nombre de agente que elegiste y lo muestra en el panel y en el menú Inicio."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "L'installazione precedente per singolo utente viene sostituita senza lasciare collegamenti doppi o avvii automatici vecchi.",
+      "en": "The previous per-user install is replaced without leaving duplicate shortcuts or old autostart entries.",
+      "fr": "L'ancienne installation par utilisateur est remplacée sans laisser de raccourcis en double ni d'anciens démarrages automatiques.",
+      "es": "La instalación anterior por usuario se sustituye sin dejar accesos duplicados ni arranques automáticos antiguos."
+    }
+  ]
+}

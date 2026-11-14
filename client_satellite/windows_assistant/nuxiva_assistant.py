@@ -51,7 +51,7 @@ def auto_enroll(cfg: dict, enrollment_file: Path | None = None) -> bool:
             return False
         enroll.redeem(cfg, data, first_contact)
     except enroll.EnrollError as exc:
-        ctypes.windll.user32.MessageBoxW(None, t("enroll.failed", reason=t(exc.key)), "NUXIVA", 0x30)
+        ctypes.windll.user32.MessageBoxW(None, t("enroll.failed", reason=t(exc.key)), "Nuxiva", 0x30)
         return False
     enroll.wipe(path)
     autostart.set_enabled(True)
@@ -63,9 +63,10 @@ def main() -> None:
     errors.install()
     if not single_instance():
         ctypes.windll.user32.MessageBoxW(None, "NUXIVA è già in esecuzione: cerca la sfera luminosa nell'angolo dello schermo.",
-                                         "NUXIVA", 0x40)
+                                         "Nuxiva", 0x40)
         return
     cfg = store.load()
+    autostart.refresh()
     enrollment_file = (Path(sys.argv[2]) if len(sys.argv) == 3 and sys.argv[1] == "--enrollment-file" else None)
     if (not cfg["token"] or not cfg["ca"]) and not auto_enroll(cfg, enrollment_file):
         from ui.pairing_view import PairingWindow

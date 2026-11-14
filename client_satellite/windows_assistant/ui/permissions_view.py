@@ -76,7 +76,7 @@ class PermissionsWindow:
         try:
             self.policy.set_folders([*self.policy.folders, chosen])
         except ValueError as exc:
-            messagebox.showerror("NUXIVA", str(exc), parent=self.window)
+            messagebox.showerror("Nuxiva", str(exc), parent=self.window)
             return
         self.on_change("folders", None)
         self._draw_folders()

@@ -53,7 +53,7 @@ class ConfirmDialog:
         remember = self.remember.get()
         if remember and self.capability.risky:
             remember = messagebox.askyesno(
-                "NUXIVA", f"«{self.capability.title}» è un'azione delicata. Vuoi davvero che NUXIVA la esegua sempre senza chiedere?",
+                "Nuxiva", f"«{self.capability.title}» è un'azione delicata. Vuoi davvero che NUXIVA la esegua sempre senza chiedere?",
                 parent=self.window)
         self._close(Answer(True, remember))
 

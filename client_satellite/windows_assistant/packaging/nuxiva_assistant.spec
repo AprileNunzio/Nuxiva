@@ -27,9 +27,10 @@ exe = EXE(
     analysis.scripts,
     [],
     exclude_binaries=True,
-    name="NUXIVA",
+    name="Nuxiva",
     console=False,
+    uac_admin=True,
     icon=str(ROOT / "build" / "nuxiva.ico"),
-    version=None,
+    version=str(ROOT / "build" / "version_info.txt"),
 )
-COLLECT(exe, analysis.binaries, analysis.datas, name="NUXIVA")
+COLLECT(exe, analysis.binaries, analysis.datas, name="Nuxiva")

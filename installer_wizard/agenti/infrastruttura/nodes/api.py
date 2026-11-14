@@ -78,6 +78,7 @@ async def node_heartbeat(request: Request):
     if not was_online:
         store.event("INFO", f"Nodo online: {node['name']}", "nodes")
     return {"commands": commands, "actions": inbox.take(node["id"]), "heartbeat": 30, "agent": _agent_sha(),
+            "assistant_name": _assistant_name(),
             "settings": registry.effective(node["id"]), "custom": sorted(node.get("settings") or {})}
 
 
@@ -89,6 +90,12 @@ async def node_inbox(request: Request):
     except PermissionError as exc:
         raise HTTPException(401, str(exc))
     return {"actions": await inbox.wait(node["id"], INBOX_WAIT)}
+
+
+def _assistant_name() -> str:
+    from identity import assistant_name
+
+    return assistant_name()
 
 
 def _agent_path():
