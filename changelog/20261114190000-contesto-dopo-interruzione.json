@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Nuxiva capisce cosa vuoi dopo averla interrotta",
+    "en": "Nuxiva understands what you want after you interrupt it",
+    "fr": "Nuxiva comprend ce que tu veux après une interruption",
+    "es": "Nuxiva entiende qué quieres después de interrumpirla"
+  },
+  "features": [
+    {
+      "it": "Dopo un'interruzione Nuxiva sa esattamente cosa aveva già detto e cosa no. «Continua» riprende da dove si era fermata, «più breve» o «un'altra versione» rifà la risposta, «no aspetta» la lascia perdere, e una domanda nuova ha la precedenza.",
+      "en": "After an interruption Nuxiva knows exactly what it had already said and what it had not. \"Continue\" resumes where it stopped, \"shorter\" or \"another version\" redoes the answer, \"no wait\" drops it, and a new question takes priority.",
+      "fr": "Après une interruption, Nuxiva sait exactement ce qu'elle avait déjà dit et ce qu'elle n'avait pas dit. « Continue » reprend où elle s'était arrêtée, « plus court » ou « une autre version » refait la réponse, « non attends » l'abandonne, et une nouvelle question a la priorité.",
+      "es": "Tras una interrupción, Nuxiva sabe exactamente qué había dicho ya y qué no. «Continúa» retoma donde se quedó, «más corto» o «otra versión» rehace la respuesta, «no espera» la deja, y una pregunta nueva tiene prioridad."
+    },
+    {
+      "it": "Il widget «Ti sto ascoltando» ora mostra anche quando Nuxiva sta pensando o parlando, con un grande pulsante «Zitta» per farla tacere subito.",
+      "en": "The \"I'm listening\" widget now also shows when Nuxiva is thinking or speaking, with a big \"Hush\" button to silence it at once.",
+      "fr": "Le widget « Je t'écoute » montre maintenant aussi quand Nuxiva réfléchit ou parle, avec un grand bouton « Chut » pour la faire taire aussitôt.",
+      "es": "El widget «Te estoy escuchando» ahora también muestra cuándo Nuxiva está pensando o hablando, con un gran botón «Silencio» para callarla al instante."
+    }
+  ],
+  "fixes": []
+}

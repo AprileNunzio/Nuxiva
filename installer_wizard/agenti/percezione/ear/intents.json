@@ -1,0 +1,5 @@
+{
+  "cancel": ["no", "aspetta", "aspetta un attimo", "un attimo", "stop", "basta", "lascia stare", "lascia perdere", "ferma", "fermati", "non importa"],
+  "continue": ["continua", "vai avanti", "prosegui", "vai pure", "dimmi di più", "e poi", "scusa continua", "come dicevi"],
+  "modify": ["un'altra versione", "un'altra", "fammi un'altra", "più breve", "più corto", "più corta", "più lungo", "più lunga", "ripeti", "di nuovo", "in un altro modo", "più semplice", "più piano"]
+}

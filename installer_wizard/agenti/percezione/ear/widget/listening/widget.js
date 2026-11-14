@@ -1,5 +1,5 @@
 (() => {
-  const STATES = new Set(["idle", "listening", "transcribing", "off"]);
+  const STATES = new Set(["idle", "listening", "transcribing", "thinking", "speaking", "off"]);
   const BARS = 12;
   const wake = () => (window.NUXIVA_ASSISTANT && typeof window.NUXIVA_ASSISTANT.name === "string" ? window.NUXIVA_ASSISTANT.name.slice(0, 40) : "");
 
@@ -12,8 +12,8 @@
     render(el, d, ctx) {
       stop(el);
       const label = (s) => ctx.t(`state_${s}`, { name: wake() });
-      el.innerHTML = `<button type="button" class="ls-box idle"><span class="ls-ic">${ctx.icon("mic")}</span><span class="ls-bars" aria-hidden="true">${"<i></i>".repeat(BARS)}</span><span class="ls-t" aria-live="polite">${ctx.esc(label("idle"))}</span></button>`;
-      const box = el.firstChild, bars = [...box.querySelectorAll(".ls-bars i")], text = box.querySelector(".ls-t");
+      el.innerHTML = `<button type="button" class="ls-box idle"><span class="ls-ic">${ctx.icon("mic")}</span><span class="ls-bars" aria-hidden="true">${"<i></i>".repeat(BARS)}</span><span class="ls-t" aria-live="polite">${ctx.esc(label("idle"))}</span></button><button type="button" class="ls-hush" hidden>${ctx.icon("stop")}<span>${ctx.esc(ctx.t("hush"))}</span></button>`;
+      const box = el.firstChild, hush = el.querySelector(".ls-hush"), bars = [...box.querySelectorAll(".ls-bars i")], text = box.querySelector(".ls-t");
       const hist = new Float32Array(BARS);
       let state = "idle", raf = 0, last = 0;
       const draw = () => {
@@ -33,6 +33,7 @@
         box.className = `ls-box ${state}`;
         text.textContent = label(state);
         box.setAttribute("aria-label", label(state));
+        hush.hidden = state !== "speaking";
       };
       const onLevel = (e) => {
         const v = Number(e.detail);
@@ -49,7 +50,13 @@
         if (state === "off" && typeof ear.restartMic === "function") ear.restartMic();
         else if (state === "idle" && typeof ear.listen === "function") ear.listen();
       };
+      const onHush = (e) => {
+        e.stopPropagation();
+        const ear = window.nuxivaEar;
+        if (ear && typeof ear.cut === "function") ear.cut();
+      };
       box.addEventListener("click", onTap);
+      hush.addEventListener("click", onHush);
       window.addEventListener("nuxiva-ear", onState);
       window.addEventListener("nuxiva-ear-level", onLevel);
       el._lsOff = () => {

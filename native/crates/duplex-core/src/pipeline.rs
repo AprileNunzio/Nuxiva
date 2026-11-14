@@ -4,6 +4,7 @@ use serde::Serialize;
 
 use crate::chunker::{Backlog, ChunkSettings, Chunker};
 use crate::error::{DuplexError, DuplexResult};
+use crate::merge::MAX_SPOKEN_CHARS;
 use crate::session::Session;
 
 pub trait Synth {
@@ -28,6 +29,7 @@ pub struct Pipeline<S: Synth> {
     backlog: Backlog,
     sizes: HashMap<u32, usize>,
     texts: HashMap<u32, String>,
+    spoken: String,
     first_token_ms: Option<u64>,
     last_chunk_ms: Option<u64>,
     metrics: Metrics,
@@ -42,6 +44,7 @@ impl<S: Synth> Pipeline<S> {
             backlog: Backlog::default(),
             sizes: HashMap::new(),
             texts: HashMap::new(),
+            spoken: String::new(),
             first_token_ms: None,
             last_chunk_ms: None,
             metrics: Metrics::default(),
@@ -148,8 +151,26 @@ impl<S: Synth> Pipeline<S> {
 
     pub fn on_chunk_played(&mut self, session: &mut Session, seq: u32) -> DuplexResult<()> {
         let chars = self.sizes.remove(&seq).ok_or(DuplexError::Invalid)?;
-        self.texts.remove(&seq);
+        if let Some(text) = self.texts.remove(&seq) {
+            self.remember(&text);
+        }
         session.mark_spoken(self.epoch, u32::try_from(chars).unwrap_or(u32::MAX))
+    }
+
+    fn remember(&mut self, text: &str) {
+        let room = MAX_SPOKEN_CHARS.saturating_sub(self.spoken.chars().count());
+        if room == 0 {
+            return;
+        }
+        if !self.spoken.is_empty() {
+            self.spoken.push(' ');
+        }
+        self.spoken.extend(text.chars().take(room));
+    }
+
+    #[must_use]
+    pub fn spoken_text(&self) -> &str {
+        &self.spoken
     }
 
     #[must_use]

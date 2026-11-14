@@ -8,7 +8,10 @@
     "state_idle": "Di «{{name}}» para hablarme",
     "state_listening": "Te escucho…",
     "state_transcribing": "Entendiendo…",
+    "state_thinking": "Pensando…",
+    "state_speaking": "Hablando",
     "state_off": "Micrófono apagado",
-    "simple_title": "Te estoy escuchando"
+    "simple_title": "Te estoy escuchando",
+    "hush": "Silencio"
   }
 }

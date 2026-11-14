@@ -2,7 +2,8 @@ use std::sync::{Mutex, PoisonError};
 
 use nuxiva_duplex_core::{
     Audio, Backchannel, BargeDetector, BargeSettings, ChunkSettings, Chunker, Control, Decision,
-    DuplexError, Evidence, PreRoll, Session, Settings, Trigger, Verdict,
+    DuplexError, Evidence, IntentCatalog, InterruptedReply, PreRoll, Session, Settings, Trigger,
+    Verdict,
 };
 use nuxiva_taskq_core::CancelToken;
 use pyo3::exceptions::PyValueError;
@@ -297,10 +298,64 @@ impl RustPreRoll {
     }
 }
 
+#[pyclass(module = "nuxiva_native")]
+#[derive(Debug)]
+pub struct RustMerge {
+    catalog: IntentCatalog,
+}
+
+#[pymethods]
+impl RustMerge {
+    #[new]
+    #[pyo3(signature = (catalog_json=""))]
+    fn new(catalog_json: &str) -> PyResult<Self> {
+        let catalog = if catalog_json.is_empty() {
+            IntentCatalog::builtin()
+        } else {
+            IntentCatalog::from_json(catalog_json)
+        };
+        Ok(Self {
+            catalog: catalog.map_err(fail)?,
+        })
+    }
+
+    fn classify(&self, text: &str) -> PyResult<String> {
+        to_json(&self.catalog.classify(text)).map_err(fail)
+    }
+
+    #[staticmethod]
+    #[pyo3(signature = (duplex, spoken_text, unspoken_ref=None))]
+    fn interrupted(
+        duplex: &RustDuplex,
+        spoken_text: &str,
+        unspoken_ref: Option<String>,
+    ) -> PyResult<String> {
+        let session = duplex
+            .session
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner);
+        let note = session
+            .interruption()
+            .ok_or_else(|| fail(DuplexError::Transition))?;
+        let reply = InterruptedReply::new(note, spoken_text, unspoken_ref).map_err(fail)?;
+        to_json(&reply).map_err(fail)
+    }
+
+    fn plan(&self, interrupted_json: &str, text: &str) -> PyResult<String> {
+        if interrupted_json.len() > 16_384 {
+            return Err(fail(DuplexError::TooLarge));
+        }
+        let reply: InterruptedReply =
+            serde_json::from_str(interrupted_json).map_err(|_| fail(DuplexError::Parse))?;
+        to_json(&self.catalog.plan(&reply, text)).map_err(fail)
+    }
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustDuplex>()?;
     m.add_class::<RustCancelFlag>()?;
     m.add_class::<RustChunker>()?;
     m.add_class::<RustBarge>()?;
-    m.add_class::<RustPreRoll>()
+    m.add_class::<RustPreRoll>()?;
+    m.add_class::<RustMerge>()
 }
