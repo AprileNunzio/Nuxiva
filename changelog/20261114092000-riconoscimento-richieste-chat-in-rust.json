@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "date": "2026-11-14T09:20:00Z",
+  "date": "2026-11-14",
   "title": {
     "it": "Il riconoscimento delle richieste in chat ora gira in Rust",
     "en": "Chat request recognition now runs in Rust",

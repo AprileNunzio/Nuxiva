@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Controlli automatici di nuovo verdi",
+    "en": "Automated checks green again",
+    "fr": "Contrôles automatiques de nouveau au vert",
+    "es": "Comprobaciones automáticas de nuevo en verde"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Una nota di rilascio aveva la data scritta nel formato sbagliato e bloccava i controlli automatici: ora è corretta, senza cambiare nulla per te.",
+      "en": "A release note had its date written in the wrong format and blocked the automated checks: it is now fixed, with no change for you.",
+      "fr": "Une note de version avait sa date écrite dans le mauvais format et bloquait les contrôles automatiques : elle est corrigée, sans changement pour toi.",
+      "es": "Una nota de versión tenía la fecha en el formato equivocado y bloqueaba las comprobaciones automáticas: ya está corregida, sin cambios para ti."
+    }
+  ]
+}
