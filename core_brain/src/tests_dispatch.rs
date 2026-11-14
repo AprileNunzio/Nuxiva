@@ -143,14 +143,7 @@ async fn task_runs_through_swarm_and_mcp() {
     let d = dispatcher(Arc::clone(&hub));
     let out = d.dispatch("avvia il lavoro adesso", "nunzio", 1).await;
     assert!(
-        matches!(
-            out,
-            Ok(Dispatched::Executed {
-                succeeded: true,
-                steps: 1..,
-                ..
-            })
-        ),
+        matches!(&out, Ok(Dispatched::Executed { succeeded: true, acted: true, steps: 1.., text, .. }) if text == "fatto"),
         "{out:?}"
     );
 }

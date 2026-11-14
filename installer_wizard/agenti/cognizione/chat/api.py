@@ -23,7 +23,7 @@ from agenti.brain.residency import primary
 from agenti.brain.trace import trace
 from agenti.capabilities import manifest as capabilities
 from agenti.chat import duplex_feed
-from agenti.chat import addressee, assistant, brain_chain, intents, interrupt, speaker, streaming, turns, voice_id, wake
+from agenti.chat import addressee, assistant, brain_chain, brain_engine, intents, interrupt, speaker, streaming, turns, voice_id, wake
 from agenti.chat.dialogue import dialogue
 from agenti.chat.journey_flow import ChatJourney
 from agenti.sentinel.collectors import operations
@@ -211,7 +211,7 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
         turn_id = flow.tracker.id if flow.tracker else ""
         with turns.running(turn_id) as turn:
             try:
-                result = await assistant.handle(text, core_call, speech_lang)
+                result = await brain_engine.answer(text, principal.slug if principal else "") or await assistant.handle(text, core_call, speech_lang)
             except asyncio.CancelledError:
                 flow.cancelled()
                 if turn and turn.stopping:

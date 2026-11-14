@@ -85,7 +85,16 @@ impl RustBrain {
                 task,
                 succeeded,
                 steps,
-            } => json!({"kind": "executed", "task": task, "succeeded": succeeded, "steps": steps}),
+                acted,
+                text,
+            } => json!({
+                "kind": "executed",
+                "task": task,
+                "succeeded": succeeded,
+                "steps": steps,
+                "acted": acted,
+                "text": text,
+            }),
         };
         serde_json::to_string(&value).map_err(fail)
     }

@@ -6,7 +6,7 @@ use nuxiva_agent_core::ceo::{self, Index, Learned};
 use nuxiva_mcp_core::Hub;
 use nuxiva_swarm_core::{
     Admission, CancelToken, Catalog, Executor, Factory, GraphGate, Ident, Plan, Planner, Report,
-    Request, Settings, Supervisor, TaskEnvelope, Worker,
+    Request, Settings, Supervisor, TaskEnvelope, Worker, WorkerErrorKind,
 };
 
 use crate::error::{BrainError, BrainResult};
@@ -14,6 +14,7 @@ use crate::worker::{Declared, McpWorker, Pending, Utterance};
 
 const MAX_TEXT_BYTES: usize = 8 * 1024;
 const RISK_CEILING: u8 = 2;
+const MAX_REPLY_CHARS: usize = 1_200;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Dispatched {
@@ -22,6 +23,8 @@ pub enum Dispatched {
         task: String,
         succeeded: bool,
         steps: usize,
+        acted: bool,
+        text: String,
     },
 }
 
@@ -40,6 +43,23 @@ impl std::fmt::Debug for Dispatcher {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str("Dispatcher(..)")
     }
+}
+
+fn reply_text(report: &Report) -> String {
+    let joined: Vec<&str> = report
+        .steps
+        .iter()
+        .filter_map(|s| s.result.as_ref())
+        .filter_map(|r| r.output.get("text").and_then(serde_json::Value::as_str))
+        .collect();
+    joined
+        .join(" ")
+        .chars()
+        .filter(|c| !c.is_control() || *c == ' ')
+        .take(MAX_REPLY_CHARS)
+        .collect::<String>()
+        .trim()
+        .to_owned()
 }
 
 fn swarm<E: std::fmt::Display>(error: E) -> BrainError {
@@ -159,10 +179,19 @@ impl Dispatcher {
         let outcome = self.executor.run(&task, &plan, now_ms, &token).await;
         self.pending.remove(&key);
         let report: Report = outcome.map_err(swarm)?;
+        let acted = report.steps.iter().any(|s| {
+            s.result.is_some()
+                || s.error.as_ref().is_some_and(|e| {
+                    e.code.as_str() == "tool-error" || e.kind == WorkerErrorKind::Timeout
+                })
+        });
+        let text = reply_text(&report);
         Ok(Dispatched::Executed {
             task: key,
             succeeded: report.succeeded(),
             steps: report.steps.len(),
+            acted,
+            text,
         })
     }
 }

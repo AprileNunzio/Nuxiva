@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Il motore centrale può rispondere nella chat, con ripiego automatico",
+    "en": "The central engine can answer in the chat, with automatic fallback",
+    "fr": "Le moteur central peut répondre dans le chat, avec repli automatique",
+    "es": "El motor central puede responder en el chat, con respaldo automático"
+  },
+  "features": [
+    {
+      "it": "Se attivato, il motore centrale esegue le azioni chieste in chat con gli strumenti dell'agente giusto. Se non risponde, la chat usa il percorso di sempre. Per i compiti complessi il piano viene preparato dal cervello configurato e controllato prima di partire.",
+      "en": "When enabled, the central engine runs the actions asked for in chat with the right agent's tools. If it does not answer, the chat uses the usual path. For complex tasks the plan is prepared by the configured brain and checked before it starts.",
+      "fr": "S'il est activé, le moteur central exécute les actions demandées dans le chat avec les outils du bon agent. S'il ne répond pas, le chat suit le chemin habituel. Pour les tâches complexes, le plan est préparé par le cerveau configuré et vérifié avant de démarrer.",
+      "es": "Si se activa, el motor central ejecuta las acciones pedidas en el chat con las herramientas del agente adecuado. Si no responde, el chat usa el camino de siempre. En las tareas complejas el plan lo prepara el cerebro configurado y se comprueba antes de empezar."
+    }
+  ]
+}
