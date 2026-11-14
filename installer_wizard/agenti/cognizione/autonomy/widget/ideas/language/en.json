@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/ideas",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Nuxiva's ideas",
+    "say_none": "I have no ideas to suggest right now.",
+    "say_some_one": "I have an idea for you",
+    "say_some_other": "I have {{n}} ideas for you",
+    "count_one": "1 idea",
+    "count_other": "{{n}} ideas",
+    "yes": "Yes, do it",
+    "not_now": "Not now",
+    "idea_run_checks": "You changed a project. Should I check that it still works?",
+    "idea_other": "I have an idea. Should I try it?",
+    "simple_title": "Nuxiva's ideas"
+  }
+}

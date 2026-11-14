@@ -1,0 +1,21 @@
+{
+  "observers": {
+    "project-edit": {
+      "source": "fs",
+      "topic": "modified",
+      "subject_prefix": "project:",
+      "summary_key": "idea_run_checks",
+      "value": 800,
+      "confidence": 800,
+      "level": "propose",
+      "action": {
+        "kind": "dev_check",
+        "class": "background",
+        "priority": 4,
+        "budget": {"wall_ms": 120000, "tokens": 0, "tool_calls": 4, "cpu_ms": 0},
+        "risk_max": "low",
+        "input_template": "{subject}"
+      }
+    }
+  }
+}

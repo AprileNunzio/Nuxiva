@@ -36,6 +36,7 @@ mod gesture;
 mod governors;
 mod guard;
 mod home_rules;
+mod initiative;
 mod jev;
 mod language;
 mod learner;
@@ -264,6 +265,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     taskq::register(m)?;
     coderloop::register(m)?;
     reflect::register(m)?;
+    initiative::register(m)?;
     m.add_function(wrap_pyfunction!(mastery::mastery_evaluate, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_verify, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_insights, m)?)?;

@@ -162,9 +162,15 @@ class Autonomy:
             paths = ", ".join(item["relative_dir"] for item in built)
             journal.write("catalogo_3d", "Sintesi notturna 3D", f"Pre-costruiti nel database 3D: {paths}")
 
+    async def _ideas(self) -> None:
+        from agenti.autonomy import initiative
+        for proposal in initiative.poll_projects():
+            journal.write("idee", "Idea di Nuxiva", f"Proposta {proposal['summary_key']}: {proposal['subject']}")
+
     async def autopilot(self) -> None:
         for name, step in (
             ("salute", self._health),
+            ("idee", self._ideas),
             ("studio", self._gaps),
             ("catalogo_3d", self._night_3d_catalog),
             ("riepilogo", self._digest),

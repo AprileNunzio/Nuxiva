@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/ideas",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Idées de Nuxiva",
+    "say_none": "Je n'ai pas d'idée à te proposer pour le moment.",
+    "say_some_one": "J'ai une idée pour toi",
+    "say_some_other": "J'ai {{n}} idées pour toi",
+    "count_one": "1 idée",
+    "count_other": "{{n}} idées",
+    "yes": "Oui, fais-le",
+    "not_now": "Pas maintenant",
+    "idea_run_checks": "Tu as changé un projet. Veux-tu que je vérifie qu'il marche encore ?",
+    "idea_other": "J'ai une idée. Veux-tu que je l'essaie ?",
+    "simple_title": "Idées de Nuxiva"
+  }
+}

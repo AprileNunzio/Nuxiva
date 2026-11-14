@@ -1,0 +1,4 @@
+.w-ideas .id-list { margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.w-ideas .id-card { display: flex; flex-direction: column; gap: 8px; }
+.w-ideas .id-text { font-size: 14px; line-height: 1.35; }
+.w-ideas .id-act { display: flex; gap: 8px; flex-wrap: wrap; }

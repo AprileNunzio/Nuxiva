@@ -1536,6 +1536,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-initiative-core"
+version = "5.8.0"
+dependencies = [
+ "nuxiva-taskq-core",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-langid"
 version = "5.8.0"
 dependencies = [
@@ -1657,6 +1666,7 @@ dependencies = [
  "nuxiva-gait-core",
  "nuxiva-gesture-core",
  "nuxiva-guard-core",
+ "nuxiva-initiative-core",
  "nuxiva-langid",
  "nuxiva-loop-core",
  "nuxiva-lyrics-core",

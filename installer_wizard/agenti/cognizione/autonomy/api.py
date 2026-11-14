@@ -97,3 +97,25 @@ async def revoke_trust(rule_id: str, _: str = Depends(require_admin)):
     if not book.revoke(rule_id):
         raise HTTPException(404, "Regola sconosciuta")
     return {"ok": True}
+
+
+@admin_routes.get("/api/autonomy/ideas")
+async def admin_ideas(_: str = Depends(require_admin)):
+    from agenti.autonomy import initiative
+    return initiative.snapshot()
+
+
+@admin_routes.post("/api/autonomy/ideas/{idea_id}/accept")
+async def admin_idea_accept(idea_id: int, _: str = Depends(require_admin)):
+    from agenti.autonomy import initiative
+    if not initiative.accept(idea_id):
+        raise HTTPException(404, "idea_unknown")
+    return {"ok": True}
+
+
+@admin_routes.post("/api/autonomy/ideas/{idea_id}/refuse")
+async def admin_idea_refuse(idea_id: int, _: str = Depends(require_admin)):
+    from agenti.autonomy import initiative
+    if not initiative.refuse(idea_id):
+        raise HTTPException(404, "idea_unknown")
+    return {"ok": True}

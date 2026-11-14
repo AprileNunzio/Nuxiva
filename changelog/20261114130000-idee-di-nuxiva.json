@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Nuxiva propone da sola idee utili, senza disturbarti",
+    "en": "Nuxiva suggests useful ideas on its own, without disturbing you",
+    "fr": "Nuxiva propose d'elle-même des idées utiles, sans te déranger",
+    "es": "Nuxiva propone ideas útiles por sí sola, sin molestarte"
+  },
+  "features": [
+    {
+      "it": "Quando cambi un progetto, Nuxiva può proporti di controllare che funzioni ancora. La proposta compare nel widget «Idee di Nuxiva» con due pulsanti, «Sì, fallo» e «Non ora».",
+      "en": "When you change a project, Nuxiva can offer to check that it still works. The offer shows up in the \"Nuxiva's ideas\" widget with two buttons, \"Yes, do it\" and \"Not now\".",
+      "fr": "Quand tu changes un projet, Nuxiva peut te proposer de vérifier qu'il marche encore. La proposition apparaît dans le widget « Idées de Nuxiva » avec deux boutons, « Oui, fais-le » et « Pas maintenant ».",
+      "es": "Cuando cambias un proyecto, Nuxiva puede proponerte comprobar que sigue funcionando. La propuesta aparece en el widget «Ideas de Nuxiva» con dos botones, «Sí, hazlo» y «Ahora no»."
+    },
+    {
+      "it": "Nuxiva non parla mai mentre conversi, di notte o con ospiti presenti se l'idea non vale il disturbo, mette un limite alle proposte ogni ora e, se rifiuti, per un giorno ne fa meno di quel tipo. Le azioni delicate partono solo con il tuo consenso.",
+      "en": "Nuxiva never speaks while you talk, at night or with guests around unless the idea is worth the interruption, caps proposals per hour and, if you refuse, makes fewer of that kind for a day. Delicate actions only start with your consent.",
+      "fr": "Nuxiva ne parle jamais pendant que tu discutes, la nuit ou avec des invités si l'idée ne vaut pas le dérangement, limite les propositions par heure et, si tu refuses, en fait moins de ce type pendant un jour. Les actions délicates ne démarrent qu'avec ton accord.",
+      "es": "Nuxiva nunca habla mientras conversas, de noche o con invitados si la idea no justifica la molestia, limita las propuestas por hora y, si rechazas, hace menos de ese tipo durante un día. Las acciones delicadas solo empiezan con tu consentimiento."
+    }
+  ],
+  "fixes": []
+}

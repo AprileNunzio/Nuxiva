@@ -1,0 +1,19 @@
+{
+  "id": "ideas",
+  "name": "Idee di Nuxiva",
+  "icon": "✨",
+  "priority": 32,
+  "size": "s",
+  "intents": [
+    "nuxiva_ideas"
+  ],
+  "description": "Le idee che Nuxiva propone da sola, da accettare o rifiutare con un tocco.",
+  "ttl": 60,
+  "tone": "amber",
+  "category": "info",
+  "chrome": false,
+  "simple": {
+    "icon": "brain",
+    "mode": "open"
+  }
+}
