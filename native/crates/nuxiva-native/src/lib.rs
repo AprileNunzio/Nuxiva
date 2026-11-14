@@ -27,6 +27,7 @@ mod dialogue;
 mod display;
 mod dossier;
 mod duplex;
+mod duplex_stream;
 mod ear;
 mod ear_array;
 mod ear_music;
@@ -283,6 +284,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     reflect::register(m)?;
     initiative::register(m)?;
     duplex::register(m)?;
+    duplex_stream::register(m)?;
     m.add_function(wrap_pyfunction!(mastery::mastery_evaluate, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_verify, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_insights, m)?)?;

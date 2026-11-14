@@ -24,6 +24,13 @@ pub enum Control {
         seq: u32,
         text: String,
     },
+    Chunk {
+        #[serde(rename = "gen")]
+        epoch: u32,
+        seq: u32,
+        rate_hz: u32,
+        frames: u32,
+    },
     Cut {
         #[serde(rename = "gen")]
         epoch: u32,

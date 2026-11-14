@@ -130,6 +130,31 @@ class GateTest(unittest.TestCase):
         self.run_service(service, 10)
         self.assertTrue(service.nuxiva_speaking)
 
+    def test_alternating_enrolled_people_never_cut(self):
+        class Alternating(FakePrints):
+            calls = 0
+
+            def verdict(self, probe):
+                Alternating.calls += 1
+                return {"slug": "anna" if Alternating.calls % 2 else "luca", "score": 0.85}
+
+            def scores(self, probe):
+                return {"anna": 0.85, "luca": 0.85}
+
+        service = FakeService(Alternating())
+        self.run_service(service, 40)
+        self.assertTrue(service.nuxiva_speaking)
+
+    def test_a_radio_burst_quarantines_the_owner_voice(self):
+        service = FakeService(FakePrints())
+        service.programme = True
+        self.run_service(service, 1)
+        service.programme = False
+        self.run_service(service, 3)
+        self.assertTrue(service.nuxiva_speaking)
+        self.run_service(service, 12)
+        self.assertFalse(service.nuxiva_speaking)
+
     @unittest.skipUnless(NATIVE, "modulo nativo non installato")
     def test_native_and_fallback_judge_the_same_windows(self):
         cases = [

@@ -82,6 +82,24 @@
     }
 
     let pendingAudio = null;
+    const scheduled = new Set();
+    let nextTime = 0;
+
+    function silence() {
+      const live = Array.from(scheduled);
+      scheduled.clear();
+      nextTime = 0;
+      if (!live.length || !ctx) return;
+      const t = ctx.currentTime;
+      gain.gain.cancelScheduledValues(t);
+      gain.gain.setValueAtTime(gain.gain.value, t);
+      gain.gain.linearRampToValueAtTime(0, t + 0.03);
+      setTimeout(() => {
+        live.forEach((node) => { try { node.stop(); } catch (e) {} });
+        gain.gain.cancelScheduledValues(ctx.currentTime);
+        gain.gain.setValueAtTime(volume, ctx.currentTime);
+      }, 35);
+    }
 
     function beginAudio() {
       stop();
@@ -143,11 +161,15 @@
       if (pendingAudio) pendingAudio.abort();
       pendingAudio = null;
       try { source && source.stop(); } catch (e) {}
+      silence();
       quiet();
     }
 
+    let pcmPending = 0;
+
     function serverStream() {
       const { gen, signal } = beginAudio();
+      pcmPending = 0;
       ensure();
       active = true;
       if (D.avatar && D.avatar.face) D.avatar.face.realAudio = true;
@@ -163,8 +185,31 @@
             if (onDone && gen === generation) onDone();
           }).catch((err) => { if (!signal.aborted) console.warn("Blocco audio non riprodotto:", err); });
         },
+        addPcm(bytes, rate, onDone) {
+          if (gen !== generation || !bytes || bytes.byteLength < 2 || bytes.byteLength % 2) return;
+          const samples = new Int16Array(bytes.buffer, bytes.byteOffset, bytes.byteLength >> 1);
+          const buffer = ctx.createBuffer(1, samples.length, rate);
+          const channel = buffer.getChannelData(0);
+          for (let i = 0; i < samples.length; i++) channel[i] = samples[i] / 32768;
+          const node = ctx.createBufferSource();
+          node.buffer = buffer;
+          node.connect(analyser);
+          const at = Math.max(nextTime, ctx.currentTime + 0.02);
+          nextTime = at + buffer.duration;
+          scheduled.add(node);
+          pcmPending++;
+          node.onended = () => {
+            scheduled.delete(node);
+            pcmPending--;
+            if (onDone && gen === generation) onDone();
+          };
+          node.start(at);
+        },
         async close() {
-          try { await chain; } finally { if (gen === generation) quiet(); }
+          try {
+            await chain;
+            while (pcmPending > 0 && gen === generation) await new Promise((r) => setTimeout(r, 20));
+          } finally { if (gen === generation) quiet(); }
         },
       };
     }

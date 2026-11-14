@@ -7,6 +7,7 @@ import time
 
 from agenti.chat import interrupt
 from agenti.ear import duplex, speech_stream
+from agenti.voices import pcm_stream
 
 log = logging.getLogger("nuxiva.voice.duplex")
 
@@ -15,6 +16,8 @@ MAX_SAY = 4000
 MAX_SESSIONS = 16
 MAX_PENDING_FRAMES = 4
 HEADER = struct.Struct(">II")
+PUMP_SECONDS = 0.01
+DRAIN_LIMIT_SECONDS = 30.0
 _sessions: dict[str, "VoiceSession"] = {}
 
 
@@ -60,6 +63,9 @@ class VoiceSession:
         self.counts = {"replies": 0, "chunks": 0, "cuts": 0, "stale": 0}
         self.began_ms = 0
         self.first_noted = False
+        self.pcm = False
+        self.pacer = None
+        self.pump: asyncio.Task | None = None
 
     def _state(self) -> str:
         return json.loads(self.engine.snapshot())["state"]
@@ -80,6 +86,9 @@ class VoiceSession:
         self.counts["replies"] += 1
         self.began_ms, self.first_noted = self._clock(), False
         self.task = asyncio.create_task(self._run(self.epoch, flag, self.feed))
+        if self.pcm:
+            self.pacer = self.pacer or pcm_stream.build()
+            self.pump = asyncio.create_task(self._pump(self.epoch))
         await self._send_json({"type": "reply_start", "gen": self.epoch})
         return self.feed
 
@@ -91,8 +100,18 @@ class VoiceSession:
         seq = self.engine.next_seq(epoch)
         self.chunks[seq] = chunk
         self.counts["chunks"] += 1
-        await self._send_json({"type": "chunk", "gen": epoch, "seq": seq, "text": chunk})
-        await self._send_bytes(HEADER.pack(epoch, seq) + wav)
+        if self.pcm:
+            try:
+                rate, frames, ms = self.pacer.push_wav(epoch, seq, wav)
+            except ValueError as exc:
+                log.warning("Blocco audio scartato: %s", exc)
+                self.chunks.pop(seq, None)
+                self.counts["chunks"] -= 1
+                return
+            await self._send_json({"type": "chunk", "gen": epoch, "seq": seq, "text": chunk, "pcm": True, "rate": rate, "frames": frames, "ms": ms})
+        else:
+            await self._send_json({"type": "chunk", "gen": epoch, "seq": seq, "text": chunk})
+            await self._send_bytes(HEADER.pack(epoch, seq) + wav)
         if not self.first_noted:
             self.first_noted = True
             self._note_first_audio()
@@ -101,6 +120,20 @@ class VoiceSession:
         from agenti.collaudo.emit import emit
 
         emit("probe", "info", "voice_first_audio", src="duplex", outcome="ok", latency_ms=max(0, self._clock() - self.began_ms))
+
+    async def _pump(self, epoch: int) -> None:
+        pacer = self.pacer
+        while epoch == self.epoch and self.engine.is_live(epoch):
+            for frame in pacer.poll(self._clock(), epoch):
+                if epoch != self.epoch or not self.engine.is_live(epoch):
+                    return
+                await self._send_bytes(frame)
+            await asyncio.sleep(PUMP_SECONDS)
+
+    async def _drain(self, flag) -> None:
+        deadline = self._clock() + int(DRAIN_LIMIT_SECONDS * 1000)
+        while not flag.is_cancelled() and self._clock() < deadline and (self.pacer.queued() or self.pacer.in_flight_ms(self._clock())):
+            await asyncio.sleep(PUMP_SECONDS)
 
     async def _run(self, epoch: int, flag, feed: TokenFeed) -> None:
         async def tokens():
@@ -116,6 +149,8 @@ class VoiceSession:
 
         try:
             await speech_stream.stream_reply(tokens(), speak, flag)
+            if self.pcm and self.pacer is not None:
+                await self._drain(flag)
             if not flag.is_cancelled() and self.engine.is_live(epoch):
                 self.engine.finish(epoch, self._clock())
                 await self._send_json({"type": "reply_end", "gen": epoch})
@@ -135,6 +170,7 @@ class VoiceSession:
         if self.task is None or self._state() != "speaking":
             return None
         report = json.loads(self.engine.cut(0, self._clock()))
+        dropped = self.pacer.cancel() if self.pacer is not None else (0, 0)
         self.counts["cuts"] += 1
         spoken = " ".join(self.chunks[s] for s in sorted(self.played))
         unheard = [self.chunks[s] for s in sorted(self.chunks) if s not in self.played]
@@ -143,12 +179,17 @@ class VoiceSession:
             rest = rest.replace(self.chunks[seq], "", 1)
         interrupt.remember(self.device, spoken, " ".join([*unheard, rest.strip()]).strip())
         await self.stop()
-        await self._send_json({"type": "cut", "gen": report["gen"]})
+        await self._send_json({"type": "cut", "gen": report["gen"], "dropped_ms": dropped[1]})
         return report
 
     async def stop(self) -> None:
-        feed, task = self.feed, self.task
-        self.feed = self.task = None
+        feed, task, pump = self.feed, self.task, self.pump
+        self.feed = self.task = self.pump = None
+        if self.pacer is not None:
+            self.pacer.cancel()
+        if pump is not None and not pump.done():
+            pump.cancel()
+            await asyncio.gather(pump, return_exceptions=True)
         if feed is not None:
             feed.close()
         if task is not None and not task.done():
@@ -163,7 +204,9 @@ class VoiceSession:
         except ValueError:
             return
         kind = doc.get("type") if isinstance(doc, dict) else None
-        if kind == "say":
+        if kind == "hello":
+            self.pcm = doc.get("pcm") is True and doc.get("version", 1) == 1
+        elif kind == "say":
             text = str(doc.get("text") or "")[:MAX_SAY]
             if text.strip():
                 feed = await self.begin()

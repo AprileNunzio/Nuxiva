@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Voce in streaming a piccoli frame e interruzione a voce più sicura",
+    "en": "Streaming voice in small frames and safer voice interruption",
+    "fr": "Voix en streaming par petites trames et interruption vocale plus sûre",
+    "es": "Voz en streaming en tramas pequeñas e interrupción por voz más segura"
+  },
+  "features": [
+    {
+      "it": "La voce di Nuxiva arriva in piccoli frame audio: quando la interrompi si ferma subito, senza finire la frase già pronta.",
+      "en": "Nuxiva's voice arrives in small audio frames: when you interrupt it, it stops at once instead of finishing the sentence already prepared.",
+      "fr": "La voix de Nuxiva arrive en petites trames audio : quand vous l'interrompez, elle s'arrête aussitôt sans finir la phrase déjà prête.",
+      "es": "La voz de Nuxiva llega en pequeñas tramas de audio: al interrumpirla se detiene al instante sin terminar la frase ya preparada."
+    },
+    {
+      "it": "Nuxiva aspetta di aver finito di parlare davvero prima di considerare conclusa la risposta, così puoi interromperla fino all'ultima parola.",
+      "en": "Nuxiva waits until it has really finished speaking before considering the reply over, so you can interrupt it up to the last word.",
+      "fr": "Nuxiva attend d'avoir vraiment fini de parler avant de considérer la réponse terminée, vous pouvez donc l'interrompre jusqu'au dernier mot.",
+      "es": "Nuxiva espera a haber terminado de hablar de verdad antes de dar por concluida la respuesta, así puedes interrumpirla hasta la última palabra."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "L'interruzione a voce ora richiede che la stessa persona riconosciuta parli per più finestre di fila: un'altra voce, una radio o la musica non interrompono più Nuxiva e non vengono attribuite a te.",
+      "en": "Voice interruption now requires the same recognised person to speak for several windows in a row: another voice, a radio or music no longer interrupts Nuxiva and is never attributed to you.",
+      "fr": "L'interruption vocale exige désormais que la même personne reconnue parle sur plusieurs fenêtres d'affilée : une autre voix, une radio ou de la musique n'interrompent plus Nuxiva et ne vous sont jamais attribuées.",
+      "es": "La interrupción por voz exige ahora que la misma persona reconocida hable durante varias ventanas seguidas: otra voz, una radio o música ya no interrumpen a Nuxiva y nunca se te atribuyen."
+    }
+  ]
+}
