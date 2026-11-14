@@ -1,4 +1,5 @@
 pub mod report;
+pub mod screenshot;
 pub mod service;
 
 use std::time::{Duration, Instant};
@@ -68,6 +69,7 @@ pub struct Runner {
     probed: Instant,
     adapted: bool,
     host_full: bool,
+    screenshot_env: Option<std::path::PathBuf>,
 }
 
 impl Runner {
@@ -84,12 +86,19 @@ impl Runner {
             probed: Instant::now(),
             adapted: false,
             host_full: false,
+            screenshot_env: None,
         }
     }
 
     #[must_use]
     pub fn with_host_full(mut self, host_full: bool) -> Self {
         self.host_full = host_full;
+        self
+    }
+
+    #[must_use]
+    pub fn with_screenshot_env(mut self, path: std::path::PathBuf) -> Self {
+        self.screenshot_env = Some(path);
         self
     }
 
@@ -150,6 +159,11 @@ impl Runner {
     }
 
     fn apply(&mut self, reply: &Value) -> Option<Exit> {
+        if let Some(path) = &self.screenshot_env {
+            if screenshot::sync(reply, path) {
+                log("screenshot_settings_updated");
+            }
+        }
         for command in parse_commands(reply) {
             match command {
                 Command::Adapt => {

@@ -29,8 +29,11 @@ from connection import declare
 from connection.devicekey import DeviceKey
 from connection.heartbeat import Heartbeat
 from connection.inbox import Inbox
+from i18n.strings import t
 from permissions.gate import Gate
 from permissions.policy import Policy
+from screenshot.hotkey import PrintScreenHotkey
+from screenshot.service import Service as Screenshots
 from senses import places
 from senses.windows import Focus
 from settings import agent_name, autostart, paths, protect, shortcuts, store
@@ -74,6 +77,8 @@ class Assistant:
         self.inbox = Inbox(self.client, lambda actions: self.ui.dispatch.post(self._actions, actions))
         self.backup = BackupScheduler(cfg, self.snapshots, lambda text: self.ui.dispatch.post(self.ui.note, text))
         self.updater = Updater(lambda text: self.ui.dispatch.post(self.ui.note, text), self.quit)
+        self.screenshots = Screenshots(paths.DATA_DIR / "screenshot-spool", lambda text: self.ui.dispatch.post(self.ui.note, text), t,
+                                       hotkey_factory=PrintScreenHotkey)
         self.hotkeys: list = []
         if self.policy.tampered:
             self.ui.alert("⚠ Il file dei permessi era stato modificato fuori da NUXIVA: ho ripristinato i valori sicuri.")
@@ -104,6 +109,8 @@ class Assistant:
                 "compute": {"ollama": {**self.ollama.read(), "shared": self.compute.sharing()}}}
 
     def _on_reply(self, reply: dict) -> None:
+        if isinstance(reply.get("settings"), dict):
+            self.screenshots.apply(reply["settings"])
         self._agent_named(agent_name.clean(reply.get("assistant_name")))
         for command in reply.get("commands") or []:
             if command == "identify":
@@ -185,6 +192,7 @@ class Assistant:
             self.compute.start()
         self.backup.start()
         self.updater.start()
+        self.screenshots.start()
         self._bind_hotkeys()
         self.ui.run()
 
@@ -209,5 +217,6 @@ class Assistant:
         self.compute.stop()
         self.backup.stop()
         self.updater.stop()
+        self.screenshots.stop()
         self.ui.quit()
         os._exit(0)

@@ -93,6 +93,7 @@ Matplotlib (PSF-based), PyYAML (MIT), SQLAlchemy (MIT), sherpa-onnx (Apache-2.0)
 PyO3, tokio, serde, serde_json, socket2 and landlock (MIT or Apache-2.0); whatlang by Sergey Potapov (MIT) for language
 detection; unicode-ident (MIT or Apache-2.0, and Unicode-3.0). The cognitive core (`cortex-core`) adds aes-gcm, ed25519-dalek,
 getrandom, hkdf, sha2, unicode-normalization and zeroize (MIT or Apache-2.0).
+The Print Screen service (`nuxiva-screenshot`) adds png (MIT or Apache-2.0) for masking and encoding screenshots.
 `cargo metadata` lists every crate with its license.
 
 ### Optional local models for the hippocampus router

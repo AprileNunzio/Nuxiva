@@ -19,6 +19,9 @@ AGENCY_UNIT_DST=/etc/systemd/system/nuxiva-agency.service
 DISPLAY_BIN="$NATIVE_HOME/bin/nuxiva-display"
 DISPLAY_UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-display.service"
 DISPLAY_UNIT_DST=/etc/systemd/system/nuxiva-display.service
+SHOT_BIN="$NATIVE_HOME/bin/nuxiva-screenshot"
+SHOT_UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-screenshot.service"
+SHOT_UNIT_DST=/etc/systemd/system/nuxiva-screenshot.service
 BUILD_STATE="$NUXIVA_STATE/native/build.json"
 WHEEL_STATE="$NUXIVA_STATE/native/wheel.json"
 BUILD_STAGE="wheel"
@@ -45,8 +48,8 @@ step_check() {
         return
     fi
     [ -x "$VENV/bin/python" ] || return 0
-    native_loaded && [ -x "$EGRESS_BIN" ] && [ -x "$NETGUARD_BIN" ] && [ -x "$BENCH_BIN" ] && [ -x "$AGENCY_BIN" ] && [ -x "$DISPLAY_BIN" ] \
-        && cmp -s "$AGENCY_UNIT_SRC" "$AGENCY_UNIT_DST" && cmp -s "$DISPLAY_UNIT_SRC" "$DISPLAY_UNIT_DST" && [ -n "$(src_hash)" ] && [ "$(cat "$STAMP" 2>/dev/null)" = "$(src_hash)" ]
+    native_loaded && [ -x "$EGRESS_BIN" ] && [ -x "$NETGUARD_BIN" ] && [ -x "$BENCH_BIN" ] && [ -x "$AGENCY_BIN" ] && [ -x "$DISPLAY_BIN" ] && [ -x "$SHOT_BIN" ] \
+        && cmp -s "$AGENCY_UNIT_SRC" "$AGENCY_UNIT_DST" && cmp -s "$DISPLAY_UNIT_SRC" "$DISPLAY_UNIT_DST" && cmp -s "$SHOT_UNIT_SRC" "$SHOT_UNIT_DST" && [ -n "$(src_hash)" ] && [ "$(cat "$STAMP" 2>/dev/null)" = "$(src_hash)" ]
 }
 
 agency_env() {
@@ -135,7 +138,8 @@ step_apply() {
         [ -x "$EAR_VENV/bin/pip" ] && "$EAR_VENV/bin/pip" uninstall -y -q nuxiva-native >/dev/null 2>&1 || true
         systemctl disable --now nuxiva-agency >/dev/null 2>&1 || true
         systemctl disable --now nuxiva-display >/dev/null 2>&1 || true
-        rm -f "$STAMP" "$WHEEL_STATE" "$EGRESS_BIN" "$NETGUARD_BIN" "$BENCH_BIN" "$AGENCY_BIN" "$AGENCY_UNIT_DST" "$DISPLAY_BIN" "$DISPLAY_UNIT_DST"
+        systemctl disable --now nuxiva-screenshot >/dev/null 2>&1 || true
+        rm -f "$STAMP" "$WHEEL_STATE" "$EGRESS_BIN" "$NETGUARD_BIN" "$BENCH_BIN" "$AGENCY_BIN" "$AGENCY_UNIT_DST" "$DISPLAY_BIN" "$DISPLAY_UNIT_DST" "$SHOT_BIN" "$SHOT_UNIT_DST"
         progress 100 "Core nativo disattivato"
         return 0
     fi
@@ -212,6 +216,18 @@ step_apply() {
     systemctl daemon-reload
     systemctl enable nuxiva-display >/dev/null 2>&1 || true
     systemctl restart nuxiva-display || fail "Avvio del gestore dei widget non riuscito"
+
+    BUILD_STAGE=screenshot
+    (
+        cd "$NATIVE_SRC"
+        cargo_stream "Compilazione del servizio screenshot con il tasto Stamp" 85 85 nuxiva-screenshot cargo build --profile "$BUILD_PROFILE" --locked -p nuxiva-screenshot
+    ) || fail "Compilazione del servizio screenshot non riuscita"
+    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/$BUILD_PROFILE/nuxiva-screenshot" "$SHOT_BIN.new"
+    mv -f "$SHOT_BIN.new" "$SHOT_BIN"
+    install -m 0644 -o root -g root "$SHOT_UNIT_SRC" "$SHOT_UNIT_DST"
+    systemctl daemon-reload
+    systemctl enable nuxiva-screenshot >/dev/null 2>&1 || true
+    systemctl restart nuxiva-screenshot || fail "Avvio del servizio screenshot non riuscito"
 
     src_hash > "$STAMP"
     build_state ready done

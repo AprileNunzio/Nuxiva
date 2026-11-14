@@ -5,7 +5,17 @@
     "Statut du serveur principal et de ses sous-systèmes",
     "Appairage de nœuds avec code à usage unique et jeton personnel",
     "En ligne, dernier contact et ressources de chaque nœud",
-    "Nom, chambre, commandes à distance et révocation"
+    "Nom, chambre, commandes à distance et révocation",
+    "Captures d'écran avec la touche Impr écran enregistrées dans le dossier partagé, en file d'attente sans réseau"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_SCREENSHOT": "Capture d'écran avec la touche Impr écran, enregistrée dans le dossier partagé (seule cette touche est lue)",
+    "NUXIVA_SCREENSHOT_TARGET": "Destination : dossier monté (ex. /mnt/nuxiva) ou smb://adresse/partage (vide = partage du serveur)",
+    "NUXIVA_SCREENSHOT_SUBDIR": "Sous-dossier du partage (jusqu'à 4 niveaux)",
+    "NUXIVA_SCREENSHOT_MASK": "Zones masquées en millièmes d'écran : x,y,largeur,hauteur séparées par des points-virgules",
+    "NUXIVA_SCREENSHOT_RETENTION_DAYS": "Conserver les captures N jours (∞ = ne jamais supprimer selon l'âge)",
+    "NUXIVA_SCREENSHOT_BLOCK_LOCKED": "Ne pas capturer lorsque l'écran est verrouillé",
+    "NUXIVA_SCREENSHOT_BLOCK_GUESTS": "Ne pas capturer en présence d'invités",
+    "NUXIVA_SCREENSHOT_NOTICE": "Afficher une notification à chaque capture"
+  }
 }

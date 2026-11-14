@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Screenshot con il tasto Stamp nella cartella condivisa",
+    "en": "Print Screen screenshots to the shared folder",
+    "fr": "Captures d'écran avec Impr écran dans le dossier partagé",
+    "es": "Capturas con Impr Pant en la carpeta compartida"
+  },
+  "features": [
+    {
+      "it": "Premendo il tasto Stamp su un server o nodo, Nuxiva cattura tutti gli schermi e salva l'immagine nella cartella condivisa (05 Scambio/Screenshot) con nome host, data e ora, pronta da scaricare.",
+      "en": "Pressing Print Screen on a server or node makes Nuxiva capture every screen and save the image to the shared folder (05 Scambio/Screenshot) named with host, date and time, ready to download.",
+      "fr": "En appuyant sur Impr écran sur un serveur ou un nœud, Nuxiva capture tous les écrans et enregistre l'image dans le dossier partagé (05 Scambio/Screenshot) avec hôte, date et heure.",
+      "es": "Al pulsar Impr Pant en un servidor o nodo, Nuxiva captura todas las pantallas y guarda la imagen en la carpeta compartida (05 Scambio/Screenshot) con host, fecha y hora."
+    },
+    {
+      "it": "Si legge solo quel tasto, mai la tastiera in generale. Da Nodi e server si attiva per nodo e si scelgono destinazione, aree oscurate, conservazione, blocco con schermo bloccato o ospiti e notifica a ogni cattura.",
+      "en": "Only that key is read, never the keyboard in general. From Nodes & Servers you turn it on per node and choose destination, masked areas, retention, blocking when locked or with guests, and a notification on every capture.",
+      "fr": "Seule cette touche est lue, jamais le clavier en général. Dans Nœuds et serveurs, on l'active par nœud et on choisit destination, zones masquées, conservation, blocage si verrouillé ou invités, et notification à chaque capture.",
+      "es": "Solo se lee esa tecla, nunca el teclado en general. En Nodos y servidores se activa por nodo y se eligen destino, zonas ocultas, conservación, bloqueo con pantalla bloqueada o invitados y notificación en cada captura."
+    },
+    {
+      "it": "Se la condivisione non è raggiungibile le immagini restano in coda protetta e vengono inviate appena possibile, con tentativi sempre più distanziati. Disponibile anche sull'app Windows.",
+      "en": "If the share is unreachable the images stay in a protected queue and are sent as soon as possible, with increasingly spaced retries. Also available on the Windows app.",
+      "fr": "Si le partage est injoignable, les images restent dans une file protégée et sont envoyées dès que possible, avec des tentatives de plus en plus espacées. Aussi disponible sur l'application Windows.",
+      "es": "Si el recurso compartido no está disponible, las imágenes quedan en una cola protegida y se envían en cuanto sea posible, con reintentos cada vez más espaciados. También en la aplicación de Windows."
+    }
+  ],
+  "fixes": []
+}

@@ -11,7 +11,8 @@
     "Stato del server principale e dei suoi sottosistemi",
     "Abbinamento dei nodi con codice monouso e token personale",
     "Online, ultimo contatto e risorse di ogni nodo",
-    "Nome, stanza, comandi remoti e revoca"
+    "Nome, stanza, comandi remoti e revoca",
+    "Screenshot con il tasto Stamp salvato nella cartella condivisa, con coda se la rete non c'è"
   ],
   "icon3d": "./icon.png",
   "icon3dSource": {
@@ -19,5 +20,117 @@
     "technique": "3d",
     "id": "76XpK7qojvu8",
     "url": "https://img.icons8.com/?size=240&id=76XpK7qojvu8&format=png"
-  }
+  },
+  "settings": [
+    {
+      "key": "NUXIVA_SCREENSHOT",
+      "label": "Screenshot con il tasto Stamp, salvato nella cartella condivisa (solo quel tasto viene letto)",
+      "type": "select",
+      "default": "0",
+      "options": [
+        {
+          "value": "1",
+          "label": "Attivo"
+        },
+        {
+          "value": "0",
+          "label": "Spento"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_SCREENSHOT_TARGET",
+      "label": "Destinazione: cartella montata (es. /mnt/nuxiva) o smb://indirizzo/condivisa (vuoto = condivisione del server)",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "key": "NUXIVA_SCREENSHOT_SUBDIR",
+      "label": "Sottocartella della condivisione (fino a 4 livelli)",
+      "type": "text",
+      "default": "05 Scambio/Screenshot"
+    },
+    {
+      "key": "NUXIVA_SCREENSHOT_MASK",
+      "label": "Aree oscurate in millesimi di schermo: x,y,larghezza,altezza separate da punto e virgola",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "key": "NUXIVA_SCREENSHOT_RETENTION_DAYS",
+      "label": "Conserva gli screenshot per N giorni (∞ = non cancellare per età)",
+      "type": "select",
+      "default": "30",
+      "options": [
+        {
+          "value": "7",
+          "label": "7"
+        },
+        {
+          "value": "30",
+          "label": "30"
+        },
+        {
+          "value": "90",
+          "label": "90"
+        },
+        {
+          "value": "365",
+          "label": "365"
+        },
+        {
+          "value": "0",
+          "label": "∞"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_SCREENSHOT_BLOCK_LOCKED",
+      "label": "Non catturare con lo schermo bloccato",
+      "type": "select",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_SCREENSHOT_BLOCK_GUESTS",
+      "label": "Non catturare quando ci sono ospiti presenti",
+      "type": "select",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_SCREENSHOT_NOTICE",
+      "label": "Mostra una notifica a ogni cattura",
+      "type": "select",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    }
+  ]
 }

@@ -123,3 +123,31 @@ fn systemd_unit_is_hardened_and_rejects_injection() -> Result<(), String> {
     assert!(unit(Path::new("/bin/x y"), "Salotto", "satellite", "", &[]).is_err());
     Ok(())
 }
+
+#[test]
+fn screenshot_settings_are_filtered_and_written_only_on_change() -> Result<(), String> {
+    use crate::agent::screenshot::{render, sync};
+    let reply = json!({"settings": {
+        "NUXIVA_SCREENSHOT": "1",
+        "NUXIVA_SCREENSHOT_TARGET": "smb://nas.local/condivisa",
+        "NUXIVA_SCREENSHOT_SUBDIR": "a\nNUXIVA_SMB_PASSWORD=x",
+        "NUXIVA_SMB_PASSWORD": "secret",
+        "NUXIVA_UI_LANG": "en"
+    }});
+    let text = render(&reply).ok_or("no render")?;
+    assert!(text.contains("NUXIVA_SCREENSHOT=1\n"));
+    assert!(text.contains("NUXIVA_UI_LANG=en\n"));
+    assert!(!text.contains("SMB_PASSWORD"));
+    assert!(!text.contains("SUBDIR"));
+    assert!(render(&json!({"settings": {"OTHER": "1"}})).is_none());
+    assert!(render(&json!({})).is_none());
+    let fx = Fixture::new("shot")?;
+    let path = fx.path().join("screenshot.env");
+    assert!(sync(&reply, &path));
+    assert!(!sync(&reply, &path));
+    assert_eq!(
+        std::fs::read_to_string(&path).map_err(|e| e.to_string())?,
+        text
+    );
+    Ok(())
+}

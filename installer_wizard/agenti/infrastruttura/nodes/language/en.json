@@ -4,9 +4,18 @@
   "capabilities": [
     "P2P node discovery and heartbeat",
     "Distributed state event replication",
-    "Offloaded sub-agent task routing"
+    "Offloaded sub-agent task routing",
+    "Print Screen key screenshots saved to the shared folder, queued when the network is down"
   ],
   "settings": {
-    "NUXIVA_MESH_PORT": "Mesh communication port"
+    "NUXIVA_MESH_PORT": "Mesh communication port",
+    "NUXIVA_SCREENSHOT": "Screenshot with the Print Screen key, saved to the shared folder (only that key is read)",
+    "NUXIVA_SCREENSHOT_TARGET": "Destination: mounted folder (e.g. /mnt/nuxiva) or smb://address/share (empty = the server's share)",
+    "NUXIVA_SCREENSHOT_SUBDIR": "Subfolder of the share (up to 4 levels)",
+    "NUXIVA_SCREENSHOT_MASK": "Masked areas in thousandths of the screen: x,y,width,height separated by semicolons",
+    "NUXIVA_SCREENSHOT_RETENTION_DAYS": "Keep screenshots for N days (∞ = never delete by age)",
+    "NUXIVA_SCREENSHOT_BLOCK_LOCKED": "Do not capture while the screen is locked",
+    "NUXIVA_SCREENSHOT_BLOCK_GUESTS": "Do not capture while guests are present",
+    "NUXIVA_SCREENSHOT_NOTICE": "Show a notification on every capture"
   }
 }

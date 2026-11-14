@@ -195,7 +195,9 @@ fn run(args: &Args) -> Result<(), String> {
     let identity = vault.load().map_err(|e| e.to_string())?;
     let link = Link::open(&identity, Duration::from_secs(30)).map_err(|e| e.to_string())?;
     let host_full = env("NUXIVA_HOST_FULL").as_deref() == Some("1");
-    let mut runner = Runner::new(root, descriptors(), library_dirs()).with_host_full(host_full);
+    let mut runner = Runner::new(root, descriptors(), library_dirs())
+        .with_host_full(host_full)
+        .with_screenshot_env(state_dir().join("screenshot.env"));
     match runner.run(&link).map_err(|e| e.to_string())? {
         Exit::Restart => Ok(()),
         Exit::Revoked => {

@@ -63,5 +63,9 @@
   "mode.host": "Proposer ce PC comme second serveur",
   "mode.host_hint": "Avec l'appairage signé, ce PC annonce calcul, agents et modèles locaux au serveur. Il reste désactivé si tu ne l'actives pas ou si tu utilises Ce PC seulement.",
   "startup.assets_missing": "Fichiers d'interface manquants dans l'installation : {files}. Réinstallez Nuxiva avec le dernier programme d'installation.",
-  "startup.toolkit_failed": "Impossible de démarrer l'interface graphique : {reason}. Réinstallez Nuxiva avec le dernier programme d'installation."
+  "startup.toolkit_failed": "Impossible de démarrer l'interface graphique : {reason}. Réinstallez Nuxiva avec le dernier programme d'installation.",
+  "screenshot.saved": "Capture enregistrée dans le dossier partagé",
+  "screenshot.queued": "Partage injoignable : nouvelle tentative",
+  "screenshot.blocked": "Capture non effectuée : bloquée par la confidentialité",
+  "screenshot.failed": "Échec de la capture d'écran"
 }

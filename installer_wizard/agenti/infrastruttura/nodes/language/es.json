@@ -5,7 +5,17 @@
     "Estado del servidor principal y de sus subsistemas",
     "Emparejamiento de los nodos con código de un solo uso y token personal",
     "En línea, último contacto y recursos de cada nodo",
-    "Nombre, habitación, comandos remotos y revocación"
+    "Nombre, habitación, comandos remotos y revocación",
+    "Capturas con la tecla Impr Pant guardadas en la carpeta compartida, en cola si no hay red"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_SCREENSHOT": "Captura de pantalla con la tecla Impr Pant, guardada en la carpeta compartida (solo se lee esa tecla)",
+    "NUXIVA_SCREENSHOT_TARGET": "Destino: carpeta montada (p. ej. /mnt/nuxiva) o smb://dirección/recurso (vacío = recurso del servidor)",
+    "NUXIVA_SCREENSHOT_SUBDIR": "Subcarpeta del recurso compartido (hasta 4 niveles)",
+    "NUXIVA_SCREENSHOT_MASK": "Zonas ocultas en milésimas de pantalla: x,y,ancho,alto separadas por punto y coma",
+    "NUXIVA_SCREENSHOT_RETENTION_DAYS": "Conservar las capturas N días (∞ = no borrar por antigüedad)",
+    "NUXIVA_SCREENSHOT_BLOCK_LOCKED": "No capturar con la pantalla bloqueada",
+    "NUXIVA_SCREENSHOT_BLOCK_GUESTS": "No capturar con invitados presentes",
+    "NUXIVA_SCREENSHOT_NOTICE": "Mostrar una notificación en cada captura"
+  }
 }

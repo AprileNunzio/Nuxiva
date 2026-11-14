@@ -1,0 +1,25 @@
+[package]
+name = "nuxiva-screenshot"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "nuxiva_screenshot"
+path = "src/lib.rs"
+
+[[bin]]
+name = "nuxiva-screenshot"
+path = "src/main.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+png = "0.17"
+getrandom = "0.3"
+rustix = { version = "1", features = ["fs", "event", "process"] }

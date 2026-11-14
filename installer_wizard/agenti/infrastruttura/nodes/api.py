@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse
 from state import store
 from config import PUBLIC_PORT
 
-from agenti.nodes import compute_routes, deviceauth, enroll_routes, esp32_routes, server, trust_routes
+from agenti.nodes import compute_routes, deviceauth, enroll_routes, esp32_routes, screenshot, server, trust_routes
 from agenti.nodes.audit import audit
 from agenti.nodes.beacon import beacon
 from agenti.nodes.requests import requests
@@ -81,7 +81,8 @@ async def node_heartbeat(request: Request):
         store.event("INFO", f"Nodo online: {node['name']}", "nodes")
     return {"commands": commands, "actions": inbox.take(node["id"]), "heartbeat": 30, "agent": _agent_sha(),
             "assistant_name": _assistant_name(),
-            "settings": registry.effective(node["id"]), "custom": sorted(node.get("settings") or {})}
+            "settings": screenshot.with_default_target(registry.effective(node["id"]), request.url.hostname or ""),
+            "custom": sorted(node.get("settings") or {})}
 
 
 @public_routes.post("/api/nodes/inbox")

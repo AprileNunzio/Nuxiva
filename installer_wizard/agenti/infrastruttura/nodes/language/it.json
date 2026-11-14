@@ -5,7 +5,17 @@
     "Stato del server principale e dei suoi sottosistemi",
     "Abbinamento dei nodi con codice monouso e token personale",
     "Online, ultimo contatto e risorse di ogni nodo",
-    "Nome, stanza, comandi remoti e revoca"
+    "Nome, stanza, comandi remoti e revoca",
+    "Screenshot con il tasto Stamp salvato nella cartella condivisa, con coda se la rete non c'è"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_SCREENSHOT": "Screenshot con il tasto Stamp, salvato nella cartella condivisa (solo quel tasto viene letto)",
+    "NUXIVA_SCREENSHOT_TARGET": "Destinazione: cartella montata (es. /mnt/nuxiva) o smb://indirizzo/condivisa (vuoto = condivisione del server)",
+    "NUXIVA_SCREENSHOT_SUBDIR": "Sottocartella della condivisione (fino a 4 livelli)",
+    "NUXIVA_SCREENSHOT_MASK": "Aree oscurate in millesimi di schermo: x,y,larghezza,altezza separate da punto e virgola",
+    "NUXIVA_SCREENSHOT_RETENTION_DAYS": "Conserva gli screenshot per N giorni (∞ = non cancellare per età)",
+    "NUXIVA_SCREENSHOT_BLOCK_LOCKED": "Non catturare con lo schermo bloccato",
+    "NUXIVA_SCREENSHOT_BLOCK_GUESTS": "Non catturare quando ci sono ospiti presenti",
+    "NUXIVA_SCREENSHOT_NOTICE": "Mostra una notifica a ogni cattura"
+  }
 }
