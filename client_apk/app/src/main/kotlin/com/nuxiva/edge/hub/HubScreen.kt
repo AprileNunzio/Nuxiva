@@ -45,7 +45,7 @@ fun HubScreen(
     onClose: () -> Unit,
 ) {
     Box(Modifier.fillMaxSize().background(Color.Black)) {
-        view?.let { AndroidView(factory = { it }, modifier = Modifier.fillMaxSize()) }
+        view?.let { web -> AndroidView(factory = { _ -> web }, modifier = Modifier.fillMaxSize()) }
         if (ui !is HubUi.Showing) StatusLayer(ui, onReload, onClose)
         IconButton(onClick = { onMenu(true) }, modifier = Modifier.statusBarsPadding().align(Alignment.TopStart).alpha(MENU_ALPHA)) {
             Icon(Icons.Filled.Menu, contentDescription = stringResource(R.string.hub_menu_title), tint = Color.White)

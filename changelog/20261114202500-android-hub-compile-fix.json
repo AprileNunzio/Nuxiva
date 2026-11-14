@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "App Android: corretta la compilazione dell'hub a schermo intero",
+    "en": "Android app: fixed the build of the full-screen hub",
+    "fr": "Application Android : compilation du hub plein écran corrigée",
+    "es": "Aplicación Android: corregida la compilación del hub a pantalla completa"
+  },
+  "features": [
+    {
+      "it": "Nessuna novità visibile: questo aggiornamento rende di nuovo compilabile l'app Android con il nuovo hub.",
+      "en": "No visible news: this update makes the Android app with the new hub buildable again.",
+      "fr": "Aucune nouveauté visible : cette mise à jour rend de nouveau compilable l'application Android avec le nouveau hub.",
+      "es": "Ninguna novedad visible: esta actualización vuelve a hacer compilable la aplicación Android con el nuevo hub."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto un errore di compilazione nella schermata dell'hub che impediva di produrre il nuovo Nuxiva.apk.",
+      "en": "Fixed a build error in the hub screen that prevented producing the new Nuxiva.apk.",
+      "fr": "Correction d'une erreur de compilation dans l'écran du hub qui empêchait de produire le nouveau Nuxiva.apk.",
+      "es": "Corregido un error de compilación en la pantalla del hub que impedía generar el nuevo Nuxiva.apk."
+    }
+  ]
+}
