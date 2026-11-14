@@ -3,15 +3,14 @@ use std::process::ExitCode;
 use std::sync::Arc;
 
 use core_brain::{
-    BrainError, BrainResult, Dispatcher, Gatekeeper, HotMemory, OnnxEmbedder, Outcome,
-    SPEAKER_MODEL, SensoryPipeline, SharedPipeline, Supervisor, SupervisorConfig, route,
+    BrainError, BrainResult, Dispatcher, EarEndpoint, Event, Gatekeeper, HotMemory, OnnxEmbedder,
+    Outcome, Paths, SPEAKER_MODEL, SensoryPipeline, SharedPipeline, Supervisor, SupervisorConfig,
+    build_hub, load_agents, route, run_ear,
 };
-use nuxiva_agent_core::ceo::Index;
 use nuxiva_context_core::{ContextSettings, Sealer, SharedContext};
 use nuxiva_ear_core::VoicePolicy;
-use nuxiva_mcp_core::{Hub, MemorySink, PolicyConfig, Settings as McpSettings, SharedSecrets};
-use nuxiva_swarm_core::{Catalog, Settings as SwarmSettings};
-use tokio::sync::mpsc;
+use nuxiva_swarm_core::Settings as SwarmSettings;
+use tokio::sync::{mpsc, watch};
 
 fn model_dir() -> PathBuf {
     std::env::var_os("NUXIVA_MODEL_DIR")
@@ -32,11 +31,26 @@ fn wake_names() -> Vec<String> {
         .unwrap_or_else(|| vec!["nuxiva".to_owned()])
 }
 
-async fn assemble() -> BrainResult<(
-    Supervisor,
-    mpsc::Receiver<core_brain::Event>,
-    Arc<Dispatcher>,
-)> {
+fn env_path(name: &str) -> Option<PathBuf> {
+    std::env::var_os(name).map(PathBuf::from)
+}
+
+fn ear_endpoint() -> BrainResult<EarEndpoint> {
+    let port = std::env::var("NUXIVA_EAR_PORT")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(8093);
+    EarEndpoint::loopback("127.0.0.1", port)
+}
+
+struct Assembled {
+    supervisor: Supervisor,
+    events: mpsc::Receiver<Event>,
+    dispatcher: Arc<Dispatcher>,
+    endpoint: EarEndpoint,
+}
+
+async fn assemble() -> BrainResult<Assembled> {
     let sealer = Sealer::random()?;
     let memory = HotMemory::new(SharedContext::new(ContextSettings::default(), sealer)?);
     let data = SPEAKER_MODEL.fetch(&model_dir()).await?;
@@ -49,38 +63,46 @@ async fn assemble() -> BrainResult<(
         Gatekeeper::new(wake_names()),
         VoicePolicy::default(),
     ));
+    let paths = Paths {
+        agents: env_path("NUXIVA_AGENTS_DIR").ok_or(BrainError::Input("agents_dir"))?,
+        catalog: env_path("NUXIVA_MCP_CATALOG"),
+        public_key: env_path("NUXIVA_MCP_PUBLIC_KEY"),
+    };
     let swarm_settings = SwarmSettings::default();
-    let catalog =
-        Catalog::build(&[], &swarm_settings).map_err(|e| BrainError::Dispatch(e.to_string()))?;
-    let hub = Hub::new(
-        McpSettings::default(),
-        PolicyConfig::default(),
-        Arc::new(SharedSecrets::default()),
-        Box::new(MemorySink::default()),
-        None,
-    )
-    .map_err(|e| BrainError::Dispatch(e.to_string()))?;
-    let dispatcher = Arc::new(Dispatcher::new(
-        catalog,
-        swarm_settings,
-        Index::new(Vec::new()),
-        Arc::new(hub),
-    )?);
+    let (catalog, index) = load_agents(&paths.agents, &swarm_settings)?;
+    let (hub, _serial) = build_hub(&paths)?;
+    let dispatcher = Arc::new(Dispatcher::new(catalog, swarm_settings, index, hub)?);
     let (supervisor, events) = Supervisor::start(pipeline, memory, SupervisorConfig::default());
-    Ok((supervisor, events, dispatcher))
+    Ok(Assembled {
+        supervisor,
+        events,
+        dispatcher,
+        endpoint: ear_endpoint()?,
+    })
 }
 
 #[tokio::main]
 async fn main() -> ExitCode {
-    let (supervisor, events, dispatcher) = match assemble().await {
+    let parts = match assemble().await {
         Ok(parts) => parts,
         Err(error) => {
             eprintln!("{error}");
             return ExitCode::FAILURE;
         }
     };
+    let (merged_tx, merged_rx) = mpsc::channel(128);
+    let (stop_tx, stop_rx) = watch::channel(false);
+    let link = tokio::spawn(run_ear(parts.endpoint, merged_tx.clone(), stop_rx));
+    let mut sensory = parts.events;
+    let forward = tokio::spawn(async move {
+        while let Some(event) = sensory.recv().await {
+            if merged_tx.send(event).await.is_err() {
+                break;
+            }
+        }
+    });
     let (out_tx, mut out_rx) = mpsc::channel(64);
-    let router = tokio::spawn(route(events, dispatcher, out_tx));
+    let router = tokio::spawn(route(merged_rx, parts.dispatcher, out_tx));
     let drain = tokio::spawn(async move {
         while let Some(outcome) = out_rx.recv().await {
             if let Outcome::Failed(error) = outcome {
@@ -91,7 +113,10 @@ async fn main() -> ExitCode {
     if let Err(error) = tokio::signal::ctrl_c().await {
         eprintln!("{error}");
     }
-    let status = supervisor.shutdown().await;
+    let _ = stop_tx.send(true);
+    let status = parts.supervisor.shutdown().await;
+    let _ = link.await;
+    let _ = forward.await;
     let _ = router.await;
     let _ = drain.await;
     match status {

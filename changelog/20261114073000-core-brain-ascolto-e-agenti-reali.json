@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Il motore centrale si collega all'ascolto e agli agenti già presenti",
+    "en": "The central engine connects to the existing listening and agents",
+    "fr": "Le moteur central se connecte à l'écoute et aux agents existants",
+    "es": "El motor central se conecta a la escucha y a los agentes existentes"
+  },
+  "features": [
+    {
+      "it": "Il motore centrale legge le frasi già riconosciute dall'ascolto e si fida solo delle voci note. Gli sconosciuti restano ospiti senza permessi.",
+      "en": "The central engine reads the sentences the listening service already recognised and trusts only known voices. Strangers stay guests without permissions.",
+      "fr": "Le moteur central lit les phrases déjà reconnues par l'écoute et ne fait confiance qu'aux voix connues. Les inconnus restent invités sans autorisations.",
+      "es": "El motor central lee las frases que la escucha ya reconoció y solo confía en las voces conocidas. Los desconocidos siguen siendo invitados sin permisos."
+    },
+    {
+      "it": "Gli agenti vengono letti dalla cartella esistente e gli strumenti da un catalogo firmato, controllato prima dell'uso.",
+      "en": "Agents are read from the existing folder and tools from a signed catalogue, checked before use.",
+      "fr": "Les agents sont lus depuis le dossier existant et les outils depuis un catalogue signé, vérifié avant l'emploi.",
+      "es": "Los agentes se leen de la carpeta existente y las herramientas de un catálogo firmado, comprobado antes de usarlo."
+    }
+  ]
+}
