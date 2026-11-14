@@ -154,7 +154,7 @@ export function View() {
         </div>
       </header>
 
-      <section className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <section className="mb-6 os-tiles [--tile-min:9rem] [--tile-gap:0.75rem]">
         <div className="flex items-center gap-3 rounded-2xl border border-outline-variant/50 bg-surface-container p-3.5 shadow-sm">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-container-high text-primary">
             <Camera className="h-5 w-5" />
@@ -200,7 +200,7 @@ export function View() {
           </div>
 
           <form onSubmit={handleAddSubmit} className="flex flex-col gap-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="os-tiles [--tile-min:14rem]">
               <div>
                 <label className="mb-1 block text-xs font-semibold text-on-surface-variant">
                   {t('field_name')}
@@ -300,7 +300,7 @@ export function View() {
             <p className="text-xs">{t('empty_sources')}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="os-tiles [--tile-min:16rem]">
             {liveFeeds.map((feed) => (
               <Snapshot
                 key={feed.id}

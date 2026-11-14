@@ -9,6 +9,12 @@
 @tailwind components;
 @tailwind utilities;
 
+.os-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--tile-min, 14rem)), 1fr));
+  gap: var(--tile-gap, 1rem);
+}
+
 :root {
   font-size: clamp(14px, calc(0.08vw + 13px), 18px);
 }

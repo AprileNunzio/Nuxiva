@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Riquadri che seguono la finestra e Audit MCP a prova di crash",
+    "en": "Tiles that follow the window and a crash-proof MCP Audit",
+    "fr": "Tuiles qui suivent la fenêtre et Audit MCP à l'épreuve des plantages",
+    "es": "Mosaicos que siguen la ventana y Auditoría MCP a prueba de fallos"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Telecamere, Store e Gestore identità ora dispongono i riquadri in base alla larghezza reale della finestra: niente più card enormi in colonna singola.",
+      "en": "Cameras, Store and Identity manager now lay out tiles by the real window width: no more oversized single-column cards.",
+      "fr": "Caméras, Store et Gestionnaire d'identités disposent les tuiles selon la largeur réelle de la fenêtre : fini les cartes énormes sur une seule colonne.",
+      "es": "Cámaras, Store y Gestor de identidades colocan los mosaicos según el ancho real de la ventana: se acabaron las tarjetas enormes en una sola columna."
+    },
+    {
+      "it": "L'app MCP Tools non va più in errore quando il registro di audit è vuoto o la risposta è incompleta: il pannello Audit mostra uno stato vuoto.",
+      "en": "The MCP Tools app no longer crashes when the audit log is empty or the response is incomplete: the Audit panel shows an empty state.",
+      "fr": "L'app MCP Tools ne plante plus quand le journal d'audit est vide ou que la réponse est incomplète : le panneau Audit affiche un état vide.",
+      "es": "La app MCP Tools ya no falla cuando el registro de auditoría está vacío o la respuesta es incompleta: el panel de Auditoría muestra un estado vacío."
+    }
+  ]
+}

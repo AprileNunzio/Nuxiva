@@ -16,7 +16,7 @@ interface Props {
 
 const FILTERS = ['all', 'home', 'business', 'present', 'incomplete'] as const;
 type Filter = (typeof FILTERS)[number];
-const GRID = 'grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-8';
+const GRID = 'os-tiles [--tile-min:9rem] [--tile-gap:0.75rem]';
 
 export const IdentityGallery: React.FC<Props> = ({ people, roles, present, busy, onOpen, onCreate }) => {
   const { t } = usePeopleI18n();

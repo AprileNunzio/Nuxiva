@@ -265,7 +265,7 @@ export function View() {
             searchPlaceholder={t('search_placeholder')}
           />
 
-          <div className="flex-1 overflow-y-auto p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4.5 auto-rows-max">
+          <div className="flex-1 overflow-y-auto p-6 os-tiles [--tile-min:17rem] [--tile-gap:1.125rem] auto-rows-max">
             {paginatedPackages.map(pkg => (
               <PackageCard
                 key={pkg.id}

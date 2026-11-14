@@ -88,6 +88,21 @@ async def tools(_: str = Depends(require_admin)):
     return {"tools": [{k: r[k] for k in ("id", "server", "name", "title", "description", "risk", "state", "hash")} for r in rows]}
 
 
+def normalized_audit(report):
+    if not isinstance(report, dict):
+        report = {}
+    records = report.get("records")
+    count = report.get("count")
+    return {
+        **report,
+        "intact": report.get("intact") is True,
+        "error": report.get("error") if isinstance(report.get("error"), str) else None,
+        "count": count if isinstance(count, int) and not isinstance(count, bool) and count >= 0 else 0,
+        "head": report.get("head") if isinstance(report.get("head"), str) else "",
+        "records": records if isinstance(records, list) else [],
+    }
+
+
 @admin_routes.get("/api/mcp/audit")
 async def audit(limit: int = Query(100, ge=1, le=1000), _: str = Depends(require_admin)):
     need_rust()
@@ -95,4 +110,4 @@ async def audit(limit: int = Query(100, ge=1, le=1000), _: str = Depends(require
         raw = await asyncio.to_thread(type(engine.get()).audit_report, str(engine.AUDIT_FILE), limit)
     except ValueError as exc:
         raise HTTPException(500, str(exc.args[0]) if exc.args else "audit non leggibile")
-    return json.loads(raw)
+    return normalized_audit(json.loads(raw))
