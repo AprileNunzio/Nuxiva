@@ -54,6 +54,7 @@ class Swarm:
         self._engine = None
         self._failed_key = ""
         self._learned_key: object = None
+        self._pressure = 0
         self._handlers: dict = {}
         self.stats = {"compared": 0, "matched": 0, "mismatched": 0, "errors": 0}
 
@@ -94,6 +95,7 @@ class Swarm:
                 log.warning("sciame nativo non disponibile: %s", exc)
                 return None
             self._key, self._learned_key = key, None
+            self._engine.set_pressure(self._pressure)
             return self._engine
 
     def _sync_learned(self, engine, learned: dict, version: object) -> None:
@@ -158,6 +160,16 @@ class Swarm:
         for step in report["steps"]:
             board.post("swarm", "tutti", f"passo {step['step']}: {step['outcome']}", "esito")
         return report
+
+    def apply_pressure(self, rank: int) -> None:
+        self._pressure = max(0, min(3, int(rank)))
+        engine = self._engine
+        if engine is not None:
+            engine.set_pressure(self._pressure)
+
+    @property
+    def pressure(self) -> int:
+        return self._pressure
 
     def cancel(self) -> None:
         engine = self._engine

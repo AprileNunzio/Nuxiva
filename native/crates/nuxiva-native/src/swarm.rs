@@ -6,8 +6,8 @@ use nuxiva_agent_core::ceo::{self, Card, Decision, Index, Learned};
 use nuxiva_agent_core::manifest::validate as validate_manifest;
 use nuxiva_swarm_core::{
     Admission, BoxFuture, CancelToken, Catalog, Digest, Executor, Factory, GraphGate, Ident,
-    Output, Plan, Request, Settings, StepContext, Supervisor, SwarmError, TaskEnvelope, Worker,
-    WorkerError, WorkerErrorKind,
+    Output, Plan, PressureBudget, Request, ResourceBudget, Settings, StepContext, Supervisor,
+    SwarmError, TaskEnvelope, Worker, WorkerError, WorkerErrorKind,
 };
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
@@ -150,6 +150,7 @@ pub struct RustSwarm {
     index: Index,
     learned: RwLock<Learned>,
     cancel: Mutex<CancelToken>,
+    budget: Arc<PressureBudget>,
 }
 
 #[pymethods]
@@ -187,11 +188,13 @@ impl RustSwarm {
         }
         let supervisor = Supervisor::new(catalog.clone(), settings.clone()).map_err(fail)?;
         let gate = Arc::new(GraphGate::new(&settings));
-        let executor = Arc::new(Executor::new(
+        let budget = Arc::new(PressureBudget::new(settings.max_workers));
+        let executor = Arc::new(Executor::with_budget(
             Arc::new(catalog),
             Arc::new(factory),
             Arc::clone(&gate),
             settings,
+            Arc::clone(&budget) as Arc<dyn ResourceBudget>,
         ));
         let runtime = Builder::new_multi_thread()
             .worker_threads(2)
@@ -206,6 +209,7 @@ impl RustSwarm {
             index: Index::new(cards),
             learned: RwLock::new(Learned::new()),
             cancel: Mutex::new(CancelToken::new()),
+            budget,
         })
     }
 
@@ -292,6 +296,14 @@ impl RustSwarm {
             })
             .collect();
         dump(&json!({"succeeded": report.succeeded(), "steps": steps, "events": report.events}))
+    }
+
+    fn set_pressure(&self, rank: u8) {
+        self.budget.set_rank(rank);
+    }
+
+    fn pressure(&self) -> u8 {
+        self.budget.rank()
     }
 
     fn cancel(&self) {

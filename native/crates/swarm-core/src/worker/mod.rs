@@ -2,6 +2,7 @@ mod context;
 mod executor;
 mod factory;
 mod supervise;
+mod throttle;
 
 pub use context::{
     Beat, CODE_BUDGET, CODE_CANCELLED, CODE_DEADLINE, CODE_DEPTH, CODE_GRAPH, CODE_LEASE,

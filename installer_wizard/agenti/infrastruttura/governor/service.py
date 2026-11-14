@@ -72,7 +72,17 @@ class Governor:
                      "pressure": round(value, 1), "high": self.pressure.high, "temp": temp,
                      "self_mb": round(self.me.memory_info().rss / 1048576, 1)}
         self.ledger.sample(cpu, mem.percent, swap.percent, load, value, temp)
+        self._shape_swarm(value)
         return self.last
+
+    def _shape_swarm(self, value: float) -> None:
+        enter = self.enter_level()
+        rank = 3 if value >= max(95.0, enter) else 2 if self.pressure.high else 1 if value >= enter * 0.7 else 0
+        try:
+            from agenti.team.swarm import swarm
+            swarm.apply_pressure(rank)
+        except ImportError:
+            return
 
     async def run(self) -> None:
         psutil.cpu_percent(interval=None)

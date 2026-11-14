@@ -69,6 +69,14 @@ pub(crate) struct Rig {
 }
 
 pub(crate) fn rig(settings: &Settings, kinds: &[(&str, u32, bool, Arc<dyn Worker>)]) -> Rig {
+    rig_with(settings, kinds, None)
+}
+
+pub(crate) fn rig_with(
+    settings: &Settings,
+    kinds: &[(&str, u32, bool, Arc<dyn Worker>)],
+    budget: Option<Arc<dyn crate::ResourceBudget>>,
+) -> Rig {
     let mut factory = Factory::new();
     let mut manifests = Vec::new();
     for (kind, limit, graph, w) in kinds {
@@ -82,12 +90,21 @@ pub(crate) fn rig(settings: &Settings, kinds: &[(&str, u32, bool, Arc<dyn Worker
     }
     let catalog = Arc::new(Catalog::build(&manifests, settings).expect("catalog"));
     let gate = Arc::new(GraphGate::new(settings));
-    let executor = Arc::new(Executor::new(
-        catalog,
-        Arc::new(factory),
-        Arc::clone(&gate),
-        settings.clone(),
-    ));
+    let executor = Arc::new(match budget {
+        Some(budget) => Executor::with_budget(
+            catalog,
+            Arc::new(factory),
+            Arc::clone(&gate),
+            settings.clone(),
+            budget,
+        ),
+        None => Executor::new(
+            catalog,
+            Arc::new(factory),
+            Arc::clone(&gate),
+            settings.clone(),
+        ),
+    });
     Rig { executor, gate }
 }
 

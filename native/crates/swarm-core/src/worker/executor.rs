@@ -11,6 +11,8 @@ use super::context::{
 };
 use super::factory::{Factory, Output, Worker};
 use super::supervise::supervise;
+use super::throttle::Throttle;
+use crate::budget::{FixedBudget, ResourceBudget};
 use crate::catalog::Catalog;
 use crate::error::{SwarmError, SwarmResult};
 use crate::settings::Settings;
@@ -48,7 +50,7 @@ pub struct Executor {
     factory: Arc<Factory>,
     gate: Arc<GraphGate>,
     settings: Settings,
-    global: Arc<Semaphore>,
+    global: Arc<Throttle>,
     templates: HashMap<Ident, (String, Arc<Semaphore>)>,
 }
 
@@ -88,6 +90,18 @@ impl Executor {
         gate: Arc<GraphGate>,
         settings: Settings,
     ) -> Self {
+        let budget = Arc::new(FixedBudget(settings.max_workers));
+        Self::with_budget(catalog, factory, gate, settings, budget)
+    }
+
+    #[must_use]
+    pub fn with_budget(
+        catalog: Arc<Catalog>,
+        factory: Arc<Factory>,
+        gate: Arc<GraphGate>,
+        settings: Settings,
+        budget: Arc<dyn ResourceBudget>,
+    ) -> Self {
         let templates = catalog
             .templates()
             .map(|t| {
@@ -100,7 +114,7 @@ impl Executor {
                 )
             })
             .collect();
-        let global = Arc::new(Semaphore::new(settings.max_workers));
+        let global = Arc::new(Throttle::new(settings.max_workers, budget));
         Self {
             catalog,
             factory,
@@ -350,7 +364,7 @@ impl Finished {
 async fn run_job(
     job: Job,
     factory: &Factory,
-    global: &Semaphore,
+    global: &Throttle,
     template_gate: &Semaphore,
     settings: &Settings,
     events: &Events,
@@ -359,12 +373,15 @@ async fn run_job(
     let finished = match (
         factory.get(&job.kind),
         template_gate.acquire().await,
-        global.acquire().await,
+        global.acquire(&job.cancel).await,
     ) {
-        (Some(worker), Ok(_template), Ok(_global)) => {
+        (Some(worker), Ok(_template), Some(_global)) => {
             attempts(&job, &worker, settings, events).await
         }
         (None, ..) => Finished::failed(failure(&id, WorkerErrorKind::Unavailable, CODE_NO_KIND), 0),
+        (_, _, None) if job.cancel.is_cancelled() => {
+            Finished::failed(failure(&id, WorkerErrorKind::Cancelled, CODE_CANCELLED), 0)
+        }
         _ => Finished::failed(failure(&id, WorkerErrorKind::Internal, CODE_NO_KIND), 0),
     };
     push(events, &job.task.id, &id, finished.phase(), job.now_ms);

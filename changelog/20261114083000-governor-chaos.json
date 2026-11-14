@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Gli agenti rallentano da soli quando il sistema è sotto pressione",
+    "en": "Agents slow down on their own when the system is under pressure",
+    "fr": "Les agents ralentissent d'eux-mêmes quand le système est sous pression",
+    "es": "Los agentes se ralentizan solos cuando el sistema está bajo presión"
+  },
+  "features": [
+    {
+      "it": "Il gestore delle risorse ora regola quanti agenti lavorano insieme: se il computer è sotto sforzo ne lavorano meno, poi tornano al massimo appena si calma. La voce resta sempre reattiva, anche se un agente si blocca o va in errore.",
+      "en": "The resource manager now adjusts how many agents work together: if the computer is strained fewer work at once, then back to full speed when it calms down. Voice always stays responsive, even if an agent hangs or fails.",
+      "fr": "Le gestionnaire de ressources règle désormais combien d'agents travaillent ensemble : si l'ordinateur peine, moins d'agents travaillent, puis le plein régime revient dès que ça se calme. La voix reste toujours réactive, même si un agent se bloque ou échoue.",
+      "es": "El gestor de recursos ahora regula cuántos agentes trabajan a la vez: si el equipo está bajo esfuerzo trabajan menos y vuelven al máximo cuando se calma. La voz siempre sigue respondiendo, aunque un agente se bloquee o falle."
+    },
+    {
+      "it": "Limiti, nuovi agenti e regole di accesso ai dati si cambiano solo da configurazione, senza reinstallare nulla.",
+      "en": "Limits, new agents and data access rules change through configuration alone, with no reinstalling.",
+      "fr": "Les limites, les nouveaux agents et les règles d'accès aux données se changent par simple configuration, sans rien réinstaller.",
+      "es": "Los límites, los agentes nuevos y las reglas de acceso a los datos se cambian solo por configuración, sin reinstalar nada."
+    }
+  ],
+  "fixes": []
+}

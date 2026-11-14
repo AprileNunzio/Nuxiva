@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+mod budget;
 mod catalog;
 mod error;
 mod limits;
@@ -8,6 +9,7 @@ mod supervisor;
 pub mod wire;
 mod worker;
 
+pub use budget::{FixedBudget, PressureBudget, ResourceBudget};
 pub use catalog::{Catalog, WorkerTemplate, intent_slug};
 pub use error::{SwarmError, SwarmResult};
 pub use limits::Ceilings;
@@ -31,6 +33,22 @@ pub use worker::{
 mod tests;
 #[cfg(test)]
 mod tests_arch;
+#[cfg(test)]
+#[allow(
+    clippy::expect_used,
+    clippy::arithmetic_side_effects,
+    clippy::panic,
+    clippy::indexing_slicing
+)]
+mod tests_chaos;
+#[cfg(test)]
+#[allow(
+    clippy::expect_used,
+    clippy::arithmetic_side_effects,
+    clippy::panic,
+    clippy::indexing_slicing
+)]
+mod tests_config;
 #[cfg(test)]
 mod tests_fuzz;
 #[cfg(test)]

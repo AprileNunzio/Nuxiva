@@ -5,11 +5,11 @@ use nuxiva_swarm_core::{Channel, Ident, Settings};
 
 use crate::{Fuser, Fusion, Observation, PerceptSettings, PerceptSource, QueueSource};
 
-fn ident(text: &str) -> Ident {
+pub(crate) fn ident(text: &str) -> Ident {
     Ident::new(text).expect("ident")
 }
 
-fn pid(text: &str) -> PersonId {
+pub(crate) fn pid(text: &str) -> PersonId {
     PersonId::new(text).expect("person")
 }
 
@@ -17,7 +17,13 @@ fn shared() -> SharedContext {
     SharedContext::new(ContextSettings::default(), Sealer::from_key([9; 32])).expect("context")
 }
 
-fn person(ctx: &SharedContext, id: &str, role: Role, allergy: &str, music: &str) -> Person {
+pub(crate) fn person(
+    ctx: &SharedContext,
+    id: &str,
+    role: Role,
+    allergy: &str,
+    music: &str,
+) -> Person {
     Person {
         id: pid(id),
         name: id.to_owned(),
@@ -50,7 +56,7 @@ fn person(ctx: &SharedContext, id: &str, role: Role, allergy: &str, music: &str)
     }
 }
 
-fn household() -> SharedContext {
+pub(crate) fn household() -> SharedContext {
     let ctx = shared();
     let deltas = vec![
         Delta::Upsert(Box::new(person(
@@ -73,11 +79,11 @@ fn household() -> SharedContext {
     ctx
 }
 
-fn fuser() -> Fuser {
+pub(crate) fn fuser() -> Fuser {
     Fuser::new(PerceptSettings::default()).expect("fuser")
 }
 
-fn speaker(person: &str, permille: u16, at_ms: u64) -> Observation {
+pub(crate) fn speaker(person: &str, permille: u16, at_ms: u64) -> Observation {
     Observation::Speaker {
         person: ident(person),
         permille,
@@ -85,7 +91,7 @@ fn speaker(person: &str, permille: u16, at_ms: u64) -> Observation {
     }
 }
 
-fn presence(people: &[&str], at_ms: u64) -> Observation {
+pub(crate) fn presence(people: &[&str], at_ms: u64) -> Observation {
     Observation::Presence {
         people: people.iter().map(|p| ident(p)).collect(),
         at_ms,
@@ -102,7 +108,7 @@ fn emotion(person: &str, valence: i16, at_ms: u64) -> Observation {
     }
 }
 
-fn fuse(f: &Fuser, now: u64) -> nuxiva_swarm_core::Percept {
+pub(crate) fn fuse(f: &Fuser, now: u64) -> nuxiva_swarm_core::Percept {
     f.fuse(
         ident("p1"),
         Channel::Voice,

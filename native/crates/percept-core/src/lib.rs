@@ -17,3 +17,6 @@ pub use source::{PerceptSource, QueueSource};
 #[cfg(test)]
 #[allow(clippy::expect_used, clippy::arithmetic_side_effects)]
 mod tests;
+#[cfg(test)]
+#[allow(clippy::expect_used, clippy::arithmetic_side_effects)]
+mod tests_chaos;
