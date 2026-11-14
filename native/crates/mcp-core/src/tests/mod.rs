@@ -16,6 +16,7 @@ mod policy;
 mod queue_remedies;
 mod registry;
 mod resilience;
+mod resilience_settings;
 mod runner;
 mod session;
 mod settings;

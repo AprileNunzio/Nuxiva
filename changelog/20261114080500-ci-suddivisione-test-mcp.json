@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Controlli automatici di nuovo verdi",
+    "en": "Automated checks green again",
+    "fr": "Contrôles automatiques de nouveau au vert",
+    "es": "Comprobaciones automáticas de nuevo en verde"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Un file di verifica interno superava il limite di righe e bloccava i controlli automatici: ora è diviso in due, senza cambiare nulla per te.",
+      "en": "An internal check file went over the line limit and blocked the automated checks: it is now split in two, with no change for you.",
+      "fr": "Un fichier de vérification interne dépassait la limite de lignes et bloquait les contrôles automatiques : il est maintenant scindé en deux, sans changement pour toi.",
+      "es": "Un archivo de verificación interno superaba el límite de líneas y bloqueaba las comprobaciones automáticas: ahora está dividido en dos, sin cambios para ti."
+    }
+  ]
+}
