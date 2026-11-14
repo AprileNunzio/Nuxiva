@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Banco di misura di latenza e precisione",
+    "en": "Latency and accuracy measurement bench",
+    "fr": "Banc de mesure de latence et de précision",
+    "es": "Banco de medida de latencia y precisión"
+  },
+  "features": [
+    {
+      "it": "Nuovo banco di misura riproducibile: latenza della voce p50, p95 e p99 dalla fine della frase al primo audio, errore di trascrizione, falsi risvegli, falsi attributi del parlante (anche con radio e musica) e barge-in, con report e soglie di regressione.",
+      "en": "New reproducible measurement bench: voice latency p50, p95 and p99 from the end of the sentence to the first audio, transcription error, false wake-ups, false speaker attributions (also with radio and music) and barge-in, with reports and regression thresholds.",
+      "fr": "Nouveau banc de mesure reproductible : latence vocale p50, p95 et p99 de la fin de la phrase au premier audio, erreur de transcription, faux réveils, fausses attributions du locuteur (aussi avec radio et musique) et barge-in, avec rapports et seuils de régression.",
+      "es": "Nuevo banco de medida reproducible: latencia de voz p50, p95 y p99 desde el fin de la frase hasta el primer audio, error de transcripción, falsos despertares, falsas atribuciones del hablante (también con radio y música) y barge-in, con informes y umbrales de regresión."
+    },
+    {
+      "it": "Il comando nuxivactl collaudo bench esegue le misure e restituisce un esito 0 superato, 1 avviso, 2 fallito, 3 dati insufficienti. I report non contengono testi né dati personali. Un registro con catena di hash tiene il conto dei criteri A12 senza rimuovere nulla.",
+      "en": "The nuxivactl collaudo bench command runs the measurements and returns 0 passed, 1 warning, 2 failed, 3 insufficient data. Reports contain no text and no personal data. A hash-chained ledger tracks the A12 criteria without removing anything.",
+      "fr": "La commande nuxivactl collaudo bench lance les mesures et renvoie 0 réussi, 1 avertissement, 2 échec, 3 données insuffisantes. Les rapports ne contiennent ni texte ni données personnelles. Un registre à chaîne de hachage suit les critères A12 sans rien supprimer.",
+      "es": "El comando nuxivactl collaudo bench ejecuta las medidas y devuelve 0 superado, 1 aviso, 2 fallido, 3 datos insuficientes. Los informes no contienen texto ni datos personales. Un registro con cadena de hash lleva la cuenta de los criterios A12 sin eliminar nada."
+    }
+  ],
+  "fixes": []
+}

@@ -1,0 +1,24 @@
+[package]
+name = "nuxiva-bench-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "bench_core"
+path = "src/lib.rs"
+
+[[bin]]
+name = "nuxiva-bench"
+path = "src/main.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+nuxiva-collaudo-core = { path = "../collaudo-core" }
+blake3 = { version = "1", default-features = false, features = ["std", "pure"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

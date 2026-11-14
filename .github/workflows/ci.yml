@@ -140,6 +140,16 @@ jobs:
           cargo test -p nuxiva-egress --locked --features test-hooks
           cargo build --release --locked -p nuxiva-egress --features test-hooks
 
+      - name: Measurement Bench Gate
+        run: bash ../scripts/ci/bench_gate.sh "$RUNNER_TEMP/bench"
+
+      - name: Upload Measurement Bench Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-reports
+          path: ${{ runner.temp }}/bench
+          retention-days: 30
+
       - name: Build and Install Python Module
         run: |
           python -m pip install --upgrade pip maturin==1.9.6

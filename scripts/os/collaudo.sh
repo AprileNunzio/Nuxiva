@@ -58,6 +58,11 @@ verdict_code() {
 cmd="${1:-help}"
 shift || true
 case "$cmd" in
+    bench)
+        BENCH_BIN="${NUXIVA_BENCH_BIN:-${NUXIVA_NATIVE_HOME:-/opt/nuxiva-native}/bin/nuxiva-bench}"
+        [ -x "$BENCH_BIN" ] || { echo "${L[collaudo_bench_missing]}" >&2; exit 1; }
+        exec "$BENCH_BIN" "$@"
+        ;;
     on)
         need_root "$cmd" "$@"
         t="$(issue)"

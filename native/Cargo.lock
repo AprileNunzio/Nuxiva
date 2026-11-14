@@ -39,7 +39,7 @@ dependencies = [
 
 [[package]]
 name = "agency-action"
-version = "5.8.1"
+version = "5.8.2"
 dependencies = [
  "agency-domain",
  "serde",
@@ -49,7 +49,7 @@ dependencies = [
 
 [[package]]
 name = "agency-codeindex"
-version = "5.8.1"
+version = "5.8.2"
 dependencies = [
  "getrandom 0.3.4",
  "serde",
@@ -58,7 +58,7 @@ dependencies = [
 
 [[package]]
 name = "agency-domain"
-version = "5.8.1"
+version = "5.8.2"
 dependencies = [
  "serde",
  "serde_json",
@@ -67,7 +67,7 @@ dependencies = [
 
 [[package]]
 name = "agency-foresight"
-version = "5.8.1"
+version = "5.8.2"
 dependencies = [
  "serde",
  "serde_json",
@@ -76,7 +76,7 @@ dependencies = [
 
 [[package]]
 name = "agency-forge"
-version = "5.8.1"
+version = "5.8.2"
 dependencies = [
  "serde",
  "serde_json",
@@ -85,7 +85,7 @@ dependencies = [
 
 [[package]]
 name = "agency-ledger"
-version = "5.8.1"
+version = "5.8.2"
 dependencies = [
  "getrandom 0.3.4",
  "hmac",
@@ -99,7 +99,7 @@ dependencies = [
 
 [[package]]
 name = "agency-planner"
-version = "5.8.1"
+version = "5.8.2"
 dependencies = [
  "agency-domain",
  "serde",
@@ -108,7 +108,7 @@ dependencies = [
 
 [[package]]
 name = "agency-scheduler"
-version = "5.8.1"
+version = "5.8.2"
 dependencies = [
  "serde",
  "thiserror",
@@ -116,7 +116,7 @@ dependencies = [
 
 [[package]]
 name = "agency-thought"
-version = "5.8.1"
+version = "5.8.2"
 dependencies = [
  "agency-domain",
  "agency-planner",
@@ -1647,6 +1647,16 @@ dependencies = [
 name = "nuxiva-authz-core"
 version = "5.8.2"
 dependencies = [
+ "serde_json",
+]
+
+[[package]]
+name = "nuxiva-bench-core"
+version = "5.8.2"
+dependencies = [
+ "blake3",
+ "nuxiva-collaudo-core",
+ "serde",
  "serde_json",
 ]
 

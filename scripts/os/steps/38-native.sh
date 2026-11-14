@@ -12,6 +12,7 @@ EAR_VENV="${NUXIVA_EAR_HOME:-/opt/nuxiva-ear}/venv"
 STAMP="$NATIVE_HOME/.installed"
 EGRESS_BIN="$NATIVE_HOME/bin/nuxiva-egress"
 NETGUARD_BIN="$NATIVE_HOME/bin/nuxiva-netguard"
+BENCH_BIN="$NATIVE_HOME/bin/nuxiva-bench"
 AGENCY_BIN="$NATIVE_HOME/bin/nuxiva-agency"
 AGENCY_UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-agency.service"
 AGENCY_UNIT_DST=/etc/systemd/system/nuxiva-agency.service
@@ -44,7 +45,7 @@ step_check() {
         return
     fi
     [ -x "$VENV/bin/python" ] || return 0
-    native_loaded && [ -x "$EGRESS_BIN" ] && [ -x "$NETGUARD_BIN" ] && [ -x "$AGENCY_BIN" ] && [ -x "$DISPLAY_BIN" ] \
+    native_loaded && [ -x "$EGRESS_BIN" ] && [ -x "$NETGUARD_BIN" ] && [ -x "$BENCH_BIN" ] && [ -x "$AGENCY_BIN" ] && [ -x "$DISPLAY_BIN" ] \
         && cmp -s "$AGENCY_UNIT_SRC" "$AGENCY_UNIT_DST" && cmp -s "$DISPLAY_UNIT_SRC" "$DISPLAY_UNIT_DST" && [ -n "$(src_hash)" ] && [ "$(cat "$STAMP" 2>/dev/null)" = "$(src_hash)" ]
 }
 
@@ -134,7 +135,7 @@ step_apply() {
         [ -x "$EAR_VENV/bin/pip" ] && "$EAR_VENV/bin/pip" uninstall -y -q nuxiva-native >/dev/null 2>&1 || true
         systemctl disable --now nuxiva-agency >/dev/null 2>&1 || true
         systemctl disable --now nuxiva-display >/dev/null 2>&1 || true
-        rm -f "$STAMP" "$WHEEL_STATE" "$EGRESS_BIN" "$NETGUARD_BIN" "$AGENCY_BIN" "$AGENCY_UNIT_DST" "$DISPLAY_BIN" "$DISPLAY_UNIT_DST"
+        rm -f "$STAMP" "$WHEEL_STATE" "$EGRESS_BIN" "$NETGUARD_BIN" "$BENCH_BIN" "$AGENCY_BIN" "$AGENCY_UNIT_DST" "$DISPLAY_BIN" "$DISPLAY_UNIT_DST"
         progress 100 "Core nativo disattivato"
         return 0
     fi
@@ -178,6 +179,14 @@ step_apply() {
     ) || fail "Compilazione del motore di analisi del traffico non riuscita"
     install -m 0755 -o root -g root "$CARGO_TARGET_DIR/$BUILD_PROFILE/nuxiva-netguard" "$NETGUARD_BIN.new"
     mv -f "$NETGUARD_BIN.new" "$NETGUARD_BIN"
+
+    BUILD_STAGE=bench
+    (
+        cd "$NATIVE_SRC"
+        cargo_stream "Compilazione del banco di misura di latenza e precisione" 81 81 nuxiva-bench cargo build --profile "$BUILD_PROFILE" --locked -p nuxiva-bench-core --bin nuxiva-bench
+    ) || fail "Compilazione del banco di misura non riuscita"
+    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/$BUILD_PROFILE/nuxiva-bench" "$BENCH_BIN.new"
+    mv -f "$BENCH_BIN.new" "$BENCH_BIN"
 
     BUILD_STAGE=agency
     (
