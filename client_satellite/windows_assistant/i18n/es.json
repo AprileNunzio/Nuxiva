@@ -61,5 +61,7 @@
   "tier.workstation": "estación de trabajo",
   "pairing.standalone": "Usar solo en este PC, sin servidor",
   "mode.host": "Ofrecer este PC como segundo servidor",
-  "mode.host_hint": "Con el emparejamiento firmado, este PC anuncia cálculo, agentes y modelos locales al servidor. Queda apagado si no lo activas o si usas Solo este PC."
+  "mode.host_hint": "Con el emparejamiento firmado, este PC anuncia cálculo, agentes y modelos locales al servidor. Queda apagado si no lo activas o si usas Solo este PC.",
+  "startup.assets_missing": "Faltan archivos de la interfaz en la instalación: {files}. Reinstala Nuxiva con el último instalador.",
+  "startup.toolkit_failed": "No se pudo iniciar la interfaz gráfica: {reason}. Reinstala Nuxiva con el último instalador."
 }

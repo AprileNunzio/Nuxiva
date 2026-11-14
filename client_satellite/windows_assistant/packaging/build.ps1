@@ -12,6 +12,11 @@ python packaging\make_version.py $version build\version_info.txt
 if ($LASTEXITCODE -ne 0) { throw "Generazione delle informazioni di versione non riuscita ($LASTEXITCODE)" }
 python -m PyInstaller --noconfirm --clean --distpath build\dist --workpath build\work packaging\nuxiva_assistant.spec
 if ($LASTEXITCODE -ne 0) { throw "PyInstaller non riuscito ($LASTEXITCODE)" }
+python packaging\verify_bundle.py build\dist\Nuxiva
+if ($LASTEXITCODE -ne 0) { throw "Verifica del pacchetto non riuscita ($LASTEXITCODE)" }
+$smoke = Start-Process -FilePath "build\dist\Nuxiva\Nuxiva.exe" -ArgumentList "--smoke-test" -PassThru
+if (-not $smoke.WaitForExit(90000)) { $smoke.Kill(); throw "Avvio di prova scaduto" }
+if ($smoke.ExitCode -ne 0) { throw "Avvio di prova non riuscito ($($smoke.ExitCode))" }
 
 $iscc = Get-Command iscc.exe -ErrorAction SilentlyContinue
 $compiler = if ($iscc) { $iscc.Source } else { "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" }

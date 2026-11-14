@@ -61,5 +61,7 @@
   "tier.workstation": "workstation",
   "pairing.standalone": "Use on this PC only, without a server",
   "mode.host": "Offer this PC as a second server",
-  "mode.host_hint": "With the signed pairing, this PC announces compute, agents and local models to the server. It stays off unless you turn it on or you use This PC only."
+  "mode.host_hint": "With the signed pairing, this PC announces compute, agents and local models to the server. It stays off unless you turn it on or you use This PC only.",
+  "startup.assets_missing": "Interface files are missing from the installation: {files}. Reinstall Nuxiva with the latest installer.",
+  "startup.toolkit_failed": "The graphical interface could not start: {reason}. Reinstall Nuxiva with the latest installer."
 }

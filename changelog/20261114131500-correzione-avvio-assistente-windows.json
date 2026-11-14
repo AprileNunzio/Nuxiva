@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Avvio dell'assistente Windows più robusto",
+    "en": "More robust Windows assistant startup",
+    "fr": "Démarrage plus robuste de l'assistant Windows",
+    "es": "Inicio más robusto del asistente de Windows"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Se mancano i file dell'interfaccia nell'installazione, l'assistente Windows mostra un messaggio chiaro con i file mancanti invece di chiudersi con un errore tecnico. Il programma di installazione viene ora verificato e avviato in prova prima della pubblicazione.",
+      "en": "If interface files are missing from the installation, the Windows assistant shows a clear message listing them instead of closing with a technical error. The installer is now verified and test-launched before publication.",
+      "fr": "Si des fichiers d'interface manquent dans l'installation, l'assistant Windows affiche un message clair les listant au lieu de se fermer avec une erreur technique. Le programme d'installation est maintenant vérifié et lancé en test avant publication.",
+      "es": "Si faltan archivos de la interfaz en la instalación, el asistente de Windows muestra un mensaje claro con ellos en lugar de cerrarse con un error técnico. El instalador ahora se verifica y se lanza de prueba antes de publicarse."
+    }
+  ]
+}

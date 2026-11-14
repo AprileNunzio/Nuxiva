@@ -1,11 +1,16 @@
 import ctypes
 import hmac
-import importlib
 import re
 import sys
 from pathlib import Path
 
-importlib.import_module("customtkinter")
+from app import runtime_check  # noqa: E402
+
+if "--smoke-test" in sys.argv:
+    sys.exit(runtime_check.smoke())
+STARTUP_CODE = runtime_check.ensure()
+if STARTUP_CODE:
+    sys.exit(STARTUP_CODE)
 
 from app.errors import configure_logging, errors  # noqa: E402
 from autonomy import profile  # noqa: E402

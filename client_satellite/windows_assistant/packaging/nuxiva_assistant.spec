@@ -3,10 +3,10 @@ from pathlib import Path
 from PyInstaller.utils.hooks import collect_all, collect_data_files
 
 ROOT = Path(SPECPATH).parent
-datas, binaries, hiddenimports = collect_data_files("customtkinter"), [], []
+datas, binaries, hiddenimports = [], [], []
 datas += collect_data_files("docx")
 datas += [(str(path), "i18n") for path in (ROOT / "i18n").glob("*.json")]
-for package in ("uiautomation", "comtypes"):
+for package in ("customtkinter", "uiautomation", "comtypes"):
     pkg_datas, pkg_binaries, pkg_hidden = collect_all(package)
     datas += pkg_datas
     binaries += pkg_binaries

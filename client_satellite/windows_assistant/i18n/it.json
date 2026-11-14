@@ -61,5 +61,7 @@
   "tier.workstation": "workstation",
   "pairing.standalone": "Usa solo su questo PC, senza server",
   "mode.host": "Offri questo PC come secondo server",
-  "mode.host_hint": "Con l'abbinamento firmato, questo PC annuncia calcolo, agenti e modelli locali al server. Resta spento se non lo attivi o se usi Solo su questo PC."
+  "mode.host_hint": "Con l'abbinamento firmato, questo PC annuncia calcolo, agenti e modelli locali al server. Resta spento se non lo attivi o se usi Solo su questo PC.",
+  "startup.assets_missing": "File dell'interfaccia mancanti nell'installazione: {files}. Reinstalla Nuxiva con l'ultimo programma di installazione.",
+  "startup.toolkit_failed": "Impossibile avviare l'interfaccia grafica: {reason}. Reinstalla Nuxiva con l'ultimo programma di installazione."
 }
