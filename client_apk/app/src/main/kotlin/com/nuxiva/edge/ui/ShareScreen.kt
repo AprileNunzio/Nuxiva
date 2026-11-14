@@ -7,11 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -51,6 +48,7 @@ private fun StatusCard(settings: ShareSettings, power: PowerSnapshot?, ollama: O
     val decision = power?.let { SharePolicy.decide(settings, it) }
     InfoCard(stringResource(R.string.share_title)) {
         Text(stringResource(R.string.share_intro))
+        power?.let { Stat(stringResource(R.string.field_battery), "${it.batteryPercent}%", fraction = it.batteryPercent / 100f, marker = settings.minBatteryPercent / 100f) }
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text(stringResource(R.string.share_consent), modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
             Switch(checked = settings.consent, onCheckedChange = { value -> model.updateShare { it.copy(consent = value) } })
@@ -63,12 +61,9 @@ private fun StatusCard(settings: ShareSettings, power: PowerSnapshot?, ollama: O
         }
         Text(message, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
         if (settings.killSwitch) {
-            OutlinedButton(onClick = { model.updateShare { it.copy(killSwitch = false) } }) { Text(stringResource(R.string.share_kill_reset)) }
+            PrimaryAction(stringResource(R.string.share_kill_reset), { model.updateShare { it.copy(killSwitch = false) } })
         } else {
-            Button(
-                onClick = { model.updateShare { it.copy(killSwitch = true) } },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-            ) { Text(stringResource(R.string.share_kill)) }
+            PrimaryAction(stringResource(R.string.share_kill), { model.updateShare { it.copy(killSwitch = true) } }, danger = true)
         }
         Text(stringResource(R.string.share_trust_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
     }
@@ -77,9 +72,9 @@ private fun StatusCard(settings: ShareSettings, power: PowerSnapshot?, ollama: O
 @Composable
 private fun ConditionsCard(settings: ShareSettings, model: AppViewModel) {
     InfoCard(stringResource(R.string.conditions_title)) {
-        ToggleRow(R.string.cond_charging, settings.requireCharging) { v -> model.updateShare { it.copy(requireCharging = v) } }
-        ToggleRow(R.string.cond_unmetered, settings.unmeteredOnly) { v -> model.updateShare { it.copy(unmeteredOnly = v) } }
-        ToggleRow(R.string.cond_rest, settings.restOnly) { v -> model.updateShare { it.copy(restOnly = v) } }
+        ToggleRow(stringResource(R.string.cond_charging), settings.requireCharging) { v -> model.updateShare { it.copy(requireCharging = v) } }
+        ToggleRow(stringResource(R.string.cond_unmetered), settings.unmeteredOnly) { v -> model.updateShare { it.copy(unmeteredOnly = v) } }
+        ToggleRow(stringResource(R.string.cond_rest), settings.restOnly) { v -> model.updateShare { it.copy(restOnly = v) } }
         Text(stringResource(R.string.cond_battery, settings.minBatteryPercent), style = MaterialTheme.typography.bodyMedium)
         Slider(
             value = settings.minBatteryPercent.toFloat(),
@@ -87,6 +82,14 @@ private fun ConditionsCard(settings: ShareSettings, model: AppViewModel) {
             valueRange = 10f..90f,
             steps = 7,
         )
+        Text(stringResource(R.string.cond_jobs, settings.jobLimit), style = MaterialTheme.typography.bodyMedium)
+        Slider(
+            value = settings.jobLimit.toFloat(),
+            onValueChange = { v -> model.updateShare { it.copy(maxJobs = v.toInt().coerceIn(ShareSettings.MIN_JOBS, ShareSettings.MAX_JOBS)) } },
+            valueRange = ShareSettings.MIN_JOBS.toFloat()..ShareSettings.MAX_JOBS.toFloat(),
+            steps = ShareSettings.MAX_JOBS - ShareSettings.MIN_JOBS - 1,
+        )
+        Text(stringResource(R.string.cond_jobs_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
         Text(stringResource(R.string.cond_thermal), style = MaterialTheme.typography.bodyMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             listOf(0 to R.string.thermal_none, 1 to R.string.thermal_light, 2 to R.string.thermal_moderate).forEach { (level, label) ->
@@ -97,14 +100,6 @@ private fun ConditionsCard(settings: ShareSettings, model: AppViewModel) {
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun ToggleRow(label: Int, checked: Boolean, onChange: (Boolean) -> Unit) {
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text(stringResource(label), modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-        Switch(checked = checked, onCheckedChange = onChange)
     }
 }
 

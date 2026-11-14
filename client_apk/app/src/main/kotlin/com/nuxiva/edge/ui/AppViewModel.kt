@@ -45,6 +45,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     val running = graph.runtime.running
     val share: StateFlow<ShareSettings> = graph.shareSettings.settings
     val orientation = graph.orientation.current
+    val hubPrefs = graph.hub.settings
     val events: SharedFlow<RuntimeEvent> = graph.runtime.events
     val deviceFacts: StateFlow<DeviceFacts?> = facts.asStateFlow()
     val powerSnapshot: StateFlow<PowerSnapshot?> = power.asStateFlow()
@@ -135,6 +136,8 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             NodeService.start(getApplication())
         }
     }
+
+    fun updateHub(change: (com.nuxiva.edge.hub.HubPrefs) -> com.nuxiva.edge.hub.HubPrefs) = graph.hub.update(change)
 
     fun updateShare(change: (ShareSettings) -> ShareSettings) = graph.shareSettings.update(change)
 

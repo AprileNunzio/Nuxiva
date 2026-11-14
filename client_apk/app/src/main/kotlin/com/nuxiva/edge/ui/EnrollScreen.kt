@@ -13,10 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,11 +51,11 @@ fun EnrollScreen(model: AppViewModel, onDone: () -> Unit) {
             }
             is EnrollUi.Failed -> InfoCard(stringResource(R.string.enroll_failed_title)) {
                 Text(stringResource(errorLabel(current.code)), color = MaterialTheme.colorScheme.error)
-                Button(onClick = model::resetEnrollment) { Text(stringResource(R.string.enroll_try_again)) }
+                PrimaryAction(stringResource(R.string.enroll_try_again), model::resetEnrollment)
             }
             is EnrollUi.Done -> InfoCard(stringResource(R.string.enroll_done_title)) {
                 Text(stringResource(R.string.enroll_done_body, current.nodeId))
-                Button(onClick = { model.resetEnrollment(); onDone() }) { Text(stringResource(R.string.enroll_go_nodes)) }
+                PrimaryAction(stringResource(R.string.enroll_go_nodes), { model.resetEnrollment(); onDone() })
             }
         }
     }
@@ -78,12 +76,12 @@ private fun IdleForm(model: AppViewModel) {
                 onResult = { value -> scanning = false; model.offerEnrollment(value) },
                 modifier = Modifier.fillMaxWidth().aspectRatio(1f).clip(RoundedCornerShape(16.dp)),
             )
-            OutlinedButton(onClick = { scanning = false }) { Text(stringResource(R.string.cancel)) }
+            PrimaryAction(stringResource(R.string.cancel), { scanning = false })
         } else {
-            Button(onClick = {
+            PrimaryAction(stringResource(R.string.enroll_scan), {
                 val granted = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
                 if (granted) scanning = true else permission.launch(Manifest.permission.CAMERA)
-            }) { Text(stringResource(R.string.enroll_scan)) }
+            })
         }
     }
     CodeForm(model)
@@ -96,9 +94,7 @@ private fun IdleForm(model: AppViewModel) {
             minLines = 3,
             keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = KeyboardType.Uri),
         )
-        Button(onClick = { model.offerEnrollment(pasted); pasted = "" }, enabled = pasted.isNotBlank()) {
-            Text(stringResource(R.string.enroll_continue))
-        }
+        PrimaryAction(stringResource(R.string.enroll_continue), { model.offerEnrollment(pasted); pasted = "" }, enabled = pasted.isNotBlank())
     }
 }
 
@@ -147,8 +143,8 @@ private fun ReviewForm(model: AppViewModel, review: EnrollUi.Review) {
             modifier = Modifier.fillMaxWidth(),
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = { model.confirmEnrollment(name) }, enabled = name.isNotBlank()) { Text(stringResource(R.string.enroll_confirm)) }
-            OutlinedButton(onClick = model::resetEnrollment) { Text(stringResource(R.string.cancel)) }
+            PrimaryAction(stringResource(R.string.enroll_confirm), { model.confirmEnrollment(name) }, enabled = name.isNotBlank())
+            PrimaryAction(stringResource(R.string.cancel), model::resetEnrollment)
         }
     }
 }

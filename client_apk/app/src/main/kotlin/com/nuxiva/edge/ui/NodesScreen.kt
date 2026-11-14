@@ -10,9 +10,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,7 +53,7 @@ fun NodesScreen(model: AppViewModel, onAdd: () -> Unit) {
             fullSpan("hub") {
                 InfoCard(stringResource(R.string.hub_title)) {
                     Text(stringResource(R.string.hub_body), style = MaterialTheme.typography.bodyMedium)
-                    Button(onClick = { com.nuxiva.edge.hub.HubActivity.start(context) }) { Text(stringResource(R.string.hub_open)) }
+                    PrimaryAction(stringResource(R.string.hub_open), { com.nuxiva.edge.hub.HubActivity.start(context) })
                 }
             }
         }
@@ -82,7 +81,7 @@ fun NodesScreen(model: AppViewModel, onAdd: () -> Unit) {
             fullSpan("empty") {
                 InfoCard(stringResource(R.string.nodes_empty_title)) {
                     Text(stringResource(R.string.nodes_empty_body))
-                    Button(onClick = onAdd) { Text(stringResource(R.string.nodes_add)) }
+                    PrimaryAction(stringResource(R.string.nodes_add), onAdd)
                 }
             }
         }
@@ -115,14 +114,17 @@ private fun ProfileCard(profile: NodeProfile, state: LinkState?, model: AppViewM
     InfoCard(profile.name) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(stringResource(linkLabel(state)), color = color, style = MaterialTheme.typography.titleSmall)
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    StatusDot(color, active = state is LinkState.Online)
+                    Text(stringResource(linkLabel(state)), color = color, style = MaterialTheme.typography.titleSmall)
+                }
                 if (state is LinkState.Offline) {
                     Text(state.code, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
                 }
             }
             Switch(checked = profile.enabled, onCheckedChange = { model.setEnabled(profile.nodeId, it) })
             IconButton(onClick = onRemove) {
-                Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.remove_confirm))
+                Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.remove_confirm))
             }
         }
         KeyValue(stringResource(R.string.field_server), host)

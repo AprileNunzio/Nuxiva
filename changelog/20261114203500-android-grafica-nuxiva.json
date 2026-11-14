@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "App Android Nuxiva: nuova grafica futuristica con Home, Risorse e Impostazioni",
+    "en": "Nuxiva Android app: new futuristic look with Home, Resources and Settings",
+    "fr": "Application Android Nuxiva : nouveau look futuriste avec Accueil, Ressources et Réglages",
+    "es": "Aplicación Android Nuxiva: nuevo aspecto futurista con Inicio, Recursos y Ajustes"
+  },
+  "features": [
+    {
+      "it": "Nuova schermata Home con lo stato dei collegamenti in un orbe animato, i dati del dispositivo sempre visibili e il tasto per aprire l'hub.",
+      "en": "New Home screen with the link status in an animated orb, device data always visible and a button to open the hub.",
+      "fr": "Nouvel écran d'accueil avec l'état des liaisons dans un orbe animé, les données de l'appareil toujours visibles et un bouton pour ouvrir le hub.",
+      "es": "Nueva pantalla de inicio con el estado de los enlaces en un orbe animado, los datos del dispositivo siempre visibles y un botón para abrir el hub."
+    },
+    {
+      "it": "Grafica unica chiara e scura senza bordi né sfondi pesanti: titoli in maiuscolo spaziato, linee sottili luminose, barre di livello e animazioni sobrie che si fermano se disattivi le animazioni di Android.",
+      "en": "One light and dark look with no borders or heavy backgrounds: spaced uppercase titles, thin luminous lines, level bars and calm animations that stop when you turn Android animations off.",
+      "fr": "Un seul style clair et sombre sans bordures ni fonds lourds : titres en majuscules espacées, fines lignes lumineuses, barres de niveau et animations sobres qui s'arrêtent si vous désactivez les animations d'Android.",
+      "es": "Un único aspecto claro y oscuro sin bordes ni fondos pesados: títulos en mayúsculas espaciadas, líneas finas luminosas, barras de nivel y animaciones sobrias que se detienen si desactivas las animaciones de Android."
+    },
+    {
+      "it": "Nuova sezione Impostazioni con hub all'avvio, consensi per microfono e fotocamera, servizio, abbinamento di altri server e informazioni sulla privacy. In Risorse puoi limitare i lavori condivisi in parallelo.",
+      "en": "New Settings section with hub at launch, microphone and camera consent, service, pairing more servers and privacy information. In Resources you can limit the shared jobs run in parallel.",
+      "fr": "Nouvelle section Réglages avec hub au démarrage, consentements micro et caméra, service, appairage d'autres serveurs et informations de confidentialité. Dans Ressources, vous pouvez limiter les tâches partagées en parallèle.",
+      "es": "Nueva sección de Ajustes con hub al iniciar, consentimientos de micrófono y cámara, servicio, emparejamiento de más servidores e información de privacidad. En Recursos puedes limitar los trabajos compartidos en paralelo."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "L'abbinamento di un server ora si apre come schermata dedicata e si chiude da solo a collegamento riuscito.",
+      "en": "Pairing a server now opens as a dedicated screen and closes by itself once linked.",
+      "fr": "L'appairage d'un serveur s'ouvre maintenant comme un écran dédié et se ferme tout seul une fois la liaison faite.",
+      "es": "El emparejamiento de un servidor ahora se abre como pantalla dedicada y se cierra solo al vincular."
+    }
+  ]
+}
