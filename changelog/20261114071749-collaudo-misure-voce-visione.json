@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Collaudo: misure di voce, interruzione, eco e visione nel flusso",
+    "en": "Commissioning: voice, interruption, echo and vision measurements in the stream",
+    "fr": "Recette : mesures de voix, interruption, écho et vision dans le flux",
+    "es": "Puesta a punto: mediciones de voz, interrupción, eco y visión en el flujo"
+  },
+  "features": [
+    {
+      "it": "Il flusso di collaudo ora misura il tempo al primo suono della risposta, il tempo tra la voce dell'utente e il taglio della risposta, lo stato dell'eco dichiarato dal client e la salute del servizio di visione.",
+      "en": "The commissioning stream now measures the time to the first sound of the reply, the time between the user's voice and the reply being cut, the echo state declared by the client and the health of the vision service.",
+      "fr": "Le flux de recette mesure désormais le temps jusqu'au premier son de la réponse, le temps entre la voix de l'utilisateur et la coupure de la réponse, l'état de l'écho déclaré par le client et la santé du service de vision.",
+      "es": "El flujo de puesta a punto mide ahora el tiempo hasta el primer sonido de la respuesta, el tiempo entre la voz del usuario y el corte de la respuesta, el estado del eco declarado por el cliente y la salud del servicio de visión."
+    }
+  ],
+  "fixes": []
+}

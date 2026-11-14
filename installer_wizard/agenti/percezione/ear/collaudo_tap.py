@@ -51,3 +51,8 @@ def observe(origin, event: dict) -> None:
             fields[key] = value
     _send({"domain": "ear", "level": "trace" if kind == "level" else "info", "kind": kind[:64], "src": "ear",
            "fields": fields, "at_ms": int(now * 1000)})
+
+
+def probe(kind: str, **fields) -> None:
+    _send({"domain": "probe", "level": "info", "kind": kind, "src": "ear", "fields": {"outcome": "ok", **fields},
+           "at_ms": int(time.time() * 1000)})

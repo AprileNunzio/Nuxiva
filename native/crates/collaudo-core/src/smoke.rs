@@ -140,10 +140,10 @@ pub fn default_spec() -> Vec<Check> {
             vec![bound("stop_ms", None, Some(300.0))],
         ),
         probe(
-            "aec_erle",
-            "aec_erle",
+            "aec_active",
+            "aec_active",
             Severity::Minor,
-            vec![bound("erle_db", Some(10.0), None)],
+            vec![bound("active", Some(1.0), None)],
         ),
         probe(
             "sentinel_chain",

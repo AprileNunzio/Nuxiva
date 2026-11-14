@@ -58,6 +58,8 @@ class VoiceSession:
         self.played: set[int] = set()
         self.full_text = ""
         self.counts = {"replies": 0, "chunks": 0, "cuts": 0, "stale": 0}
+        self.began_ms = 0
+        self.first_noted = False
 
     def _state(self) -> str:
         return json.loads(self.engine.snapshot())["state"]
@@ -76,6 +78,7 @@ class VoiceSession:
         self.feed = TokenFeed()
         flag = self.engine.bind(self.epoch)
         self.counts["replies"] += 1
+        self.began_ms, self.first_noted = self._clock(), False
         self.task = asyncio.create_task(self._run(self.epoch, flag, self.feed))
         await self._send_json({"type": "reply_start", "gen": self.epoch})
         return self.feed
@@ -90,6 +93,14 @@ class VoiceSession:
         self.counts["chunks"] += 1
         await self._send_json({"type": "chunk", "gen": epoch, "seq": seq, "text": chunk})
         await self._send_bytes(HEADER.pack(epoch, seq) + wav)
+        if not self.first_noted:
+            self.first_noted = True
+            self._note_first_audio()
+
+    def _note_first_audio(self) -> None:
+        from agenti.collaudo.emit import emit
+
+        emit("probe", "info", "voice_first_audio", src="duplex", outcome="ok", latency_ms=max(0, self._clock() - self.began_ms))
 
     async def _run(self, epoch: int, flag, feed: TokenFeed) -> None:
         async def tokens():

@@ -11,7 +11,7 @@
     "name": "Commissioning telemetry"
   },
   "hints": {
-    "aec_erle": "Echo cancellation is weak",
+    "aec_active": "The client did not declare echo cancellation while Nuxiva was speaking",
     "barge_in": "Voice interruption is too slow",
     "bus_roundtrip": "The internal bus did not answer in time: look at the supervisor",
     "camera_frame": "The webcam gives no images: check the vision service and /dev/video",

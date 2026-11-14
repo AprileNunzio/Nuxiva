@@ -33,4 +33,4 @@ services, bus_roundtrip, camera_frame, microphone_level, ear_roundtrip, sentinel
 
 ## Controlli senza strumentazione ancora attiva
 
-voice_first_audio, barge_in e aec_erle risultano `missing` finché i punti di misura non emettono eventi `probe`. I controlli radio e musica usano gli scenari.
+voice_first_audio (primo audio della risposta duplex), barge_in (tempo dalla prima voce al taglio) e aec_active (il client dichiara l'eco cancellato mentre Nuxiva parla) arrivano da eventi `probe` emessi dai punti di misura e restano `missing` finché non c'è una conversazione. L'ERLE reale non è misurabile sul server perché l'eco è cancellato dal client. Lo stato della visione arriva dal controllo periodico di `/health`. I controlli radio e musica usano gli scenari.

@@ -11,7 +11,7 @@
     "name": "Telemetria di collaudo"
   },
   "hints": {
-    "aec_erle": "La cancellazione dell'eco è debole",
+    "aec_active": "Il client non ha dichiarato la cancellazione dell'eco mentre Nuxiva parlava",
     "barge_in": "L'interruzione della voce è troppo lenta",
     "bus_roundtrip": "Il bus interno non risponde in tempo: guarda il supervisore",
     "camera_frame": "La webcam non fornisce immagini: verifica il servizio visione e /dev/video",

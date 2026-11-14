@@ -2,7 +2,7 @@ import asyncio
 import logging
 import os
 
-from agenti.collaudo import emit, hub, intake, paths, taps
+from agenti.collaudo import emit, hub, intake, paths, taps, vision_watch
 
 log = logging.getLogger("nuxiva.collaudo")
 SAMPLE_EVERY = 5.0
@@ -63,7 +63,7 @@ async def run() -> None:
     subscription = taps.install_bus_tap(nuxiva_bus)
     stop = asyncio.Event()
     emit.emit("system", "info", "collaudo_started", src="collaudo", native=hub.native(), mode=int(hub.get().collaudo()))
-    jobs = [asyncio.create_task(taps.journal_tail(stop)), asyncio.create_task(sampler(stop)), asyncio.create_task(flusher(stop))]
+    jobs = [asyncio.create_task(taps.journal_tail(stop)), asyncio.create_task(sampler(stop)), asyncio.create_task(flusher(stop)), asyncio.create_task(vision_watch.run(stop))]
     try:
         await asyncio.gather(*jobs)
     finally:

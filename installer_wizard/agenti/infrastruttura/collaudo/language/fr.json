@@ -11,7 +11,7 @@
     "name": "Télémétrie de recette"
   },
   "hints": {
-    "aec_erle": "L'annulation d'écho est faible",
+    "aec_active": "Le client n'a pas déclaré l'annulation d'écho pendant que Nuxiva parlait",
     "barge_in": "L'interruption de la voix est trop lente",
     "bus_roundtrip": "Le bus interne n'a pas répondu à temps : regardez le superviseur",
     "camera_frame": "La webcam ne fournit pas d'images : vérifiez le service de vision et /dev/video",

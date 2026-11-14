@@ -273,5 +273,73 @@ class EarTapTest(unittest.TestCase):
         self.assertEqual(sent[0]["kind"], "transcript")
 
 
+class MeasurementPointsTest(unittest.IsolatedAsyncioTestCase):
+
+    async def test_duplex_first_audio_is_reported_once(self):
+        isolated(self)
+        without_native(self)
+        emit.bind_local(lambda raw: hub.emit(raw))
+        from agenti.voices import duplex_voice
+
+        clock = iter(range(1000, 2000, 50))
+        session = duplex_voice.VoiceSession("d", mock.AsyncMock(), mock.AsyncMock(), mock.AsyncMock(return_value=b"\0" * 4), lambda: next(clock))
+        feed = await session.begin()
+        feed.close()
+        await session._speak(session.epoch, "ciao")
+        await session._speak(session.epoch, "mondo")
+        await session.stop()
+        rows = [r for r in hub.query({"domain": "probe"}) if r["kind"] == "voice_first_audio"]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["fields"]["outcome"], "ok")
+        self.assertGreaterEqual(rows[0]["fields"]["latency_ms"], 0)
+
+    async def test_vision_watch_reports_health_and_outage_once(self):
+        isolated(self)
+        without_native(self)
+        emit.bind_local(lambda raw: hub.emit(raw))
+        from agenti.collaudo import vision_watch
+
+        vision_watch.state["up"] = None
+        stop = asyncio.Event()
+        replies = iter([({"status": "ready", "error": "", "people_enrolled": 2, "objects": True}, 4.0), (None, 3.0), (None, 3.0)])
+
+        def fetch():
+            try:
+                return next(replies)
+            except StopIteration:
+                stop.set()
+                return None, 1.0
+
+        with mock.patch.object(vision_watch, "_fetch", fetch), mock.patch.object(vision_watch, "EVERY", 0.01):
+            await asyncio.wait_for(vision_watch.run(stop), 5)
+        kinds = [r["kind"] for r in hub.query({"domain": "vision"})]
+        self.assertEqual(kinds, ["health", "unreachable"])
+
+    async def test_barge_gate_reports_stop_time_and_aec(self):
+        ear = Path(__file__).resolve().parents[1] / "agenti/percezione/ear"
+        sys.path.insert(0, str(ear))
+        self.addCleanup(sys.path.remove, str(ear))
+        import numpy as np
+        import barge_gate
+
+        sent = []
+        service = mock.Mock(nuxiva_speaking=True, echo_cancelled_input=True)
+        service.voiceprints.ready = True
+        service.broadcast = mock.AsyncMock()
+        service._programme.return_value = False
+        frame = np.zeros(2000, dtype=np.float32)
+        with mock.patch.object(barge_gate, "probe", lambda kind, **f: sent.append({"kind": kind, "fields": f})), mock.patch.object(barge_gate.link, "active", return_value=True), \
+                mock.patch.object(barge_gate, "evaluate", return_value=("owner", 9)), mock.patch.object(barge_gate.link, "barge_step", return_value="cut"), \
+                mock.patch.object(barge_gate.link, "snapshot", return_value={}):
+            await barge_gate.observe(service, frame, True, False)
+            await barge_gate.observe(service, frame, True, False)
+            await barge_gate.observe(service, frame, True, False)
+        kinds = [m["kind"] for m in sent]
+        self.assertEqual(kinds.count("aec_active"), 1)
+        self.assertEqual(kinds.count("barge_in"), 1)
+        stop = next(m for m in sent if m["kind"] == "barge_in")["fields"]["stop_ms"]
+        self.assertGreaterEqual(stop, 0)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -11,7 +11,7 @@
     "name": "Telemetría de puesta a punto"
   },
   "hints": {
-    "aec_erle": "La cancelación de eco es débil",
+    "aec_active": "El cliente no declaró la cancelación de eco mientras Nuxiva hablaba",
     "barge_in": "La interrupción de la voz es demasiado lenta",
     "bus_roundtrip": "El bus interno no respondió a tiempo: revisa el supervisor",
     "camera_frame": "La webcam no da imágenes: revisa el servicio de visión y /dev/video",
