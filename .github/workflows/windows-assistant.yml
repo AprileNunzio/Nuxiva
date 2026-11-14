@@ -70,15 +70,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $version = "${{ steps.version.outputs.value }}"
-          if (-not (Test-Path -LiteralPath "build\installer\manifest.sig" -PathType Leaf)) {
-            Write-Warning "Windows release skipped because the signing key is unavailable."
-            exit 0
+          $installer = "build\installer\Nuxiva_Setup.exe"
+          if (-not (Test-Path -LiteralPath $installer -PathType Leaf)) { throw "Missing release artifact: $installer" }
+          $files = @($installer, "build\installer\manifest.json")
+          $signed = Test-Path -LiteralPath "build\installer\manifest.sig" -PathType Leaf
+          if ($signed) {
+            $files += "build\installer\manifest.sig"
+            python -c "from pathlib import Path; from updates import manifest; root = Path('build/installer'); release = manifest.verify((root / 'manifest.json').read_bytes(), (root / 'manifest.sig').read_bytes()); manifest.check_file((root / 'Nuxiva_Setup.exe').read_bytes(), release)"
+            if ($LASTEXITCODE -ne 0) { throw "Release signature or installer verification failed" }
+            $notes = "Installer di Nuxiva per Windows $version. Si installa da solo e gli aggiornamenti automatici si installano solo se il manifesto è firmato."
+          } else {
+            Write-Warning "Signing key unavailable: publishing the installer without a signed manifest, automatic updates stay off."
+            $notes = "Installer di Nuxiva per Windows $version. Si installa da solo. Gli aggiornamenti automatici restano disattivati finché il manifesto non è firmato."
           }
-          $files = @("build\installer\Nuxiva_Setup.exe", "build\installer\manifest.json", "build\installer\manifest.sig")
-          foreach ($file in $files) {
-            if (-not (Test-Path -LiteralPath $file -PathType Leaf)) { throw "Missing release artifact: $file" }
-          }
-          python -c "from pathlib import Path; from updates import manifest; root = Path('build/installer'); release = manifest.verify((root / 'manifest.json').read_bytes(), (root / 'manifest.sig').read_bytes()); manifest.check_file((root / 'Nuxiva_Setup.exe').read_bytes(), release)"
-          if ($LASTEXITCODE -ne 0) { throw "Release signature or installer verification failed" }
-          gh release create "assistant-v$version" @files --title "Nuxiva $version" `
-            --notes "Installer di Nuxiva per Windows $version. Gli aggiornamenti automatici si installano solo se il manifesto è firmato."
+          gh release create "assistant-v$version" @files --title "Nuxiva $version" --latest --notes $notes

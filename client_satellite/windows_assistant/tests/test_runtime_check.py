@@ -81,6 +81,24 @@ class SpecTest(unittest.TestCase):
         self.assertIn("Programs\\ATENA", text)
         self.assertIn('/Delete /TN "ATENA"', text)
 
+    def test_release_is_published_even_without_signing_key(self):
+        text = (ROOT.parent.parent / ".github" / "workflows" / "windows-assistant.yml").read_text(encoding="utf-8")
+        self.assertIn("without a signed manifest", text)
+        self.assertIn("--latest", text)
+
+    def test_signing_key_generator_matches_manifest_format(self):
+        import base64
+        from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+        from updates import manifest
+        generator = load("make_signing_key")
+        self.assertTrue(callable(generator.main))
+        key = Ed25519PrivateKey.generate()
+        body = b"{}"
+        signature = base64.b64encode(key.sign(body))
+        public = base64.b64encode(key.public_key().public_bytes_raw()).decode("ascii")
+        with self.assertRaises(manifest.UpdateRejected):
+            manifest.verify(body, signature, public)
+
     def test_build_runs_verification_and_smoke_test(self):
         text = (ROOT / "packaging" / "build.ps1").read_text(encoding="utf-8")
         self.assertIn("verify_bundle.py", text)

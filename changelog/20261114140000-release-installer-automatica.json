@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Installer di Nuxiva sempre scaricabile",
+    "en": "Nuxiva installer always available to download",
+    "fr": "Programme d'installation de Nuxiva toujours disponible",
+    "es": "Instalador de Nuxiva siempre disponible para descargar"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Ogni nuova versione di Nuxiva per Windows viene pubblicata da sola con il suo installer, anche prima che la firma degli aggiornamenti automatici sia configurata.",
+      "en": "Every new Nuxiva version for Windows is published by itself with its installer, even before automatic update signing is configured.",
+      "fr": "Chaque nouvelle version de Nuxiva pour Windows est publiée toute seule avec son programme d'installation, même avant la configuration de la signature des mises à jour automatiques.",
+      "es": "Cada nueva versión de Nuxiva para Windows se publica sola con su instalador, incluso antes de configurar la firma de las actualizaciones automáticas."
+    }
+  ]
+}
