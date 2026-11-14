@@ -22,7 +22,8 @@ from agenti.brain.brains import brains
 from agenti.brain.residency import primary
 from agenti.brain.trace import trace
 from agenti.capabilities import manifest as capabilities
-from agenti.chat import addressee, assistant, brain_chain, intents, speaker, streaming, turns, voice_id, wake
+from agenti.chat import duplex_feed
+from agenti.chat import addressee, assistant, brain_chain, intents, interrupt, speaker, streaming, turns, voice_id, wake
 from agenti.chat.dialogue import dialogue
 from agenti.chat.journey_flow import ChatJourney
 from agenti.sentinel.collectors import operations
@@ -57,6 +58,9 @@ async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
     heard = who.slug if who.role != "system" else ""
     context = {"people_present": percept.context_for(query, present, speaker=heard)} if present else {}
     context["laws"] = laws.preamble()
+    resumed = interrupt.context_for(device, query)
+    if resumed:
+        context["interrupted"] = resumed
     if capabilities.enabled():
         context["capabilities"] = capabilities.summary()
     context["speaker"] = speaker.instruction()
@@ -308,11 +312,13 @@ async def _stream_chat(text: str, device: str, lang: str | None, heard: dict | N
         streaming.sink.reset(marker)
         turns.owner.reset(principal)
     getter = None
+    voice = await duplex_feed.begin(device)
     try:
         while not task.done():
             getter = asyncio.create_task(queue.get())
             done, _ = await asyncio.wait({getter, task}, return_when=asyncio.FIRST_COMPLETED)
             if task not in done:
+                duplex_feed.token(voice, getter.result())
                 yield _sse(getter.result())
         if getter and not getter.done():
             getter.cancel()
@@ -324,9 +330,11 @@ async def _stream_chat(text: str, device: str, lang: str | None, heard: dict | N
             while not queue.empty():
                 yield _sse(queue.get_nowait())
         yield _sse({"type": "done", **payload})
+        duplex_feed.close(voice)
     except HTTPException as exc:
         yield _sse({"type": "error", "status": exc.status_code, "detail": str(exc.detail)})
     finally:
+        duplex_feed.close(voice)
         if getter and not getter.done():
             getter.cancel()
         if not task.done():

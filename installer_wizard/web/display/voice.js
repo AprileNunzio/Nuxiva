@@ -146,9 +146,32 @@
       quiet();
     }
 
+    function serverStream() {
+      const { gen, signal } = beginAudio();
+      ensure();
+      active = true;
+      if (D.avatar && D.avatar.face) D.avatar.face.realAudio = true;
+      cancelAnimationFrame(raf); animate();
+      let chain = Promise.resolve();
+      return {
+        add(wav, onDone) {
+          if (gen !== generation) return;
+          chain = chain.then(async () => {
+            if (signal.aborted) return;
+            const buffer = await ctx.decodeAudioData(wav);
+            if (gen === generation) await play(buffer, gen);
+            if (onDone && gen === generation) onDone();
+          }).catch((err) => { if (!signal.aborted) console.warn("Blocco audio non riprodotto:", err); });
+        },
+        async close() {
+          try { await chain; } finally { if (gen === generation) quiet(); }
+        },
+      };
+    }
+
     function setVolume(v) { volume = Math.max(0, Math.min(1, v)); if (gain) gain.gain.setTargetAtTime(volume, ctx.currentTime, 0.2); }
 
-    return { speak, stream, stop, setVolume, isSpeaking: () => active };
+    return { speak, stream, serverStream, stop, setVolume, isSpeaking: () => active };
   })();
 
   function systemSpeak(text, lang, onStart) {
@@ -189,7 +212,8 @@
 
   D.speakStream = (lang) => {
     D.Ear.speaking(true);
-    const live = D.voiceOn ? Voice.stream(lang) : null;
+    const server = D.DuplexVoice && D.DuplexVoice.connected();
+    const live = D.voiceOn && !server ? Voice.stream(lang) : null;
     return {
       add(text) { if (live) live.add(text); },
       stop() {
@@ -211,8 +235,11 @@
   };
 
   D.setVoiceVolume = (v) => Voice.setVolume(v);
+  D.voiceServerStream = () => Voice.serverStream();
+  D.voiceStop = () => Voice.stop();
 
   D.hush = () => {
+    if (D.DuplexVoice) D.DuplexVoice.cut();
     D.lastVoice = false;
     Voice.stop();
     if ("speechSynthesis" in window) speechSynthesis.cancel();

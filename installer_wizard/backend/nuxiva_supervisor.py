@@ -166,7 +166,7 @@ from agenti.flows import watchdog as flows_watchdog
 from agenti.scene.service import scene as scene_service
 from agenti.twin import api as twin_api
 from agenti.vision.webcams import webcams
-from agenti.voices import api as voices_api
+from agenti.voices import api as voices_api, duplex_api as voices_duplex_api
 from agenti.hardware import api as hardware_api
 from agenti.hardware.service import hardware_service
 from orchestrator import native_reload_loop, orch, telemetry_loop
@@ -185,7 +185,7 @@ FEATURE_APIS = (
     bluetooth_api,
     chat_api,
     cloud_api,
-    voices_api,
+    voices_api, voices_duplex_api,
     vision_api,
     devices_api,
     location_api,

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Voce in streaming dal server e ripresa dopo l'interruzione",
+    "en": "Server-side streaming voice and resuming after an interruption",
+    "fr": "Voix en streaming depuis le serveur et reprise après interruption",
+    "es": "Voz en streaming desde el servidor y reanudación tras la interrupción"
+  },
+  "features": [
+    {
+      "it": "Con NUXIVA_DUPLEX=rust la risposta viene letta ad alta voce dal server mentre il testo arriva, frase dopo frase, e il tuo comando «Zitta» la ferma subito. Senza questa impostazione, che resta quella predefinita, non cambia nulla.",
+      "en": "With NUXIVA_DUPLEX=rust the reply is read aloud by the server while the text arrives, sentence by sentence, and your Hush command stops it at once. Without this setting, which stays the default, nothing changes.",
+      "fr": "Avec NUXIVA_DUPLEX=rust la réponse est lue à voix haute par le serveur pendant que le texte arrive, phrase après phrase, et ta commande Silence l'arrête aussitôt. Sans ce réglage, qui reste le défaut, rien ne change.",
+      "es": "Con NUXIVA_DUPLEX=rust el servidor lee la respuesta en voz alta mientras llega el texto, frase a frase, y tu orden Silencio la detiene al instante. Sin este ajuste, que sigue por defecto, nada cambia."
+    },
+    {
+      "it": "Se la interrompi, Nuxiva ricorda cosa aveva già detto e cosa no: «continua» riprende da dove si era fermata, una correzione rifà la risposta e «lascia stare» la abbandona.",
+      "en": "If you interrupt it, Nuxiva remembers what it had already said and what it had not: \"continue\" resumes where it stopped, a correction redoes the answer and \"never mind\" drops it.",
+      "fr": "Si tu l'interromps, Nuxiva se souvient de ce qu'elle avait déjà dit ou non : « continue » reprend où elle s'était arrêtée, une correction refait la réponse et « laisse tomber » l'abandonne.",
+      "es": "Si la interrumpes, Nuxiva recuerda lo que ya había dicho y lo que no: «continúa» retoma donde se detuvo, una corrección rehace la respuesta y «déjalo» la abandona."
+    }
+  ],
+  "fixes": []
+}
