@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Pagina 80 completa anche aprendola dall'indirizzo di rete della macchina",
+    "en": "Page 80 complete even when opened from the machine's own network address",
+    "fr": "Page 80 complète même ouverte depuis l'adresse réseau de la machine",
+    "es": "Página 80 completa también al abrirla desde la dirección de red de la máquina"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Aprendo la pagina 80 dall'IP di rete della stessa macchina i widget tornano visibili: la macchina riconosce come propri tutti i suoi indirizzi, IPv4 e IPv6.",
+      "en": "Opening page 80 from the machine's own network IP brings the widgets back: the machine now recognises all its own addresses, IPv4 and IPv6, as local.",
+      "fr": "En ouvrant la page 80 depuis l'IP réseau de la machine, les widgets reviennent : la machine reconnaît toutes ses adresses, IPv4 et IPv6, comme locales.",
+      "es": "Al abrir la página 80 desde la IP de red de la propia máquina los widgets vuelven: la máquina reconoce todas sus direcciones, IPv4 e IPv6, como locales."
+    },
+    {
+      "it": "Gli altri dispositivi della rete restano trattati come remoti: nessuna intestazione modificabile e nessun nome di dominio concede l'accesso locale.",
+      "en": "Other devices on the network are still treated as remote: no editable header and no domain name grants local access.",
+      "fr": "Les autres appareils du réseau restent traités comme distants : aucun en-tête modifiable ni nom de domaine n'accorde l'accès local.",
+      "es": "Los demás dispositivos de la red siguen tratándose como remotos: ningún encabezado modificable ni nombre de dominio concede acceso local."
+    }
+  ]
+}

@@ -1,8 +1,9 @@
 from typing import Literal
 
-from access import is_local, is_private, session_user
+from access import is_private, session_user
 from config import env_get
 from agenti.authz.access_control import account, allows
+from agenti.desktop.host_origin import is_host_origin
 from agenti.desktop.presence_bridge import gate_enabled
 
 
@@ -21,11 +22,9 @@ def _select(source: dict, keys: tuple[str, ...]) -> dict:
 
 
 def is_host_display(request) -> bool:
-    return (
-        is_local(request)
-        and request.url.hostname in ("127.0.0.1", "::1", "localhost")
-        and not any(name in request.headers for name in PROXY_HEADERS)
-    )
+    if not request.client or any(name in request.headers for name in PROXY_HEADERS):
+        return False
+    return is_host_origin(request.client.host, request.headers.get("host", ""))
 
 
 def remote_display_scope(request) -> RemoteScope:

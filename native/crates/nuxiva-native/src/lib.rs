@@ -83,7 +83,7 @@ mod voice;
 mod weather;
 mod workbench;
 
-use access::RustAccessMatrix;
+use access::{RustAccessMatrix, access_is_host_origin};
 use admin_os::{
     RustAdminOsAiEngine, RustAdminOsFirewall, RustAdminOsMemory, RustAdminOsNotification,
 };
@@ -236,6 +236,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(valid_pattern, m)?)?;
     m.add_function(wrap_pyfunction!(valid_origin, m)?)?;
     m.add_function(wrap_pyfunction!(detect_language, m)?)?;
+    m.add_function(wrap_pyfunction!(access_is_host_origin, m)?)?;
     m.add_function(wrap_pyfunction!(supported_languages, m)?)?;
     m.add_function(wrap_pyfunction!(stage_plan, m)?)?;
     m.add_function(wrap_pyfunction!(particles_sample, m)?)?;

@@ -1,3 +1,4 @@
+use nuxiva_access_core::origin::{is_host_origin, normalized_locals};
 use nuxiva_access_core::{Capability, Matrix, Request, Role, Strength, Verdict, decide};
 use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
@@ -76,4 +77,10 @@ impl RustAccessMatrix {
         serde_json::to_string(&self.matrix.export())
             .map_err(|e| PyRuntimeError::new_err(e.to_string()))
     }
+}
+
+#[pyfunction]
+#[allow(clippy::needless_pass_by_value)]
+pub fn access_is_host_origin(peer: &str, host: &str, locals: Vec<String>) -> bool {
+    is_host_origin(peer, host, &normalized_locals(&locals))
 }

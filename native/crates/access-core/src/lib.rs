@@ -6,6 +6,7 @@ pub mod decide;
 pub mod error;
 pub mod floor;
 pub mod matrix;
+pub mod origin;
 pub mod role;
 pub mod smb_sync;
 
@@ -20,3 +21,5 @@ pub use role::Role;
 mod tests;
 #[cfg(test)]
 mod tests_matrix;
+#[cfg(test)]
+mod tests_origin;
