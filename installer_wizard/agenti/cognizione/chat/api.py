@@ -23,7 +23,7 @@ from agenti.brain.residency import primary
 from agenti.brain.trace import trace
 from agenti.capabilities import manifest as capabilities
 from agenti.chat import duplex_feed
-from agenti.chat import addressee, assistant, brain_chain, brain_engine, intents, interrupt, speaker, streaming, turns, voice_id, wake
+from agenti.chat import addressee, assistant, brain_chain, brain_engine, intents, interrupt, personal_memory, speaker, streaming, turns, voice_id, wake
 from agenti.chat.dialogue import dialogue
 from agenti.chat.journey_flow import ChatJourney
 from agenti.sentinel.collectors import operations
@@ -73,6 +73,9 @@ async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
     long_term = mind.recall(query, who=acting().slug)
     if long_term:
         context["long_term"] = long_term
+    personal = await asyncio.to_thread(personal_memory.recall, who.slug, who.role, query)
+    if personal:
+        context["personal_graph"] = personal
     from agenti.chat.reflex_memory import reflex_memory
     prof = reflex_memory.learn(query)
     if prof and (prof.interests or prof.facts or (prof.user_name and prof.user_name != "user")):
@@ -225,6 +228,8 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
                 flow.cancelled()
                 return JSONResponse({"cancelled": True})
         flow.answered(result)
+        if not internal and principal:
+            background(personal_memory.learn(principal.slug, principal.role, said))
     if not result.pop("exact_reply", False):
         result["reply"] = speaker.fix_address(result.get("reply") or "") + voice_id.offer(heard.get("voice_known"))
     operations.chat(device, flow.tracker.id if flow.tracker else "", result)

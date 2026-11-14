@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "La memoria personale entra nella chat, spenta di default",
+    "en": "Personal memory joins the chat, off by default",
+    "fr": "La mémoire personnelle rejoint le chat, désactivée par défaut",
+    "es": "La memoria personal entra en el chat, apagada por defecto"
+  },
+  "features": [
+    {
+      "it": "Se la attivi, Nuxiva impara dalle cose che dici (dove abiti, cosa ti piace, chi sono i tuoi cari) e le usa per rispondere meglio, sempre separate per persona e cifrate.",
+      "en": "If you turn it on, Nuxiva learns from what you say (where you live, what you like, who your loved ones are) and uses it to answer better, always kept separate per person and encrypted.",
+      "fr": "Si tu l'actives, Nuxiva apprend de ce que tu dis (où tu habites, ce que tu aimes, qui sont tes proches) et s'en sert pour mieux répondre, toujours séparé par personne et chiffré.",
+      "es": "Si la activas, Nuxiva aprende de lo que dices (dónde vives, qué te gusta, quiénes son tus seres queridos) y lo usa para responder mejor, siempre separado por persona y cifrado."
+    }
+  ],
+  "fixes": []
+}
