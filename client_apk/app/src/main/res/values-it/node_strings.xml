@@ -152,4 +152,9 @@
     <string name="hub_mic_on">Microfono consentito</string>
     <string name="hub_camera_on">Fotocamera consentita</string>
     <string name="hub_privacy_hint">Sono spenti di default. Possono chiederli solo le pagine del tuo server e Android mostra anche il suo indicatore mentre sono in uso.</string>
+    <string name="enroll_code_title">Inserisci il codice</string>
+    <string name="enroll_code_hint">Apri la console Nuxiva, Nodi e Server, Android. Scrivi l\'indirizzo del server e il codice a 6 cifre mostrato lì.</string>
+    <string name="enroll_code_server_label">Indirizzo del server</string>
+    <string name="enroll_code_label">Codice a 6 cifre</string>
+    <string name="error_code_invalid">Il codice di abbinamento è errato o scaduto.</string>
 </resources>

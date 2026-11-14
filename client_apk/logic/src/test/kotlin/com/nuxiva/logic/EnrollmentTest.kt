@@ -73,4 +73,15 @@ class NodeIdTest {
             kotlin.test.assertTrue(com.nuxiva.logic.enroll.NodeIds.pattern.matches(id), id)
         }
     }
+
+
+    @Test
+    fun normalizesManualCodeAndServer() {
+        assertEquals("482915", EnrollmentParser.normalizeCode("482 915"))
+        assertEquals("enroll_code_invalid", assertFailsWith<EnrollmentException> { EnrollmentParser.normalizeCode("12345") }.code)
+        assertEquals("https://192.168.1.10:8443", EnrollmentParser.normalizeServerInput("192.168.1.10:8443/"))
+        assertEquals("https://nuxiva.local", EnrollmentParser.normalizeServerInput("https://nuxiva.local:443"))
+        assertFailsWith<EnrollmentException> { EnrollmentParser.normalizeServerInput("http://192.168.1.10") }
+        assertFailsWith<EnrollmentException> { EnrollmentParser.normalizeServerInput("a b") }
+    }
 }

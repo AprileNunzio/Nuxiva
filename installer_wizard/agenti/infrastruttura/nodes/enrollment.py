@@ -69,6 +69,17 @@ class EnrollmentTokens:
             raise EnrollmentError("enroll_token_invalid")
         return digest
 
+    def revoke(self, token: str) -> bool:
+        digest = _digest(str(token or ""))
+        found = digest in self.items
+        if found:
+            self.burn(digest)
+        return found
+
+    def alive(self, token: str) -> bool:
+        self._prune()
+        return _digest(str(token or "")) in self.items
+
     def burn(self, digest: str) -> None:
         self.items.pop(digest, None)
         self._save()

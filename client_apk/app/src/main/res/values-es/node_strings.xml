@@ -152,4 +152,9 @@
     <string name="hub_mic_on">Micrófono permitido</string>
     <string name="hub_camera_on">Cámara permitida</string>
     <string name="hub_privacy_hint">Están desactivados de forma predeterminada. Solo la página de tu servidor puede pedirlos y Android muestra además su indicador mientras se usan.</string>
+    <string name="enroll_code_title">Introduce el código</string>
+    <string name="enroll_code_hint">Abre la consola de Nuxiva, Nodos y servidores, Android. Escribe la dirección del servidor y el código de 6 dígitos que aparece allí.</string>
+    <string name="enroll_code_server_label">Dirección del servidor</string>
+    <string name="enroll_code_label">Código de 6 dígitos</string>
+    <string name="error_code_invalid">El código de emparejamiento es incorrecto o ha caducado.</string>
 </resources>

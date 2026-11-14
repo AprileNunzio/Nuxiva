@@ -1,98 +1,29 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Copy, Download, ExternalLink, QrCode } from 'lucide-react';
-import QRCode from 'qrcode';
+import React, { useState } from 'react';
+import { Check, Copy, Download, ExternalLink, QrCode, RefreshCw, ShieldOff } from 'lucide-react';
 import { Btn } from '../../shared/kit';
 import { useScopedI18n } from '../../../shared/i18n/useScopedI18n';
 import { reportError } from '../../../shared/errors/errorBus';
-import { NodeModuleError, requestJson } from '../../../node_apps/shared/data/http';
+import { groupCode, groupFingerprint, RELEASES_URL, useAndroidPairing } from './useAndroidPairing';
 
-interface ApkInfo {
-  readonly version: string;
-  readonly name: string;
-  readonly url: string;
-  readonly sha256: string;
-}
+const FACT = 'text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant';
 
-interface Enrollment {
-  readonly link: string;
-  readonly expires: number;
-  readonly apk: ApkInfo;
-}
-
-const RELEASES_URL = 'https://github.com/AprileNunzio/Nuxiva/releases';
-const OFFICIAL_PREFIX = `${RELEASES_URL}/download/`;
-const KNOWN_ERRORS = new Set(['android_apk_unavailable', 'enroll_https_unavailable', 'enroll_ca_missing', 'enroll_too_many_tokens']);
-const QR_OPTIONS = { errorCorrectionLevel: 'M', margin: 2, width: 320 } as const;
-
-async function toImage(value: string): Promise<string> {
-  return QRCode.toDataURL(value, QR_OPTIONS);
-}
+const Step: React.FC<{ readonly title: string; readonly children: React.ReactNode }> = ({ title, children }) => (
+  <section className="flex min-w-0 flex-col gap-3" aria-label={title}>
+    <h4 className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">{title}</h4>
+    {children}
+  </section>
+);
 
 export const AndroidEnroll: React.FC = () => {
   const { t } = useScopedI18n('core_apps/nodes');
-  const [apk, setApk] = useState<ApkInfo | null>(null);
-  const [apkImage, setApkImage] = useState('');
-  const [loaded, setLoaded] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-  const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
-  const [enrollImage, setEnrollImage] = useState('');
-  const [remaining, setRemaining] = useState(0);
+  const state = useAndroidPairing();
+  const { apk, pairing, phase } = state;
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    requestJson<ApkInfo>('/api/android/installer-info', { signal: controller.signal })
-      .then(async (result) => {
-        if (!result.url.startsWith(OFFICIAL_PREFIX)) return;
-        const image = await toImage(result.url);
-        if (!controller.signal.aborted) {
-          setApk(result);
-          setApkImage(image);
-        }
-      })
-      .catch((cause) => {
-        if (!controller.signal.aborted && !(cause instanceof NodeModuleError)) reportError('nodes_android_info_failed', cause);
-      })
-      .finally(() => !controller.signal.aborted && setLoaded(true));
-    return () => controller.abort();
-  }, []);
-
-  useEffect(() => {
-    if (!enrollment) return undefined;
-    const tick = () => {
-      const left = Math.max(0, enrollment.expires - Math.floor(Date.now() / 1000));
-      setRemaining(left);
-      if (left === 0) {
-        setEnrollment(null);
-        setEnrollImage('');
-      }
-    };
-    tick();
-    const timer = window.setInterval(tick, 1000);
-    return () => window.clearInterval(timer);
-  }, [enrollment]);
-
-  const generate = useCallback(async () => {
-    setBusy(true);
-    setError('');
-    try {
-      const result = await requestJson<Enrollment>('/api/android/enrollment', { method: 'POST', body: '{}' });
-      setEnrollImage(await toImage(result.link));
-      setEnrollment(result);
-    } catch (cause) {
-      const code = cause instanceof NodeModuleError && KNOWN_ERRORS.has(cause.code) ? cause.code : 'generic';
-      setError(code);
-      if (code === 'generic') reportError('nodes_android_enrollment_failed', cause);
-    } finally {
-      setBusy(false);
-    }
-  }, []);
-
   const copy = async () => {
-    if (!enrollment) return;
+    if (!pairing) return;
     try {
-      await navigator.clipboard.writeText(enrollment.link);
+      await navigator.clipboard.writeText(pairing.link);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 3000);
     } catch (cause) {
@@ -100,19 +31,18 @@ export const AndroidEnroll: React.FC = () => {
     }
   };
 
-  const minutes = String(Math.floor(remaining / 60)).padStart(2, '0');
-  const seconds = String(remaining % 60).padStart(2, '0');
+  const minutes = String(Math.floor(state.remaining / 60)).padStart(2, '0');
+  const seconds = String(state.remaining % 60).padStart(2, '0');
 
   return (
-    <div className="min-w-0 space-y-4">
-      <section className="space-y-2" aria-label={t('android_apk_title')}>
-        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{t('android_apk_title')}</h3>
+    <div className="grid min-w-0 gap-6 cq-lg:grid-cols-2">
+      <Step title={t('android_apk_title')}>
         {apk ? (
-          <div className="flex flex-wrap items-start gap-3">
-            {apkImage && <img src={apkImage} alt={t('android_apk_qr_alt')} width={160} height={160} className="h-40 w-40 rounded-xl bg-white p-1" />}
-            <div className="min-w-0 flex-1 space-y-2 text-xs text-slate-700 dark:text-slate-300">
+          <div className="flex flex-wrap items-start gap-4">
+            {state.apkImage && <img src={state.apkImage} alt={t('android_apk_qr_alt')} width={148} height={148} className="h-36 w-36 rounded-2xl bg-white p-1" />}
+            <div className="flex min-w-0 flex-1 basis-48 flex-col gap-2 text-xs text-on-surface-variant">
               <a
-                className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-cyan-700 px-4 text-sm font-semibold text-white hover:bg-cyan-800 focus-visible:outline focus-visible:outline-2"
+                className="md-state inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full bg-primary px-4 text-sm font-semibold text-on-primary"
                 href={apk.url}
                 rel="noopener noreferrer"
                 download={apk.name}
@@ -125,9 +55,9 @@ export const AndroidEnroll: React.FC = () => {
             </div>
           </div>
         ) : (
-          loaded && (
-            <p role="alert" className="space-y-1 text-xs text-amber-700 dark:text-amber-400">
-              <span className="block">{t('android_error_android_apk_unavailable')}</span>
+          state.loaded && (
+            <p role="alert" className="flex flex-col gap-1 text-xs text-warning">
+              <span>{t('android_error_android_apk_unavailable')}</span>
               <a className="inline-flex min-h-11 items-center gap-1 font-semibold underline" href={RELEASES_URL} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                 {t('windows_releases_page')}
@@ -135,37 +65,57 @@ export const AndroidEnroll: React.FC = () => {
             </p>
           )
         )}
-      </section>
+      </Step>
 
-      <section className="space-y-2" aria-label={t('android_enroll_title')}>
-        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{t('android_enroll_title')}</h3>
-        <Btn busy={busy} disabled={!apk} onClick={() => void generate()}>
-          <QrCode className="h-4 w-4 shrink-0" aria-hidden="true" />
-          {t('android_generate')}
-        </Btn>
-        {enrollment && enrollImage && (
-          <div className="flex flex-wrap items-start gap-3">
-            <img src={enrollImage} alt={t('android_enroll_qr_alt')} width={200} height={200} className="h-48 w-48 rounded-xl bg-white p-1" />
-            <div className="min-w-0 flex-1 space-y-2 text-xs text-slate-700 dark:text-slate-300">
-              <p aria-live="polite" className="font-semibold">{t('android_expires', { time: `${minutes}:${seconds}` })}</p>
-              <p>{t('android_enroll_hint')}</p>
-              <button
-                type="button"
-                onClick={() => void copy()}
-                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-300 px-3 font-semibold hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 dark:border-slate-600 dark:hover:bg-slate-800"
-              >
-                <Copy className="h-4 w-4" aria-hidden="true" />
+      <Step title={t('android_enroll_title')}>
+        <div className="flex flex-wrap items-center gap-2">
+          <Btn busy={state.busy} disabled={!apk} onClick={() => void state.generate()}>
+            {pairing ? <RefreshCw className="h-4 w-4 shrink-0" aria-hidden="true" /> : <QrCode className="h-4 w-4 shrink-0" aria-hidden="true" />}
+            {t(pairing ? 'android_regenerate' : 'android_generate')}
+          </Btn>
+          {pairing && (
+            <Btn tone="rose" onClick={state.revoke}>
+              <ShieldOff className="h-4 w-4 shrink-0" aria-hidden="true" />
+              {t('android_revoke')}
+            </Btn>
+          )}
+        </div>
+        {pairing && state.image && (
+          <div className="flex flex-wrap items-start gap-4">
+            <img src={state.image} alt={t('android_enroll_qr_alt')} width={200} height={200} className="h-48 w-48 rounded-2xl bg-white p-1" />
+            <dl className="flex min-w-0 flex-1 basis-52 flex-col gap-3 text-xs">
+              <div>
+                <dt className={FACT}>{t('android_code_label')}</dt>
+                <dd className="font-mono text-3xl font-bold tracking-[0.2em] text-primary" aria-label={pairing.code.split('').join(' ')}>{groupCode(pairing.code)}</dd>
+              </div>
+              <div>
+                <dt className={FACT}>{t('android_server_label')}</dt>
+                <dd className="break-all font-mono text-sm text-on-surface">{pairing.server.replace(/^https:\/\//, '')}</dd>
+              </div>
+              <div>
+                <dt className={FACT}>{t('android_fingerprint_label')}</dt>
+                <dd className="font-mono text-sm text-on-surface">{groupFingerprint(pairing.fingerprint)}</dd>
+              </div>
+              <div>
+                <dt className={FACT}>{t('android_expires_label')}</dt>
+                <dd aria-live="polite" className="font-mono text-sm font-semibold text-on-surface">{minutes}:{seconds}</dd>
+              </div>
+              <button type="button" onClick={() => void copy()} className="md-state inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-surface-container-high px-4 font-semibold text-on-surface">
+                {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
                 {copied ? t('android_copied') : t('android_copy_link')}
               </button>
-            </div>
+            </dl>
           </div>
         )}
-        {error && (
-          <p role="alert" className="text-xs text-rose-600 dark:text-rose-400">
-            {t(`android_error_${error}`)}
+        {pairing && <p className="text-xs text-on-surface-variant">{t('android_enroll_hint')}</p>}
+        {pairing && phase === 'code_used' && <p role="status" className="text-xs font-semibold text-primary">{t('android_state_code_used')}</p>}
+        {!pairing && phase !== 'idle' && (
+          <p role="status" className={`text-xs font-semibold ${phase === 'enrolled' ? 'text-success' : 'text-on-surface-variant'}`}>
+            {t(`android_state_${phase}`)}
           </p>
         )}
-      </section>
+        {state.error && <p role="alert" className="text-xs text-error">{t(`android_error_${state.error}`)}</p>}
+      </Step>
     </div>
   );
 };

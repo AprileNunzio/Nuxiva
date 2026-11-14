@@ -152,4 +152,9 @@
     <string name="hub_mic_on">Microphone autorisé</string>
     <string name="hub_camera_on">Caméra autorisée</string>
     <string name="hub_privacy_hint">Ils sont désactivés par défaut. Seule la page de votre serveur peut les demander et Android affiche aussi son indicateur pendant l\'utilisation.</string>
+    <string name="enroll_code_title">Saisir le code</string>
+    <string name="enroll_code_hint">Ouvrez la console Nuxiva, Nœuds et serveurs, Android. Saisissez l\'adresse du serveur et le code à 6 chiffres affiché.</string>
+    <string name="enroll_code_server_label">Adresse du serveur</string>
+    <string name="enroll_code_label">Code à 6 chiffres</string>
+    <string name="error_code_invalid">Le code d\'appairage est incorrect ou expiré.</string>
 </resources>

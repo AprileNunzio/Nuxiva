@@ -76,6 +76,27 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun offerCode(server: String, code: String) {
+        val target: String
+        val digits: String
+        try {
+            target = EnrollmentParser.normalizeServerInput(server)
+            digits = EnrollmentParser.normalizeCode(code)
+        } catch (error: EnrollmentException) {
+            enrollState.value = EnrollUi.Failed(error.code)
+            return
+        }
+        enrollState.value = EnrollUi.Working
+        viewModelScope.launch {
+            enrollState.value = try {
+                val payload = graph.enroller.payloadForCode(target, digits)
+                EnrollUi.Review(payload, PinnedTrust.short(payload.pin))
+            } catch (error: EnrollmentFailure) {
+                EnrollUi.Failed(error.code)
+            }
+        }
+    }
+
     fun confirmEnrollment(name: String) {
         val review = enrollState.value as? EnrollUi.Review ?: return
         enrollState.value = EnrollUi.Working

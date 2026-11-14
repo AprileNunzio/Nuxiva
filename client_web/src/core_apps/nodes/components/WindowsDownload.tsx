@@ -56,7 +56,7 @@ export const WindowsDownload: React.FC = () => {
         {info ? t('windows_download_version', { version: info.version }) : t('windows_download')}
       </Btn>
       {loaded && !info && (
-        <p role="alert" className="space-y-1 text-xs text-amber-700 dark:text-amber-400">
+        <p role="alert" className="space-y-1 text-xs text-warning">
           <span className="block">{t('windows_installer_unavailable')}</span>
           <a className="inline-flex min-h-11 items-center gap-1 font-semibold underline" href={RELEASES_URL} target="_blank" rel="noopener noreferrer">
             <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
@@ -65,7 +65,7 @@ export const WindowsDownload: React.FC = () => {
         </p>
       )}
       {failed && info && (
-        <p role="alert" className="space-y-1 text-xs text-rose-600 dark:text-rose-400">
+        <p role="alert" className="space-y-1 text-xs text-error">
           <span className="block">{t('windows_download_failed')}</span>
           <a className="inline-flex min-h-11 items-center gap-1 font-semibold underline" href={info.url} rel="noopener noreferrer" download={info.name}>
             <Download className="h-3.5 w-3.5" aria-hidden="true" />
@@ -73,7 +73,7 @@ export const WindowsDownload: React.FC = () => {
           </a>
         </p>
       )}
-      <p className="text-xs text-slate-600 dark:text-slate-400">{t('windows_download_hint')}</p>
+      <p className="text-xs text-on-surface-variant">{t('windows_download_hint')}</p>
     </div>
   );
 };

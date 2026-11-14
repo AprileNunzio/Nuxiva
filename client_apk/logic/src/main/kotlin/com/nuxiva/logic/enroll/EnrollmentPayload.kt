@@ -65,6 +65,20 @@ public object EnrollmentParser {
         return if (port == null || port == 443) "https://$host" else "https://$host:$port"
     }
 
+    public const val CODE_LENGTH: Int = 6
+
+    public fun normalizeCode(value: String): String {
+        val digits = value.filter { it in '0'..'9' }
+        if (digits.length != CODE_LENGTH) throw EnrollmentException("enroll_code_invalid")
+        return digits
+    }
+
+    public fun normalizeServerInput(value: String): String {
+        val text = value.trim().trimEnd('/')
+        if (text.isEmpty() || text.length > 255 || text.any { it.isWhitespace() }) throw EnrollmentException("enroll_file_invalid")
+        return normalizeServer(if (text.contains("://")) text else "https://$text")
+    }
+
     private fun fromLink(link: String): String {
         val uri = try {
             URI(link)

@@ -152,4 +152,9 @@
     <string name="hub_mic_on">Microphone allowed</string>
     <string name="hub_camera_on">Camera allowed</string>
     <string name="hub_privacy_hint">Both are off by default. Only your own server page can ask for them, and Android also shows its own indicator while they are in use.</string>
+    <string name="enroll_code_title">Enter the code</string>
+    <string name="enroll_code_hint">Open the Nuxiva console, Nodes and Servers, Android. Type the server address and the 6-digit code shown there.</string>
+    <string name="enroll_code_server_label">Server address</string>
+    <string name="enroll_code_label">6-digit code</string>
+    <string name="error_code_invalid">The pairing code is wrong or has expired.</string>
 </resources>

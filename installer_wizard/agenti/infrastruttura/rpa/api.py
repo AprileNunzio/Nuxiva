@@ -9,6 +9,7 @@ admin_routes = APIRouter(tags=["RPA"])
 public_routes = APIRouter(tags=["RPA"])
 admin_routes.include_router(enrolled_package.admin_routes)
 admin_routes.include_router(android_enroll.admin_routes)
+public_routes.include_router(android_enroll.public_routes)
 
 
 def _server_address(request: Request) -> str:

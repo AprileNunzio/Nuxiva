@@ -33,14 +33,15 @@ export const ModuleFrame: React.FC<ModuleFrameProps> = ({ icon: Icon, title, sub
   </section>
 );
 
-export const Panel: React.FC<{ readonly title: string; readonly action?: React.ReactNode; readonly children: React.ReactNode }> = ({
-  title,
-  action,
-  children,
-}) => (
-  <div className="rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs">
+export const Panel: React.FC<{
+  readonly title: string;
+  readonly action?: React.ReactNode;
+  readonly flat?: boolean;
+  readonly children: React.ReactNode;
+}> = ({ title, action, flat = false, children }) => (
+  <div className={flat ? 'min-w-0' : 'rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs'}>
     <div className="mb-3 flex items-center justify-between gap-3">
-      <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">{title}</h3>
+      <h3 className={`text-xs font-semibold uppercase tracking-[0.16em] ${flat ? 'text-on-surface-variant' : 'text-slate-500'}`}>{title}</h3>
       {action}
     </div>
     {children}

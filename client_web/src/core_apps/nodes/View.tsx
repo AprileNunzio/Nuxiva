@@ -67,49 +67,49 @@ export const View: React.FC = () => {
       description={t('description')}
       onReload={() => void load()}
     >
-      <ResourcesPanel />
-      <div className="grid gap-4 cq-xl:grid-cols-2">
-        <Panel title={t('install_platforms')}>
-          <InstallationCards links={links} usbPorts={usbPorts} detectingUsb={detectingUsb} detectUsb={() => void detectUsb()} />
-        </Panel>
-        <Panel title={t('total_nodes')}>
-          {loading ? (
-            <Loading label={t('loading')} />
-          ) : nodes.length === 0 ? (
-            <Empty>{t('empty')}</Empty>
-          ) : (
-            <ul className="space-y-2">
-              {nodes.map((node) => (
-                <Row
-                  key={node.id}
-                  actions={
-                    node.source !== 'local' && node.id !== 'virtual-core' && node.id !== 'virtual_core' ? (
-                      <Btn tone="rose" busy={busy} onClick={() => setRemoving(node)} title={t('deprovision')}>
-                        <Trash2 className="h-4 w-4" aria-hidden="true" />
-                        {t('deprovision')}
-                      </Btn>
-                    ) : undefined
-                  }
-                >
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Server className="h-4 w-4 text-cyan-600 dark:text-cyan-400" aria-hidden="true" />
-                    <b className="text-slate-900 dark:text-slate-100">{node.name}</b>
-                    <Pill tone={node.online ? 'emerald' : 'slate'}>
-                      {node.online === undefined ? node.status || '—' : t(node.online ? 'online' : 'offline')}
-                    </Pill>
-                  </div>
-                  <p className="mt-1 break-all text-xs text-slate-600 dark:text-slate-400">
-                    {[node.tier, node.ip].filter(Boolean).join(' · ')}
-                  </p>
-                  {node.source === 'local' && (
-                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">{t('local_host')}</p>
-                  )}
-                </Row>
-              ))}
-            </ul>
-          )}
-        </Panel>
-      </div>
+      <Panel title={t('res_title')}>
+        <ResourcesPanel />
+      </Panel>
+      <Panel title={t('total_nodes')}>
+        {loading ? (
+          <Loading label={t('loading')} />
+        ) : nodes.length === 0 ? (
+          <Empty>{t('empty')}</Empty>
+        ) : (
+          <ul className="grid gap-2 cq-lg:grid-cols-2 cq-3xl:grid-cols-3">
+            {nodes.map((node) => (
+              <Row
+                key={node.id}
+                actions={
+                  node.source !== 'local' && node.id !== 'virtual-core' && node.id !== 'virtual_core' ? (
+                    <Btn tone="rose" busy={busy} onClick={() => setRemoving(node)} title={t('deprovision')}>
+                      <Trash2 className="h-4 w-4" aria-hidden="true" />
+                      {t('deprovision')}
+                    </Btn>
+                  ) : undefined
+                }
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <Server className="h-4 w-4 text-primary" aria-hidden="true" />
+                  <b className="text-on-surface">{node.name}</b>
+                  <Pill tone={node.online ? 'emerald' : 'slate'}>
+                    {node.online === undefined ? node.status || '—' : t(node.online ? 'online' : 'offline')}
+                  </Pill>
+                </div>
+                <p className="mt-1 break-all text-xs text-on-surface-variant">
+                  {[node.tier, node.ip].filter(Boolean).join(' · ')}
+                </p>
+                {node.source === 'local' && (
+                  <p className="mt-1 text-xs text-on-surface-variant">{t('local_host')}</p>
+                )}
+              </Row>
+            ))}
+          </ul>
+        )}
+      </Panel>
+      <Panel title={t('install_platforms')}>
+        <InstallationCards links={links} usbPorts={usbPorts} detectingUsb={detectingUsb} detectUsb={() => void detectUsb()} />
+      </Panel>
       {removing && (
         <ConfirmDialog
           title={t('deprovision')}

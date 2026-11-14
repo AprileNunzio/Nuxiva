@@ -11,7 +11,7 @@ from fastapi.testclient import TestClient
 
 from agenti.nodes import adapt, zt_engine
 from agenti.nodes import enrollment as enrollment_module
-from agenti.rpa import android_enroll, android_release, releases
+from agenti.rpa import android_enroll, android_pairing, android_release, releases
 
 BASE = f"https://github.com/{releases.REPOSITORY}/releases/download"
 DIGEST = "sha256:" + "ab" * 32
@@ -68,8 +68,13 @@ class EnrollmentLinkTest(unittest.TestCase):
         patcher = mock.patch.object(android_enroll, "tokens", self.tokens)
         patcher.start()
         self.addCleanup(patcher.stop)
+        self.pairings = android_pairing.Pairings()
+        patcher = mock.patch.object(android_enroll, "pairings", self.pairings)
+        patcher.start()
+        self.addCleanup(patcher.stop)
         app = FastAPI()
         app.include_router(android_enroll.admin_routes)
+        app.include_router(android_enroll.public_routes)
         app.dependency_overrides[android_enroll.require_admin] = lambda: "admin"
         self.client = TestClient(app, base_url="https://192.168.1.10")
 
@@ -92,6 +97,57 @@ class EnrollmentLinkTest(unittest.TestCase):
         self.assertEqual(TestClient(self.client.app, base_url="https://127.0.0.1").post("/api/android/enrollment").status_code, 409)
         with mock.patch.object(android_enroll.android_release, "info", mock.AsyncMock(return_value={})):
             self.assertEqual(self.client.post("/api/android/enrollment").json()["detail"], "android_apk_unavailable")
+
+    def test_six_digit_code_returns_the_same_payload_once(self):
+        made = self.client.post("/api/android/enrollment").json()
+        self.assertRegex(made["code"], r"^\d{6}$")
+        self.assertEqual(made["fingerprint"], "A" * 16)
+        got = self.client.post("/api/android/enrollment-code", json={"code": made["code"]})
+        self.assertEqual(got.status_code, 200)
+        self.assertEqual(got.json()["server"], "https://192.168.1.10:8443")
+        self.assertTrue(self.tokens.verify(got.json()["token"]))
+        again = self.client.post("/api/android/enrollment-code", json={"code": made["code"]})
+        self.assertEqual((again.status_code, again.json()["detail"]), (403, "enroll_code_invalid"))
+        self.assertEqual(self.client.get(f"/api/android/enrollment/{made['id']}").json()["state"], "code_used")
+
+    def test_wrong_codes_are_rate_limited_per_address(self):
+        self.client.post("/api/android/enrollment")
+        codes = [self.client.post("/api/android/enrollment-code", json={"code": "000000"}).status_code for _ in range(7)]
+        self.assertEqual(codes[:5], [403] * 5)
+        self.assertEqual(codes[5:], [429, 429])
+
+    def test_global_failure_burst_invalidates_every_pending_code(self):
+        made = self.client.post("/api/android/enrollment").json()
+        for index in range(android_pairing.GLOBAL_LIMIT):
+            self.pairings.failures.clear()
+            self.client.post("/api/android/enrollment-code", json={"code": "00000" + str(index % 10)})
+        self.pairings.failures.clear()
+        self.pairings.global_failures.clear()
+        self.assertEqual(self.client.post("/api/android/enrollment-code", json={"code": made["code"]}).status_code, 403)
+
+    def test_malformed_code_is_rejected(self):
+        self.client.post("/api/android/enrollment")
+        for bad in ("12345", "1234567", "abcdef", "١٢٣٤٥٦", ""):
+            self.assertEqual(self.client.post("/api/android/enrollment-code", json={"code": bad}).status_code, 403)
+
+    def test_revoke_burns_token_and_code(self):
+        made = self.client.post("/api/android/enrollment").json()
+        token = json.loads(base64.urlsafe_b64decode(made["link"].split("=", 1)[1] + "==="))["token"]
+        self.assertEqual(self.client.delete(f"/api/android/enrollment/{made['id']}").status_code, 200)
+        self.assertFalse(self.tokens.alive(token))
+        self.assertEqual(self.client.post("/api/android/enrollment-code", json={"code": made["code"]}).status_code, 403)
+        self.assertEqual(self.client.delete(f"/api/android/enrollment/{made['id']}").status_code, 404)
+
+    def test_enrolled_state_after_token_is_consumed(self):
+        made = self.client.post("/api/android/enrollment").json()
+        token = json.loads(base64.urlsafe_b64decode(made["link"].split("=", 1)[1] + "==="))["token"]
+        self.tokens.revoke(token)
+        self.assertEqual(self.client.get(f"/api/android/enrollment/{made['id']}").json()["state"], "enrolled")
+
+    def test_active_pairings_are_capped(self):
+        for _ in range(android_pairing.MAX_ACTIVE):
+            self.assertEqual(self.client.post("/api/android/enrollment").status_code, 200)
+        self.assertEqual(self.client.post("/api/android/enrollment").status_code, 429)
 
     def test_installer_info_reports_the_release(self):
         self.assertEqual(self.client.get("/api/android/installer-info").json()["version"], "5.8.2")

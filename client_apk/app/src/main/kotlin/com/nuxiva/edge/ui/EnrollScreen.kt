@@ -86,6 +86,7 @@ private fun IdleForm(model: AppViewModel) {
             }) { Text(stringResource(R.string.enroll_scan)) }
         }
     }
+    CodeForm(model)
     InfoCard(stringResource(R.string.enroll_paste_title)) {
         OutlinedTextField(
             value = pasted,
@@ -96,6 +97,34 @@ private fun IdleForm(model: AppViewModel) {
             keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = KeyboardType.Uri),
         )
         Button(onClick = { model.offerEnrollment(pasted); pasted = "" }, enabled = pasted.isNotBlank()) {
+            Text(stringResource(R.string.enroll_continue))
+        }
+    }
+}
+
+@Composable
+private fun CodeForm(model: AppViewModel) {
+    var server by rememberSaveable { mutableStateOf("") }
+    var code by rememberSaveable { mutableStateOf("") }
+    InfoCard(stringResource(R.string.enroll_code_title)) {
+        Text(stringResource(R.string.enroll_code_hint))
+        OutlinedTextField(
+            value = server,
+            onValueChange = { server = it.take(SERVER_LIMIT) },
+            label = { Text(stringResource(R.string.enroll_code_server_label)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = KeyboardType.Uri),
+        )
+        OutlinedTextField(
+            value = code,
+            onValueChange = { code = it.filter(Char::isDigit).take(CODE_LIMIT) },
+            label = { Text(stringResource(R.string.enroll_code_label)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+        )
+        Button(onClick = { model.offerCode(server, code); code = "" }, enabled = server.isNotBlank() && code.length == CODE_LIMIT) {
             Text(stringResource(R.string.enroll_continue))
         }
     }
@@ -126,3 +155,5 @@ private fun ReviewForm(model: AppViewModel, review: EnrollUi.Review) {
 
 private const val PASTE_LIMIT = 8192
 private const val NAME_LIMIT = 60
+private const val SERVER_LIMIT = 255
+private const val CODE_LIMIT = 6

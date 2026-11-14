@@ -38,6 +38,7 @@ fun turnLabel(turn: Turn): Int = when (turn) {
 @StringRes
 fun errorLabel(code: String): Int = when (code) {
     "enroll_file_invalid" -> R.string.error_file_invalid
+    "enroll_code_invalid" -> R.string.error_code_invalid
     "enroll_file_expired" -> R.string.error_file_expired
     "enroll_token_invalid" -> R.string.error_token_invalid
     "enroll_node_exists" -> R.string.error_node_exists

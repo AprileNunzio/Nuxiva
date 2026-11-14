@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Nodi e Server più chiaro e abbinamento Android con codice a 6 cifre",
+    "en": "Clearer Nodes & Servers and Android pairing with a 6-digit code",
+    "fr": "Nœuds et serveurs plus clair et appairage Android avec code à 6 chiffres",
+    "es": "Nodos y servidores más claro y emparejamiento Android con código de 6 dígitos"
+  },
+  "features": [
+    {
+      "it": "Nodi e Server ha un nuovo layout uniforme: tutte le informazioni sono sempre visibili, senza frecce né riquadri, e si adatta a desktop e telefono.",
+      "en": "Nodes & Servers has a new uniform layout: all information is always visible, with no arrows or boxes, and it adapts to desktop and phone.",
+      "fr": "Nœuds et serveurs a une nouvelle mise en page uniforme : toutes les informations sont toujours visibles, sans flèches ni cadres, adaptée au bureau et au téléphone.",
+      "es": "Nodos y servidores tiene un nuevo diseño uniforme: toda la información siempre visible, sin flechas ni recuadros, adaptado a escritorio y teléfono."
+    },
+    {
+      "it": "Sezione Android: scarica l'app Nuxiva e collega il dispositivo con un QR code monouso oppure con un codice a 6 cifre, con scadenza visibile, nuovo codice e revoca immediata.",
+      "en": "Android section: download the Nuxiva app and link the device with a single-use QR code or a 6-digit code, with visible expiry, new code and instant revoke.",
+      "fr": "Section Android : téléchargez l'application Nuxiva et liez l'appareil avec un QR code à usage unique ou un code à 6 chiffres, avec expiration visible, nouveau code et révocation immédiate.",
+      "es": "Sección Android: descarga la app Nuxiva y vincula el dispositivo con un QR de un solo uso o un código de 6 dígitos, con caducidad visible, código nuevo y revocación inmediata."
+    },
+    {
+      "it": "Nell'app Android si può scrivere l'indirizzo del server e il codice a 6 cifre quando non si riesce a inquadrare il QR; l'impronta del certificato va confermata.",
+      "en": "In the Android app you can type the server address and the 6-digit code when the QR cannot be scanned; the certificate fingerprint must be confirmed.",
+      "fr": "Dans l'application Android, on peut saisir l'adresse du serveur et le code à 6 chiffres quand le QR ne peut pas être scanné ; l'empreinte du certificat doit être confirmée.",
+      "es": "En la app de Android se puede escribir la dirección del servidor y el código de 6 dígitos cuando no se puede escanear el QR; hay que confirmar la huella del certificado."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il link di abbinamento incollato con virgolette, spazi o testo attorno ora viene riconosciuto invece di dare «codice o link non valido».",
+      "en": "A pairing link pasted with quotes, spaces or surrounding text is now recognised instead of showing \"code or link not valid\".",
+      "fr": "Un lien d'appairage collé avec des guillemets, espaces ou du texte autour est maintenant reconnu au lieu d'afficher « code ou lien non valide ».",
+      "es": "Un enlace de emparejamiento pegado con comillas, espacios o texto alrededor ahora se reconoce en lugar de mostrar «código o enlace no válido»."
+    }
+  ]
+}

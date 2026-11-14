@@ -37,21 +37,21 @@ export const PcLinkPanel: React.FC<{ readonly handle: LinksHandle }> = ({ handle
 
   return (
     <div className="min-w-0 space-y-3">
-      <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{t('step2_pc_title')}</h3>
-      <p className="text-xs text-slate-600 dark:text-slate-400">{t('pc_link_hint')}</p>
-      <code className="block overflow-x-auto rounded-xl border border-cyan-500/30 bg-cyan-950/10 dark:bg-cyan-950/30 p-3 font-mono text-xs text-cyan-700 dark:text-cyan-300 backdrop-blur-xs">
+      <h4 className="text-sm font-semibold text-on-surface">{t('step2_pc_title')}</h4>
+      <p className="text-xs text-on-surface-variant">{t('pc_link_hint')}</p>
+      <code className="block overflow-x-auto rounded-2xl bg-surface-container px-3 py-2.5 font-mono text-xs text-primary">
         {command}
       </code>
       <button
         type="button"
         disabled={!server}
         onClick={() => void copy()}
-        className="flex min-h-11 items-center gap-2 rounded-xl border border-cyan-500/40 bg-cyan-500/10 dark:bg-cyan-500/20 px-3.5 py-2 text-xs font-semibold text-cyan-700 dark:text-cyan-300 hover:bg-cyan-500/20 dark:hover:bg-cyan-500/30 active:scale-[0.98] transition disabled:opacity-50"
+        className="md-state flex min-h-11 w-fit items-center gap-2 rounded-full bg-primary-container px-4 py-2 text-xs font-semibold text-on-primary-container disabled:opacity-50"
       >
         <Copy className="h-4 w-4" aria-hidden="true" />
         {t(copied ? 'command_copied' : 'copy_command')}
       </button>
-      <p className="text-xs text-slate-600 dark:text-slate-400">{t('pc_code_hint')}</p>
+      <p className="text-xs text-on-surface-variant">{t('pc_code_hint')}</p>
       <PairingPanel />
       <RequestsPanel handle={handle} />
     </div>

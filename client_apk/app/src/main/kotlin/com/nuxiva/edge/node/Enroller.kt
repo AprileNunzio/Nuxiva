@@ -2,6 +2,8 @@ package com.nuxiva.edge.node
 
 import com.nuxiva.logic.crypto.DeviceKey
 import com.nuxiva.logic.crypto.Hex
+import com.nuxiva.logic.enroll.EnrollmentException
+import com.nuxiva.logic.enroll.EnrollmentParser
 import com.nuxiva.logic.enroll.EnrollmentPayload
 import com.nuxiva.logic.enroll.NodeIds
 import com.nuxiva.logic.net.PinnedTrust
@@ -10,7 +12,9 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
 class EnrollmentFailure(val code: String) : Exception(code)
@@ -56,6 +60,34 @@ class Enroller(private val store: ProfileStore) {
             profile
         }
 
+    suspend fun payloadForCode(server: String, code: String): EnrollmentPayload =
+        withContext(Dispatchers.IO) {
+            val body = buildJsonObject { put("code", JsonPrimitive(code)) }.toString()
+                .toRequestBody("application/json".toMediaType())
+            val request = Request.Builder().url("$server$CODE_PATH").post(body).build()
+            val text = try {
+                TlsClients.firstContact().newCall(request).execute().use { response ->
+                    val bytes = response.body?.byteStream()?.use { it.readNBytesCompat(CODE_LIMIT + 1) } ?: ByteArray(0)
+                    if (bytes.size > CODE_LIMIT) throw EnrollmentFailure("enroll_code_invalid")
+                    when (response.code) {
+                        200 -> String(bytes, Charsets.UTF_8)
+                        429 -> throw EnrollmentFailure("rate_limited")
+                        403 -> throw EnrollmentFailure("enroll_code_invalid")
+                        else -> throw EnrollmentFailure("enroll_unreachable")
+                    }
+                }
+            } catch (error: IOException) {
+                throw EnrollmentFailure("enroll_unreachable")
+            }
+            val payload = try {
+                EnrollmentParser.parse(text, System.currentTimeMillis() / 1000L)
+            } catch (error: EnrollmentException) {
+                throw EnrollmentFailure(error.code)
+            }
+            if (payload.server != server) throw EnrollmentFailure("enroll_file_invalid")
+            payload
+        }
+
     private fun fetchCa(server: String): String {
         val request = Request.Builder().url("$server$CA_PATH").get().build()
         return try {
@@ -83,6 +115,8 @@ class Enroller(private val store: ProfileStore) {
 
     private companion object {
         const val CA_PATH = "/nuxiva-ca.crt"
+        const val CODE_PATH = "/api/android/enrollment-code"
+        const val CODE_LIMIT = 8192
         const val CA_LIMIT = 65536
         const val NAME_LIMIT = 60
     }
