@@ -209,6 +209,7 @@
       else if (ev.type === "state") { setState(ev.state); document.body.classList.toggle("conversing", !!ev.conversation); }
       else if (ev.type === "wake") { if (ev.mid_speech) D.quietWakeAt = Date.now(); D.lastInteraction = Date.now(); D.pingActivity(true); setState("listening"); if (D.mode === "brain") D.setMode("face"); if (D.wakeDesk) D.wakeDesk(); }
       else if (ev.type === "barge") { if (ev.origin !== false && D.hush) D.hush(); }
+      else if (ev.type === "duplex") announceDuplex(ev.state);
       else if (ev.type === "mic_level") micLevelAdvice(ev.advice);
       else if (ev.type === "wake_only") D.greetWake();
       else if (ev.type === "conversation_end") document.body.classList.remove("conversing");
@@ -317,6 +318,10 @@
     }
   }
 
+  function announceDuplex(s) {
+    if (s !== "thinking" && s !== "speaking") return;
+    window.dispatchEvent(new CustomEvent("nuxiva-ear", { detail: { state: s, key: "" } }));
+  }
   let resetSeen = 0;
   if (navigator.mediaDevices) navigator.mediaDevices.addEventListener("devicechange", () => { if (state === "off") restartMic(); });
 
@@ -329,6 +334,7 @@
       const track = stream?.getAudioTracks()[0];
       send({ type: "speaking", on, echo_cancelled: track?.getSettings().echoCancellation === true });
     },
+    cut() { send({ type: "cut" }); if (D.hush) D.hush(); },
     followup(seconds = 20) { send({ type: "followup", seconds, conversation: true }); },
     presence(alone) { if (alone !== lastAlone) { lastAlone = alone; send({ type: "presence", alone: alone || "" }); } },
     get state() { return state; },

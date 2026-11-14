@@ -22,6 +22,7 @@ import feedback
 import stt
 from broadcast import SESSIONS, broadcast_event, park_hidden, send_event
 from display_connection import handle_display
+from duplex_link import link as duplex_link
 from enrollment import enroll_sample
 from ingress import RealtimeInput
 from learner import learner
@@ -419,6 +420,8 @@ class Session(AttestMixin):
 
     async def control(self, msg: dict) -> None:
         kind = msg.get("type")
+        if await duplex_link.handle(self, kind, msg):
+            return
         if kind == "listen":
             learner.on_manual_listen()
             await self.set_mode("listening")

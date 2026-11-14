@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Pulsante «Zitta» e stato della voce su tutti gli schermi",
+    "en": "\"Hush\" button and voice state on every screen",
+    "fr": "Bouton « Chut » et état de la voix sur tous les écrans",
+    "es": "Botón «Silencio» y estado de la voz en todas las pantallas"
+  },
+  "features": [
+    {
+      "it": "Puoi far tacere Nuxiva con un tocco sul pulsante «Zitta»: la voce si ferma subito su tutti gli schermi. Gli schermi sanno anche quando sta pensando o parlando. La nuova modalità si attiva con NUXIVA_DUPLEX=rust; fino ad allora resta quella di sempre.",
+      "en": "You can silence Nuxiva with one tap on the \"Hush\" button: the voice stops at once on every screen. Screens also know when it is thinking or speaking. The new mode is enabled with NUXIVA_DUPLEX=rust; until then the usual behaviour stays.",
+      "fr": "Tu peux faire taire Nuxiva d'un appui sur le bouton « Chut » : la voix s'arrête aussitôt sur tous les écrans. Les écrans savent aussi quand elle réfléchit ou parle. Le nouveau mode s'active avec NUXIVA_DUPLEX=rust ; d'ici là le comportement habituel reste.",
+      "es": "Puedes callar a Nuxiva con un toque en el botón «Silencio»: la voz se detiene al instante en todas las pantallas. Las pantallas también saben cuándo está pensando o hablando. El nuevo modo se activa con NUXIVA_DUPLEX=rust; hasta entonces sigue el comportamiento de siempre."
+    }
+  ],
+  "fixes": []
+}
