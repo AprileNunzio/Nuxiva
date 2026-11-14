@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Chiusura più pulita del lavoro in background",
+    "en": "Cleaner shutdown of background work",
+    "fr": "Arrêt plus propre du travail en arrière-plan",
+    "es": "Cierre más limpio del trabajo en segundo plano"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "All'arresto di Nuxiva i compiti in corso vengono aspettati per qualche secondo invece di essere interrotti di colpo, così il programma non si chiude con un errore.",
+      "en": "When Nuxiva stops, running tasks are given a few seconds to finish instead of being cut off abruptly, so the program does not exit with an error.",
+      "fr": "À l'arrêt de Nuxiva, les tâches en cours disposent de quelques secondes pour finir au lieu d'être coupées net, afin que le programme ne se ferme pas sur une erreur.",
+      "es": "Al detenerse Nuxiva, las tareas en curso tienen unos segundos para terminar en vez de cortarse de golpe, así el programa no se cierra con un error."
+    }
+  ]
+}

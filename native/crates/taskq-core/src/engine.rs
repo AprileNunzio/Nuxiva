@@ -382,6 +382,14 @@ impl Engine {
     }
 
     pub fn shutdown(&mut self) {
+        self.stop(None);
+    }
+
+    pub fn shutdown_wait(&mut self, wait: Duration) {
+        self.stop(Some(wait));
+    }
+
+    fn stop(&mut self, wait: Option<Duration>) {
         {
             let mut st = lock(&self.inner.state);
             st.shutdown = true;
@@ -394,7 +402,10 @@ impl Engine {
             let _ = ticker.join();
         }
         for runtime in self.runtimes.drain(..) {
-            runtime.shutdown_background();
+            match wait {
+                Some(limit) => runtime.shutdown_timeout(limit),
+                None => runtime.shutdown_background(),
+            }
         }
     }
 }

@@ -135,7 +135,7 @@ class NativeTest(Common, unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = os.path.join(tmp, "q.journal")
             gate = threading.Event()
-            q1 = nuxiva_native.RustTaskQueue("", lambda s: (gate.wait(5), json.dumps({"evidence": []}))[1], path)
+            q1 = nuxiva_native.RustTaskQueue("", lambda s: (gate.wait(0.4), json.dumps({"evidence": []}))[1], path)
             for i in range(6):
                 q1.submit(taskq.spec(f"t{i}", "job", cls="maintenance"))
             time.sleep(0.2)

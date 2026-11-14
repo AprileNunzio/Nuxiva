@@ -1,5 +1,6 @@
 use std::path::Path;
 use std::sync::{Arc, Mutex, PoisonError};
+use std::time::Duration;
 
 use nuxiva_taskq_core::{
     BoxFuture, CancelToken, ClassCounts, Engine, ErrorPayload, Executor, FileJournal, Journal,
@@ -9,6 +10,7 @@ use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
 use serde_json::{Value, json};
 
+const SHUTDOWN_WAIT: Duration = Duration::from_secs(10);
 const MAX_JSON: usize = 256 * 1024;
 const MAX_EVENTS: usize = 4_096;
 const JOURNAL_BYTES: u64 = 64 * 1024 * 1024;
@@ -180,7 +182,7 @@ impl RustTaskQueue {
             return Err(PyRuntimeError::new_err("already stopped"));
         };
         drop(guard);
-        Python::attach(|py| py.detach(move || engine.shutdown()));
+        Python::attach(|py| py.detach(move || engine.shutdown_wait(SHUTDOWN_WAIT)));
         Ok(())
     }
 }

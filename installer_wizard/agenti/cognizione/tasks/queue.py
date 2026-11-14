@@ -1,3 +1,4 @@
+import atexit
 import heapq
 import itertools
 import json
@@ -222,6 +223,7 @@ def get():
         if _queue["obj"] is None:
             from config import STATE_DIR
             _queue["obj"] = build(journal_path=str(STATE_DIR / "taskq.journal"))
+            atexit.register(reset)
         return _queue["obj"]
 
 
