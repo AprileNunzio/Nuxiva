@@ -19,6 +19,7 @@ class DuplexLink:
         self._clock = clock
         self._session = None
         self.last_cut = None
+        self.counts = {"replies": 0, "cuts": 0, "manual_cuts": 0, "timeouts": 0}
 
     def active(self) -> bool:
         return mode() == "rust"
@@ -49,6 +50,7 @@ class DuplexLink:
                     s.trigger(step, now)
                 if before != "speaking":
                     s.begin_reply(now)
+                    self.counts["replies"] += 1
             elif before == "speaking":
                 s.finish(json.loads(s.snapshot())["gen"], now)
         except ValueError as exc:
@@ -66,6 +68,7 @@ class DuplexLink:
             log.warning("taglio duplex rifiutato: %s", exc)
             return None
         self.last_cut = report
+        self.counts["cuts"] += 1
         return report
 
     def tick(self):
@@ -73,7 +76,13 @@ class DuplexLink:
             return None
         s, before = self._get(), self._state(self._get())
         s.tick(self._now())
-        return self.snapshot() if self._state(s) != before else None
+        changed = self._state(s) != before
+        self.counts["timeouts"] += int(changed)
+        return self.snapshot() if changed else None
+
+    def health(self) -> dict:
+        snap = self.snapshot()
+        return {"mode": mode(), "state": snap["state"], "generation": snap["gen"], "bound_tokens": snap.get("bound_tokens", 0), **self.counts}
 
     async def handle(self, service, kind: str, msg: dict) -> bool:
         if kind == "speaking":
@@ -84,6 +93,7 @@ class DuplexLink:
         if kind != "cut":
             return False
         service.nuxiva_speaking = False
+        self.counts["manual_cuts"] += 1
         self.cut()
         await service.broadcast(type="barge", reason="manual")
         if self.active():

@@ -105,6 +105,11 @@ impl Session {
         self.epoch
     }
 
+    #[cfg(test)]
+    pub(crate) const fn gen_for_test(&self) -> u32 {
+        self.epoch
+    }
+
     #[must_use]
     pub const fn is_live(&self, epoch: u32) -> bool {
         epoch > self.cut_upto

@@ -55,6 +55,14 @@ mod tests_merge;
     clippy::expect_used,
     clippy::arithmetic_side_effects,
     clippy::panic,
+    clippy::indexing_slicing
+)]
+mod tests_perf;
+#[cfg(test)]
+#[allow(
+    clippy::expect_used,
+    clippy::arithmetic_side_effects,
+    clippy::panic,
     clippy::indexing_slicing,
     clippy::field_reassign_with_default,
     clippy::cast_possible_truncation

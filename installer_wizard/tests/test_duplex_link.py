@@ -97,6 +97,19 @@ class DuplexLinkTest(unittest.TestCase):
                 self.assertEqual(service.events[0], {"type": "barge", "reason": "manual"})
                 self.assertEqual(len(service.events), 2 if value == "rust" else 1)
 
+    def test_health_is_counters_only(self):
+        with self.rust():
+            self.link.speaking(True)
+            self.link.cut()
+            self.clock.t += 3
+            self.link.tick()
+            health = self.link.health()
+            self.assertEqual(set(health), {"mode", "state", "generation", "bound_tokens", "replies", "cuts", "manual_cuts", "timeouts"})
+            self.assertEqual((health["replies"], health["cuts"], health["timeouts"]), (1, 1, 1))
+            self.assertTrue(all(isinstance(v, (int, str)) for v in health.values()))
+        with mock.patch.dict(os.environ, {"NUXIVA_DUPLEX": "legacy"}):
+            self.assertEqual(duplex_link.DuplexLink(self.clock).health()["state"], "idle")
+
     def test_speaking_messages_publish_state_changes_and_are_not_consumed(self):
         with self.rust():
             service = FakeService()

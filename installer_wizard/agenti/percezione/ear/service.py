@@ -468,7 +468,7 @@ class Session(AttestMixin):
         elif kind == "transcribe_end":
             await self._transcribe_raw()
         elif kind == "stats":
-            await self.send(type="stats", **learner.summary(), instant=self.wake.ready, voiceprint=voiceprints.ready)
+            await self.send(type="stats", **learner.summary(), instant=self.wake.ready, voiceprint=voiceprints.ready, duplex=duplex_link.health())
         elif kind == "client":
             self.page = {"page": str(msg.get("page") or "")[:12], "visible": str(msg.get("visible") or "")[:10],
                          "href": str(msg.get("href") or self.page.get("href", ""))[:60], "since": self.page.get("since", time.time())}

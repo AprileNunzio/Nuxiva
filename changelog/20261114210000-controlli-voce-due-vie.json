@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Controlli di velocità per la voce a due vie",
+    "en": "Speed checks for two-way voice",
+    "fr": "Contrôles de vitesse pour la voix à double sens",
+    "es": "Controles de velocidad para la voz bidireccional"
+  },
+  "features": [
+    {
+      "it": "Nuxiva tiene da sola il conto di quante volte ha parlato, è stata interrotta o ha smesso per limite di tempo, senza salvare nulla di ciò che si dice. Controlli automatici verificano che fermare la voce resti rapidissimo.",
+      "en": "Nuxiva keeps its own count of how many times it spoke, was interrupted or stopped on a time limit, without saving anything that is said. Automatic checks verify that stopping the voice stays very fast.",
+      "fr": "Nuxiva tient elle-même le compte du nombre de fois où elle a parlé, a été interrompue ou s'est arrêtée au bout du délai, sans rien enregistrer de ce qui se dit. Des contrôles automatiques vérifient que l'arrêt de la voix reste très rapide.",
+      "es": "Nuxiva lleva su propia cuenta de cuántas veces habló, fue interrumpida o se detuvo por límite de tiempo, sin guardar nada de lo que se dice. Controles automáticos verifican que detener la voz siga siendo muy rápido."
+    }
+  ],
+  "fixes": []
+}
