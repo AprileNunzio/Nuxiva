@@ -1327,6 +1327,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-core-brain"
+version = "5.8.0"
+dependencies = [
+ "nuxiva-context-core",
+ "nuxiva-ear-core",
+ "tokio",
+]
+
+[[package]]
 name = "nuxiva-cortex-core"
 version = "5.8.0"
 dependencies = [

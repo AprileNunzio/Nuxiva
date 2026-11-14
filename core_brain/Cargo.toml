@@ -1,0 +1,27 @@
+[package]
+name = "nuxiva-core-brain"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+workspace = "../native"
+
+[lib]
+name = "core_brain"
+path = "src/lib.rs"
+
+[[bin]]
+name = "core_brain"
+path = "src/main.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+nuxiva-context-core = { path = "../native/crates/context-core" }
+nuxiva-ear-core = { path = "../native/crates/ear-core" }
+tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros", "signal"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros", "test-util"] }

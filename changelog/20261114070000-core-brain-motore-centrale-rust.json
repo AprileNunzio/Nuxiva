@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Nuovo motore centrale in Rust per ascolto, memoria e supervisione",
+    "en": "New central Rust engine for listening, memory and supervision",
+    "fr": "Nouveau moteur central en Rust pour l'écoute, la mémoire et la supervision",
+    "es": "Nuevo motor central en Rust para escucha, memoria y supervisión"
+  },
+  "features": [
+    {
+      "it": "Il nuovo motore centrale filtra l'audio in tre passaggi: eco, voce riconosciuta e controllo che stai parlando con Nuxiva. L'ascolto non si blocca mai.",
+      "en": "The new central engine filters audio in three steps: echo, recognised voice and a check that you are talking to Nuxiva. Listening never blocks.",
+      "fr": "Le nouveau moteur central filtre l'audio en trois étapes : écho, voix reconnue et vérification que tu parles à Nuxiva. L'écoute ne se bloque jamais.",
+      "es": "El nuevo motor central filtra el audio en tres pasos: eco, voz reconocida y comprobación de que hablas con Nuxiva. La escucha nunca se bloquea."
+    }
+  ]
+}
