@@ -13,7 +13,7 @@ XWRAPPER="${NUXIVA_XWRAPPER_CONF:-/etc/X11/Xwrapper.config}"
 KIOSK_PROC_PATTERN='kiosk/launch\.sh|kiosk/session\.sh|startx|xinit|Xorg|chromium'
 
 KIOSK_PACKAGES=(
-    xserver-xorg xserver-xorg-legacy xserver-xorg-video-fbdev x11-xserver-utils xinit openbox chromium unclutter
+    xserver-xorg xserver-xorg-legacy xserver-xorg-video-fbdev x11-xserver-utils xinit openbox scrot maim chromium unclutter
     fonts-dejavu-core fonts-noto-color-emoji
 )
 

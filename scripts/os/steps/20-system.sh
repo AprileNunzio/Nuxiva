@@ -4,7 +4,7 @@
 PACKAGES=(
     ca-certificates curl gnupg git jq zstd pciutils lsb-release ufw
     python3 python3-venv python3-pip libpam-systemd
-    alsa-utils pulseaudio speech-dispatcher espeak-ng ffmpeg v4l-utils
+    alsa-utils pulseaudio speech-dispatcher espeak-ng ffmpeg v4l-utils scrot
     nmap avahi-daemon avahi-utils
     unattended-upgrades apt-listchanges
 )

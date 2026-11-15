@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Risoluzione cattura scrot, diagnosi recorder_exit 240/250 e layout multicolonna pagina 80",
+    "en": "Fix scrot screen capture, recorder_exit 240/250 diagnostics and page 80 multi-column widget layout",
+    "fr": "Correction de la capture scrot, diagnostic recorder_exit 240/250 et disposition multi-colonnes des widgets page 80",
+    "es": "Corrección de captura scrot, diagnóstico de recorder_exit 240/250 y diseño multicolumna de widgets página 80"
+  },
+  "features": [
+    {
+      "it": "Disposizione fluida dei widget a più colonne nella pagina 80 che sfrutta l'intero display senza sovrapposizioni e con scorrimento verticale garantito.",
+      "en": "Fluid multi-column widget layout on page 80 utilizing the entire display without overlapping and with guaranteed vertical scrolling.",
+      "fr": "Disposition fluide des widgets sur plusieurs colonnes page 80 exploitant tout l'affichage sans chevauchement et avec défilement vertical garanti.",
+      "es": "Diseño fluido de widgets en múltiples columnas en la página 80 aprovechando toda la pantalla sin superposiciones y con desplazamiento vertical garantizado."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Installazione e supporto integrato per scrot/maim nei pacchetti kiosk e cattura X11, prevenendo l'errore di file non trovato alla pressione di Stamp.",
+      "en": "Installation and native support for scrot/maim in kiosk packages and X11 capture, preventing missing executable errors on PrintScreen keypress.",
+      "fr": "Installation et prise en charge de scrot/maim dans les paquets kiosk et la capture X11, évitant l'erreur d'exécutable manquant lors de l'appui sur Impr écran.",
+      "es": "Instalación y soporte para scrot/maim en paquetes kiosk y captura X11, evitando el error de archivo no encontrado al pulsar Impr Pant."
+    },
+    {
+      "it": "Decodifica esplicita e backoff esponenziale per recorder_exit 240 (EBUSY) e 250 (ENXIO) nel registratore telecamere per evitare loop di riavvio continui.",
+      "en": "Explicit decoding and exponential backoff for recorder_exit 240 (EBUSY) and 250 (ENXIO) in camera recorder to avoid continuous restart loops.",
+      "fr": "Décodage explicite et backoff exponentiel pour recorder_exit 240 (EBUSY) et 250 (ENXIO) dans l'enregistreur de caméras pour éviter les boucles de redémarrage continu.",
+      "es": "Decodificación explícita y retroceso exponencial para recorder_exit 240 (EBUSY) y 250 (ENXIO) en el grabador de cámaras para evitar bucles de reinicio continuo."
+    }
+  ]
+}

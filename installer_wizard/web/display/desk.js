@@ -361,45 +361,38 @@
         zone = { x: M, y: TOP, w: left - M - GAP, h: BOTTOM - TOP - 60 };
       }
     } else if (normal.length && portrait) {
-      const cols = W >= 560 ? 2 : 1, colW = (W - 2 * M - GAP * (cols - 1)) / cols, limit = TOP + (H - TOP) * 0.42;
+      const cols = W >= 560 ? 2 : 1, colW = Math.floor((W - 2 * M - GAP * (cols - 1)) / cols);
+      const colTops = Array(cols).fill(TOP);
       for (const c of normal) {
-        const w = colW;
-        const h = measure(c, w);
-        let bestSpot = null;
-        for (let col = 0; col < cols; col++) {
-          const x = M + col * (colW + GAP);
-          const spot = clearSpot({ x, y: BOTTOM - h, w, h }, blocked.concat(fixed), { x0: M, y0: limit, x1: W - M, y1: BOTTOM });
-          if (spot && (!bestSpot || spot.y > bestSpot.y)) {
-            bestSpot = spot;
-          }
-        }
-        if (!bestSpot) { c.el.classList.add("hidden"); continue; }
-        place(c, bestSpot.x, bestSpot.y, w);
-        blocked.push({ x: bestSpot.x, y: bestSpot.y, w, h });
+        let chosen = 0;
+        for (let i = 1; i < cols; i++) { if (colTops[i] < colTops[chosen]) chosen = i; }
+        const w = colW, h = measure(c, w), x = M + chosen * (colW + GAP), y = colTops[chosen];
+        place(c, x, y, w);
+        colTops[chosen] = y + h + GAP;
+        blocked.push({ x, y, w, h });
       }
-      const used = blocked.length ? Math.min(...blocked.map((b) => b.y)) : BOTTOM;
-      zone = { x: M, y: TOP - 20, w: W - 2 * M, h: Math.max(160, used - TOP - 50) };
+      zone = { x: M, y: TOP - 20, w: W - 2 * M, h: Math.max(160, BOTTOM - TOP - 50) };
     } else if (normal.length) {
-      const colW = Math.max(240, Math.min(380, W * 0.22));
-      const sides = [{ x0: M, x1: M + colW }, { x0: W - M - colW, x1: W - M }];
+      const availW = W - 2 * M;
+      const minColW = W < 1100 ? 260 : 320;
+      const maxCols = Math.max(2, Math.floor((availW + GAP) / (minColW + GAP)));
+      const cols = Math.max(1, Math.min(maxCols, Math.max(2, Math.ceil(normal.length / 2))));
+      const colW = Math.min(380, Math.floor((availW - (cols - 1) * GAP) / cols));
+      const colTops = Array(cols).fill(TOP);
       for (const c of normal) {
-        const w = c.inst.size === "s" ? Math.max(220, Math.min(colW, 280)) : colW;
-        const h = measure(c, w);
-        const options = sides.map((side, index) => {
-          const x = index === 0 ? side.x0 : side.x1 - w;
-          return clearSpot({ x, y: TOP, w, h }, blocked.concat(keepOut, fixed), { x0: side.x0, y0: TOP, x1: side.x1, y1: BOTTOM });
-        }).filter(Boolean);
-        if (!options.length) { c.el.classList.add("hidden"); continue; }
-        const chosen = options.reduce((best, o) => (o.y < best.y ? o : best));
-        place(c, chosen.x, chosen.y, w);
-        blocked.push({ x: chosen.x, y: chosen.y, w, h });
+        let chosen = 0;
+        for (let i = 1; i < cols; i++) { if (colTops[i] < colTops[chosen]) chosen = i; }
+        const w = colW, h = measure(c, w), x = M + chosen * (colW + GAP), y = colTops[chosen];
+        place(c, x, y, w);
+        colTops[chosen] = y + h + GAP;
+        blocked.push({ x, y, w, h });
       }
-      const leftBlocked = blocked.filter((b) => b.x < W / 2);
-      const rightBlocked = blocked.filter((b) => b.x >= W / 2);
-      const x0 = leftBlocked.length ? Math.max(...leftBlocked.map((b) => b.x + b.w)) + GAP : M;
-      const x1 = rightBlocked.length ? Math.min(...rightBlocked.map((b) => b.x)) - GAP : W - M;
-      const free = { x: x0, y: TOP - 30, w: Math.max(120, x1 - x0), h: BOTTOM - TOP - 70 };
-      zone = { x: free.x + free.w * 0.05, y: free.y + free.h * 0.09, w: free.w * 0.9, h: free.h * 0.82 };
+      const leftColX = M + colW + GAP, rightColX = M + (cols - 1) * (colW + GAP);
+      if (cols >= 3 && rightColX - leftColX > 180 && normal.length < cols * 2) {
+        zone = { x: leftColX, y: TOP, w: rightColX - leftColX - GAP, h: BOTTOM - TOP };
+      } else {
+        zone = null;
+      }
     }
 
     if (!takeover && zone && !covers(normal.concat(pinned), W, H)) zone = null;
@@ -449,6 +442,9 @@
     if (!hooks.quiet) { hello(); setInterval(hello, 10000); }
     ["l", "r", "u", "d"].forEach((side) => { const g = document.createElement("div"); g.className = `edge-glow ${side}`; document.body.appendChild(g); });
     window.addEventListener("resize", scheduleLayout);
+    window.addEventListener("wheel", (e) => {
+      if (host && host.scrollHeight > host.clientHeight) host.scrollTop += e.deltaY;
+    }, { passive: true });
     window.addEventListener("nuxiva-policy", () => render(allList));
     if (window.ResizeObserver) resizeObs = new ResizeObserver(scheduleLayout);
     render(allList);

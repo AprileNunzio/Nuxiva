@@ -212,7 +212,11 @@ body.brain .presence { display: none; }
 .p-image img { width: 100%; border-radius: 10px; border: 1px solid var(--line); }
 .banner { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 7; padding: 8px 18px; border-radius: 99px; background: rgba(255,181,71,0.14); border: 1px solid rgba(255,181,71,0.5); color: var(--amber); font-size: 13px; display: none; }
 .banner.show { display: block; }
-.desk { position: fixed; inset: 0; z-index: 2; pointer-events: none; transition: opacity 0.5s; }
+.desk { position: fixed; inset: 0; z-index: 2; pointer-events: none; transition: opacity 0.5s;
+        overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: rgba(41,224,255,0.35) transparent; }
+.desk::-webkit-scrollbar { width: 6px; }
+.desk::-webkit-scrollbar-track { background: transparent; }
+.desk::-webkit-scrollbar-thumb { background: rgba(41,224,255,0.35); border-radius: 4px; }
 .desk > .widget { position: absolute; pointer-events: auto;
                   transition: left 0.7s cubic-bezier(.2,.8,.2,1), top 0.7s cubic-bezier(.2,.8,.2,1), width 0.7s cubic-bezier(.2,.8,.2,1), height 0.7s, opacity 0.4s; }
 .desk > .widget.hidden { opacity: 0 !important; visibility: hidden; pointer-events: none; transition: opacity 0.4s, visibility 0s 0.4s; }

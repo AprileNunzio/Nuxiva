@@ -1,5 +1,6 @@
 import asyncio
 import collections
+from pathlib import Path
 import shutil
 import subprocess
 import time
@@ -32,6 +33,8 @@ class Recorder:
         self.audio: dict[str, dict] = {}
         self.failures: dict[str, int] = {}
         self.last_exit: dict[str, str] = {}
+        self.backoff: dict[str, float] = {}
+        self.backoff_delay: dict[str, float] = {}
         self.watchers: set = set()
 
     def _audio_ok(self, cam: dict) -> bool:
@@ -46,6 +49,17 @@ class Recorder:
         notice.tick(rows, settings)
 
     async def _start(self, cam: dict) -> None:
+        if cam.get("kind") == "webcam":
+            dev = str(cam.get("url") or "0")
+            node_path = Path(dev if dev.startswith("/dev/") else f"/dev/video{dev}")
+            if not node_path.exists():
+                cid = cam["id"]
+                self.backoff_delay[cid] = min(300, self.backoff_delay.get(cid, 15) * 2)
+                self.backoff[cid] = time.time() + self.backoff_delay[cid]
+                if self.last_exit.get(cid) != "device_not_found":
+                    self.last_exit[cid] = "device_not_found"
+                    store.event("WARN", f"Telecamera {cam['name']}: dispositivo {node_path} non trovato sul sistema (ENXIO)", "cameras")
+                return
         incoming = CAM_DIR / cam["id"] / "incoming"
         incoming.mkdir(parents=True, exist_ok=True)
         args = ["ffmpeg", "-loglevel", "error", "-nostdin", *_source_args(cam),
@@ -72,10 +86,31 @@ class Recorder:
                 tail.append("".join(ch if ch.isprintable() else " " for ch in text)[:200])
         code = await proc.wait()
         if code in (0, -15, 255) and not tail:
+            self.backoff.pop(cam["id"], None)
+            self.backoff_delay.pop(cam["id"], None)
             return
-        reason = tail[-1] if tail else f"exit {code}"
-        if self.last_exit.get(cam["id"]) != reason:
-            self.last_exit[cam["id"]] = reason
+        desc = ""
+        if code == 240:
+            desc = "dispositivo occupato da un altro processo o visione (EBUSY)"
+        elif code == 250:
+            desc = "dispositivo non connesso o non trovato (ENXIO)"
+        elif code == -15:
+            desc = "arresto richiesto (SIGTERM)"
+
+        reason = tail[-1] if tail else (desc or f"exit {code}")
+        if desc and desc not in reason:
+            reason = f"{reason} [{desc}]"
+
+        cid = cam["id"]
+        if code not in (0, -15):
+            self.backoff_delay[cid] = min(300, self.backoff_delay.get(cid, 15) * 2)
+            self.backoff[cid] = time.time() + self.backoff_delay[cid]
+        else:
+            self.backoff.pop(cid, None)
+            self.backoff_delay.pop(cid, None)
+
+        if self.last_exit.get(cid) != reason:
+            self.last_exit[cid] = reason
             store.event("WARN", f"Telecamera {cam['name']}: registrazione interrotta (recorder_exit {code}: {reason})", "cameras")
 
     def _stop(self, cid: str) -> None:
@@ -176,8 +211,11 @@ class Recorder:
                     rec = self.procs[cid]
                     if cid not in wanted or rec["sig"] != self._sig_of(wanted[cid]) or rec["proc"].returncode is not None:
                         self._stop(cid)
+                now = time.time()
                 for cid, cam in wanted.items():
                     if cid not in self.procs:
+                        if now < self.backoff.get(cid, 0.0):
+                            continue
                         await self._start(cam)
                     self._encrypt_pending(cam)
                     self._prune(cam)

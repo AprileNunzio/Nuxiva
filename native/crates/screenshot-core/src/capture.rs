@@ -15,6 +15,7 @@ const PNG_MAGIC: &[u8] = &[0x89, b'P', b'N', b'G', 0x0d, 0x0a, 0x1a, 0x0a];
 pub enum Tool {
     Grim,
     Maim,
+    Scrot,
     Import,
 }
 
@@ -24,6 +25,7 @@ impl Tool {
         match self {
             Self::Grim => "grim",
             Self::Maim => "maim",
+            Self::Scrot => "scrot",
             Self::Import => "import",
         }
     }
@@ -33,6 +35,7 @@ impl Tool {
         match self {
             Self::Grim => &["-t", "png", "-"],
             Self::Maim => &["--format", "png", "--hidecursor"],
+            Self::Scrot => &["--silent", "--overwrite", "/dev/stdout"],
             Self::Import => &["-window", "root", "png:-"],
         }
     }
@@ -42,7 +45,7 @@ impl Tool {
 pub fn tools_for(kind: Kind) -> &'static [Tool] {
     match kind {
         Kind::Wayland => &[Tool::Grim],
-        Kind::X11 => &[Tool::Maim, Tool::Import],
+        Kind::X11 => &[Tool::Maim, Tool::Scrot, Tool::Import],
         Kind::Tty | Kind::Unknown => &[],
     }
 }

@@ -230,7 +230,10 @@ fn session_parsing() {
 #[test]
 fn capture_backends_by_session_kind() {
     assert_eq!(tools_for(Kind::Wayland), &[Tool::Grim]);
-    assert_eq!(tools_for(Kind::X11), &[Tool::Maim, Tool::Import]);
+    assert_eq!(
+        tools_for(Kind::X11),
+        &[Tool::Maim, Tool::Scrot, Tool::Import]
+    );
     assert!(tools_for(Kind::Tty).is_empty());
     assert!(locate(Tool::Grim, &["/nonexistent-dir"]).is_none());
     assert!(Tool::Import.args().contains(&"png:-"));
@@ -282,11 +285,14 @@ fn x11_capture_end_to_end_when_tools_present() {
         .spawn()
         .expect("xvfb");
     std::thread::sleep(Duration::from_millis(1500));
+    let uid = rustix::process::getuid().as_raw();
+    let gid = rustix::process::getgid().as_raw();
+    let home = std::env::var_os("HOME").map_or_else(|| PathBuf::from("/tmp"), PathBuf::from);
     let session = crate::session::Session {
         id: "t".into(),
-        uid: 0,
-        gid: 0,
-        home: PathBuf::from("/root"),
+        uid,
+        gid,
+        home,
         kind: Kind::X11,
         locked: false,
         display: Some(display.into()),
