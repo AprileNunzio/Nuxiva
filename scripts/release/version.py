@@ -27,7 +27,7 @@ TARGETS = (
     Target("client_web/package-lock.json", rf'(?m)^(  "version": "){V}(")'),
     Target("client_web/package-lock.json", rf'(?s)(  "packages": \{{\s+"": \{{\s+"name": "[^"]+",\s+"version": "){V}(")'),
     Target("native/Cargo.toml", rf'(?m)^(version = "){V}(")'),
-    Target("native/Cargo.lock", rf'(name = "nuxiva-[a-z0-9-]+"\r?\nversion = ")' + V + r'(")', count=0),
+    Target("native/Cargo.lock", rf'(name = "(?:nuxiva|agency)-[a-z0-9-]+"\r?\nversion = ")' + V + r'(")', count=0),
     Target("native/crates/nuxiva-native/pyproject.toml", rf'(?m)^(version = "){V}(")'),
     Target("client_apk/app/build.gradle.kts", rf'(versionName = "){V}(")'),
     Target("client_satellite/context_bridge/setup_msi.py", rf'(version="){V}(")'),

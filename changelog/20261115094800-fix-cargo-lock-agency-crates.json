@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Allineamento dei crate agency in Cargo.lock e correzione dello script di release",
+    "en": "Align agency crates in Cargo.lock and fix release version script",
+    "fr": "Alignement des crates agency dans Cargo.lock et correction du script de release",
+    "es": "Alineación de crates agency en Cargo.lock y corrección del script de lanzamiento"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Aggiornato il lockfile native/Cargo.lock per i crate agency e corretto il pattern in version.py per includere agency oltre a nuxiva, prevenendo il blocco di clippy sui commit successivi alla release.",
+      "en": "Updated native/Cargo.lock for agency crates and fixed the pattern in version.py to include agency alongside nuxiva, preventing clippy from failing on post-release commits.",
+      "fr": "Mise à jour du lockfile native/Cargo.lock pour les crates agency et correction du pattern dans version.py pour inclure agency en plus de nuxiva, évitant l'échec de clippy après la release.",
+      "es": "Actualizado el lockfile native/Cargo.lock para los crates agency y corregido el patrón en version.py para incluir agency junto con nuxiva, evitando el fallo de clippy tras el lanzamiento."
+    }
+  ]
+}
