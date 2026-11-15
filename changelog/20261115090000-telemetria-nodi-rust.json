@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {"it": "Telemetria dei nodi nel motore Rust", "en": "Node telemetry in the Rust engine", "fr": "Télémétrie des nœuds dans le moteur Rust", "es": "Telemetría de nodos en el motor Rust"},
+  "features": [{
+    "it": "Validazione delle misure dei dispositivi e scelta del dispositivo più vicino ora girano nel motore Rust, con il motore Python come riserva.",
+    "en": "Device measurement validation and the choice of the closest device now run in the Rust engine, with the Python engine as a fallback.",
+    "fr": "La validation des mesures des appareils et le choix de l'appareil le plus proche s'exécutent désormais dans le moteur Rust, avec le moteur Python en secours.",
+    "es": "La validación de las medidas de los dispositivos y la elección del dispositivo más cercano ahora se ejecutan en el motor Rust, con el motor Python como respaldo."
+  }]
+}

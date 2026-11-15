@@ -8,8 +8,10 @@ pub mod error;
 pub mod hexutil;
 pub mod identity;
 pub mod profile;
+pub mod proximity;
 pub mod scope;
 pub mod signer;
+pub mod telemetry;
 
 pub use announce::{Announce, Hardware};
 pub use audit::Entry;
@@ -22,6 +24,9 @@ pub use signer::{DeviceKey, SignedHeaders, random_nonce};
 #[cfg(test)]
 #[allow(clippy::expect_used, clippy::indexing_slicing)]
 mod tests;
+#[cfg(test)]
+#[allow(clippy::expect_used, clippy::indexing_slicing)]
+mod tests_telemetry;
 #[cfg(test)]
 #[allow(clippy::expect_used, clippy::indexing_slicing)]
 mod tests_declare;
