@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageInstaller
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.content.pm.PackageInfoCompat
 import com.nuxiva.edge.BuildConfig
 import com.nuxiva.logic.update.UpdateOffer
 import com.nuxiva.logic.update.UpdatePolicy
@@ -165,10 +166,10 @@ class ApkUpdater(private val context: Context) {
 
     private fun verify(file: File, offer: UpdateOffer) {
         val manager = context.packageManager
-        val flags = PackageManager.GET_SIGNING_CERTIFICATES
+        val flags = signingFlags()
         val archive = manager.getPackageArchiveInfo(file.absolutePath, flags) ?: throw UpdateFailure("not_an_apk")
         if (archive.packageName != context.packageName) throw UpdateFailure("package_mismatch")
-        if (archive.longVersionCode <= installedCode(manager)) throw UpdateFailure("version_not_newer")
+        if (versionCode(archive) <= installedCode(manager)) throw UpdateFailure("version_not_newer")
         if (archive.versionName != offer.version) throw UpdateFailure("version_mismatch")
         val offered = signers(archive) ?: throw UpdateFailure("signature_missing")
         val installed = signers(manager.getPackageInfo(context.packageName, flags)) ?: throw UpdateFailure("signature_missing")
@@ -176,15 +177,35 @@ class ApkUpdater(private val context: Context) {
     }
 
     private fun installedCode(manager: PackageManager): Long =
-        manager.getPackageInfo(context.packageName, 0).longVersionCode
+        versionCode(manager.getPackageInfo(context.packageName, 0))
 
+    private fun versionCode(info: android.content.pm.PackageInfo): Long =
+        PackageInfoCompat.getLongVersionCode(info)
+
+    @Suppress("DEPRECATION")
+    private fun signingFlags(): Int =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            PackageManager.GET_SIGNING_CERTIFICATES
+        } else {
+            PackageManager.GET_SIGNATURES
+        }
+
+    @Suppress("DEPRECATION")
     private fun signers(info: android.content.pm.PackageInfo): Set<String>? {
-        val signing = info.signingInfo ?: return null
-        val list = if (signing.hasMultipleSigners()) signing.apkContentsSigners else signing.signingCertificateHistory
-        if (list.isNullOrEmpty()) return null
-        return list.map { signature ->
-            MessageDigest.getInstance("SHA-256").digest(signature.toByteArray()).joinToString("") { "%02x".format(it) }
-        }.toSet()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val signing = info.signingInfo ?: return null
+            val list = if (signing.hasMultipleSigners()) signing.apkContentsSigners else signing.signingCertificateHistory
+            if (list.isNullOrEmpty()) return null
+            return list.map { signature ->
+                MessageDigest.getInstance("SHA-256").digest(signature.toByteArray()).joinToString("") { "%02x".format(it) }
+            }.toSet()
+        } else {
+            val signatures = info.signatures ?: return null
+            if (signatures.isEmpty()) return null
+            return signatures.map { signature ->
+                MessageDigest.getInstance("SHA-256").digest(signature.toByteArray()).joinToString("") { "%02x".format(it) }
+            }.toSet()
+        }
     }
 
     private fun commit(file: File) {

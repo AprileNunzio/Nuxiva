@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Correzione compatibilità API Android per ApkUpdater",
+    "en": "Android API compatibility fix for ApkUpdater",
+    "fr": "Correction de compatibilité API Android pour ApkUpdater",
+    "es": "Corrección de compatibilidad API Android para ApkUpdater"
+  },
+  "fixes": [
+    {
+      "it": "Corretti i controlli di versione e certificati di firma in ApkUpdater con PackageInfoCompat per garantire la compatibilità con API level 26 e superare il lint Android.",
+      "en": "Fixed version and signing certificate checks in ApkUpdater with PackageInfoCompat to ensure API level 26 compatibility and pass Android lint.",
+      "fr": "Correction des vérifications de version et certificats de signature dans ApkUpdater avec PackageInfoCompat pour assurer la compatibilité API 26 et réussir le lint Android.",
+      "es": "Corregidas las verificaciones de versión y certificados de firma en ApkUpdater con PackageInfoCompat para asegurar compatibilidad con API 26 y pasar el lint de Android."
+    }
+  ]
+}
