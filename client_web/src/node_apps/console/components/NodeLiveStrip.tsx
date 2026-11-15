@@ -40,7 +40,7 @@ export const NodeLiveStrip: React.FC<NodeLiveStripProps> = ({ neuron }) => {
             {t(`live_${key}`)}
           </dt>
           <dd className="mt-1 truncate font-mono text-base font-semibold text-white">{value ?? na}</dd>
-          {detail && <dd className="truncate text-[11px] text-slate-500">{detail}</dd>}
+          {detail && <dd className="truncate text-[11px] text-on-surface-variant">{detail}</dd>}
         </div>
       ))}
     </dl>

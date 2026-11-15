@@ -48,7 +48,7 @@ export const NodeCommandBar: React.FC<NodeCommandBarProps> = ({ nodeId, nodeName
   const available = KNOWN_COMMANDS.filter((command) => commands.includes(command));
 
   if (available.length === 0) {
-    return <p className="text-xs text-slate-500">{t(scope === 'mesh' ? 'commands_unpaired' : 'commands_none')}</p>;
+    return <p className="text-xs text-on-surface-variant">{t(scope === 'mesh' ? 'commands_unpaired' : 'commands_none')}</p>;
   }
 
   return (

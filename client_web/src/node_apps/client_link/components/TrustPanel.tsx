@@ -65,7 +65,7 @@ export const TrustPanel: React.FC<{ readonly node: LinkNode; readonly handle: Li
               <input type="checkbox" checked={allow} onChange={(event) => setAllow(event.target.checked)} className="mt-0.5 h-4 w-4 accent-amber-400" />
               <span>
                 {t('trust_allow')}
-                <span className="block text-[11px] text-slate-500">{t('trust_allow_hint')}</span>
+                <span className="block text-[11px] text-on-surface-variant">{t('trust_allow_hint')}</span>
               </span>
             </label>
           )}
@@ -77,7 +77,7 @@ export const TrustPanel: React.FC<{ readonly node: LinkNode; readonly handle: Li
                   <label key={grant} className="flex items-center gap-2 text-xs text-slate-200">
                     <input type="checkbox" checked={grants.includes(grant)} onChange={() => toggleGrant(grant)} className="h-4 w-4 accent-rose-400" />
                     {t(`grant_${grant.replace('.', '_')}`)}
-                    <span className="font-mono text-[10px] text-slate-500">{grant}</span>
+                    <span className="font-mono text-[10px] text-on-surface-variant">{grant}</span>
                   </label>
                 ))}
               </div>
@@ -97,7 +97,7 @@ export const TrustPanel: React.FC<{ readonly node: LinkNode; readonly handle: Li
         </>
       )}
       {trust.cpuCores > 0 && <p className="mt-3 text-[11px] text-slate-400">{t('trust_resources', { cores: trust.cpuCores, ram: trust.ramMb })}</p>}
-      {trust.effective.length === 0 && <p className="mt-3 text-xs text-slate-500">{t('trust_none')}</p>}
+      {trust.effective.length === 0 && <p className="mt-3 text-xs text-on-surface-variant">{t('trust_none')}</p>}
       <ScopeList title={t('trust_effective')} items={trust.effective} tone="border-emerald-400/40 text-emerald-200" />
       <ScopeList title={t('trust_denied')} items={trust.denied} tone="border-slate-700 text-slate-400" />
       <ScopeList title={t('trust_rejected')} items={trust.rejected} tone="border-rose-400/40 text-rose-200" />

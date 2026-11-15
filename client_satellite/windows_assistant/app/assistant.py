@@ -29,6 +29,7 @@ from connection import declare
 from connection.devicekey import DeviceKey
 from connection.heartbeat import Heartbeat
 from connection.inbox import Inbox
+from connection.metrics import Sampler
 from i18n.strings import t
 from permissions.gate import Gate
 from permissions.policy import Policy
@@ -69,8 +70,9 @@ class Assistant:
         self.conversation.on_security = self._security
         self.voice.busy = self.conversation.busy.locked
         self.voice.on_transcript = lambda text, lang: self.conversation.ask(text, lang, spoken=True)
+        self.sampler = Sampler()
         self.heartbeat = Heartbeat(self.client, self._report, self._on_reply,
-                                   lambda: self.ui.dispatch.post(self.unpair, True), self._security)
+                                   lambda: self.ui.dispatch.post(self.unpair, True), self._security, self.sampler.timed)
         self.compute = ComputeRelay(
             self.client, self.gate, self.policy, lambda: self.ollama.read()["available"], session_is_idle,
         )
@@ -102,7 +104,7 @@ class Assistant:
                 "actions": sorted(self.executor.handlers), "research": True}
 
     def _report(self) -> dict:
-        return {"version": paths.VERSION, "hostname": socket.gethostname(), "hardware": {"os": "windows"},
+        return {"version": paths.VERSION, "hostname": socket.gethostname(), "hardware": {"os": "windows"}, "metrics": self.sampler.sample(),
                 "capabilities": [k for k, v in self.policy.summary().items() if v != "deny"][:12],
                 "announce": declare.declare({**declare.local_facts(self.cfg.get("voice", True)), "edge_inference": self.brain.ready()},
                                          profile.host_full(self.cfg)),

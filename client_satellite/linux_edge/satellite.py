@@ -20,7 +20,6 @@ from pathlib import Path
 
 VERSION = "5.8.3"
 DISCOVER_PORT = 50505
-ANNOUNCE_PORT = 50506
 JOIN_TIMEOUT = 15 * 60
 REDISCOVER_AFTER = 3
 CONFIG = Path(os.environ.get("NUXIVA_NODE_CONFIG", Path.home() / ".config" / "nuxiva-node.json"))
@@ -83,7 +82,34 @@ def metrics() -> dict:
     zone = Path("/sys/class/thermal/thermal_zone0/temp")
     if zone.exists():
         out["temp"] = int(zone.read_text()) / 1000
+    probe_extra(out)
     return out
+
+
+PROBE = {"energy": None, "rtt": None}
+
+
+def sysfs(path: str | Path) -> str:
+    try:
+        return Path(path).read_text().strip()
+    except OSError:
+        return ""
+
+
+def number(path: str) -> float | None:
+    try:
+        return float(sysfs(path))
+    except ValueError:
+        return None
+
+
+def probe_extra(out: dict) -> None:
+    now, energy = time.monotonic(), number("/sys/class/powercap/intel-rapl:0/energy_uj")
+    if energy is not None and PROBE["energy"] and energy >= PROBE["energy"][0]:
+        out["power_w"] = (energy - PROBE["energy"][0]) / 1e6 / max(now - PROBE["energy"][1], 1e-3)
+    PROBE["energy"] = (energy, now) if energy is not None else None
+    found = {"gpu": number("/sys/class/drm/card0/device/gpu_busy_percent"), "battery": number("/sys/class/power_supply/BAT0/capacity"), "rtt_ms": PROBE["rtt"]}
+    out.update({key: value for key, value in found.items() if value is not None})
 
 
 HARDWARE = {"at": 0.0, "data": {}}
@@ -115,13 +141,7 @@ def video_devices() -> tuple[list[str], bool]:
 
 
 def usb_products() -> list[str]:
-    out = []
-    for p in sorted(Path("/sys/bus/usb/devices").glob("*/product"))[:40]:
-        try:
-            out.append(p.read_text().strip())
-        except OSError:
-            continue
-    return out[:12]
+    return [name for name in (sysfs(p) for p in sorted(Path("/sys/bus/usb/devices").glob("*/product"))[:40]) if name][:12]
 
 
 def hardware(force: bool = False) -> dict:
@@ -245,20 +265,10 @@ def join(args) -> dict:
 def install_service() -> None:
     if os.geteuid() != 0:
         sys.exit("Per installare il servizio esegui con sudo")
-    SERVICE.write_text(f"""[Unit]
-Description=Nodo Nuxiva
-After=network-online.target
-Wants=network-online.target
-
-[Service]
-Environment=NUXIVA_NODE_CONFIG={CONFIG}
-ExecStart={sys.executable} {Path(__file__).resolve()}
-Restart=always
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
-""")
+    unit = ("[Unit]", "Description=Nodo Nuxiva", "After=network-online.target", "Wants=network-online.target", "", "[Service]",
+            f"Environment=NUXIVA_NODE_CONFIG={CONFIG}", f"ExecStart={sys.executable} {Path(__file__).resolve()}", "Restart=always",
+            "RestartSec=10", "", "[Install]", "WantedBy=multi-user.target", "")
+    SERVICE.write_text("\n".join(unit))
     subprocess.run(["systemctl", "daemon-reload"], check=True)
     subprocess.run(["systemctl", "enable", "--now", "nuxiva-node"], check=True)
     log.info("Servizio nuxiva-node installato e avviato")
@@ -422,11 +432,13 @@ def loop(cfg: dict) -> None:
     while True:
         try:
             adapted, STATE["adapted"] = STATE["adapted"], False
+            started = time.monotonic()
             res = post(cfg["server"], "/api/nodes/heartbeat", {"version": VERSION, "hostname": socket.gethostname(),
                                                              "metrics": metrics(), "capabilities": capabilities(),
                                                              "hardware": hardware(force=adapted), "adapted": adapted}, headers,
                        cfg.get("key", ""), cfg["id"])
             wait, failures = int(res.get("heartbeat") or 30), 0
+            PROBE["rtt"] = (time.monotonic() - started) * 1000
             cfg["agent"] = res.get("agent") or ""
             if cfg["agent"] and cfg["agent"] != own_sha():
                 self_update(cfg, cfg["agent"])

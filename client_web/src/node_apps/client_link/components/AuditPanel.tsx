@@ -38,7 +38,7 @@ export const AuditPanel: React.FC = () => {
           {report.intact ? t('audit_ok', { count: report.count }) : t('audit_broken', { index: report.brokenAt ?? 0 })}
         </p>
       )}
-      {report && report.entries.length === 0 && <p className="text-sm text-slate-500">{t('audit_empty')}</p>}
+      {report && report.entries.length === 0 && <p className="text-sm text-on-surface-variant">{t('audit_empty')}</p>}
       <ul className="flex max-h-72 flex-col gap-1.5 overflow-y-auto">
         {(report?.entries ?? []).map((entry) => (
           <li key={entry.seq} className="rounded-lg border border-slate-800/80 bg-slate-950/40 px-3 py-2 text-xs">
@@ -46,9 +46,9 @@ export const AuditPanel: React.FC = () => {
               <ScrollText className="h-3.5 w-3.5 shrink-0 text-cyan-300" aria-hidden="true" />
               <span className="font-mono">{entry.action}</span>
               <span className="truncate text-slate-400">{[entry.actor, entry.node].filter(Boolean).join(' → ')}</span>
-              <span className="ml-auto shrink-0 text-[10px] text-slate-500">{relativeTime(entry.ts, now, lang)}</span>
+              <span className="ml-auto shrink-0 text-[10px] text-on-surface-variant">{relativeTime(entry.ts, now, lang)}</span>
             </p>
-            {entry.detail && <p className="mt-0.5 break-all font-mono text-[10px] text-slate-500">{entry.detail}</p>}
+            {entry.detail && <p className="mt-0.5 break-all font-mono text-[10px] text-on-surface-variant">{entry.detail}</p>}
           </li>
         ))}
       </ul>

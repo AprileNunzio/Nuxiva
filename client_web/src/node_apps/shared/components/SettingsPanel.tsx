@@ -86,7 +86,7 @@ const Field: React.FC<{ readonly spec: SettingSpec; readonly state: NodeSettings
           aria-valuetext={`${value}${spec.unit ?? ''}`}
         />
       )}
-      <p className="text-xs text-slate-500">{t(`setting_${spec.key}_hint`)}</p>
+      <p className="text-xs text-on-surface-variant">{t(`setting_${spec.key}_hint`)}</p>
     </div>
   );
 };
@@ -103,7 +103,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ title, specs, stat
   if (state.unavailable) {
     return (
       <Panel title={title}>
-        <p className="text-sm text-slate-500">{shared.t('settings_unavailable')}</p>
+        <p className="text-sm text-on-surface-variant">{shared.t('settings_unavailable')}</p>
       </Panel>
     );
   }

@@ -51,10 +51,9 @@
   color: var(--md-sys-color-on-surface-variant, #64748b);
   white-space: nowrap;
   padding: 0.4rem 0.85rem;
-  background: var(--md-sys-color-surface-container, #ffffff);
-  border: 1px solid var(--md-sys-color-outline-variant, #e2e8f0);
+  background: transparent;
+  border: 0;
   border-radius: 9999px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .network-live::before {
@@ -98,7 +97,7 @@
 
 .network-summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
@@ -108,17 +107,8 @@
   flex-direction: column;
   gap: 0.4rem;
   padding: 1.1rem 1.3rem;
-  border: 1px solid var(--md-sys-color-outline-variant, #e2e8f0);
-  background: var(--md-sys-color-surface-container, #ffffff);
+  background: color-mix(in oklab, var(--md-sys-color-surface-container) 55%, transparent);
   border-radius: 1.25rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  backdrop-filter: blur(16px);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.network-summary article:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .network-summary article > span {
@@ -154,11 +144,10 @@
 }
 
 .network-device {
-  background: var(--md-sys-color-surface-container, #ffffff);
-  border: 1px solid var(--md-sys-color-outline-variant, #e2e8f0);
+  background: color-mix(in oklab, var(--md-sys-color-surface-container) 55%, transparent);
   border-radius: 1.25rem;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
@@ -243,10 +232,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 1.15rem;
-  border-top: 1px solid var(--md-sys-color-outline-variant, #f1f5f9);
   margin-top: auto;
   gap: 0.5rem;
-  background: var(--md-sys-color-surface-container-high, rgba(248, 250, 252, 0.5));
+  flex-wrap: wrap;
 }
 
 .network-device-kind-badge {
@@ -260,39 +248,6 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-}
-
-.network-btn-action {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  padding: 0.35rem 0.65rem;
-  border-radius: 0.6rem;
-  border: 1px solid var(--md-sys-color-outline-variant, #e2e8f0);
-  background: var(--md-sys-color-surface-container, #ffffff);
-  color: var(--md-sys-color-on-surface, #475569);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.network-btn-action:hover {
-  background: var(--md-sys-color-surface-container-highest, #f1f5f9);
-  border-color: var(--md-sys-color-outline, #cbd5e1);
-}
-
-.network-btn-primary {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  color: var(--md-sys-color-on-primary);
-  background: var(--md-sys-color-primary, #2563eb);
-  border: 1px solid transparent;
-  padding: 0.35rem 0.75rem;
-  border-radius: 0.6rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.network-btn-primary:hover {
-  filter: brightness(1.1);
 }
 
 .network-energy-section {
@@ -314,16 +269,13 @@
   align-items: center;
   gap: 1.5rem;
   padding: 1rem 1.3rem;
-  background: var(--md-sys-color-surface-container, #ffffff);
-  border: 1px solid var(--md-sys-color-outline-variant, #e2e8f0);
+  background: color-mix(in oklab, var(--md-sys-color-surface-container) 55%, transparent);
   border-radius: 1.15rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
-  transition: all 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .network-energy-row:hover {
-  border-color: var(--md-sys-color-primary, #3b82f6);
-  transform: translateY(-1px);
+  background: var(--md-sys-color-surface-container);
 }
 
 .network-energy-row.is-selected {
@@ -354,9 +306,6 @@
 }
 
 @container (max-width: 38rem) {
-  .network-summary {
-    grid-template-columns: 1fr;
-  }
   .network-summary article {
     flex-direction: row;
     align-items: center;

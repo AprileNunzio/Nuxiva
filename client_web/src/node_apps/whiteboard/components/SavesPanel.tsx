@@ -70,7 +70,7 @@ export const SavesPanel: React.FC<{ readonly handle: BoardHandle }> = ({ handle 
       {saves === null ? (
         <Loader2 className="mt-3 h-4 w-4 animate-spin text-cyan-300" aria-label={t('loading')} />
       ) : saves.length === 0 ? (
-        <p className="mt-3 text-sm text-slate-500">{t('saves_empty')}</p>
+        <p className="mt-3 text-sm text-on-surface-variant">{t('saves_empty')}</p>
       ) : (
         <ul className="mt-3 flex flex-col gap-1.5">
           {saves.map((save) => (
@@ -90,7 +90,7 @@ export const SavesPanel: React.FC<{ readonly handle: BoardHandle }> = ({ handle 
                 disabled={busy}
                 aria-label={t('delete')}
                 onClick={() => setConfirm({ kind: 'delete', name: save })}
-                className="rounded-lg p-1.5 text-slate-500 transition hover:text-rose-300 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                className="rounded-lg p-1.5 text-on-surface-variant transition hover:text-rose-300 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
               >
                 <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
               </button>

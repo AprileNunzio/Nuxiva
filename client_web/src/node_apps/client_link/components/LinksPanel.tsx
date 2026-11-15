@@ -11,7 +11,7 @@ export const LinksPanel: React.FC<{ readonly nodes: readonly LinkNode[] }> = ({ 
   return (
     <Panel title={t('links_title', { online, total: nodes.length })}>
       {nodes.length === 0 ? (
-        <p className="text-sm text-slate-500">{t('links_empty')}</p>
+        <p className="text-sm text-on-surface-variant">{t('links_empty')}</p>
       ) : (
         <ul className="flex flex-col gap-1.5">
           {nodes.map((node) => (
@@ -22,7 +22,7 @@ export const LinksPanel: React.FC<{ readonly nodes: readonly LinkNode[] }> = ({ 
               />
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm text-slate-100">{node.name}</span>
-                <span className="block truncate text-[11px] text-slate-500">
+                <span className="block truncate text-[11px] text-on-surface-variant">
                   {[t(`type_${node.type}`), node.ip, node.version].filter(Boolean).join(' · ')}
                 </span>
               </span>

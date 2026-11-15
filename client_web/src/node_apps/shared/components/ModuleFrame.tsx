@@ -11,22 +11,22 @@ interface ModuleFrameProps {
 
 export const ModuleFrame: React.FC<ModuleFrameProps> = ({ icon: Icon, title, subtitle, badge, children }) => (
   <section className="flex flex-col gap-4" aria-labelledby="node-module-title">
-    <header className="flex items-start gap-3 rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-xs">
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-blue-200 bg-blue-50 text-blue-600 shadow-2xs">
-        <Icon className="h-5 w-5 text-blue-600" aria-hidden="true" />
+    <header className="flex items-start gap-3 px-1 py-2 sm:py-3">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-container text-on-primary-container">
+        <Icon className="h-5 w-5" aria-hidden="true" />
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <h2 id="node-module-title" className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+          <h2 id="node-module-title" className="text-xl font-bold tracking-tight text-on-surface sm:text-2xl">
             {title}
           </h2>
           {badge && (
-            <span className="rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-slate-700 font-semibold">
+            <span className="rounded-full bg-surface-container-high px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-on-surface-variant">
               {badge}
             </span>
           )}
         </div>
-        <p className="mt-0.5 text-xs text-slate-500 sm:text-sm">{subtitle}</p>
+        <p className="mt-0.5 text-xs text-on-surface-variant sm:text-sm">{subtitle}</p>
       </div>
     </header>
     {children}
@@ -39,9 +39,9 @@ export const Panel: React.FC<{
   readonly flat?: boolean;
   readonly children: React.ReactNode;
 }> = ({ title, action, flat = false, children }) => (
-  <div className={flat ? 'min-w-0' : 'rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs'}>
+  <div className={flat ? 'min-w-0' : 'min-w-0 rounded-2xl bg-surface-container-low/60 p-4 sm:p-5'}>
     <div className="mb-3 flex items-center justify-between gap-3">
-      <h3 className={`text-xs font-semibold uppercase tracking-[0.16em] ${flat ? 'text-on-surface-variant' : 'text-slate-500'}`}>{title}</h3>
+      <h3 className={`text-xs font-semibold uppercase tracking-[0.16em] text-on-surface-variant`}>{title}</h3>
       {action}
     </div>
     {children}
@@ -51,8 +51,8 @@ export const Panel: React.FC<{
 export const Notice: React.FC<{ readonly tone: 'info' | 'warn'; readonly children: React.ReactNode }> = ({ tone, children }) => (
   <p
     role={tone === 'warn' ? 'alert' : 'note'}
-    className={`rounded-xl border px-3 py-2.5 text-sm ${
-      tone === 'warn' ? 'border-amber-200 bg-amber-50 text-amber-800' : 'border-blue-200 bg-blue-50 text-blue-800'
+    className={`rounded-xl px-3 py-2.5 text-sm ${
+      tone === 'warn' ? 'bg-warning-container text-on-warning-container' : 'bg-primary-container/60 text-on-primary-container'
     }`}
   >
     {children}

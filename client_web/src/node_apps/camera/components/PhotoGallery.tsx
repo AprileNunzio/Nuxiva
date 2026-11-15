@@ -36,7 +36,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ sourceId, refreshKey
   return (
     <Panel title={t('photos_title', { count: photos.length })}>
       {photos.length === 0 ? (
-        <p className="text-sm text-slate-500">{t('photos_empty')}</p>
+        <p className="text-sm text-on-surface-variant">{t('photos_empty')}</p>
       ) : (
         <ul className="grid grid-cols-2 gap-2 cq-sm:grid-cols-3 cq-xl:grid-cols-4">
           {photos.map((photo) => (
@@ -50,7 +50,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ sourceId, refreshKey
                   type="button"
                   onClick={() => void remove(photo.name)}
                   aria-label={t('photo_delete')}
-                  className="rounded p-1 text-slate-500 transition hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                  className="rounded p-1 text-on-surface-variant transition hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
                 >
                   <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                 </button>

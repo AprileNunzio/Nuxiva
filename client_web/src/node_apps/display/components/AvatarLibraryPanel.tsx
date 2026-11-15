@@ -44,10 +44,10 @@ export const AvatarLibraryPanel: React.FC<{ readonly handle: AvatarsHandle }> = 
       key={key}
       className={`flex items-center gap-3 rounded-xl border px-3 py-2 ${active ? 'border-cyan-400/60 bg-cyan-400/5' : 'border-slate-800/80 bg-slate-950/40'}`}
     >
-      <Box className={`h-4 w-4 shrink-0 ${active ? 'text-cyan-200' : 'text-slate-500'}`} aria-hidden="true" />
+      <Box className={`h-4 w-4 shrink-0 ${active ? 'text-cyan-200' : 'text-on-surface-variant'}`} aria-hidden="true" />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm text-slate-100">{label}</span>
-        <span className="block truncate text-[11px] text-slate-500">{detail}</span>
+        <span className="block truncate text-[11px] text-on-surface-variant">{detail}</span>
       </span>
       {active ? (
         <span className="flex items-center gap-1 text-xs font-semibold text-cyan-200">
@@ -88,7 +88,7 @@ export const AvatarLibraryPanel: React.FC<{ readonly handle: AvatarsHandle }> = 
               aria-label={t('avatar_remove')}
               disabled={busy !== null}
               onClick={() => setRemoving(avatar.name)}
-              className="rounded-lg p-1.5 text-slate-500 transition hover:text-rose-300 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+              className="rounded-lg p-1.5 text-on-surface-variant transition hover:text-rose-300 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
             >
               <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
             </button>,
@@ -97,7 +97,7 @@ export const AvatarLibraryPanel: React.FC<{ readonly handle: AvatarsHandle }> = 
         )}
       </ul>
       <form onSubmit={submit} className="mt-4 grid gap-2 border-t border-slate-800/80 pt-3 cq-sm:grid-cols-2">
-        <p className="text-xs text-slate-500 cq-sm:col-span-2">{t('upload_hint', { max: megabytes(library.maxBytes) })}</p>
+        <p className="text-xs text-on-surface-variant cq-sm:col-span-2">{t('upload_hint', { max: megabytes(library.maxBytes) })}</p>
         <label className="flex flex-col gap-1 text-xs text-slate-400">
           {t('upload_name')}
           <input

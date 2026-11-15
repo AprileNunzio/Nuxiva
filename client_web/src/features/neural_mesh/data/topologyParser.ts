@@ -1,4 +1,4 @@
-import { MeshNeuron, MeshSnapshot, NeuronKind, NeuronTelemetry } from '../domain/types';
+import { MeshNearest, MeshNeuron, MeshSnapshot, NeuronKind, NeuronTelemetry } from '../domain/types';
 import { cleanBoolean, cleanId, cleanIp, cleanNumber, cleanText, isRecord } from './sanitize';
 
 const MAX_NEURONS = 512;
@@ -34,6 +34,10 @@ function parseTelemetry(value: unknown): NeuronTelemetry {
     ramTotalGb: cleanNumber(t.ram_total_gb, 0, 1e5),
     gpuName: cleanText(t.gpu_name, 96),
     gpuCount: cleanNumber(t.gpu_count, 0, 64),
+    gpuPercent: cleanNumber(t.gpu_percent, 0, 100),
+    batteryPercent: cleanNumber(t.battery_percent, 0, 100),
+    charging: typeof t.charging === 'boolean' ? t.charging : null,
+    diskPercent: cleanNumber(t.disk_percent, 0, 100),
     vramUsedGb: cleanNumber(t.vram_used_gb, 0, 1e4),
     vramTotalGb: cleanNumber(t.vram_total_gb, 0, 1e4),
     activeModel: cleanText(t.active_model, 96),
@@ -67,6 +71,7 @@ function parseNeuron(value: unknown): MeshNeuron | null {
     online: typeof value.online === 'boolean' ? value.online : null,
     room: cleanText(value.room, 60),
     paired: value.source === 'paired',
+    local: value.source === 'local',
     telemetry: parseTelemetry(value.telemetry),
   };
 }
@@ -94,6 +99,16 @@ function breakCycles(neurons: MeshNeuron[]): MeshNeuron[] {
   });
 }
 
+function parseNearest(value: unknown, ids: ReadonlySet<string>): MeshNearest {
+  const raw = isRecord(value) ? value : {};
+  const nodeId = cleanId(raw.node_id);
+  return {
+    nodeId: nodeId !== null && ids.has(nodeId) ? nodeId : null,
+    confidence: cleanNumber(raw.confidence, 0, 1) ?? 0,
+    ambiguous: raw.ambiguous === true,
+  };
+}
+
 export function parseTopology(payload: unknown, receivedAt: number): MeshSnapshot {
   if (!isRecord(payload) || !Array.isArray(payload.nodes)) {
     throw new TopologyParseError('topology_payload_invalid');
@@ -109,6 +124,7 @@ export function parseTopology(payload: unknown, receivedAt: number): MeshSnapsho
   }
   return {
     neurons: breakCycles(detachOrphans(neurons)),
+    nearest: parseNearest(payload.nearest, seen),
     receivedAt,
     serverTimestamp: cleanNumber(payload.timestamp, 0, MAX_EPOCH_SECONDS),
   };

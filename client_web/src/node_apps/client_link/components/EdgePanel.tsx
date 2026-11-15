@@ -7,7 +7,7 @@ import { useLinkI18n } from '../scope';
 const TARGET_TONE: Readonly<Record<EdgeTarget, string>> = {
   edge: 'border-emerald-400/50 bg-emerald-400/10 text-emerald-200',
   server: 'border-cyan-400/40 bg-cyan-400/5 text-cyan-200',
-  unavailable: 'border-slate-700 bg-slate-900 text-slate-500',
+  unavailable: 'border-outline-variant bg-surface-container text-on-surface-variant',
 };
 
 export const EdgePanel: React.FC<{ readonly node: LinkNode }> = ({ node }) => {
@@ -25,7 +25,7 @@ export const EdgePanel: React.FC<{ readonly node: LinkNode }> = ({ node }) => {
       )}
       <div className="mt-3 flex flex-wrap gap-1.5">
         {node.accelerators.length === 0 ? (
-          <span className="text-xs text-slate-500">{t('edge_no_accelerator')}</span>
+          <span className="text-xs text-on-surface-variant">{t('edge_no_accelerator')}</span>
         ) : (
           node.accelerators.map((acc) => (
             <span

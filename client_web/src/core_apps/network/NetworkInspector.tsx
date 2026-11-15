@@ -4,6 +4,7 @@ import icon from './icon.png';
 import { isStale } from '../../features/neural_mesh/domain/metrics';
 import { OSInspector } from '../shared/kit';
 import { MeshNeuron } from '../../features/neural_mesh/domain/types';
+import { NetworkMetrics } from './NetworkMetrics';
 
 export interface MCPInsightState {
   readonly loading: boolean;
@@ -36,10 +37,10 @@ export const NetworkInspector: React.FC<NetworkInspectorProps> = ({
 }) => {
   if (!selectedNode) {
     return (
-      <div className="flex h-full flex-col items-center justify-center p-6 text-center text-slate-400">
+      <div className="flex h-full flex-col items-center justify-center p-6 text-center text-on-surface-variant">
         <OSIcon3D name="Preview" source={icon} size="md" />
-        <p className="mt-3 text-xs font-semibold text-slate-300">{t('devices')}</p>
-        <span className="mt-1 text-[11px] text-slate-400">
+        <p className="mt-3 text-xs font-semibold text-on-surface">{t('devices')}</p>
+        <span className="mt-1 text-[11px]">
           {t('description')}
         </span>
       </div>
@@ -48,6 +49,7 @@ export const NetworkInspector: React.FC<NetworkInspectorProps> = ({
 
   const isLive = !isStale(selectedNode, Date.now()) && selectedNode.online !== false;
   const nodeInsight = mcpInsights[selectedNode.id];
+  const address = selectedNode.ip || selectedNode.name;
 
   return (
     <OSInspector
@@ -55,128 +57,65 @@ export const NetworkInspector: React.FC<NetworkInspectorProps> = ({
       subtitle={`${selectedNode.room || t(selectedNode.kind)} · ${selectedNode.ip || '—'}`}
       onClose={onClose}
       actions={
-        <div className="flex flex-col gap-2">
-          <button
-            type="button"
-            className="w-full rounded-xl bg-blue-600 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-blue-500 active:scale-[0.99] transition"
-            onClick={() => onOpenConsole(selectedNode)}
-          >
+        <div className="network-inspector-actions">
+          <button type="button" className="network-btn network-btn-primary network-btn-block" onClick={() => onOpenConsole(selectedNode)}>
             {t('manage')} →
           </button>
-          <button
-            type="button"
-            className="w-full rounded-xl border border-cyan-500/30 bg-cyan-500/10 py-2 text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 active:scale-[0.99] transition"
-            onClick={() => onOpenConsole(selectedNode, 'task_manager')}
-          >
+          <button type="button" className="network-btn network-btn-soft network-btn-block" onClick={() => onOpenConsole(selectedNode, 'task_manager')}>
             {t('task_manager')} →
           </button>
-          <button
-            type="button"
-            className="w-full rounded-xl border border-slate-700/60 bg-slate-800/80 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700/80 active:scale-[0.99] transition"
-            onClick={() => onOpenConsole(selectedNode, 'connections')}
-          >
+          <button type="button" className="network-btn network-btn-soft network-btn-block" onClick={() => onOpenConsole(selectedNode, 'connections')}>
             {t('connections_center')} →
           </button>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              className="flex-1 rounded-xl border border-slate-700/60 bg-slate-800/60 py-1.5 text-xs font-medium text-slate-300 hover:bg-slate-700/60 active:scale-[0.98] transition"
-              onClick={() => onAskMCP(selectedNode.id, selectedNode.ip || selectedNode.name)}
-            >
+          <div className="network-inspector-pair">
+            <button type="button" className="network-btn network-btn-ghost" onClick={() => onAskMCP(selectedNode.id, address)}>
               {t('mcp_whois')}
             </button>
             <button
               type="button"
-              className="flex-1 rounded-xl border border-slate-700/60 bg-slate-800/60 py-1.5 text-xs font-medium text-slate-300 hover:bg-slate-700/60 active:scale-[0.98] transition"
+              className="network-btn network-btn-ghost"
               disabled={studyingNodeId === selectedNode.id}
               onClick={() => onStudy(selectedNode.id, selectedNode.ip || selectedNode.id)}
             >
-              {studyingNodeId === selectedNode.id ? '...' : t('device_study')}
+              {studyingNodeId === selectedNode.id ? '…' : t('device_study')}
             </button>
           </div>
         </div>
       }
     >
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-100/60 dark:bg-slate-900/60 p-3.5 backdrop-blur-md">
+      <div className="network-inspector">
+        <div className="network-inspector-head">
           <OSIcon3D name={selectedNode.name} source={icon} size="md" />
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <strong className="truncate text-sm text-slate-900 dark:text-slate-100">{selectedNode.name}</strong>
-              <span
-                className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                style={{
-                  backgroundColor: isLive ? 'rgba(16, 185, 129, 0.15)' : 'rgba(148, 163, 184, 0.15)',
-                  color: isLive ? '#10b981' : '#94a3b8',
-                }}
-              >
-                {isLive ? t('online') : t('offline')}
-              </span>
-            </div>
-            <span className="text-xs text-slate-500 dark:text-slate-400">{t(selectedNode.kind)}</span>
+          <div>
+            <strong>{selectedNode.name}</strong>
+            <span>{t(selectedNode.kind)}</span>
           </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2.5">
-          <div className="rounded-xl border border-slate-200/70 dark:border-slate-800/70 bg-slate-50/50 dark:bg-slate-900/40 p-3">
-            <span className="block text-[10px] font-medium text-slate-500 dark:text-slate-400">{t('power')}</span>
-            <strong className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-              {selectedNode.telemetry.powerWatts != null ? `${format(selectedNode.telemetry.powerWatts)} W` : '—'}
-            </strong>
-          </div>
-          <div className="rounded-xl border border-slate-200/70 dark:border-slate-800/70 bg-slate-50/50 dark:bg-slate-900/40 p-3">
-            <span className="block text-[10px] font-medium text-slate-500 dark:text-slate-400">{t('latency')}</span>
-            <strong className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-              {selectedNode.telemetry.pingMs != null ? `${selectedNode.telemetry.pingMs} ms` : '—'}
-            </strong>
-          </div>
-          <div className="rounded-xl border border-slate-200/70 dark:border-slate-800/70 bg-slate-50/50 dark:bg-slate-900/40 p-3">
-            <span className="block text-[10px] font-medium text-slate-500 dark:text-slate-400">CPU</span>
-            <strong className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-              {selectedNode.telemetry.cpuPercent != null ? `${format(selectedNode.telemetry.cpuPercent)}%` : '—'}
-            </strong>
-          </div>
-          <div className="rounded-xl border border-slate-200/70 dark:border-slate-800/70 bg-slate-50/50 dark:bg-slate-900/40 p-3">
-            <span className="block text-[10px] font-medium text-slate-500 dark:text-slate-400">RAM</span>
-            <strong className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate block">
-              {selectedNode.telemetry.ramUsedGb != null
-                ? `${format(selectedNode.telemetry.ramUsedGb)} / ${format(selectedNode.telemetry.ramTotalGb || 0)} GB`
-                : '—'}
-            </strong>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-slate-200/70 dark:border-slate-800/70 bg-slate-50/50 dark:bg-slate-900/40 p-3.5 text-xs">
-          <span className="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            {t('technical')}
+          <span className="network-node-status" data-live={isLive}>
+            {isLive ? t('online') : t('offline')}
           </span>
-          <div className="flex flex-col gap-2 text-slate-600 dark:text-slate-300">
-            <div className="flex justify-between">
-              <span className="text-slate-500">{t('address')}</span>
-              <span className="font-mono">{selectedNode.ip || '—'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">{t('platform')}</span>
-              <span>{selectedNode.telemetry.os || '—'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">ID Nodo</span>
-              <span className="font-mono truncate max-w-[10rem]">{selectedNode.id}</span>
-            </div>
-          </div>
         </div>
+
+        <NetworkMetrics node={selectedNode} live={isLive} isHost={selectedNode.local} format={format} t={t} />
+
+        <section className="network-inspector-section">
+          <h3>{t('technical')}</h3>
+          <dl>
+            <div><dt>{t('address')}</dt><dd className="font-mono">{selectedNode.ip || '—'}</dd></div>
+            <div><dt>{t('platform')}</dt><dd>{selectedNode.telemetry.os || '—'}</dd></div>
+            <div><dt>{t('node_id')}</dt><dd className="font-mono">{selectedNode.id}</dd></div>
+            {selectedNode.telemetry.uptimeSeconds !== null && (
+              <div><dt>{t('uptime')}</dt><dd>{format(selectedNode.telemetry.uptimeSeconds / 3600)} h</dd></div>
+            )}
+          </dl>
+        </section>
 
         {nodeInsight && (
-          <div className="rounded-xl border border-blue-500/30 bg-blue-500/10 p-3.5 text-xs">
-            <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-blue-400">
-              Insight Assistente MCP
-            </span>
-            {nodeInsight.loading && <p className="italic text-slate-400">{t('scanning')}</p>}
-            {nodeInsight.error && <p className="text-rose-400">{nodeInsight.error}</p>}
-            {nodeInsight.text && (
-              <p className="text-slate-200 leading-relaxed whitespace-pre-wrap">{nodeInsight.text}</p>
-            )}
-          </div>
+          <section className="network-inspector-section">
+            <h3>{t('mcp_insight')}</h3>
+            {nodeInsight.loading && <p>{t('scanning')}</p>}
+            {nodeInsight.error && <p className="network-error">{nodeInsight.error}</p>}
+            {nodeInsight.text && <p className="network-insight-text">{nodeInsight.text}</p>}
+          </section>
         )}
       </div>
     </OSInspector>

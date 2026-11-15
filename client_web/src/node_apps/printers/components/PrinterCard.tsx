@@ -73,7 +73,7 @@ export const PrinterCard: React.FC<PrinterCardProps> = ({ printer, selected, onS
             <span className="truncate">{printer.type === 'virtual_pdf' ? t('virtual_pdf_name') : printer.name}</span>
             {printer.isDefault && <Star className="h-3.5 w-3.5 shrink-0 fill-amber-300 text-amber-300" aria-label={t('default_badge')} />}
           </span>
-          <span className="block truncate text-[11px] text-slate-500">
+          <span className="block truncate text-[11px] text-on-surface-variant">
             {[t(`type_${printer.type}`), t(`connection_${printer.connection}`), printer.address].filter(Boolean).join(' · ')}
           </span>
         </span>
@@ -98,7 +98,7 @@ export const PrinterCard: React.FC<PrinterCardProps> = ({ printer, selected, onS
             type="button"
             onClick={() => void remove()}
             aria-label={t('remove')}
-            className="ml-auto rounded-lg p-1.5 text-slate-500 transition hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+            className="ml-auto rounded-lg p-1.5 text-on-surface-variant transition hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
           >
             <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
           </button>

@@ -13,7 +13,7 @@ export const ScreensPanel: React.FC<{ readonly state: ScreensState | null }> = (
   return (
     <Panel title={t('screens_title', { count: screens.length })}>
       {screens.length === 0 ? (
-        <p className="text-sm text-slate-500">{t(state ? 'screens_empty' : 'loading')}</p>
+        <p className="text-sm text-on-surface-variant">{t(state ? 'screens_empty' : 'loading')}</p>
       ) : (
         <ul className="flex flex-wrap items-end gap-3">
           {screens.map((screen) => (
@@ -30,7 +30,7 @@ export const ScreensPanel: React.FC<{ readonly state: ScreensState | null }> = (
               <span className="font-mono text-[11px] text-slate-300">
                 {screen.width}×{screen.height}
               </span>
-              <span className="text-[10px] uppercase tracking-wide text-slate-500">{t(screen.local ? 'screen_local' : 'screen_remote')}</span>
+              <span className="text-[10px] uppercase tracking-wide text-on-surface-variant">{t(screen.local ? 'screen_local' : 'screen_remote')}</span>
             </li>
           ))}
         </ul>
@@ -49,7 +49,7 @@ export const ScreensPanel: React.FC<{ readonly state: ScreensState | null }> = (
                   <Icon className="h-4 w-4 shrink-0 text-cyan-200" aria-hidden="true" />
                   <span className="min-w-0 flex-1 truncate text-sm text-slate-200">
                     {client.client === 'questo server' ? t('client_this_server') : client.client}
-                    <span className="ml-2 font-mono text-[11px] text-slate-500">
+                    <span className="ml-2 font-mono text-[11px] text-on-surface-variant">
                       #{client.screen + 1}
                       {client.size ? ` · ${client.size}` : ''}
                     </span>

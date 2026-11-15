@@ -3,6 +3,8 @@ from __future__ import annotations
 import time
 from typing import Any, Callable, Dict, Iterable, List, Optional
 
+from agenti.nodes import telemetry as node_telemetry
+
 PAIRED_KIND = {
     "server": "compute",
     "desktop": "compute",
@@ -56,9 +58,18 @@ def _paired_view(node: Dict[str, Any], mesh: Any, parent: Optional[str]) -> Dict
             "uptime_s": _number(metrics.get("uptime")),
             "cpu_cores": _number(hardware.get("cores")),
             "gpu_name": hardware.get("gpu") or None,
+            "gpu_percent": _number(metrics.get("gpu")),
             "os": hardware.get("os") or None,
+            "power_watts": _number(metrics.get("power_w")),
+            "ping_ms": _number(metrics.get("rtt_ms")),
+            "tx_kbps": _number(metrics.get("tx_kbps")),
+            "rx_kbps": _number(metrics.get("rx_kbps")),
+            "battery_percent": _number(metrics.get("battery")),
+            "charging": None if metrics.get("charging") is None else bool(metrics.get("charging")),
+            "disk_percent": _number(metrics.get("disk")),
             "last_updated": last_seen,
         },
+        "proximity": node.get("proximity") or {},
     }
 
 
@@ -86,9 +97,10 @@ def compose_topology(mesh: Any, paired: Iterable[Dict[str, Any]]) -> Dict[str, A
     if local is not None:
         local["online"] = True
         local["source"] = "local"
+    listing = [{"id": n["id"], "online": n.get("online"), "proximity": n.get("proximity")} for n in paired_list]
     links = [
         {"source": node.get("parent_id") or "virtual-core", "target": node_id}
         for node_id, node in nodes.items()
         if node_id != mesh.node_id
     ]
-    return {"nodes": list(nodes.values()), "links": links, "timestamp": time.time()}
+    return {"nodes": list(nodes.values()), "links": links, "nearest": node_telemetry.nearest(listing), "timestamp": time.time()}

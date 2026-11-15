@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Rete con potenza, CPU, GPU e latenza reali; hub mobile adattivo",
+    "en": "Network with real power, CPU, GPU and latency; adaptive mobile hub",
+    "fr": "Réseau avec puissance, CPU, GPU et latence réelles ; hub mobile adaptatif",
+    "es": "Red con potencia, CPU, GPU y latencia reales; hub móvil adaptable"
+  },
+  "features": [
+    {
+      "it": "La pagina Rete mostra per il server e per ogni dispositivo potenza, CPU, GPU, RAM, latenza e batteria, e indica il dispositivo più vicino a te.",
+      "en": "The Network page shows power, CPU, GPU, RAM, latency and battery for the server and every device, and tells which device is closest to you.",
+      "fr": "La page Réseau affiche puissance, CPU, GPU, RAM, latence et batterie pour le serveur et chaque appareil, et indique l'appareil le plus proche de vous.",
+      "es": "La página Red muestra potencia, CPU, GPU, RAM, latencia y batería del servidor y de cada dispositivo, e indica el dispositivo más cercano a ti."
+    },
+    {
+      "it": "Su smartphone e tablet l'hub sceglie da solo se mostrare il nucleo oppure il flusso audio, in base allo spazio lasciato dai widget.",
+      "en": "On phones and tablets the hub now chooses by itself between the core and the audio flow, based on the space left by the widgets.",
+      "fr": "Sur smartphone et tablette, le hub choisit seul entre le noyau et le flux audio selon la place laissée par les widgets.",
+      "es": "En móviles y tabletas el hub elige por sí solo entre el núcleo y el flujo de audio según el espacio que dejan los widgets."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Le sotto-app dei dispositivi (Camera, Microfono e altre) non hanno più card bianche e righe illeggibili sul tema scuro; i pulsanti del pannello laterale della Rete hanno lo stesso stile.",
+      "en": "Device sub-apps (Camera, Microphone and others) no longer show white cards and unreadable rows on the dark theme; the Network side panel buttons share one style.",
+      "fr": "Les sous-applications des appareils (Caméra, Microphone et autres) n'affichent plus de cartes blanches ni de lignes illisibles sur le thème sombre ; les boutons du panneau latéral Réseau ont le même style.",
+      "es": "Las subaplicaciones de los dispositivos (Cámara, Micrófono y otras) ya no muestran tarjetas blancas ni filas ilegibles en el tema oscuro; los botones del panel lateral de Red comparten un mismo estilo."
+    }
+  ]
+}

@@ -32,7 +32,7 @@ export const SourceList: React.FC<SourceListProps> = ({ sources, selected, onSel
                   {source.name}
                   {source.options.favorite && <Star className="h-3 w-3 shrink-0 fill-amber-300 text-amber-300" aria-label={t('favorite')} />}
                 </span>
-                <span className="block truncate text-[11px] text-slate-500">
+                <span className="block truncate text-[11px] text-on-surface-variant">
                   {[t(`kind_${source.kind}`), source.main ? t('main_badge') : null, source.options.room || null].filter(Boolean).join(' · ')}
                 </span>
               </span>

@@ -9,7 +9,7 @@ import time
 from config import STATE_DIR, node_keys, read_global_env
 from state import store
 
-from agenti.nodes import adapt, compute, trustpolicy, zerotrust
+from agenti.nodes import adapt, compute, telemetry, trustpolicy, zerotrust
 from agenti.nodes.audit import audit
 
 NODES_FILE = STATE_DIR / "nodes.json"
@@ -104,8 +104,8 @@ class Registry:
                     capabilities=[clean_text(c, 30) for c in (report.get("capabilities") or [])[:12]],
                     compute=compute.clean(report.get("compute"), clean_text),
                     agent=adapt.token(report.get("agent"), 16), offload=adapt.clean_offload(report.get("offload")),
-                    metrics={k: round(float(v), 1) for k, v in metrics.items()
-                             if k in ("cpu", "ram", "disk", "temp", "uptime") and isinstance(v, (int, float))})
+                    metrics=telemetry.clean_metrics(metrics),
+                    proximity=telemetry.clean_proximity(report.get("proximity")))
         self._adapt(node, report)
         self._announce(node, report.get("announce"))
         commands, node["commands"] = node.get("commands", []), []

@@ -18,6 +18,10 @@ export interface NeuronTelemetry {
   readonly ramTotalGb: number | null;
   readonly gpuName: string | null;
   readonly gpuCount: number | null;
+  readonly gpuPercent: number | null;
+  readonly batteryPercent: number | null;
+  readonly charging: boolean | null;
+  readonly diskPercent: number | null;
   readonly vramUsedGb: number | null;
   readonly vramTotalGb: number | null;
   readonly activeModel: string | null;
@@ -42,11 +46,19 @@ export interface MeshNeuron {
   readonly online: boolean | null;
   readonly room: string | null;
   readonly paired: boolean;
+  readonly local: boolean;
   readonly telemetry: NeuronTelemetry;
+}
+
+export interface MeshNearest {
+  readonly nodeId: string | null;
+  readonly confidence: number;
+  readonly ambiguous: boolean;
 }
 
 export interface MeshSnapshot {
   readonly neurons: readonly MeshNeuron[];
+  readonly nearest: MeshNearest;
   readonly receivedAt: number;
   readonly serverTimestamp: number | null;
 }

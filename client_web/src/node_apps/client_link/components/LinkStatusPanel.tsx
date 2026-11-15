@@ -35,7 +35,7 @@ export const LinkStatusPanel: React.FC<{ readonly node: LinkNode; readonly handl
                 node.online ? 'border-emerald-400/60 bg-emerald-400/10' : 'border-slate-700 bg-slate-900'
               }`}
             >
-              <Activity className={`h-6 w-6 ${node.online ? 'text-emerald-200' : 'text-slate-500'}`} aria-hidden="true" />
+              <Activity className={`h-6 w-6 ${node.online ? 'text-emerald-200' : 'text-on-surface-variant'}`} aria-hidden="true" />
             </span>
           </span>
           <div className="min-w-0">
@@ -48,7 +48,7 @@ export const LinkStatusPanel: React.FC<{ readonly node: LinkNode; readonly handl
         <dl className="mt-4 grid grid-cols-2 gap-2 cq-sm:grid-cols-3">
           {facts.map(([key, value]) => (
             <div key={key} className="min-w-0 rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2">
-              <dt className="text-[10px] uppercase tracking-wider text-slate-500">{t(key)}</dt>
+              <dt className="text-[10px] uppercase tracking-wider text-on-surface-variant">{t(key)}</dt>
               <dd className="truncate font-mono text-xs text-slate-200">{value ?? '—'}</dd>
             </div>
           ))}
@@ -57,7 +57,7 @@ export const LinkStatusPanel: React.FC<{ readonly node: LinkNode; readonly handl
       </Panel>
       <Panel title={t('metrics_title')}>
         {METRICS.every((key) => node.metrics[key] === undefined) ? (
-          <p className="text-sm text-slate-500">{t('metrics_empty')}</p>
+          <p className="text-sm text-on-surface-variant">{t('metrics_empty')}</p>
         ) : (
           <div className="grid gap-3 cq-sm:grid-cols-2">
             {METRICS.map((key) => {

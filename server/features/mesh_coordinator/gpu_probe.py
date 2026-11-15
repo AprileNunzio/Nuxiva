@@ -134,6 +134,7 @@ class GpuProbe:
         used = [g.vram_used_gb for g in gpus if g.vram_used_gb is not None]
         total = [g.vram_total_gb for g in gpus if g.vram_total_gb is not None]
         power = [g.power_watts for g in gpus if g.power_watts is not None]
+        busy = [g.utilization for g in gpus if g.utilization is not None]
         return {
             "gpu_name": gpus[0].name if gpus else None,
             "gpu_count": len(gpus),
@@ -141,6 +142,7 @@ class GpuProbe:
             "vram_used_gb": round(sum(used), 2) if used else None,
             "vram_total_gb": round(sum(total), 2) if total else None,
             "gpu_power_watts": round(sum(power), 1) if power else None,
+            "gpu_percent": round(max(busy), 1) if busy else None,
         }
 
 

@@ -59,9 +59,9 @@ export const DiscoverPanel: React.FC<{ readonly canInstall: boolean; readonly on
       }
     >
       {devices === null ? (
-        <p className="text-sm text-slate-500">{t('discover_hint')}</p>
+        <p className="text-sm text-on-surface-variant">{t('discover_hint')}</p>
       ) : devices.length === 0 ? (
-        <p className="text-sm text-slate-500">{t('discover_empty')}</p>
+        <p className="text-sm text-on-surface-variant">{t('discover_empty')}</p>
       ) : (
         <ul className="flex flex-col gap-2">
           {devices.map((device) => {
@@ -70,7 +70,7 @@ export const DiscoverPanel: React.FC<{ readonly canInstall: boolean; readonly on
             return (
               <li key={device.uri} className="rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2">
                 <p className="truncate text-sm font-semibold text-slate-100">{device.label}</p>
-                <p className="truncate font-mono text-[11px] text-slate-500">{device.uri}</p>
+                <p className="truncate font-mono text-[11px] text-on-surface-variant">{device.uri}</p>
                 {installable && (
                   <div className="mt-2 flex gap-2">
                     <input

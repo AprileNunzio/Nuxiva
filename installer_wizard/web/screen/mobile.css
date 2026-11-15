@@ -1,0 +1,30 @@
+body.screen-mobile { --mb-core-h: 0px; }
+
+.mb-core { position: fixed; left: 0; right: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; transition: top 0.6s var(--sc-ease), height 0.6s var(--sc-ease), opacity 0.6s var(--sc-ease); }
+.mb-core[data-mode="core-full"] { top: 0; height: 100%; }
+.mb-core[data-mode="core-dock"] { top: calc(var(--sc-m) * 0.7 + 52px); height: 112px; }
+.mb-core[data-mode="flow"] { top: calc(var(--sc-m) * 0.7 + 52px); height: 44px; }
+
+.mb-orb { position: relative; width: min(56vmin, 320px); aspect-ratio: 1; transition: width 0.6s var(--sc-ease); }
+.mb-core[data-mode="core-dock"] .mb-orb { width: 96px; }
+.mb-core[data-mode="flow"] .mb-orb { width: 0; opacity: 0; }
+.mb-orb i { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 50% 42%, rgba(var(--sc-tone), 0.55), rgba(var(--sc-tone), 0.12) 58%, transparent 72%); transform: scale(calc(0.78 + var(--mb-level, 0) * 0.3)); animation: mb-breathe 6s ease-in-out infinite; }
+.mb-orb i:nth-child(2) { animation-delay: -2s; opacity: 0.55; transform: scale(calc(0.95 + var(--mb-level, 0) * 0.2)); }
+.mb-orb i:nth-child(3) { animation-delay: -4s; opacity: 0.3; transform: scale(calc(1.1 + var(--mb-level, 0) * 0.12)); }
+
+.mb-flow { display: flex; align-items: center; justify-content: center; gap: 4px; height: 44px; width: min(80vw, 420px); opacity: 0; transition: opacity 0.5s var(--sc-ease); }
+.mb-core[data-mode="flow"] .mb-flow { opacity: 1; }
+.mb-core[data-mode="core-full"] .mb-flow { position: absolute; bottom: calc(var(--sc-m) * 1.6 + 60px); opacity: 0.7; }
+.mb-flow b { flex: 1; max-width: 8px; height: 100%; border-radius: 999px; background: rgb(var(--sc-tone)); transform: scaleY(0.1); transform-origin: center; }
+
+body.screen-mobile .rest { z-index: 4; }
+body.screen-mobile:not(.desk-has) .rest { transform: translateY(32vmin); }
+body.screen-mobile:not(.desk-has) .rest-time { font-size: clamp(40px, 14vw, 96px); }
+body.screen-mobile .sc-pager { bottom: max(12px, env(safe-area-inset-bottom)); }
+body.screen-mobile .sc-head { top: max(10px, env(safe-area-inset-top)); }
+
+@keyframes mb-breathe { 0%, 100% { filter: brightness(0.9); } 50% { filter: brightness(1.15); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .mb-orb i { animation: none; }
+}

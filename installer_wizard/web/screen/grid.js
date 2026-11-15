@@ -9,7 +9,8 @@
     const GAP = Math.round(clamp(W * 0.012, 12, 40));
     const head = document.querySelector("[data-screen-head]");
     const foot = document.querySelector("[data-screen-foot]");
-    const top = head ? Math.round(head.getBoundingClientRect().bottom + GAP) : M;
+    const dock = Number(document.body.dataset.coreH) || 0;
+    const top = (head ? Math.round(head.getBoundingClientRect().bottom + GAP) : M) + (dock ? dock + GAP : 0);
     const bottom = H - (foot ? Math.round(foot.offsetHeight + GAP) : M);
     return { W, H, M, GAP, top, bottom, room: Math.max(120, bottom - top) };
   }

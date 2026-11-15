@@ -8,9 +8,11 @@ from typing import Any, Dict, Optional
 try:
     from .gpu_probe import gpu_probe
     from .node_registry import NodeRegistry
+    from .power_probe import power_probe
 except ImportError:
     from gpu_probe import gpu_probe
     from node_registry import NodeRegistry
+    from power_probe import power_probe
 
 log = logging.getLogger("nuxiva.mesh")
 
@@ -98,9 +100,10 @@ def collect_real_system_telemetry(node_id: Optional[str] = None) -> Dict[str, An
         "vram_used_gb": gpu["vram_used_gb"],
         "vram_total_gb": gpu["vram_total_gb"],
         "active_model": None,
-        "power_watts": gpu["gpu_power_watts"],
+        "gpu_percent": gpu["gpu_percent"],
+        "power_watts": power_probe.system_watts(gpu["gpu_power_watts"]),
         "temp_c": temp_c,
-        "ping_ms": 0.1,
+        "ping_ms": None,
         "tx_kbps": tx_kbps,
         "rx_kbps": rx_kbps,
         "child_satellites": [],

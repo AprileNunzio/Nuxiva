@@ -52,7 +52,7 @@ export const MicTestPanel: React.FC<MicTestPanelProps> = ({ ear, eq }) => {
   return (
     <Panel title={t('test_title')}>
       <div className="flex flex-col gap-3">
-        <p className="text-xs text-slate-500">{t('test_intro')}</p>
+        <p className="text-xs text-on-surface-variant">{t('test_intro')}</p>
         <LevelMeter
           rmsDb={rmsDb}
           peakHoldDb={meter.peakHoldDb}
@@ -71,7 +71,7 @@ export const MicTestPanel: React.FC<MicTestPanelProps> = ({ ear, eq }) => {
             onClick={metering ? meter.stop : meter.start}
             disabled={recording}
             aria-pressed={metering}
-            className={`${buttonBase} ${metering ? 'border-rose-400/50 bg-rose-500/10 text-rose-700' : 'border-cyan-400/40 bg-cyan-400/10 text-cyan-800'}`}
+            className={`${buttonBase} ${metering ? 'border-rose-400/50 bg-rose-500/10 text-rose-200' : 'border-cyan-400/40 bg-cyan-400/10 text-cyan-200'}`}
           >
             {metering ? <Square className="h-4 w-4" aria-hidden="true" /> : <Activity className="h-4 w-4" aria-hidden="true" />}
             {t(metering ? 'test_meter_stop' : 'test_meter_start')}
@@ -80,14 +80,14 @@ export const MicTestPanel: React.FC<MicTestPanelProps> = ({ ear, eq }) => {
             type="button"
             onClick={startTest}
             disabled={recording}
-            className={`${buttonBase} border-blue-300 bg-blue-50 text-blue-800 hover:bg-blue-100`}
+            className={`${buttonBase} border-blue-400/40 bg-blue-400/10 text-blue-200 hover:bg-blue-400/20`}
           >
             {recording ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Mic className="h-4 w-4" aria-hidden="true" />}
             {recording ? t('test_recording', { seconds: test.remaining }) : t('test_record', { seconds: TEST_SECONDS })}
           </button>
         </div>
         {error && (
-          <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          <p role="alert" className="rounded-xl bg-amber-400/10 px-3 py-2 text-sm text-amber-200">
             {t(`test_error_${error}`)}
           </p>
         )}

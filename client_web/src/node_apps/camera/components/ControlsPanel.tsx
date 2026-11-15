@@ -59,9 +59,9 @@ export const ControlsPanel: React.FC<{ readonly sourceId: string }> = ({ sourceI
       }
     >
       {controls === null ? (
-        <p className="text-sm text-slate-500">{t('loading')}</p>
+        <p className="text-sm text-on-surface-variant">{t('loading')}</p>
       ) : controls.length === 0 ? (
-        <p className="text-sm text-slate-500">{t('controls_none')}</p>
+        <p className="text-sm text-on-surface-variant">{t('controls_none')}</p>
       ) : (
         <div className="grid gap-2 cq-sm:grid-cols-2">
           {controls.map((control) => {

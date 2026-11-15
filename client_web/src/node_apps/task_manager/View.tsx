@@ -359,7 +359,7 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
                       <div className="flex items-center justify-between pt-2 border-t border-slate-800/80">
                         <span
                           className={`text-[10px] font-mono font-bold uppercase ${
-                            isEnabled ? 'text-emerald-400' : 'text-slate-500'
+                            isEnabled ? 'text-emerald-400' : 'text-on-surface-variant'
                           }`}
                         >
                           {isEnabled ? t('cap_enabled') : t('cap_disabled')}
@@ -393,7 +393,7 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
 
                 <div className="flex items-center gap-2 flex-wrap">
                   <div className="relative">
-                    <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-500" />
+                    <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-on-surface-variant" />
                     <input
                       type="text"
                       value={search}

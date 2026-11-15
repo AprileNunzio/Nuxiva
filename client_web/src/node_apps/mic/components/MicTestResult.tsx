@@ -4,10 +4,10 @@ import { useMicI18n } from '../scope';
 import { ZONE_TEXT, meterPercent } from './LevelMeter';
 
 const VERDICT_TONE: Readonly<Record<MicVerdict, string>> = {
-  ok: 'border-emerald-200 bg-emerald-50 text-emerald-800',
-  raise: 'border-amber-200 bg-amber-50 text-amber-800',
-  lower: 'border-rose-200 bg-rose-50 text-rose-800',
-  silent: 'border-slate-200 bg-slate-50 text-slate-700',
+  ok: 'bg-emerald-400/10 text-emerald-200',
+  raise: 'bg-amber-400/10 text-amber-200',
+  lower: 'bg-rose-400/10 text-rose-200',
+  silent: 'bg-surface-container text-on-surface-variant',
 };
 
 const ZONE_BAR: Readonly<Record<string, string>> = {
@@ -25,7 +25,7 @@ const Stat: React.FC<{ readonly label: string; readonly value: string; readonly 
   <div className="rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2">
     <dt className="text-[11px] uppercase tracking-[0.12em] text-slate-400">{label}</dt>
     <dd className="font-mono text-sm text-cyan-100">{value}</dd>
-    {hint && <dd className="text-[11px] text-slate-500">{hint}</dd>}
+    {hint && <dd className="text-[11px] text-on-surface-variant">{hint}</dd>}
   </div>
 );
 
@@ -61,7 +61,7 @@ export const MicTestResult: React.FC<MicTestResultProps> = ({ report, rawUrl, pr
           <audio controls preload="auto" src={processedUrl} className="w-full" aria-label={t('test_play_processed')} />
         </figure>
       </div>
-      <p className="text-xs text-slate-500">{t(report.eqEnabled ? 'test_processed_hint_eq' : 'test_processed_hint')}</p>
+      <p className="text-xs text-on-surface-variant">{t(report.eqEnabled ? 'test_processed_hint_eq' : 'test_processed_hint')}</p>
       <dl className="grid grid-cols-2 gap-2 cq-lg:grid-cols-3">
         <Stat label={t('test_stat_voice')} value={fmtDb(report.voiceDb)} />
         <Stat label={t('test_stat_noise')} value={fmtDb(report.noiseDb)} />

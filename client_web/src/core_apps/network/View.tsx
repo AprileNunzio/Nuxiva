@@ -10,6 +10,7 @@ import { NetworkEnergyView } from './NetworkEnergyView';
 import { NetworkInspector, MCPInsightState } from './NetworkInspector';
 import { MeshNeuron } from '../../features/neural_mesh/domain/types';
 import './style.css';
+import './style_detail.css';
 
 export const View: React.FC = () => {
   const { t, lang } = useScopedI18n('core_apps/network');
@@ -19,7 +20,6 @@ export const View: React.FC = () => {
   const [localSearch, setLocalSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [view, setView] = useState<'devices' | 'energy'>('devices');
-  const [technical, setTechnical] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [studyingNodeId, setStudyingNodeId] = useState<string | null>(null);
   const [mcpInsights, setMcpInsights] = useState<Record<string, MCPInsightState>>({});
@@ -45,7 +45,6 @@ export const View: React.FC = () => {
           setLocalSearch(q);
         }
         if (id === 'view') setView(value === 'energy' ? 'energy' : 'devices');
-        if (id === 'details') setTechnical((v) => !v);
         if (id === 'rescan') void handleScan();
         if (id === 'add') os.openApp({ appId: 'nodes' });
       },
@@ -65,6 +64,7 @@ export const View: React.FC = () => {
   );
 
   const selectedNode = nodes.find((n) => n.id === os.selectedId) || null;
+  const nearestNode = nodes.find((n) => n.id === snapshot?.nearest.nodeId) || null;
 
   useEffect(() => {
     const isLive = streamState === 'live';
@@ -122,12 +122,12 @@ export const View: React.FC = () => {
       const response = await queryWhoIsMCP(address);
       setMcpInsights((prev) => ({
         ...prev,
-        [nodeId]: { loading: false, text: response || 'Nessuna informazione registrata.' },
+        [nodeId]: { loading: false, text: response || t('mcp_empty') },
       }));
     } catch {
       setMcpInsights((prev) => ({
         ...prev,
-        [nodeId]: { loading: false, error: 'Errore di connessione MCP.' },
+        [nodeId]: { loading: false, error: t('mcp_error') },
       }));
     }
   };
@@ -176,30 +176,21 @@ export const View: React.FC = () => {
         }}
         footer={
           <div className="flex flex-col gap-1 p-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t('view')}</span>
-            <div className="flex rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-0.5 bg-slate-100/70 dark:bg-slate-900/70">
-              <button
-                type="button"
-                className={`flex-1 rounded-lg py-1.5 text-xs font-medium transition ${
-                  view === 'devices'
-                    ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-semibold shadow-xs'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                }`}
-                onClick={() => setView('devices')}
-              >
-                {t('devices')}
-              </button>
-              <button
-                type="button"
-                className={`flex-1 rounded-lg py-1.5 text-xs font-medium transition ${
-                  view === 'energy'
-                    ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-semibold shadow-xs'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                }`}
-                onClick={() => setView('energy')}
-              >
-                {t('energy')}
-              </button>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">{t('view')}</span>
+            <div className="network-switch" role="tablist">
+              {(['devices', 'energy'] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  role="tab"
+                  aria-selected={view === mode}
+                  className="network-switch-btn"
+                  data-active={view === mode}
+                  onClick={() => setView(mode)}
+                >
+                  {t(mode)}
+                </button>
+              ))}
             </div>
           </div>
         }
@@ -269,6 +260,11 @@ export const View: React.FC = () => {
               </strong>
               <p>{t('coverage', { known: measured.length, total: nodes.length })}</p>
             </article>
+            <article>
+              <span>{t('nearest_title')}</span>
+              <strong className="network-nearest-name">{nearestNode ? nearestNode.name : '—'}</strong>
+              <p>{t(nearestNode ? 'nearest_confidence' : snapshot?.nearest.ambiguous ? 'nearest_ambiguous' : 'nearest_none', { value: Math.round((snapshot?.nearest.confidence ?? 0) * 100) })}</p>
+            </article>
           </div>
 
           {!snapshot && <Loading label={t(streamState === 'offline' ? 'unavailable' : 'connecting')} />}
@@ -292,7 +288,8 @@ export const View: React.FC = () => {
                   key={node.id}
                   node={node}
                   isSelected={os.selectedId === node.id}
-                  technical={technical}
+                  isNearest={snapshot?.nearest.nodeId === node.id}
+                  isHost={node.local}
                   format={format}
                   t={t}
                   onSelect={(id) => os.setSelectedId?.(id)}

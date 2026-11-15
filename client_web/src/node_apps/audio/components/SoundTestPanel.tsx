@@ -39,7 +39,7 @@ export const SoundTestPanel: React.FC = () => {
 
   return (
     <Panel title={t('test_title')}>
-      <p className="mb-3 text-xs text-slate-500">{t('test_hint')}</p>
+      <p className="mb-3 text-xs text-on-surface-variant">{t('test_hint')}</p>
       <div className="flex flex-col gap-2 sm:flex-row">
         <select
           value={selected}

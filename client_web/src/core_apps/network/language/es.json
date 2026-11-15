@@ -37,6 +37,20 @@
     "scan_network": "Escanear red",
     "scanning": "Escaneando…",
     "device_study": "Analizar puertos y servicios",
-    "mcp_whois": "Preguntar al asistente (MCP)"
+    "mcp_whois": "Preguntar al asistente (MCP)",
+    "local": "Local",
+    "nearest_badge": "Más cercano a ti",
+    "nearest_title": "Más cercano a ti",
+    "nearest_confidence": "Fiabilidad {value} %",
+    "nearest_ambiguous": "Varios dispositivos a la misma distancia",
+    "nearest_none": "Nadie escucha ahora mismo",
+    "battery": "Batería",
+    "battery_charging": "Batería (cargando)",
+    "temperature": "Temperatura",
+    "node_id": "ID del nodo",
+    "uptime": "Tiempo activo",
+    "mcp_insight": "Información del asistente",
+    "mcp_empty": "Ninguna información registrada.",
+    "mcp_error": "Error de conexión MCP."
   }
 }

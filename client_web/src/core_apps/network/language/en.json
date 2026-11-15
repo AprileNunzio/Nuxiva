@@ -37,6 +37,20 @@
     "scan_network": "Scan network",
     "scanning": "Scanning…",
     "device_study": "Analyze ports & services",
-    "mcp_whois": "Ask Assistant (MCP)"
+    "mcp_whois": "Ask Assistant (MCP)",
+    "local": "Local",
+    "nearest_badge": "Closest to you",
+    "nearest_title": "Closest to you",
+    "nearest_confidence": "Confidence {value}%",
+    "nearest_ambiguous": "Several devices equally close",
+    "nearest_none": "Nobody is listening right now",
+    "battery": "Battery",
+    "battery_charging": "Battery (charging)",
+    "temperature": "Temperature",
+    "node_id": "Node ID",
+    "uptime": "Uptime",
+    "mcp_insight": "Assistant insight",
+    "mcp_empty": "No information recorded.",
+    "mcp_error": "MCP connection error."
   }
 }

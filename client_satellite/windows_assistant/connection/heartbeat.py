@@ -10,9 +10,10 @@ MIN_INTERVAL = 10.0
 
 
 class Heartbeat(threading.Thread):
-    def __init__(self, client: Client, report, on_reply, on_unauthorized, on_security) -> None:
+    def __init__(self, client: Client, report, on_reply, on_unauthorized, on_security, timed=None) -> None:
         super().__init__(daemon=True, name="heartbeat")
         self.client, self.report = client, report
+        self.timed = timed or (lambda call: call())
         self.on_reply, self.on_unauthorized, self.on_security = on_reply, on_unauthorized, on_security
         self.stop_flag = threading.Event()
         self.online = False
@@ -22,7 +23,7 @@ class Heartbeat(threading.Thread):
         interval = 30.0
         while not self.stop_flag.is_set():
             try:
-                reply = self.client.heartbeat(self.report())
+                reply = self.timed(lambda: self.client.heartbeat(self.report()))
             except Unauthorized:
                 self.on_unauthorized()
                 return
