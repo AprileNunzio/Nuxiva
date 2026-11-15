@@ -19,10 +19,11 @@ class AppGraph(app: Application) {
     val orientation = OrientationMonitor(app)
     val power = PowerMonitor(app)
     val ollama = OllamaProbe()
+    val updater = com.nuxiva.edge.update.ApkUpdater(app)
     val load = com.nuxiva.edge.device.LoadMonitor(app)
     val audio = com.nuxiva.edge.device.AudioLevelMeter(app)
     val inspector = DeviceInspector(app, orientation)
     val enroller = Enroller(profiles)
-    private val reports = ReportBuilder(app, inspector, power, ollama, load, audio)
+    private val reports = ReportBuilder(app, inspector, power, ollama, load, audio, updater)
     val runtime = NodeRuntime(profiles, reports, power, ollama, shareSettings, orientation)
 }

@@ -192,4 +192,16 @@
     <string name="hub_permissions_missing">Certaines autorisations manquent. Si Android ne les redemande plus, autorisez-les dans les réglages de l\'app.</string>
     <string name="hub_permissions_ask">Redemander</string>
     <string name="hub_open_app">Réglages de l\'app</string>
+    <string name="update_title">Mises à jour</string>
+    <string name="update_current">Version installée %1$s</string>
+    <string name="update_none">Aucune mise à jour disponible.</string>
+    <string name="update_available">La version %1$s est disponible</string>
+    <string name="update_download">Télécharger et vérifier</string>
+    <string name="update_downloading">Téléchargement et vérification…</string>
+    <string name="update_installing">En attente de l\'installation par Android…</string>
+    <string name="update_ready">Téléchargé et vérifié (empreinte et signature). Android vous demandera de confirmer avant d\'installer.</string>
+    <string name="update_install">Installer</string>
+    <string name="update_failed">Échec de la mise à jour : %1$s</string>
+    <string name="update_retry">Réessayer</string>
+    <string name="update_permission_hint">Android demande d\'autoriser Nuxiva à installer des apps. Activez-le, revenez et touchez Installer de nouveau.</string>
 </resources>

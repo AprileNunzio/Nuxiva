@@ -11,6 +11,7 @@ import com.nuxiva.edge.device.AudioLevelMeter
 import com.nuxiva.edge.device.DeviceInspector
 import com.nuxiva.edge.device.LoadMonitor
 import com.nuxiva.edge.device.PowerMonitor
+import com.nuxiva.edge.update.ApkUpdater
 import com.nuxiva.logic.report.HardwareReport
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -25,9 +26,14 @@ class ReportBuilder(
     private val ollama: OllamaProbe,
     private val load: LoadMonitor,
     private val audio: AudioLevelMeter,
+    private val updater: ApkUpdater,
 ) {
     @Volatile
     private var lastRttMillis: Long? = null
+
+    fun noteReply(reply: JsonObject) {
+        updater.noteReply(reply["apk"])
+    }
 
     fun noteRtt(millis: Long) {
         lastRttMillis = millis
@@ -45,6 +51,7 @@ class ReportBuilder(
             put("capabilities", capabilities(facts.hasMicrophone, facts.cameras.isNotEmpty(), facts.sensors.isNotEmpty(), computeOffered))
             put("metrics", metrics(facts.ramMb))
             put("proximity", proximity())
+            put("update", updateBlock())
             put("compute", buildJsonObject {
                 put("ollama", buildJsonObject {
                     put("available", oll.available)
@@ -90,6 +97,24 @@ class ReportBuilder(
         if (stat.blockCountLong > 0) {
             val used = stat.blockCountLong - stat.availableBlocksLong
             put("disk", Math.round(used * 1000.0 / stat.blockCountLong) / 10.0)
+        }
+    }
+
+    private fun updateBlock(): JsonObject {
+        val current = updater.ui.value
+        return buildJsonObject {
+            put("state", current.step.wire)
+            put("channel", "android")
+            put("version", BuildConfig.VERSION_NAME)
+            current.offer?.let { put("target", it.version) }
+            if (current.lastCheck > 0) put("last_check", current.lastCheck)
+            if (current.lastSuccess > 0) put("last_success", current.lastSuccess)
+            current.errorCode?.let {
+                put("last_error", buildJsonObject {
+                    put("code", it)
+                    put("at", current.errorAt)
+                })
+            }
         }
     }
 

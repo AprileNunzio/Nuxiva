@@ -41,6 +41,19 @@ class ReleaseTest(unittest.TestCase):
         self.assertEqual(android_release.newest([foreign]), {})
 
 
+class ApkOfferTest(unittest.IsolatedAsyncioTestCase):
+    async def test_only_android_nodes_get_the_apk_offer(self):
+        from agenti.nodes import api
+
+        found = {"version": "5.8.4", "url": f"{BASE}/v5.8.4/Nuxiva.apk", "sha256": "ab" * 32, "name": "Nuxiva.apk", "tag": "v5.8.4"}
+        with mock.patch.object(android_release, "info", mock.AsyncMock(return_value=found)):
+            offer = await api._apk_offer({"agent": "android"})
+            self.assertEqual(offer, {"apk": {"version": "5.8.4", "url": found["url"], "sha256": "ab" * 32}})
+            self.assertEqual(await api._apk_offer({"agent": "linux"}), {})
+        with mock.patch.object(android_release, "info", mock.AsyncMock(return_value={})):
+            self.assertEqual(await api._apk_offer({"agent": "android"}), {})
+
+
 class KotlinCompatibilityTest(unittest.TestCase):
     def test_signature_made_on_the_phone_verifies_on_the_server(self):
         body = b'{"a":1}'

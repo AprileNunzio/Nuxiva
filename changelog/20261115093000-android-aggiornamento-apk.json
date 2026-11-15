@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "App Android: aggiornamento dell'APK con verifica di impronta e firma",
+    "en": "Android app: APK update with fingerprint and signature checks",
+    "fr": "App Android : mise à jour de l'APK avec vérification d'empreinte et de signature",
+    "es": "App Android: actualización del APK con verificación de huella y firma"
+  },
+  "features": [
+    {
+      "it": "Quando esce una versione nuova, il server la comunica ai dispositivi Android. In Impostazioni, Aggiornamenti, l'app scarica l'APK solo dalla release ufficiale su GitHub, controlla l'impronta SHA-256 e che nome del pacchetto, versione e firma coincidano con l'app installata, poi propone l'installazione. Android chiede sempre la conferma: non si installa mai in silenzio.",
+      "en": "When a new version is released the server tells Android devices. In Settings, Updates, the app downloads the APK only from the official GitHub release, checks the SHA-256 fingerprint and that package name, version and signature match the installed app, then offers to install. Android always asks for confirmation: nothing is ever installed silently.",
+      "fr": "Quand une nouvelle version sort, le serveur la signale aux appareils Android. Dans Réglages, Mises à jour, l'app télécharge l'APK uniquement depuis la release officielle sur GitHub, vérifie l'empreinte SHA-256 et que nom du paquet, version et signature correspondent à l'app installée, puis propose l'installation. Android demande toujours confirmation : rien ne s'installe en silence.",
+      "es": "Cuando sale una versión nueva, el servidor la comunica a los dispositivos Android. En Ajustes, Actualizaciones, la app descarga el APK solo de la release oficial en GitHub, comprueba la huella SHA-256 y que nombre del paquete, versión y firma coincidan con la app instalada, y luego propone instalar. Android siempre pide confirmación: nada se instala en silencio."
+    },
+    {
+      "it": "Ogni nodo Android riporta al server lo stato dell'aggiornamento (in attesa, in download, pronto, fallito) con un codice d'errore breve, per la cronologia della flotta.",
+      "en": "Each Android node reports its update state (idle, downloading, ready, failed) to the server with a short error code, for the fleet history.",
+      "fr": "Chaque nœud Android signale au serveur l'état de sa mise à jour (inactif, téléchargement, prêt, échec) avec un code d'erreur court, pour l'historique de la flotte.",
+      "es": "Cada nodo Android informa al servidor del estado de su actualización (en reposo, descargando, listo, fallido) con un código de error breve, para el historial de la flota."
+    }
+  ],
+  "fixes": []
+}

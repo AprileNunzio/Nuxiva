@@ -192,4 +192,16 @@
     <string name="hub_permissions_missing">Mancano alcuni permessi. Se Android non li chiede più, consentili dalle impostazioni dell\'app.</string>
     <string name="hub_permissions_ask">Chiedi di nuovo</string>
     <string name="hub_open_app">Impostazioni dell\'app</string>
+    <string name="update_title">Aggiornamenti</string>
+    <string name="update_current">Versione installata %1$s</string>
+    <string name="update_none">Nessun aggiornamento disponibile.</string>
+    <string name="update_available">È disponibile la versione %1$s</string>
+    <string name="update_download">Scarica e verifica</string>
+    <string name="update_downloading">Download e verifica in corso…</string>
+    <string name="update_installing">In attesa dell\'installazione di Android…</string>
+    <string name="update_ready">Scaricato e verificato (impronta e firma). Android ti chiederà conferma prima di installare.</string>
+    <string name="update_install">Installa</string>
+    <string name="update_failed">Aggiornamento non riuscito: %1$s</string>
+    <string name="update_retry">Riprova</string>
+    <string name="update_permission_hint">Android richiede di consentire a Nuxiva di installare app. Attivalo, torna qui e tocca di nuovo Installa.</string>
 </resources>

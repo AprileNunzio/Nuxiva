@@ -46,6 +46,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     val share: StateFlow<ShareSettings> = graph.shareSettings.settings
     val orientation = graph.orientation.current
     val hubPrefs = graph.hub.settings
+    val updater = graph.updater
     val events: SharedFlow<RuntimeEvent> = graph.runtime.events
     val deviceFacts: StateFlow<DeviceFacts?> = facts.asStateFlow()
     val powerSnapshot: StateFlow<PowerSnapshot?> = power.asStateFlow()

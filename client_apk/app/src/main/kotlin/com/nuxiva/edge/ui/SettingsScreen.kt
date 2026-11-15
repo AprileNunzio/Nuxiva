@@ -25,6 +25,7 @@ fun SettingsScreen(model: AppViewModel, onPair: () -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        fullSpan("update") { UpdateCard(model.updater) }
         fullSpan("hub") {
             InfoCard(stringResource(R.string.hub_title)) {
                 ToggleRow(stringResource(R.string.settings_hub_launch), hub.openOnLaunch) { value -> model.updateHub { it.copy(openOnLaunch = value) } }

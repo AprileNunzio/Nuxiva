@@ -41,6 +41,7 @@ class HeartbeatLoop(
                 val reply = withContext(Dispatchers.IO) { http.post("/api/nodes/heartbeat", body, HEARTBEAT_TIMEOUT) }
                 reports.noteRtt(SystemClock.elapsedRealtime() - started)
                 online = true
+                reports.noteReply(reply)
                 onState(LinkState.Online(System.currentTimeMillis() / 1000L))
                 interval = (reply["heartbeat"]?.jsonPrimitive?.intOrNull ?: DEFAULT_INTERVAL.toInt()).coerceIn(MIN_INTERVAL, MAX_INTERVAL).toLong()
                 adapted = handle(reply)

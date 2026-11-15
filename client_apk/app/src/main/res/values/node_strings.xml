@@ -192,4 +192,16 @@
     <string name="hub_permissions_missing">Some permissions are missing. If Android no longer asks, allow them in the app settings.</string>
     <string name="hub_permissions_ask">Ask again</string>
     <string name="hub_open_app">App settings</string>
+    <string name="update_title">Updates</string>
+    <string name="update_current">Installed version %1$s</string>
+    <string name="update_none">No update available.</string>
+    <string name="update_available">Version %1$s is available</string>
+    <string name="update_download">Download and verify</string>
+    <string name="update_downloading">Downloading and verifying…</string>
+    <string name="update_installing">Waiting for Android to install…</string>
+    <string name="update_ready">Downloaded and verified (fingerprint and signature). Android will ask you to confirm before installing.</string>
+    <string name="update_install">Install</string>
+    <string name="update_failed">Update failed: %1$s</string>
+    <string name="update_retry">Try again</string>
+    <string name="update_permission_hint">Android needs you to allow Nuxiva to install apps. Turn it on, come back and tap Install again.</string>
 </resources>
