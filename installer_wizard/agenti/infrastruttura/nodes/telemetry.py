@@ -27,6 +27,7 @@ PROXIMITY_TTL = 45.0
 PROXIMITY_FLOOR = 0.12
 HALF_LIFE = 12.0
 MARGIN = 0.08
+CLOCK_SKEW = 5.0
 
 
 def _bounded(raw, limits: dict) -> dict:
@@ -57,8 +58,9 @@ def score(signals: dict, now: float) -> float:
     if not signals or "at" not in signals:
         return 0.0
     age = now - signals["at"]
-    if age < 0 or age > PROXIMITY_TTL:
+    if age < -CLOCK_SKEW or age > PROXIMITY_TTL:
         return 0.0
+    age = max(0.0, age)
     raw = sum(signals.get(key, 0.0) * weight for key, weight in PROXIMITY_WEIGHTS.items())
     if signals.get("screen_on", 0.0) >= 0.5:
         raw = min(1.0, raw + 0.05)

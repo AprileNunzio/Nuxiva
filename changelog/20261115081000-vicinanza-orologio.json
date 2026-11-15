@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {"it": "Vicinanza dei dispositivi più stabile", "en": "More stable device proximity", "fr": "Proximité des appareils plus stable", "es": "Proximidad de dispositivos más estable"},
+  "fixes": [{
+    "it": "Il dispositivo più vicino a te non viene più scartato per una piccola differenza di orologio tra i dispositivi.",
+    "en": "The device closest to you is no longer discarded because of a small clock difference between devices.",
+    "fr": "L'appareil le plus proche de vous n'est plus écarté à cause d'un petit écart d'horloge entre les appareils.",
+    "es": "El dispositivo más cercano a ti ya no se descarta por una pequeña diferencia de reloj entre dispositivos."
+  }]
+}

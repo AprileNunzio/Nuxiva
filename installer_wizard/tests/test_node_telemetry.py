@@ -58,6 +58,10 @@ class NearestTest(unittest.TestCase):
         out = telemetry.nearest([self.node("a", 100, speech=0.0, audio_level=0.01)], 100)
         self.assertIsNone(out["node_id"])
 
+    def test_small_clock_skew_is_tolerated(self):
+        out = telemetry.nearest([self.node("a", 100.04, speech=0.9, audio_level=0.8)], 100.0)
+        self.assertEqual(out["node_id"], "a")
+
     def test_decay_prefers_fresher(self):
         fresh = self.node("fresh", 100, speech=0.6, audio_level=0.5)
         older = self.node("older", 80, speech=0.8, audio_level=0.8)
