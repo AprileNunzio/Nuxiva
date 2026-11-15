@@ -13,11 +13,11 @@ class LayoutSourceTest(unittest.TestCase):
         for token in ("border: 0", "background: none", "backdrop-filter: none", "box-shadow: none"):
             self.assertIn(token, rule)
 
-    def test_normal_widgets_stay_in_side_columns_and_sphere_is_kept_clear(self):
+    def test_normal_widgets_distribute_across_columns_without_overlap(self):
         source = DESK.read_text()
-        self.assertIn("const sides = [{ x0: M, x1: M + colW }, { x0: W - M - colW, x1: W - M }]", source)
-        self.assertIn("blocked.concat(keepOut, fixed)", source)
-        self.assertNotIn("o.x - want.w - PIN_GAP", source.split("const sides")[1])
+        self.assertIn("colTops", source)
+        self.assertIn("cols = Math.max(1", source)
+        self.assertIn("colTops[chosen] = y + h + GAP", source)
 
     @unittest.skipUnless(shutil.which("node"), "node assente")
     def test_syntax(self):

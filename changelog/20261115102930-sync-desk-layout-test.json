@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Allineamento test di regressione layout widget multicolonna pagina 80",
+    "en": "Synchronize regression test for page 80 multi-column widget layout",
+    "fr": "Synchronisation du test de régression pour la disposition multi-colonnes des widgets page 80",
+    "es": "Sincronización del test de regresión para el diseño multicolumna de widgets página 80"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Aggiornato test_desk_layout per verificare la corretta distribuzione multicolonna dei widget senza sovrapposizione al posto del vecchio layout rigido.",
+      "en": "Updated test_desk_layout to assert correct multi-column non-overlapping distribution of widgets instead of the obsolete rigid layout.",
+      "fr": "Mise à jour de test_desk_layout pour vérifier la distribution multi-colonnes sans chevauchement des widgets au lieu de l'ancienne disposition rigide.",
+      "es": "Actualizado test_desk_layout para verificar la distribución multicolumna sin superposición de los widgets en lugar del antiguo diseño rígido."
+    }
+  ]
+}
