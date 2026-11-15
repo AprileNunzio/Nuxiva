@@ -30,6 +30,8 @@ fun SettingsScreen(model: AppViewModel, onPair: () -> Unit) {
                 ToggleRow(stringResource(R.string.settings_hub_launch), hub.openOnLaunch) { value -> model.updateHub { it.copy(openOnLaunch = value) } }
                 ToggleRow(stringResource(R.string.hub_mic), hub.microphone) { value -> model.updateHub { it.copy(microphone = value) } }
                 ToggleRow(stringResource(R.string.hub_camera), hub.camera) { value -> model.updateHub { it.copy(camera = value) } }
+                ToggleRow(stringResource(R.string.hub_native_location), hub.location) { value -> model.updateHub { it.copy(location = value) } }
+                ToggleRow(stringResource(R.string.hub_server_page), hub.serverPage) { value -> model.updateHub { it.copy(serverPage = value) } }
                 Text(stringResource(R.string.hub_privacy_hint), style = MaterialTheme.typography.bodySmall, color = LocalTokens.current.muted)
             }
         }

@@ -11,6 +11,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -24,6 +25,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.nuxiva.edge.core.graph
 import com.nuxiva.edge.node.NodeFailure
 import com.nuxiva.edge.node.NodeProfile
+import com.nuxiva.edge.ui.MainActivity
 import com.nuxiva.edge.ui.NuxivaTheme
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
@@ -45,18 +47,67 @@ class HubActivity : ComponentActivity(), HubHost {
     private var media by mutableStateOf(HubMedia())
     private var menu by mutableStateOf(false)
     private var loading = false
+    private var native = false
+    private var serverPageActive = false
+    private var permissionTick by mutableStateOf(0)
     private var pending: ((Boolean) -> Unit)? = null
     private var profile: NodeProfile? = null
 
     private val devicePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
         pending?.invoke(grants.isNotEmpty() && grants.values.all { it })
         pending = null
+        permissionTick++
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        if (application.graph.hub.settings.value.serverPage) showServerPage() else showNativeHub()
+    }
+
+    private fun showNativeHub() {
+        native = true
+        setContent {
+            NuxivaTheme {
+                val prefs by application.graph.hub.settings.collectAsState()
+                val tick = permissionTick
+                BackHandler(enabled = menu) { menu = false }
+                MobileHubScreen(application.graph, prefs) { menu = true }
+                if (menu) {
+                    MobileHubMenu(
+                        prefs = prefs,
+                        missingPermissions = tick >= 0 && missingPermissions(prefs).isNotEmpty(),
+                        onChange = { change -> application.graph.hub.update(change) },
+                        onRequestPermissions = { requestMissing() },
+                        onOpenApp = { menu = false; startActivity(Intent(this, MainActivity::class.java)) },
+                        onDismiss = { menu = false },
+                    )
+                }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                try {
+                    application.graph.hub.settings.collect { prefs ->
+                        if (prefs.serverPage != serverPageActive) {
+                            recreate()
+                        } else if (prefs.microphone) {
+                            application.graph.audio.start()
+                        } else {
+                            application.graph.audio.stop()
+                        }
+                    }
+                } finally {
+                    application.graph.audio.stop()
+                }
+            }
+        }
+    }
+
+    private fun showServerPage() {
+        native = false
+        serverPageActive = true
         setContent {
             NuxivaTheme {
                 BackHandler { menu = true }
@@ -82,6 +133,20 @@ class HubActivity : ComponentActivity(), HubHost {
         }
     }
 
+    private fun missingPermissions(prefs: HubPrefs): List<String> = buildList {
+        if (prefs.microphone && !has(Manifest.permission.RECORD_AUDIO)) add(Manifest.permission.RECORD_AUDIO)
+        if (prefs.camera && !has(Manifest.permission.CAMERA)) add(Manifest.permission.CAMERA)
+        if (prefs.location && !has(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            add(Manifest.permission.ACCESS_FINE_LOCATION)
+            add(Manifest.permission.ACCESS_COARSE_LOCATION)
+        }
+    }
+
+    private fun requestMissing() {
+        val needed = missingPermissions(application.graph.hub.settings.value)
+        if (needed.isNotEmpty()) devicePermissions.launch(needed.toTypedArray())
+    }
+
     override fun onResume() {
         super.onResume()
         view?.onResume()
@@ -94,7 +159,7 @@ class HubActivity : ComponentActivity(), HubHost {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (!hasFocus) return
+        if (!hasFocus || native) return
         WindowInsetsControllerCompat(window, window.decorView).apply {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             hide(WindowInsetsCompat.Type.systemBars())

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "App Android: hub nativo per telefono e tablet, apertura diretta e permessi al primo avvio",
+    "en": "Android app: native hub for phone and tablet, direct launch and first-run permissions",
+    "fr": "App Android : hub natif pour téléphone et tablette, ouverture directe et autorisations au premier lancement",
+    "es": "App Android: hub nativo para teléfono y tableta, apertura directa y permisos en el primer inicio"
+  },
+  "features": [
+    {
+      "it": "L'app si apre direttamente sull'hub. Su telefono e tablet l'hub è nativo, con il nucleo e i widget (ora, server collegati, batteria, memoria, rete, sensori in uso) al posto della pagina del server; la pagina del server resta per la TV e si può scegliere dalle impostazioni.",
+      "en": "The app opens straight on the hub. On phone and tablet the hub is native, with the core and widgets (time, linked servers, battery, memory, network, sensors in use) instead of the server page; the server page stays for TV and can be chosen in settings.",
+      "fr": "L'app s'ouvre directement sur le hub. Sur téléphone et tablette le hub est natif, avec le cœur et les widgets (heure, serveurs liés, batterie, mémoire, réseau, capteurs utilisés) au lieu de la page du serveur ; la page du serveur reste pour la TV et se choisit dans les réglages.",
+      "es": "La app se abre directamente en el hub. En teléfono y tableta el hub es nativo, con el núcleo y los widgets (hora, servidores vinculados, batería, memoria, red, sensores en uso) en lugar de la página del servidor; la página del servidor se mantiene para la TV y se elige en los ajustes."
+    },
+    {
+      "it": "La disposizione si adatta allo schermo: su schermi piccoli diventa un flusso audio con il nucleo che reagisce al livello del microfono, su schermi larghi mostra nucleo e widget. Si può forzare dal menu.",
+      "en": "The layout adapts to the screen: on small screens it becomes an audio flow with the core reacting to the microphone level, on wide screens it shows core and widgets. It can be forced from the menu.",
+      "fr": "La disposition s'adapte à l'écran : sur petit écran elle devient un flux audio avec le cœur qui réagit au niveau du micro, sur grand écran elle montre cœur et widgets. On peut la forcer depuis le menu.",
+      "es": "La disposición se adapta a la pantalla: en pantallas pequeñas pasa a ser un flujo de audio con el núcleo que reacciona al nivel del micrófono, en pantallas anchas muestra núcleo y widgets. Se puede forzar desde el menú."
+    },
+    {
+      "it": "Al primo avvio l'app chiede fotocamera, microfono, posizione e notifiche, e le tre opzioni sono attive di default (si spengono una a una).",
+      "en": "At first launch the app asks for camera, microphone, location and notifications, and the three options are on by default (each can be turned off).",
+      "fr": "Au premier lancement l'app demande caméra, micro, position et notifications, et les trois options sont activées par défaut (chacune peut être désactivée).",
+      "es": "En el primer inicio la app pide cámara, micrófono, ubicación y notificaciones, y las tres opciones están activadas por defecto (cada una se puede desactivar)."
+    },
+    {
+      "it": "Il nodo Android invia al server CPU (dove Android la rende leggibile), potenza in watt, batteria, carica, latenza e traffico, più i segnali di vicinanza (livello del microfono e probabilità di voce quando l'hub è aperto, schermo acceso) per la fusione dei satelliti.",
+      "en": "The Android node sends the server CPU (where Android makes it readable), power in watts, battery, charging, latency and traffic, plus proximity signals (microphone level and speech probability while the hub is open, screen on) for satellite fusion.",
+      "fr": "Le nœud Android envoie au serveur CPU (là où Android le rend lisible), puissance en watts, batterie, charge, latence et trafic, plus des signaux de proximité (niveau du micro et probabilité de parole quand le hub est ouvert, écran allumé) pour la fusion des satellites.",
+      "es": "El nodo Android envía al servidor CPU (donde Android la hace legible), potencia en vatios, batería, carga, latencia y tráfico, además de señales de proximidad (nivel del micrófono y probabilidad de voz con el hub abierto, pantalla encendida) para la fusión de satélites."
+    }
+  ],
+  "fixes": []
+}

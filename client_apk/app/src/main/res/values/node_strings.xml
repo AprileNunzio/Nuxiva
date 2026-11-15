@@ -150,7 +150,7 @@
     <string name="hub_camera">Let the page use the camera</string>
     <string name="hub_mic_on">Microphone allowed</string>
     <string name="hub_camera_on">Camera allowed</string>
-    <string name="hub_privacy_hint">Both are off by default. Only your own server page can ask for them, and Android also shows its own indicator while they are in use.</string>
+    <string name="hub_privacy_hint">They are on by default and you can turn each one off. Only your own server page can ask for them, and Android also shows its own indicator while they are in use.</string>
     <string name="tab_home">Home</string>
     <string name="tab_settings">Settings</string>
     <string name="home_state_empty">Ready to pair</string>
@@ -172,4 +172,24 @@
     <string name="enroll_code_server_label">Server address</string>
     <string name="enroll_code_label">6-digit code</string>
     <string name="error_code_invalid">The pairing code is wrong or has expired.</string>
+    <string name="field_hub_link">Server</string>
+    <string name="hub_charging">charging</string>
+    <string name="hub_sensors_in_use">Sensors in use</string>
+    <string name="hub_sensor_microphone">Microphone</string>
+    <string name="hub_sensor_camera">Camera</string>
+    <string name="hub_sensor_location">Location</string>
+    <string name="hub_sensor_none">None</string>
+    <string name="hub_core_listening">Microphone active</string>
+    <string name="hub_core_idle">Microphone off</string>
+    <string name="hub_layout_title">Layout</string>
+    <string name="hub_layout_auto">Automatic</string>
+    <string name="hub_layout_widgets">Core and widgets</string>
+    <string name="hub_layout_audio">Audio only</string>
+    <string name="hub_native_mic">Use this device\'s microphone</string>
+    <string name="hub_native_camera">Use this device\'s camera</string>
+    <string name="hub_native_location">Use this device\'s location</string>
+    <string name="hub_server_page">Show the server page instead of the native hub</string>
+    <string name="hub_permissions_missing">Some permissions are missing. If Android no longer asks, allow them in the app settings.</string>
+    <string name="hub_permissions_ask">Ask again</string>
+    <string name="hub_open_app">App settings</string>
 </resources>

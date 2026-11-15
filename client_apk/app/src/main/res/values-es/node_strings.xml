@@ -150,7 +150,7 @@
     <string name="hub_camera">Permitir a la página usar la cámara</string>
     <string name="hub_mic_on">Micrófono permitido</string>
     <string name="hub_camera_on">Cámara permitida</string>
-    <string name="hub_privacy_hint">Están desactivados de forma predeterminada. Solo la página de tu servidor puede pedirlos y Android muestra además su indicador mientras se usan.</string>
+    <string name="hub_privacy_hint">Están activados de forma predeterminada y puedes desactivarlos uno a uno. Solo la página de tu servidor puede pedirlos y Android muestra además su indicador mientras se usan.</string>
     <string name="tab_home">Inicio</string>
     <string name="tab_settings">Ajustes</string>
     <string name="home_state_empty">Listo para emparejar</string>
@@ -172,4 +172,24 @@
     <string name="enroll_code_server_label">Dirección del servidor</string>
     <string name="enroll_code_label">Código de 6 dígitos</string>
     <string name="error_code_invalid">El código de emparejamiento es incorrecto o ha caducado.</string>
+    <string name="field_hub_link">Servidor</string>
+    <string name="hub_charging">cargando</string>
+    <string name="hub_sensors_in_use">Sensores en uso</string>
+    <string name="hub_sensor_microphone">Micrófono</string>
+    <string name="hub_sensor_camera">Cámara</string>
+    <string name="hub_sensor_location">Ubicación</string>
+    <string name="hub_sensor_none">Ninguno</string>
+    <string name="hub_core_listening">Micrófono activo</string>
+    <string name="hub_core_idle">Micrófono apagado</string>
+    <string name="hub_layout_title">Disposición</string>
+    <string name="hub_layout_auto">Automática</string>
+    <string name="hub_layout_widgets">Núcleo y widgets</string>
+    <string name="hub_layout_audio">Solo audio</string>
+    <string name="hub_native_mic">Usar el micrófono de este dispositivo</string>
+    <string name="hub_native_camera">Usar la cámara de este dispositivo</string>
+    <string name="hub_native_location">Usar la ubicación de este dispositivo</string>
+    <string name="hub_server_page">Mostrar la página del servidor en lugar del hub nativo</string>
+    <string name="hub_permissions_missing">Faltan algunos permisos. Si Android ya no los pide, permítelos en los ajustes de la app.</string>
+    <string name="hub_permissions_ask">Pedir de nuevo</string>
+    <string name="hub_open_app">Ajustes de la app</string>
 </resources>

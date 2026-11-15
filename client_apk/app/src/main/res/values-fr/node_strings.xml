@@ -150,7 +150,7 @@
     <string name="hub_camera">Autoriser la page à utiliser la caméra</string>
     <string name="hub_mic_on">Microphone autorisé</string>
     <string name="hub_camera_on">Caméra autorisée</string>
-    <string name="hub_privacy_hint">Ils sont désactivés par défaut. Seule la page de votre serveur peut les demander et Android affiche aussi son indicateur pendant l\'utilisation.</string>
+    <string name="hub_privacy_hint">Ils sont activés par défaut et vous pouvez les désactiver un par un. Seule la page de votre serveur peut les demander et Android affiche aussi son indicateur pendant l\'utilisation.</string>
     <string name="tab_home">Accueil</string>
     <string name="tab_settings">Réglages</string>
     <string name="home_state_empty">Prêt à appairer</string>
@@ -172,4 +172,24 @@
     <string name="enroll_code_server_label">Adresse du serveur</string>
     <string name="enroll_code_label">Code à 6 chiffres</string>
     <string name="error_code_invalid">Le code d\'appairage est incorrect ou expiré.</string>
+    <string name="field_hub_link">Serveur</string>
+    <string name="hub_charging">en charge</string>
+    <string name="hub_sensors_in_use">Capteurs utilisés</string>
+    <string name="hub_sensor_microphone">Micro</string>
+    <string name="hub_sensor_camera">Caméra</string>
+    <string name="hub_sensor_location">Position</string>
+    <string name="hub_sensor_none">Aucun</string>
+    <string name="hub_core_listening">Micro actif</string>
+    <string name="hub_core_idle">Micro éteint</string>
+    <string name="hub_layout_title">Disposition</string>
+    <string name="hub_layout_auto">Automatique</string>
+    <string name="hub_layout_widgets">Cœur et widgets</string>
+    <string name="hub_layout_audio">Audio seul</string>
+    <string name="hub_native_mic">Utiliser le micro de cet appareil</string>
+    <string name="hub_native_camera">Utiliser la caméra de cet appareil</string>
+    <string name="hub_native_location">Utiliser la position de cet appareil</string>
+    <string name="hub_server_page">Afficher la page du serveur au lieu du hub natif</string>
+    <string name="hub_permissions_missing">Certaines autorisations manquent. Si Android ne les redemande plus, autorisez-les dans les réglages de l\'app.</string>
+    <string name="hub_permissions_ask">Redemander</string>
+    <string name="hub_open_app">Réglages de l\'app</string>
 </resources>

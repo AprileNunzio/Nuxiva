@@ -7,7 +7,9 @@ import android.os.StatFs
 import android.os.SystemClock
 import com.nuxiva.edge.BuildConfig
 import com.nuxiva.edge.compute.OllamaProbe
+import com.nuxiva.edge.device.AudioLevelMeter
 import com.nuxiva.edge.device.DeviceInspector
+import com.nuxiva.edge.device.LoadMonitor
 import com.nuxiva.edge.device.PowerMonitor
 import com.nuxiva.logic.report.HardwareReport
 import kotlinx.serialization.json.JsonArray
@@ -21,7 +23,15 @@ class ReportBuilder(
     private val inspector: DeviceInspector,
     private val power: PowerMonitor,
     private val ollama: OllamaProbe,
+    private val load: LoadMonitor,
+    private val audio: AudioLevelMeter,
 ) {
+    @Volatile
+    private var lastRttMillis: Long? = null
+
+    fun noteRtt(millis: Long) {
+        lastRttMillis = millis
+    }
 
     fun build(sharing: Boolean, computeOffered: Boolean, adapted: Boolean): JsonObject {
         val facts = inspector.facts()
@@ -34,6 +44,7 @@ class ReportBuilder(
             put("announce", HardwareReport.announce(facts, computeOffered))
             put("capabilities", capabilities(facts.hasMicrophone, facts.cameras.isNotEmpty(), facts.sensors.isNotEmpty(), computeOffered))
             put("metrics", metrics(facts.ramMb))
+            put("proximity", proximity())
             put("compute", buildJsonObject {
                 put("ollama", buildJsonObject {
                     put("available", oll.available)
@@ -64,11 +75,29 @@ class ReportBuilder(
             put("ram", Math.round(used * 1000.0 / totalRamMb) / 10.0)
         }
         power.batteryTempCelsius()?.let { put("temp", it) }
+        val snapshot = power.snapshot()
+        put("battery", snapshot.batteryPercent)
+        put("charging", if (snapshot.charging) 1 else 0)
+        load.cpuPercent()?.let { put("cpu", it) }
+        load.powerWatts()?.let { put("power_w", it) }
+        lastRttMillis?.let { put("rtt_ms", it) }
+        load.throughput()?.let {
+            put("rx_kbps", it.rxKbps)
+            put("tx_kbps", it.txKbps)
+        }
         put("uptime", SystemClock.elapsedRealtime() / 1000L)
         val stat = StatFs(Environment.getDataDirectory().path)
         if (stat.blockCountLong > 0) {
             val used = stat.blockCountLong - stat.availableBlocksLong
             put("disk", Math.round(used * 1000.0 / stat.blockCountLong) / 10.0)
+        }
+    }
+
+    private fun proximity(): JsonObject = buildJsonObject {
+        put("screen_on", if (power.snapshot().screenOn) 1 else 0)
+        audio.fresh()?.let {
+            put("audio_level", Math.round(it.level * 1000f) / 1000.0)
+            put("speech", Math.round(it.speech * 1000f) / 1000.0)
         }
     }
 

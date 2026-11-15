@@ -14,15 +14,13 @@ import androidx.core.content.ContextCompat
 
 class MainActivity : ComponentActivity() {
     private val model: AppViewModel by viewModels()
-    private val notifications = registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
+    private val firstRun = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { launchHub() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         handle(intent, fresh = savedInstanceState == null)
-        if (savedInstanceState == null && intent?.action == Intent.ACTION_MAIN && model.shouldOpenHub()) {
-            com.nuxiva.edge.hub.HubActivity.start(this)
-        }
+        if (savedInstanceState == null && intent?.action == Intent.ACTION_MAIN) startup()
         setContent { NuxivaTheme { AppScaffold(model) } }
     }
 
@@ -34,14 +32,33 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        askNotifications()
         model.ensureService()
     }
 
-    private fun askNotifications() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) return
-        notifications.launch(Manifest.permission.POST_NOTIFICATIONS)
+    private fun startup() {
+        val hub = model.hubPrefs.value
+        val missing = wanted().filter { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }
+        if (!hub.permissionsAsked && missing.isNotEmpty()) {
+            model.updateHub { it.copy(permissionsAsked = true) }
+            firstRun.launch(missing.toTypedArray())
+            return
+        }
+        launchHub()
+    }
+
+    private fun launchHub() {
+        model.ensureService()
+        if (!model.shouldOpenHub()) return
+        com.nuxiva.edge.hub.HubActivity.start(this)
+        finish()
+    }
+
+    private fun wanted(): List<String> = buildList {
+        add(Manifest.permission.RECORD_AUDIO)
+        add(Manifest.permission.CAMERA)
+        add(Manifest.permission.ACCESS_FINE_LOCATION)
+        add(Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) add(Manifest.permission.POST_NOTIFICATIONS)
     }
 
     private fun handle(incoming: Intent?, fresh: Boolean) {

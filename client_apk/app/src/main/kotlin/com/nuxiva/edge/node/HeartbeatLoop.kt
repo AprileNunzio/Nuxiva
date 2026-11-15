@@ -1,5 +1,6 @@
 package com.nuxiva.edge.node
 
+import android.os.SystemClock
 import android.util.Log
 import com.nuxiva.edge.device.OrientationMonitor
 import kotlinx.coroutines.CancellationException
@@ -36,7 +37,9 @@ class HeartbeatLoop(
                 if (!online) onState(LinkState.Connecting)
                 val body = withContext(Dispatchers.IO) { reports.build(sharing(), computeOffered(), adapted) }
                 adapted = false
+                val started = SystemClock.elapsedRealtime()
                 val reply = withContext(Dispatchers.IO) { http.post("/api/nodes/heartbeat", body, HEARTBEAT_TIMEOUT) }
+                reports.noteRtt(SystemClock.elapsedRealtime() - started)
                 online = true
                 onState(LinkState.Online(System.currentTimeMillis() / 1000L))
                 interval = (reply["heartbeat"]?.jsonPrimitive?.intOrNull ?: DEFAULT_INTERVAL.toInt()).coerceIn(MIN_INTERVAL, MAX_INTERVAL).toLong()
