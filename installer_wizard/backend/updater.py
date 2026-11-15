@@ -282,6 +282,13 @@ async def check(fetch_timeout: float = 180, allow_bad: bool = False, fresh: bool
 
 
 async def _record(**fields) -> None:
+    info = store.update
+    if fields.get("status") == "installed":
+        info["last_success"] = time.time()
+        info["last_failure"] = None
+    elif fields.get("status") in ("failed", "rollback"):
+        info["last_failure"] = {"at": time.time(), "code": str(fields.get("error") or fields["status"])[:160]}
+    store.touch()
     try:
         from agenti.update_center import history
         await history.record_update(git, **fields)
@@ -414,6 +421,12 @@ async def finish_pending(success: bool) -> bool:
     return True
 
 
+def voice_busy() -> bool:
+    from background import queue
+
+    return queue.in_conversation()
+
+
 async def _scheduled_cycle(stuck: bool) -> None:
     from datetime import datetime
 
@@ -430,6 +443,13 @@ async def _scheduled_cycle(stuck: bool) -> None:
     if not stuck and not in_window(datetime.now(), policy.window):
         await check()
         return
+    if not stuck and voice_busy():
+        await check()
+        if store.update.get("available") and not store.update.get("deferred"):
+            store.event("INFO", "Aggiornamento rimandato: conversazione in corso", "updater")
+        store.update["deferred"] = bool(store.update.get("available"))
+        return
+    store.update["deferred"] = False
     applied = await apply("correttivo (sistema bloccato)" if stuck else "automatico")
     if applied and policy.sync_nodes:
         from agenti.nodes.registry import registry

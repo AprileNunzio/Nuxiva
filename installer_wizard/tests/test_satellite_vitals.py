@@ -2,8 +2,8 @@ import importlib.util
 import unittest
 from pathlib import Path
 
-SATELLITE = Path(__file__).resolve().parents[2] / "client_satellite" / "linux_edge" / "satellite.py"
-spec = importlib.util.spec_from_file_location("satellite_agent", SATELLITE)
+SATELLITE = Path(__file__).resolve().parents[2] / "client_satellite" / "linux_edge" / "vitals_ble.py"
+spec = importlib.util.spec_from_file_location("vitals_ble", SATELLITE)
 agent = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(agent)
 

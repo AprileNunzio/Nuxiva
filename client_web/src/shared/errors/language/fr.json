@@ -175,6 +175,7 @@
     "error_people_look_failed": "Apparence apprise indisponible.",
     "error_people_look_feedback_failed": "Correction du détail non enregistrée.",
     "error_node_trust_failed": "Mode d'accès non modifié.",
-    "error_node_audit_unavailable": "Journal de sécurité indisponible."
+    "error_node_audit_unavailable": "Journal de sécurité indisponible.",
+    "error_updater_overview_unreachable": "État des mises à jour injoignable."
   }
 }

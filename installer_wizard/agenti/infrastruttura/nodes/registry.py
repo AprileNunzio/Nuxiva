@@ -11,11 +11,13 @@ from state import store
 
 from agenti.nodes import adapt, compute, telemetry, trustpolicy, zerotrust
 from agenti.nodes.audit import audit
+from agenti.update_center import fleet
 
 NODES_FILE = STATE_DIR / "nodes.json"
 PAIR_TTL = 600
 OFFLINE_AFTER = 90
 MAX_NODES = 64
+UPDATE_HISTORY = 20
 TYPES = {"satellite": "Satellite audio", "desktop": "Assistente PC (Windows)", "display": "Display", "server": "Server Nuxiva", "esp32": "Microcontrollore",
          "android": "Android", "sensor": "Sensore", "other": "Altro"}
 COMMANDS = {"identify": "Identificati", "adapt": "Auto-adatta all'hardware", "restart": "Riavvia l'agente", "update": "Aggiorna",
@@ -108,9 +110,25 @@ class Registry:
                     proximity=telemetry.clean_proximity(report.get("proximity")))
         self._adapt(node, report)
         self._announce(node, report.get("announce"))
+        self._track_update(node, report.get("update"))
         commands, node["commands"] = node.get("commands", []), []
         self._save()
         return commands
+
+    @staticmethod
+    def _track_update(node: dict, raw) -> None:
+        update = fleet.sanitize(raw, time.time())
+        if not update:
+            return
+        previous = node.get("update") or {}
+        node["update"] = update
+        changed = any(previous.get(key) != update[key] for key in ("state", "last_success", "last_error"))
+        if not changed:
+            return
+        error = update.get("last_error") or {}
+        entry = {"at": int(time.time()), "state": update["state"], "version": update.get("version"),
+                 "code": error.get("code") if update["state"] in ("failed", "rolled_back") else None}
+        node["update_history"] = [*(node.get("update_history") or []), entry][-UPDATE_HISTORY:]
 
     @staticmethod
     def _announce(node: dict, raw) -> None:

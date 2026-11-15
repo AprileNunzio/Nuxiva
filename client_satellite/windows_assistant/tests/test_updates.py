@@ -88,5 +88,58 @@ class LatestTest(unittest.TestCase):
         self.assertIn("manifest.sig", assets)
 
 
+class StateTest(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from pathlib import Path
+
+        self.tmp = tempfile.TemporaryDirectory()
+        patcher = mock.patch.object(updater, "STATE_FILE", Path(self.tmp.name) / "state.json")
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.addCleanup(self.tmp.cleanup)
+
+    def build(self):
+        return updater.Updater(lambda text: None, lambda: None)
+
+    def test_report_is_idle_by_default(self):
+        report = self.build().report()
+        self.assertEqual((report["channel"], report["state"]), ("windows", "idle"))
+
+    def test_target_reached_marks_success(self):
+        first = self.build()
+        first.mark(state="installing", target=updater.paths.VERSION)
+        second = self.build()
+        report = second.report()
+        self.assertEqual(report["state"], "idle")
+        self.assertGreater(report["last_success"], 0)
+        self.assertNotIn("target", report)
+
+    def test_interrupted_run_resets_to_idle(self):
+        first = self.build()
+        first.mark(state="downloading", target="99.0.0")
+        self.assertEqual(self.build().report()["state"], "idle")
+
+    def test_rejected_manifest_is_reported_as_failure(self):
+        worker = self.build()
+        with mock.patch.object(updater, "latest", side_effect=manifest.UpdateRejected("x")):
+            try:
+                worker.cycle()
+            except manifest.UpdateRejected:
+                worker.fail("invalid_signature")
+        report = worker.report()
+        self.assertEqual((report["state"], report["last_error"]["code"]), ("failed", "invalid_signature"))
+
+    def test_up_to_date_cycle_clears_error(self):
+        worker = self.build()
+        worker.fail("hash_mismatch")
+        with mock.patch.object(updater, "latest", return_value=None):
+            worker.cycle()
+        report = worker.report()
+        self.assertEqual(report["state"], "idle")
+        self.assertNotIn("last_error", report)
+        self.assertGreater(report["last_check"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()

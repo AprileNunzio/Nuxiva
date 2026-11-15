@@ -14,10 +14,11 @@ import type { EngineFamily } from '../../engines/types';
 import { SwitchesTab } from './components/SwitchesTab';
 import { EnginesTab } from './components/EnginesTab';
 import { EcosystemTab } from './components/EcosystemTab';
+import { FleetPanel } from '../updater/components/FleetPanel';
 
 export function View() {
   const { t } = useScopedI18n('core_apps/options');
-  const [activeMainTab, setActiveMainTab] = useState<'switches' | 'engines' | 'ecosystem'>('switches');
+  const [activeMainTab, setActiveMainTab] = useState<'switches' | 'engines' | 'ecosystem' | 'updates'>('switches');
 
   const [options, setOptions] = useState(loadStoredOptions);
   const [search, setSearch] = useState('');
@@ -122,6 +123,17 @@ export function View() {
             >
               {t('tab_ecosystem')}
             </button>
+            <button
+              type="button"
+              onClick={() => setActiveMainTab('updates')}
+              className={`rounded-xl px-3 py-1.5 text-xs font-bold transition-all ${
+                activeMainTab === 'updates'
+                  ? 'bg-primary text-on-primary shadow-xs'
+                  : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'
+              }`}
+            >
+              {t('tab_updates')}
+            </button>
           </div>
         </div>
         <p className="text-xs text-on-surface-variant">{t('subtitle')}</p>
@@ -146,8 +158,10 @@ export function View() {
           onEngineOptionChange={handleEngineOptionChange}
           t={t}
         />
-      ) : (
+      ) : activeMainTab === 'ecosystem' ? (
         <EcosystemTab t={t} />
+      ) : (
+        <FleetPanel />
       )}
     </div>
   );

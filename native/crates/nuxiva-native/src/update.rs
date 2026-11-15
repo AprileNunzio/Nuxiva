@@ -63,6 +63,22 @@ pub fn update_release_notes(files_json: &str) -> PyResult<String> {
 }
 
 #[pyfunction]
+pub fn update_fleet_sanitize(raw_json: &str, now: f64) -> PyResult<Option<String>> {
+    let value: serde_json::Value = serde_json::from_str(bounded(raw_json)?)
+        .map_err(|e| PyValueError::new_err(e.to_string()))?;
+    nuxiva_update_core::fleet::sanitize(&value, now)
+        .map(|report| to_json(&report))
+        .transpose()
+}
+
+#[pyfunction]
+pub fn update_fleet_overview(input_json: &str) -> PyResult<String> {
+    let value: serde_json::Value = serde_json::from_str(bounded(input_json)?)
+        .map_err(|e| PyValueError::new_err(e.to_string()))?;
+    to_json(&nuxiva_update_core::fleet::overview(&value))
+}
+
+#[pyfunction]
 #[pyo3(signature = (state, stage, status, now))]
 pub fn update_pipeline_advance(
     state: Option<&str>,

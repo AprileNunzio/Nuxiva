@@ -175,6 +175,7 @@
     "error_people_look_failed": "Learned look unavailable.",
     "error_people_look_feedback_failed": "Detail correction not saved.",
     "error_node_trust_failed": "Access mode not changed.",
-    "error_node_audit_unavailable": "Security log unavailable."
+    "error_node_audit_unavailable": "Security log unavailable.",
+    "error_updater_overview_unreachable": "Update status unreachable."
   }
 }

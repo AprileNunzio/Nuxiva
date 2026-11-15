@@ -1,6 +1,7 @@
 #![forbid(unsafe_code)]
 
 pub mod changelog;
+pub mod fleet;
 pub mod impact;
 pub mod integrity;
 pub mod pipeline;

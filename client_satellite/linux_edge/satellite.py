@@ -24,6 +24,7 @@ JOIN_TIMEOUT = 15 * 60
 REDISCOVER_AFTER = 3
 CONFIG = Path(os.environ.get("NUXIVA_NODE_CONFIG", Path.home() / ".config" / "nuxiva-node.json"))
 SERVICE = Path("/etc/systemd/system/nuxiva-node.service")
+UPDATE_STATE = CONFIG.with_name("nuxiva-node-update.json")
 TYPES = ("satellite", "display", "server", "esp32", "android", "sensor", "other")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -113,7 +114,7 @@ def probe_extra(out: dict) -> None:
 
 
 HARDWARE = {"at": 0.0, "data": {}}
-STATE = {"adapted": False}
+STATE = {"adapted": False, "vitals": False}
 HARDWARE_TTL = 120.0
 CARD_RE = re.compile(r"^card \d+: [^\[]*\[([^\]]+)\]", re.M)
 
@@ -199,15 +200,68 @@ def own_sha() -> str:
     return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 
 
-def self_update(cfg: dict, expected: str) -> None:
-    with urllib.request.urlopen(f"{cfg['server']}/nodes/agent.py", timeout=30) as res:
-        code = res.read()
-    if hashlib.sha256(code).hexdigest() != expected:
-        log.warning("Aggiornamento dell'agente scartato: impronta non corrispondente")
-        return
-    Path(__file__).write_bytes(code)
-    log.info("Agente aggiornato: riavvio")
+def update_state(**changes) -> dict:
+    try:
+        state = json.loads(UPDATE_STATE.read_text())
+    except (OSError, ValueError):
+        state = {}
+    if changes:
+        state.update(changes)
+        UPDATE_STATE.write_text(json.dumps(state))
+    return state
+
+
+def update_failed(code: str, **extra) -> None:
+    update_state(state="failed", last_error={"code": code, "at": int(time.time())}, **extra)
+    log.warning("Aggiornamento dell'agente non applicato: %s", code)
+
+
+def restart() -> None:
     os.execv(sys.executable, [sys.executable, __file__, *sys.argv[1:]])
+
+
+def self_update(cfg: dict, expected: str) -> None:
+    update_state(state="downloading", last_check=int(time.time()))
+    try:
+        with urllib.request.urlopen(f"{cfg['server']}/nodes/agent.py", timeout=30) as res:
+            code = res.read()
+    except (urllib.error.URLError, OSError):
+        return update_failed("download_failed")
+    if hashlib.sha256(code).hexdigest() != expected:
+        return update_failed("hash_mismatch")
+    staged, backup = Path(__file__).with_suffix(".new"), Path(__file__).with_suffix(".bak")
+    staged.write_bytes(code)
+    probe = subprocess.run([sys.executable, str(staged), "--selftest"], capture_output=True, timeout=30, check=False)
+    if probe.returncode != 0:
+        staged.unlink()
+        return update_failed("selftest_failed")
+    backup.write_bytes(Path(__file__).read_bytes())
+    os.replace(staged, __file__)
+    update_state(state="installing", boots=0, target_sha=expected)
+    log.info("Agente aggiornato: riavvio")
+    restart()
+
+
+def settle_update() -> None:
+    state, backup = update_state(), Path(__file__).with_suffix(".bak")
+    if state.get("state") != "installing":
+        return
+    if state.get("boots", 0) >= 2 and backup.exists():
+        os.replace(backup, __file__)
+        update_state(state="rolled_back", bad_sha=state.get("target_sha"), last_error={"code": "boot_failed", "at": int(time.time())})
+        restart()
+    update_state(boots=state.get("boots", 0) + 1)
+
+
+def confirm_update() -> None:
+    if update_state().get("state") == "installing":
+        update_state(state="idle", boots=0, last_success=int(time.time()), last_error=None)
+
+
+def update_report() -> dict:
+    state = update_state()
+    return {"channel": "debian", "version": VERSION, "last_check": int(time.time()), "state": state.get("state", "idle"),
+            **{key: state[key] for key in ("last_success", "last_error") if state.get(key)}}
 
 
 def run_command(cmd: str, cfg: dict) -> None:
@@ -225,7 +279,7 @@ def run_command(cmd: str, cfg: dict) -> None:
     elif cmd == "update" and cfg.get("agent"):
         self_update(cfg, cfg["agent"])
     elif cmd == "restart":
-        os.execv(sys.executable, [sys.executable, __file__, *sys.argv[1:]])
+        restart()
     elif cmd == "reboot" and os.geteuid() == 0:
         subprocess.run(["systemctl", "reboot"], check=False)
 
@@ -274,159 +328,28 @@ def install_service() -> None:
     log.info("Servizio nuxiva-node installato e avviato")
 
 
-HR_CHAR = "00002a37-0000-1000-8000-00805f9b34fb"
-TEMP_CHAR = "00002a1c-0000-1000-8000-00805f9b34fb"
-PLX_CHARS = ("00002a5e-0000-1000-8000-00805f9b34fb", "00002a5f-0000-1000-8000-00805f9b34fb")
-VITALS_SCAN = 5.0
-VITALS_PAUSE = 3.0
-
-
-def sfloat(raw: int) -> float | None:
-    if raw in (0x07FF, 0x0800, 0x0801, 0x07FE, 0x0802):
+def fetch_module(cfg: dict, name: str, expected: str):
+    path = CONFIG.with_name(f"nuxiva-node-{name}.py")
+    with urllib.request.urlopen(f"{cfg['server']}/nodes/{name}.py", timeout=30) as res:
+        code = res.read()
+    if hashlib.sha256(code).hexdigest() != expected:
+        log.warning("Modulo %s scartato: impronta non corrispondente", name)
         return None
-    mantissa, exponent = raw & 0x0FFF, raw >> 12
-    mantissa -= 0x1000 if mantissa >= 0x800 else 0
-    exponent -= 0x10 if exponent >= 0x8 else 0
-    return mantissa * 10 ** exponent
+    path.write_bytes(code)
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
-def ieee_float(raw: int) -> float | None:
-    if raw in (0x007FFFFF, 0x00800000, 0x00800001, 0x007FFFFE, 0x00800002):
-        return None
-    mantissa, exponent = raw & 0xFFFFFF, raw >> 24
-    mantissa -= 0x1000000 if mantissa >= 0x800000 else 0
-    exponent -= 0x100 if exponent >= 0x80 else 0
-    return mantissa * 10 ** exponent
-
-
-def parse_heart_rate(data: bytes) -> list[tuple[str, float]]:
-    if len(data) < (3 if data and data[0] & 1 else 2):
-        return []
-    return [("heart_rate", int.from_bytes(data[1:3], "little") if data[0] & 1 else data[1])]
-
-
-def parse_temperature(data: bytes) -> list[tuple[str, float]]:
-    if len(data) < 5:
-        return []
-    value = ieee_float(int.from_bytes(data[1:5], "little"))
-    if value is None:
-        return []
-    return [("body_temp", round((value - 32) * 5 / 9 if data[0] & 1 else value, 1))]
-
-
-def parse_oximeter(data: bytes) -> list[tuple[str, float]]:
-    if len(data) < 5:
-        return []
-    spo2, pulse = sfloat(int.from_bytes(data[1:3], "little")), sfloat(int.from_bytes(data[3:5], "little"))
-    rows = [("spo2", round(spo2))] if spo2 is not None else []
-    return rows + ([("heart_rate", round(pulse))] if pulse is not None else [])
-
-
-PARSERS = {HR_CHAR: parse_heart_rate, TEMP_CHAR: parse_temperature, PLX_CHARS[0]: parse_oximeter, PLX_CHARS[1]: parse_oximeter}
-
-
-async def vitals_cycle(cfg: dict, headers: dict, state: dict) -> None:
-    import asyncio
-    from bleak import BleakClient, BleakScanner
-    try:
-        found = await BleakScanner.discover(timeout=VITALS_SCAN, return_adv=True)
-    except Exception as exc:
-        state["errors"].append({"address": "", "code": "scan_failed"})
-        log.info("Scansione BLE non riuscita: %s", exc)
-        found = {}
-    watch = set(state["watch"])
-    seen = [{"address": a.upper(), "rssi": adv.rssi} for a, (_, adv) in found.items() if a.upper() in watch][:40]
-    nearby = nearby_devices(found) if state["discover"] else []
-    samples, state["samples"] = state["samples"][:200], state["samples"][200:]
-    errors, state["errors"] = state["errors"][:20], state["errors"][20:]
-    profiles, state["profiles"] = dict(state["profiles"]), {}
-    res = await asyncio.to_thread(post, cfg["server"], "/api/vitals/node",
-                                  {"seen": seen, "samples": samples, "nearby": nearby, "errors": errors, "profiles": profiles}, headers)
-    state["discover"] = bool(res.get("discover"))
-    state["watch"] = [str(a).upper() for a in res.get("watch") or []]
-    wanted = {str(a).upper() for a in res.get("connect") or []}
-    for row in res.get("drop") or []:
-        address, nonce = str(row.get("address", "")).upper(), str(row.get("nonce", ""))
-        if nonce and nonce not in state["dropped"]:
-            state["dropped"].add(nonce)
-            wanted.discard(address)
-            client = state["clients"].pop(address, None)
-            if client:
-                try:
-                    await client.disconnect()
-                except Exception as exc:
-                    log.info("Disconnessione BLE %s: %s", address, exc)
-    for address in list(state["clients"]):
-        if address not in wanted or not state["clients"][address].is_connected:
-            client = state["clients"].pop(address)
-            try:
-                await client.disconnect()
-            except Exception as exc:
-                log.info("Disconnessione BLE %s: %s", address, exc)
-    for address in wanted - set(state["clients"]):
-        client = BleakClient(address)
-        try:
-            await client.connect(timeout=10.0)
-            usable = []
-            for char, parser in PARSERS.items():
-                if client.services.get_characteristic(char):
-                    usable += METRICS_OF[char]
-                    def notify(_, data, address=address, parser=parser):
-                        now = time.time()
-                        state["samples"].extend({"address": address, "metric": m, "value": v, "ts": now} for m, v in parser(bytes(data)))
-                    await client.start_notify(char, notify)
-            state["profiles"][address] = sorted(set(usable))
-            if usable:
-                state["clients"][address] = client
-            else:
-                await client.disconnect()
-        except Exception as exc:
-            state["errors"].append({"address": address, "code": "connect_failed"})
-            log.info("Connessione BLE a %s non riuscita: %s", address, exc)
-
-
-METRICS_OF = {HR_CHAR: ["heart_rate"], TEMP_CHAR: ["body_temp"], PLX_CHARS[0]: ["spo2", "heart_rate"], PLX_CHARS[1]: ["spo2", "heart_rate"]}
-HEALTH_SERVICES = ("180d", "1809", "1822")
-
-
-def nearby_devices(found: dict) -> list[dict]:
-    rows = []
-    for address, (device, adv) in found.items():
-        name = (adv.local_name or getattr(device, "name", "") or "")[:40]
-        services = [u for u in adv.service_uuids or [] if str(u).lower()[4:8] in HEALTH_SERVICES]
-        if name or services:
-            rows.append({"address": address.upper(), "name": name, "rssi": adv.rssi, "services": services[:8]})
-    return sorted(rows, key=lambda r: -(r["rssi"] or -127))[:40]
-
-
-def vitals_loop(cfg: dict) -> None:
-    import asyncio
-    headers = {"Authorization": f"Bearer {cfg['token']}", "X-Nuxiva-Node": cfg["id"]}
-    state = {"watch": [], "clients": {}, "samples": [], "discover": False, "errors": [], "profiles": {}, "dropped": set()}
-
-    async def run() -> None:
-        while True:
-            try:
-                await vitals_cycle(cfg, headers, state)
-            except Exception as exc:
-                log.info("Ciclo parametri vitali: %s", exc)
-            await asyncio.sleep(VITALS_PAUSE)
-    asyncio.run(run())
-
-
-def start_vitals(cfg: dict) -> None:
-    try:
-        import bleak
-    except ImportError:
-        return
-    del bleak
-    import threading
-    threading.Thread(target=vitals_loop, args=(cfg,), daemon=True, name="vitals").start()
-    log.info("Lettura dei parametri vitali via Bluetooth attiva")
+def start_vitals(cfg: dict, expected: str) -> None:
+    if importlib.util.find_spec("bleak") and (module := fetch_module(cfg, "vitals_ble", expected)):
+        module.start(cfg, post)
+        STATE["vitals"] = True
 
 
 def loop(cfg: dict) -> None:
-    start_vitals(cfg)
+    settle_update()
     headers = {"Authorization": f"Bearer {cfg['token']}", "X-Nuxiva-Node": cfg["id"]}
     wait, failures = 30, 0
     while True:
@@ -435,12 +358,16 @@ def loop(cfg: dict) -> None:
             started = time.monotonic()
             res = post(cfg["server"], "/api/nodes/heartbeat", {"version": VERSION, "hostname": socket.gethostname(),
                                                              "metrics": metrics(), "capabilities": capabilities(),
-                                                             "hardware": hardware(force=adapted), "adapted": adapted}, headers,
+                                                             "hardware": hardware(force=adapted), "adapted": adapted,
+                                                             "update": update_report()}, headers,
                        cfg.get("key", ""), cfg["id"])
             wait, failures = int(res.get("heartbeat") or 30), 0
             PROBE["rtt"] = (time.monotonic() - started) * 1000
             cfg["agent"] = res.get("agent") or ""
-            if cfg["agent"] and cfg["agent"] != own_sha():
+            confirm_update()
+            if not STATE["vitals"] and (wanted := (res.get("modules") or {}).get("vitals_ble")):
+                start_vitals(cfg, wanted)
+            if cfg["agent"] and cfg["agent"] not in (own_sha(), update_state().get("bad_sha")):
                 self_update(cfg, cfg["agent"])
             for cmd in res.get("commands") or []:
                 run_command(cmd, cfg)
@@ -477,7 +404,11 @@ def main() -> None:
     parser.add_argument("--type", default="satellite", choices=TYPES)
     parser.add_argument("--install", action="store_true", help="Installa l'agente come servizio di sistema")
     parser.add_argument("--join", action="store_true", help="Cerca Nuxiva in rete e chiedi l'approvazione dal pannello")
+    parser.add_argument("--selftest", action="store_true")
     args = parser.parse_args()
+    if args.selftest:
+        print(VERSION)
+        return
     if args.code and args.server:
         cfg = pair(args)
     elif args.join:

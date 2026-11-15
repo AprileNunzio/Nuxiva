@@ -106,7 +106,7 @@ class Assistant:
     def _report(self) -> dict:
         return {"version": paths.VERSION, "hostname": socket.gethostname(), "hardware": {"os": "windows"}, "metrics": self.sampler.sample(),
                 "capabilities": [k for k, v in self.policy.summary().items() if v != "deny"][:12],
-                "announce": declare.declare({**declare.local_facts(self.cfg.get("voice", True)), "edge_inference": self.brain.ready()},
+                "update": self.updater.report(), "announce": declare.declare({**declare.local_facts(self.cfg.get("voice", True)), "edge_inference": self.brain.ready()},
                                          profile.host_full(self.cfg)),
                 "compute": {"ollama": {**self.ollama.read(), "shared": self.compute.sharing()}}}
 

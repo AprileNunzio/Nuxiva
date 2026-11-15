@@ -14,7 +14,7 @@ from tasks import background
 
 import machine
 import updater
-from agenti.update_center import boot, diagnostics, history, rollout, telemetry
+from agenti.update_center import boot, diagnostics, history, overview, rollout, telemetry
 from agenti.update_center.progress import tracker
 from agenti.update_center.policy import PolicyError, UpdatePolicy, load_policy, next_window, policy_to_env
 
@@ -99,6 +99,17 @@ async def _apply_and_rollout(sync_nodes: bool) -> None:
 @admin_routes.get("/status")
 async def update_status() -> Dict[str, Any]:
     return _status_payload()
+
+
+@admin_routes.get("/overview", openapi_extra={"x-nuxiva-capabilities": ["system_settings"]})
+async def update_overview() -> Dict[str, Any]:
+    policy = _policy()
+    upcoming = next_window(datetime.now(), policy.window) if policy.auto_update else None
+    server = overview.server_input(
+        store.update, version=_version(), auto_update=policy.auto_update,
+        active=store.phase == "UPDATING" or updater.pending() is not None,
+        next_check=upcoming.timestamp() if upcoming else None)
+    return overview.build(server, _registry().listing())
 
 
 @admin_routes.get("/telemetry")

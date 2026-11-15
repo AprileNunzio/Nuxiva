@@ -234,3 +234,59 @@ export interface UpdaterTelemetry {
   readonly stages: readonly string[];
   readonly boot?: BootStep | null;
 }
+
+export type FleetSummary = 'up_to_date' | 'updating' | 'outdated' | 'attention';
+export type FleetNodeStatus = 'up_to_date' | 'outdated' | 'updating' | 'failed' | 'awaiting_user' | 'offline' | 'unknown';
+export type FleetState = 'idle' | 'checking' | 'downloading' | 'installing' | 'awaiting_user' | 'failed' | 'rolled_back';
+
+export interface FleetFailure {
+  readonly code: string;
+  readonly at: number | null;
+}
+
+export interface FleetNodeUpdate {
+  readonly state: FleetState;
+  readonly channel: string;
+  readonly version: string | null;
+  readonly target: string | null;
+  readonly last_check: number | null;
+  readonly last_success: number | null;
+  readonly last_error: FleetFailure | null;
+}
+
+export interface FleetHistoryEntry {
+  readonly at: number | null;
+  readonly state: FleetState;
+  readonly version: string | null;
+  readonly code: string | null;
+}
+
+export interface FleetNode {
+  readonly id: string;
+  readonly name: string;
+  readonly type: string | null;
+  readonly online: boolean;
+  readonly version: string | null;
+  readonly status: FleetNodeStatus;
+  readonly update: FleetNodeUpdate | null;
+  readonly history: readonly FleetHistoryEntry[];
+}
+
+export interface FleetServer {
+  readonly version: string | null;
+  readonly state: FleetState;
+  readonly status: 'up_to_date' | 'outdated' | 'updating' | 'failed';
+  readonly available: boolean;
+  readonly auto_update: boolean;
+  readonly last_check: number | null;
+  readonly last_success: number | null;
+  readonly last_error: string | null;
+  readonly next_check: number | null;
+}
+
+export interface FleetOverview {
+  readonly summary: FleetSummary;
+  readonly server: FleetServer;
+  readonly nodes: readonly FleetNode[];
+  readonly counts: Readonly<Record<'total' | 'up_to_date' | 'outdated' | 'updating' | 'failed' | 'awaiting_user' | 'offline' | 'unknown', number>>;
+}

@@ -2,6 +2,7 @@ import json
 import logging
 import subprocess
 import threading
+import time
 import urllib.error
 import urllib.request
 
@@ -13,6 +14,7 @@ RELEASES = f"https://api.github.com/repos/{manifest.REPOSITORY}/releases?per_pag
 CHECK_EVERY = 6 * 3600
 FIRST_CHECK = 300
 TIMEOUT = 30
+STATE_FILE = paths.DATA_DIR / "updates" / "state.json"
 SILENT = ["/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/CLOSEAPPLICATIONS"]
 
 
@@ -47,12 +49,38 @@ def latest() -> tuple[str, dict[str, str]] | None:
     return tag.removeprefix("assistant-v"), assets
 
 
+def read_state() -> dict:
+    try:
+        data = json.loads(STATE_FILE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
 class Updater(threading.Thread):
     def __init__(self, notify, after_launch) -> None:
         super().__init__(daemon=True, name="updates")
         self.notify, self.after_launch = notify, after_launch
         self.wake = threading.Event()
         self.stop_flag = threading.Event()
+        self.info = read_state()
+        if self.info.get("target") == paths.VERSION:
+            self.mark(state="idle", target=None, last_success=int(time.time()), last_error=None)
+        elif self.info.get("state") in ("checking", "downloading", "installing"):
+            self.mark(state="idle")
+
+    def mark(self, **changes) -> None:
+        self.info.update(changes)
+        STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        STATE_FILE.write_text(json.dumps(self.info), encoding="utf-8")
+
+    def fail(self, code: str) -> None:
+        self.mark(state="failed", target=None, last_error={"code": code, "at": int(time.time())})
+
+    def report(self) -> dict:
+        keys = ("last_check", "last_success", "last_error", "target")
+        return {"channel": "windows", "version": paths.VERSION, "state": self.info.get("state", "idle"),
+                **{key: self.info[key] for key in keys if self.info.get(key)}}
 
     def check_now(self) -> None:
         self.wake.set()
@@ -67,28 +95,38 @@ class Updater(threading.Thread):
             try:
                 self.cycle()
             except manifest.UpdateRejected as exc:
+                self.fail("invalid_signature")
                 log.error("Aggiornamento rifiutato: %s", exc)
                 self.notify(f"🛑 Aggiornamento rifiutato per sicurezza: {exc}")
             except (urllib.error.URLError, OSError, ValueError) as exc:
+                self.mark(state="idle", last_error={"code": "download_failed", "at": int(time.time())})
                 log.info("Controllo aggiornamenti non riuscito: %s", exc)
             self.wake.wait(CHECK_EVERY)
 
     def cycle(self) -> None:
+        self.mark(state="checking", last_check=int(time.time()))
         found = latest()
         if not found or not manifest.newer(found[0], paths.VERSION):
+            self.mark(state="idle", last_check=int(time.time()), last_error=None)
             return
         version, assets = found
+        self.mark(state="downloading", target=version)
         release = manifest.verify(_get(assets["manifest.json"], 65536), _get(assets["manifest.sig"], 4096))
         if release.version != version:
             raise manifest.UpdateRejected("la versione firmata non corrisponde alla release")
         installer = _get(release.url, release.size)
-        manifest.check_file(installer, release)
+        try:
+            manifest.check_file(installer, release)
+        except manifest.UpdateRejected:
+            self.fail("hash_mismatch")
+            raise
         if self.stop_flag.is_set():
             return
         target = paths.DATA_DIR / "updates" / f"Nuxiva_Setup_{release.version}.exe"
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(installer)
         log.info("Aggiornamento %s verificato (firma e SHA-256): installazione", release.version)
+        self.mark(state="installing", target=release.version)
         self.notify(f"⬆ Aggiornamento {release.version} verificato: installo e riavvio NUXIVA…")
         subprocess.Popen([str(target), *SILENT], close_fds=True)
         self.after_launch()

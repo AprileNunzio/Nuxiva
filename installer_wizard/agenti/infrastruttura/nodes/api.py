@@ -80,7 +80,7 @@ async def node_heartbeat(request: Request):
     if not was_online:
         store.event("INFO", f"Nodo online: {node['name']}", "nodes")
     return {"commands": commands, "actions": inbox.take(node["id"]), "heartbeat": 30, "agent": _agent_sha(),
-            "assistant_name": _assistant_name(),
+            "update_target": _server_version(), "modules": _module_shas(), "assistant_name": _assistant_name(),
             "settings": screenshot.with_default_target(registry.effective(node["id"]), request.url.hostname or ""),
             "custom": sorted(node.get("settings") or {})}
 
@@ -103,6 +103,30 @@ def _assistant_name() -> str:
 
 def _agent_path():
     return NUXIVA_DIR / "client_satellite" / "linux_edge" / "satellite.py"
+
+
+def _server_version() -> str:
+    try:
+        return (NUXIVA_DIR / "VERSION").read_text(encoding="utf-8").strip()[:40]
+    except OSError:
+        return ""
+
+
+NODE_MODULES = ("vitals_ble",)
+
+
+def _module_path(name: str):
+    return NUXIVA_DIR / "client_satellite" / "linux_edge" / f"{name}.py"
+
+
+def _module_shas() -> dict:
+    shas = {}
+    for name in NODE_MODULES:
+        try:
+            shas[name] = hashlib.sha256(_module_path(name).read_bytes()).hexdigest()
+        except OSError:
+            continue
+    return shas
 
 
 def _agent_sha() -> str:
@@ -359,3 +383,11 @@ async def node_agent():
     if not path.is_file():
         raise HTTPException(404, "Agente non disponibile")
     return FileResponse(path, media_type="text/x-python", filename="nuxiva-node.py")
+
+
+@public_routes.get("/nodes/{name}.py")
+async def node_module(name: str):
+    path = _module_path(name) if name in NODE_MODULES else None
+    if path is None or not path.is_file():
+        raise HTTPException(404, "Modulo non disponibile")
+    return FileResponse(path, media_type="text/x-python", filename=f"nuxiva-{name}.py")

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { UpdaterStatus, UpdaterTelemetry } from '../types';
 import { ConsolePanel } from './ConsolePanel';
+import { FleetPanel } from './FleetPanel';
 import { ImpactPanel } from './ImpactPanel';
 import { IntegrityPanel } from './IntegrityPanel';
 import { PipelinePanel } from './PipelinePanel';
@@ -20,6 +21,7 @@ interface OverviewPanelProps {
 export const OverviewPanel: React.FC<OverviewPanelProps> = ({ status, telemetry, applying, unreachable, onStatus, onApplying }) => (
   <div className="flex flex-col gap-6">
     <VersionHero status={status} applying={applying} unreachable={unreachable} onStatus={onStatus} onApplying={onApplying} />
+    <FleetPanel />
     <ReleaseNotesPanel report={telemetry?.release_notes} compact />
     {telemetry && (
       <div className="upd-overview grid gap-6">

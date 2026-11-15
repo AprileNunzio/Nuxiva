@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Aggiornamenti autonomi e sempre visibili nelle Impostazioni",
+    "en": "Autonomous updates, always visible in Settings",
+    "fr": "Mises à jour autonomes, toujours visibles dans les Paramètres",
+    "es": "Actualizaciones autónomas, siempre visibles en Ajustes"
+  },
+  "features": [
+    {
+      "it": "Nelle Opzioni c'è la nuova scheda Aggiornamenti: mostra se tutto è aggiornato, ultimo controllo, ultimo aggiornamento riuscito, prossimo controllo, versione del server e di ogni nodo, errori e cronologia per dispositivo.",
+      "en": "The Options app has a new Updates tab: it shows whether everything is up to date, last check, last successful update, next check, the version of the server and of every node, errors and a per-device history.",
+      "fr": "Les Options ont un nouvel onglet Mises à jour : il indique si tout est à jour, la dernière vérification, la dernière mise à jour réussie, la prochaine vérification, la version du serveur et de chaque nœud, les erreurs et l'historique par appareil.",
+      "es": "Las Opciones tienen una nueva pestaña Actualizaciones: muestra si todo está al día, la última comprobación, la última actualización correcta, la próxima comprobación, la versión del servidor y de cada nodo, los errores y el historial por dispositivo."
+    },
+    {
+      "it": "Nodi Debian, assistente Windows e app Android comunicano al server stato, versione ed errori dell'aggiornamento; il server li convalida e tiene la cronologia di ogni nodo.",
+      "en": "Debian nodes, the Windows assistant and the Android app report update state, version and errors to the server; the server validates them and keeps a history for every node.",
+      "fr": "Les nœuds Debian, l'assistant Windows et l'application Android indiquent au serveur l'état, la version et les erreurs de mise à jour ; le serveur les valide et garde l'historique de chaque nœud.",
+      "es": "Los nodos Debian, el asistente de Windows y la app Android comunican al servidor el estado, la versión y los errores de la actualización; el servidor los valida y guarda el historial de cada nodo."
+    },
+    {
+      "it": "Gli aggiornamenti automatici del server aspettano la fine di una conversazione prima di riavviare, così la voce non viene interrotta.",
+      "en": "Automatic server updates wait for a conversation to end before restarting, so the voice is never cut off.",
+      "fr": "Les mises à jour automatiques du serveur attendent la fin d'une conversation avant de redémarrer, la voix n'est donc jamais coupée.",
+      "es": "Las actualizaciones automáticas del servidor esperan al final de una conversación antes de reiniciar, así la voz nunca se interrumpe."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il nodo Debian ora prova la nuova versione prima di installarla, conserva la precedente e la ripristina da solo se il nuovo avvio fallisce, senza riprovare all'infinito la versione difettosa.",
+      "en": "The Debian node now tests the new version before installing it, keeps the previous one and restores it by itself if the new start-up fails, without retrying the faulty version forever.",
+      "fr": "Le nœud Debian teste désormais la nouvelle version avant de l'installer, conserve la précédente et la restaure seul si le nouveau démarrage échoue, sans réessayer indéfiniment la version défectueuse.",
+      "es": "El nodo Debian ahora prueba la nueva versión antes de instalarla, conserva la anterior y la restaura por sí solo si el nuevo arranque falla, sin reintentar sin fin la versión defectuosa."
+    }
+  ]
+}

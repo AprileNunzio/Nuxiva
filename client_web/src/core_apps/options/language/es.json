@@ -51,6 +51,7 @@
     "ecosystem_skills": "Habilidades y Herramientas del Sistema",
     "ecosystem_plugins": "Plugins e Integraciones de Hardware",
     "ecosystem_brains": "Cerebros y Módulos de Memoria",
-    "capabilities_badge": "Permisos Zero-Trust"
+    "capabilities_badge": "Permisos Zero-Trust",
+    "tab_updates": "Actualizaciones"
   }
 }
