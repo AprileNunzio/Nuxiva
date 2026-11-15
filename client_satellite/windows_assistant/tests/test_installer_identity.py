@@ -18,10 +18,13 @@ class AgentNameTest(unittest.TestCase):
         self.assertEqual(agent_name.clean("A" * 80), "A" * agent_name.MAX_LENGTH)
         self.assertEqual(agent_name.clean(None), "")
         self.assertEqual(agent_name.clean("..."), "")
+        self.assertEqual(agent_name.clean("Jarvis"), "")
+        self.assertEqual(agent_name.clean("jarvis"), "")
 
     def test_display_and_shortcut(self):
         self.assertEqual(agent_name.display(""), "Nuxiva")
         self.assertEqual(agent_name.display("nuxiva"), "Nuxiva")
+        self.assertEqual(agent_name.display("Jarvis"), "Nuxiva")
         self.assertEqual(agent_name.display("Aria"), "Nuxiva · Aria")
         self.assertEqual(agent_name.shortcut_file("Aria"), "Aria.lnk")
         self.assertEqual(agent_name.shortcut_file("Nuxiva"), "")

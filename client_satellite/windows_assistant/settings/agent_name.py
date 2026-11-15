@@ -3,6 +3,7 @@ import re
 MAX_LENGTH = 32
 FORBIDDEN = re.compile(r'[\x00-\x1f\x7f<>:"/\\|?*]')
 LEADING = re.compile(r"^(?:hey|hei|ehi|hi|ok|okay)\s+", re.I)
+FORBIDDEN_NAMES = {"jarvis"}
 DEFAULT = "Nuxiva"
 
 
@@ -11,7 +12,8 @@ def clean(raw) -> str:
         return ""
     text = FORBIDDEN.sub("", raw)
     text = LEADING.sub("", " ".join(text.split())).strip(" .")
-    return text[:MAX_LENGTH].strip(" .")
+    cleaned = text[:MAX_LENGTH].strip(" .")
+    return "" if cleaned.casefold() in FORBIDDEN_NAMES else cleaned
 
 
 def display(name: str) -> str:

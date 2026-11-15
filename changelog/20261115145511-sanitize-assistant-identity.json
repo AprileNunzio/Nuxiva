@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Sanitizzazione nomi riservati per identità assistente Windows",
+    "en": "Sanitize reserved names for Windows assistant identity",
+    "fr": "Sanitisation des noms réservés pour l'identité de l'assistant Windows",
+    "es": "Sanitización de nombres reservados para identidad del asistente Windows"
+  },
+  "fixes": [
+    {
+      "it": "Aggiunto filtro automatico in agent_name.clean per scartare nomi protetti da copyright e ripristinare il nome predefinito Nuxiva anche in presenza di vecchie configurazioni locali.",
+      "en": "Added automatic filter in agent_name.clean to strip copyright-protected names and restore the default Nuxiva name even from legacy local configurations.",
+      "fr": "Ajout d'un filtre automatique dans agent_name.clean pour écarter les noms protégés et restaurer le nom Nuxiva par défaut même avec d'anciennes configurations.",
+      "es": "Añadido filtro automático en agent_name.clean para descartar nombres protegidos y restaurar el nombre predeterminado Nuxiva incluso con configuraciones locales previas."
+    }
+  ]
+}
