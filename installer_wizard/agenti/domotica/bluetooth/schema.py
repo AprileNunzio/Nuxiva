@@ -8,6 +8,8 @@ PROFILES = ("auto", "quality", "headset")
 SETTINGS: tuple[dict, ...] = (
     {"key": "alias", "group": "general", "type": "text", "default": "", "max": 40},
     {"key": "autoconnect", "group": "general", "type": "bool", "default": True},
+    {"key": "person_slug", "group": "general", "type": "text", "default": "", "max": 80},
+    {"key": "is_personal", "group": "general", "type": "bool", "default": False},
     {"key": "output_use", "group": "audio_out", "type": "enum", "default": "auto", "options": USE},
     {"key": "volume", "group": "audio_out", "type": "int", "default": 60, "min": 0, "max": 100, "step": 5},
     {"key": "profile", "group": "audio_out", "type": "enum", "default": "auto", "options": PROFILES,

@@ -1,5 +1,5 @@
 import { useCallback, useSyncExternalStore } from 'react';
-import { runAction, setPower, startScan, updateDeviceSettings, updateGlobal, updateOrder } from './api';
+import { resetAdapter, runAction, setPower, startScan, updateDeviceSettings, updateGlobal, updateOrder } from './api';
 import { AudioSide, BluetoothDevice, DeviceAction, GlobalPref, SettingValue, isReady } from './model';
 import { BluetoothSnapshot, bluetoothStore } from './store';
 
@@ -9,7 +9,8 @@ export interface BluetoothHandle extends BluetoothSnapshot {
   readonly refresh: () => void;
   readonly power: (on: boolean) => Promise<boolean>;
   readonly scan: () => Promise<boolean>;
-  readonly act: (device: BluetoothDevice, action: DeviceAction) => Promise<boolean>;
+  readonly reset: () => Promise<boolean>;
+  readonly act: (device: BluetoothDevice, action: DeviceAction, personSlug?: string) => Promise<boolean>;
   readonly configure: (device: BluetoothDevice, key: string, value: SettingValue) => Promise<boolean>;
   readonly setGlobal: (key: GlobalPref, value: boolean) => Promise<boolean>;
   readonly reorder: (side: AudioSide, macs: readonly string[]) => Promise<boolean>;
@@ -20,6 +21,7 @@ export const actionKey = (action: string, mac = ''): string => (mac ? `${action}
 export function useBluetooth(): BluetoothHandle {
   const snap = useSyncExternalStore(bluetoothStore.subscribe, bluetoothStore.getSnapshot, bluetoothStore.getSnapshot);
   const power = useCallback((on: boolean) => bluetoothStore.run('power', () => setPower(on), 'node_bluetooth_power_failed'), []);
+  const reset = useCallback(() => bluetoothStore.run('reset', () => resetAdapter(), 'node_bluetooth_reset_failed'), []);
   const scan = useCallback(
     () =>
       bluetoothStore.run(
@@ -32,8 +34,8 @@ export function useBluetooth(): BluetoothHandle {
     [],
   );
   const act = useCallback(
-    (device: BluetoothDevice, action: DeviceAction) =>
-      bluetoothStore.run(actionKey(action, device.mac), () => runAction(device.mac, action), `node_bluetooth_${action}_failed`),
+    (device: BluetoothDevice, action: DeviceAction, personSlug?: string) =>
+      bluetoothStore.run(actionKey(action, device.mac), () => runAction(device.mac, action, personSlug), `node_bluetooth_${action}_failed`),
     [],
   );
   const configure = useCallback(
@@ -50,5 +52,5 @@ export function useBluetooth(): BluetoothHandle {
     [],
   );
   const scanning = snap.scanRequestedUntil > Date.now() || snap.state?.scanning === true || snap.state?.controller.discovering === true;
-  return { ...snap, ready: isReady(snap.state), scanning, refresh: bluetoothStore.refresh, power, scan, act, configure, setGlobal, reorder };
+  return { ...snap, ready: isReady(snap.state), scanning, refresh: bluetoothStore.refresh, power, scan, reset, act, configure, setGlobal, reorder };
 }

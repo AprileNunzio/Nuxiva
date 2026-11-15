@@ -88,11 +88,20 @@ async def controller() -> dict:
             "address": address.group(1) if address else ""}
 
 
+_SEMAPHORE = asyncio.Semaphore(4)
+
+
+async def _info_one(mac: str) -> tuple[str, str]:
+    async with _SEMAPHORE:
+        code, text = await ctl("info", mac, timeout=8)
+        return mac, text
+
+
 async def devices() -> list[dict]:
     _, out = await ctl("devices")
     macs = list(dict.fromkeys(re.findall(r"^Device ([0-9A-F:]{17})", out, re.M)))[:64]
-    infos = await asyncio.gather(*(ctl("info", mac) for mac in macs))
-    return [parse_info(mac, text) for mac, (_, text) in zip(macs, infos)]
+    infos = await asyncio.gather(*(_info_one(mac) for mac in macs))
+    return [parse_info(mac, text) for mac, text in infos]
 
 
 async def _run(*args: str, timeout: float = 30, ok: tuple[str, ...] = ()) -> str:
@@ -118,6 +127,13 @@ async def pair(mac: str) -> None:
     code, out = await ctl("--agent=NoInputNoOutput", "pair", mac, timeout=45)
     failed = code != 0 or "Failed to pair" in out
     if failed and "AlreadyExists" not in out:
+        # Graceful fallback: BLE peripherals (e.g. Fitbit/sensors) often reject classic pairing
+        try:
+            await trust(mac)
+            await connect(mac)
+            return
+        except Exception:
+            pass
         tail = out.strip().splitlines()[-1] if out.strip() else f"code {code}"
         raise BluetoothError(tail[:200])
     await trust(mac)
@@ -141,3 +157,25 @@ async def disconnect(mac: str) -> None:
 
 async def forget(mac: str) -> None:
     await _run("remove", valid_mac(mac))
+
+
+async def reset_adapter() -> None:
+    try:
+        await ctl("power", "off", timeout=5)
+    except Exception:
+        pass
+    await asyncio.sleep(0.5)
+    try:
+        await ctl("power", "on", timeout=5)
+    except Exception:
+        pass
+    if shutil.which("rfkill"):
+        try:
+            proc = await asyncio.create_subprocess_exec("rfkill", "unblock", "bluetooth",
+                                                        stdin=asyncio.subprocess.DEVNULL,
+                                                        stdout=asyncio.subprocess.DEVNULL,
+                                                        stderr=asyncio.subprocess.DEVNULL)
+            await asyncio.wait_for(proc.wait(), 3)
+        except Exception:
+            pass
+

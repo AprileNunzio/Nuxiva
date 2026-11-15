@@ -24,8 +24,16 @@ export async function setPower(on: boolean): Promise<BluetoothState> {
   return parseState(await requestJson<unknown>(`${BASE}/power`, { method: 'POST', body: JSON.stringify({ on }) }));
 }
 
-export async function runAction(mac: string, action: DeviceAction): Promise<BluetoothState> {
-  return parseState(await requestJson<unknown>(deviceUrl(mac, action), { method: 'POST' }));
+export async function resetAdapter(): Promise<BluetoothState> {
+  return parseState(await requestJson<unknown>(`${BASE}/reset`, { method: 'POST' }));
+}
+
+export async function runAction(mac: string, action: DeviceAction, personSlug?: string): Promise<BluetoothState> {
+  const options: RequestInit = { method: 'POST' };
+  if (personSlug) {
+    options.body = JSON.stringify({ person_slug: personSlug });
+  }
+  return parseState(await requestJson<unknown>(deviceUrl(mac, action), options));
 }
 
 export async function updateDeviceSettings(mac: string, changes: Readonly<Record<string, SettingValue>>): Promise<BluetoothState> {

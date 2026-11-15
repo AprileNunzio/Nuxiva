@@ -10,9 +10,10 @@ export const DEVICE_KINDS = [
   'phone',
   'computer',
   'wearable',
+  'sensor',
   'other',
 ] as const;
-export const CAPABILITIES = ['audio_out', 'audio_in', 'pointer', 'keyboard', 'gamepad'] as const;
+export const CAPABILITIES = ['audio_out', 'audio_in', 'pointer', 'keyboard', 'gamepad', 'sensor_hr', 'sensor_env', 'is_personal'] as const;
 export const SETTING_GROUPS = ['general', ...CAPABILITIES] as const;
 export const GLOBAL_PREFS = ['auto_switch', 'auto_connect', 'announce'] as const;
 export const DEVICE_ACTIONS = ['pair', 'connect', 'disconnect', 'forget', 'trust', 'untrust'] as const;
@@ -59,6 +60,10 @@ export interface BluetoothDevice {
   readonly battery: number | null;
   readonly rssi: number | null;
   readonly settings: Readonly<Record<string, SettingValue>>;
+  readonly is_personal?: boolean;
+  readonly sensor_hr?: boolean;
+  readonly sensor_env?: boolean;
+  readonly last_seen?: number;
 }
 
 export interface BluetoothState {

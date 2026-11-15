@@ -21,7 +21,22 @@ export const AdapterPanel: React.FC<{ readonly state: BluetoothState; readonly h
   return (
     <Panel
       title={t('adapter_title')}
-      action={handle.ready && <Switch checked={powered} disabled={handle.busy !== null} label={t('power')} onChange={(on) => void handle.power(on)} />}
+      action={
+        handle.ready && (
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={handle.busy !== null}
+              onClick={() => void handle.reset()}
+              title={t('action_reset_hint')}
+              className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 shadow-2xs transition hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
+            >
+              {handle.busy === 'reset' ? <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" /> : t('action_reset')}
+            </button>
+            <Switch checked={powered} disabled={handle.busy !== null} label={t('power')} onChange={(on) => void handle.power(on)} />
+          </div>
+        )
+      }
     >
       <div className="flex items-center gap-4">
         <span className="relative flex h-14 w-14 shrink-0 items-center justify-center">

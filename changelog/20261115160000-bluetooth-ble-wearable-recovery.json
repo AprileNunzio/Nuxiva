@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Gestione automatica Bluetooth, supporto BLE/wearable e recupero adattatore",
+    "en": "Automatic Bluetooth management, BLE/wearable support, and adapter recovery",
+    "fr": "Gestion automatique Bluetooth, support BLE/connectés et récupération adaptateur",
+    "es": "Gestión automática de Bluetooth, soporte BLE/wearables y recuperación de adaptador"
+  },
+  "features": [
+    {
+      "it": "Supporto completo a dispositivi BLE e wearable cardio/fitbit con pairing GATT, cache vicinanze 300s e selettore persona.",
+      "en": "Full support for BLE and fitness/heart-rate wearables with GATT pairing, 300s nearby cache, and person selector.",
+      "fr": "Support complet des appareils BLE et montres cardio avec appairage GATT, cache de 300s et sélecteur de personne.",
+      "es": "Soporte completo para dispositivos BLE y wearables de ritmo cardíaco con emparejamiento GATT, caché de 300s y selector de persona."
+    },
+    {
+      "it": "Auto-recovery dell'adattatore Bluetooth su errori HCI/busy e ciclo di scansione periodico automatico.",
+      "en": "Bluetooth adapter auto-recovery on HCI/busy hardware errors and automatic periodic background scan cycle.",
+      "fr": "Récupération automatique de l'adaptateur Bluetooth sur erreurs HCI/busy et cycle de scan périodique en arrière-plan.",
+      "es": "Recuperación automática del adaptador Bluetooth ante errores HCI/busy y ciclo periódico de escaneo en segundo plano."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Risolto errore di pairing BLE NoInputNoOutput e scomparsa dispositivi vicini dopo la scansione.",
+      "en": "Fixed BLE NoInputNoOutput pairing failure and nearby devices disappearing after scan completes.",
+      "fr": "Correction de l'échec d'appairage BLE NoInputNoOutput et disparition des appareils proches après le scan.",
+      "es": "Corregido el fallo de emparejamiento BLE NoInputNoOutput y la desaparición de dispositivos cercanos tras el escaneo."
+    },
+    {
+      "it": "Riallineata asserzione test_avatar_space alla modalita display portrait.",
+      "en": "Realigned test_avatar_space assertion to the portrait display mode.",
+      "fr": "Realignement de l assertion test_avatar_space avec le mode d affichage portrait.",
+      "es": "Realineada la asercion test_avatar_space con el modo de pantalla vertical."
+    }
+  ]
+}

@@ -53,6 +53,15 @@ class ClassifyTest(unittest.TestCase):
         self.assertEqual(dev["kind"], "headset")
         self.assertEqual(dev["capabilities"], ["audio_out", "audio_in"])
 
+    def test_wearable_and_heart_rate_detection(self):
+        fitbit = classes.describe({"name": "Google Fitbit Air", "uuids": ["0000180d"]})
+        self.assertEqual(fitbit["kind"], "wearable")
+        self.assertIn("sensor_hr", fitbit["capabilities"])
+        self.assertIn("is_personal", fitbit["capabilities"])
+        self.assertTrue(fitbit["sensor_hr"])
+        self.assertTrue(fitbit["is_personal"])
+
+
 
 class SchemaTest(unittest.TestCase):
     def test_settings_apply_only_to_matching_capabilities(self):
@@ -98,6 +107,13 @@ class StoreTest(unittest.TestCase):
         for bad in ({"auto_switch": "yes"}, {"output_order": ["nope"]}, {"devices": {}}, [1]):
             with self.assertRaises(ValueError):
                 store.update_globals(bad)
+
+    def test_person_slug_and_personal_device_saved(self):
+        store.update_device(MAC_A, {"person_slug": "nunzio", "is_personal": True})
+        saved = store.settings(store.load(), MAC_A)
+        self.assertEqual(saved["person_slug"], "nunzio")
+        self.assertTrue(saved["is_personal"])
+
 
 
 class RoutingTest(unittest.TestCase):

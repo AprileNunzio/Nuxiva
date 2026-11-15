@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gamepad2, Keyboard, Mic, Mouse, Settings2, Volume2, LucideIcon } from 'lucide-react';
+import { Activity, Gamepad2, Heart, Keyboard, Mic, Mouse, Settings2, User, Volume2, LucideIcon } from 'lucide-react';
 import { BluetoothDevice, SETTING_GROUPS, SettingGroup, appliesTo } from '../../../shared/bluetooth/model';
 import { BluetoothHandle, actionKey } from '../../../shared/bluetooth/useBluetooth';
 import { useBluetoothI18n } from '../scope';
@@ -12,6 +12,9 @@ const GROUP_ICONS: Readonly<Record<SettingGroup, LucideIcon>> = {
   pointer: Mouse,
   keyboard: Keyboard,
   gamepad: Gamepad2,
+  sensor_hr: Heart,
+  sensor_env: Activity,
+  is_personal: User,
 };
 
 export const DeviceSettings: React.FC<{ readonly device: BluetoothDevice; readonly handle: BluetoothHandle }> = ({ device, handle }) => {

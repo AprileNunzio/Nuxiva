@@ -1,4 +1,4 @@
-import { Bluetooth, Gamepad2, Headphones, Headset, Joystick, Keyboard, Laptop, LucideIcon, Mic, Mouse, Smartphone, Speaker, Watch } from 'lucide-react';
+import { Activity, Bluetooth, Gamepad2, Headphones, Headset, Joystick, Keyboard, Laptop, LucideIcon, Mic, Mouse, Smartphone, Speaker, Watch } from 'lucide-react';
 import { DeviceKind } from './model';
 
 const ICONS: Readonly<Record<DeviceKind, LucideIcon>> = {
@@ -13,6 +13,7 @@ const ICONS: Readonly<Record<DeviceKind, LucideIcon>> = {
   phone: Smartphone,
   computer: Laptop,
   wearable: Watch,
+  sensor: Activity,
   other: Bluetooth,
 };
 

@@ -89,11 +89,13 @@ rust_checks() {
 }
 
 web_checks() {
-    (cd client_web && npm ci --silent && npm run build --silent) || return 1
-    local f
-    for f in client_web/tests/*.test.cjs; do
-        if [ -f "$f" ]; then node "$f" || return 1; fi
-    done
+    (
+        cd client_web || exit 1
+        npm ci --silent && npm run build --silent || exit 1
+        for f in tests/*.test.cjs; do
+            if [ -f "$f" ]; then node "$f" || exit 1; fi
+        done
+    ) || return 1
 }
 
 unit_checks() {

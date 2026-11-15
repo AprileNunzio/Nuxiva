@@ -1,4 +1,6 @@
 import json
+import logging
+import time
 
 from access import NO_CACHE, require_admin, require_display
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -9,6 +11,7 @@ from agenti.bluetooth import adapter, schema, store
 from agenti.bluetooth.service import gamepads, service
 from agenti.bluetooth.text import translate
 
+log = logging.getLogger("nuxiva.bluetooth")
 admin_routes = APIRouter()
 public_routes = APIRouter()
 BODY_LIMIT = 8192
@@ -17,7 +20,9 @@ ACTIONS = {"pair": adapter.pair, "connect": adapter.connect, "disconnect": adapt
 
 
 def _visible(dev: dict, scanning: bool) -> bool:
-    return dev["paired"] or dev["connected"] or (dev["rssi"] is not None) or scanning
+    now = time.time()
+    recent = (now - dev.get("last_seen", 0)) < 300
+    return dev["paired"] or dev["connected"] or (dev["rssi"] is not None) or scanning or recent
 
 
 def _view(state: dict, notice: str = "") -> dict:
@@ -79,11 +84,20 @@ async def bluetooth_power(request: Request, user: str = Depends(require_admin)):
 
 
 @admin_routes.post("/api/bluetooth/devices/{mac}/{action}")
-async def bluetooth_action(mac: str, action: str, user: str = Depends(require_admin)):
+async def bluetooth_action(mac: str, action: str, request: Request, user: str = Depends(require_admin)):
     if action not in ACTIONS:
         raise HTTPException(404, "bluetooth_unknown_action")
     mac = _mac(mac)
     _ready()
+    person_slug = ""
+    try:
+        raw = await request.body()
+        if raw:
+            parsed = json.loads(raw)
+            if isinstance(parsed, dict):
+                person_slug = str(parsed.get("person_slug") or "").strip()
+    except Exception:
+        pass
     try:
         await ACTIONS[action](mac)
     except adapter.BluetoothError as exc:
@@ -100,9 +114,29 @@ async def bluetooth_action(mac: str, action: str, user: str = Depends(require_ad
         store.forget(mac)
     elif dev and action in ("pair", "connect"):
         store.remember(mac, dev["name"], dev["capabilities"])
+        if person_slug:
+            store.update_device(mac, {"person_slug": person_slug, "is_personal": True})
+            try:
+                from agenti.medico.vitals.book import book
+                from agenti.percezione.people import service as people_service
+                if people_service.people.get(person_slug):
+                    kind_str = "band" if dev and dev.get("kind") == "wearable" else "sensor"
+                    name_str = dev.get("name", "Dispositivo")
+                    book.add(person_slug, kind_str, name_str, mac)
+                    state_store.event("INFO", f"Dispositivo '{name_str}' collegato ai parametri vitali di {person_slug}", "bluetooth")
+            except Exception as exc:
+                log.warning("Collegamento a libro parametri vitali: %s", exc)
     state_store.event("INFO", translate("event_action", action=action, name=dev["name"] if dev else mac, user=user),
                       "bluetooth")
     return _view(await service.refresh(), notice)
+
+
+@admin_routes.post("/api/bluetooth/reset")
+async def bluetooth_reset(_: str = Depends(require_admin)):
+    _ready()
+    await adapter.reset_adapter()
+    return _view(await service.refresh())
+
 
 
 @admin_routes.put("/api/bluetooth/devices/{mac}/settings")

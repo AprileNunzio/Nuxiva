@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { BatteryMedium, ChevronDown, Link2, Link2Off, Loader2, Mic, Plus, ShieldCheck, ShieldOff, Signal, Trash2, Volume2 } from 'lucide-react';
+import { BatteryMedium, ChevronDown, Heart, Link2, Link2Off, Loader2, Mic, Plus, ShieldCheck, ShieldOff, Signal, Trash2, User, UserPlus, Volume2 } from 'lucide-react';
 import { ConfirmDialog } from '../../../shared/ui/ConfirmDialog';
 import { BluetoothDevice, DeviceAction, displayName } from '../../../shared/bluetooth/model';
 import { kindIcon } from '../../../shared/bluetooth/kinds';
 import { BluetoothHandle, actionKey } from '../../../shared/bluetooth/useBluetooth';
 import { buttonClass, tones, useBluetoothI18n } from '../scope';
 import { DeviceSettings } from './DeviceSettings';
+import { PersonPickerModal } from './PersonPickerModal';
 
 interface DeviceRowProps {
   readonly device: BluetoothDevice;
@@ -28,13 +29,33 @@ const batteryTone = (value: number) => (value > 30 ? 'bg-emerald-500' : value > 
 export const DeviceRow: React.FC<DeviceRowProps> = ({ device, handle, open, onToggle }) => {
   const { t } = useBluetoothI18n();
   const [confirmForget, setConfirmForget] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
+  const [pendingAction, setPendingAction] = useState<DeviceAction | null>(null);
   const Icon = kindIcon(device.kind);
   const name = displayName(device);
   const state = handle.state;
   const busy = (action: DeviceAction) => handle.busy === actionKey(action, device.mac);
+  const personSlug = typeof device.settings.person_slug === 'string' ? device.settings.person_slug : '';
+  const isPersonal = Boolean(device.is_personal || device.kind === 'wearable' || device.kind === 'phone' || device.capabilities.includes('sensor_hr'));
+
+  const onActionClick = (action: DeviceAction) => {
+    if ((action === 'pair' || action === 'connect') && isPersonal && !personSlug) {
+      setPendingAction(action);
+      setShowPicker(true);
+      return;
+    }
+    void handle.act(device, action);
+  };
+
+  const onConfirmPerson = (selectedSlug: string) => {
+    setShowPicker(false);
+    const actionToRun = pendingAction || (device.paired ? 'connect' : 'pair');
+    setPendingAction(null);
+    void handle.act(device, actionToRun, selectedSlug);
+  };
 
   const button = (action: DeviceAction, tone: keyof typeof tones) => (
-    <button type="button" disabled={handle.busy !== null} onClick={() => void handle.act(device, action)} className={`${buttonClass} ${tones[tone]}`}>
+    <button type="button" disabled={handle.busy !== null} onClick={() => onActionClick(action)} className={`${buttonClass} ${tones[tone]}`}>
       {busy(action) ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" /> : ACTION_ICONS[action]}
       {t(`action_${action}`)}
     </button>
@@ -68,6 +89,33 @@ export const DeviceRow: React.FC<DeviceRowProps> = ({ device, handle, open, onTo
             >
               {t(device.connected ? 'state_connected' : device.paired ? 'state_paired' : 'state_nearby')}
             </span>
+            {personSlug ? (
+              <button
+                type="button"
+                onClick={() => setShowPicker(true)}
+                title={t('person_change_title')}
+                className="flex items-center gap-1 rounded-full border border-purple-200 bg-purple-50 px-2 py-0.5 text-[10px] font-semibold text-purple-700 transition hover:bg-purple-100"
+              >
+                <User className="h-3 w-3" aria-hidden="true" />
+                {t('person_badge', { name: personSlug })}
+              </button>
+            ) : isPersonal ? (
+              <button
+                type="button"
+                onClick={() => setShowPicker(true)}
+                title={t('person_assign_prompt')}
+                className="flex items-center gap-1 rounded-full border border-dashed border-slate-300 bg-white px-2 py-0.5 text-[10px] font-medium text-slate-500 transition hover:border-blue-400 hover:text-blue-600"
+              >
+                <UserPlus className="h-3 w-3" aria-hidden="true" />
+                {t('person_assign_prompt')}
+              </button>
+            ) : null}
+            {device.sensor_hr && (
+              <span className="flex items-center gap-1 rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[10px] font-semibold text-rose-700">
+                <Heart className="h-3 w-3" aria-hidden="true" />
+                {t('sensor_hr_badge')}
+              </span>
+            )}
             {device.trusted && (
               <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-600">{t('state_trusted')}</span>
             )}
@@ -129,6 +177,17 @@ export const DeviceRow: React.FC<DeviceRowProps> = ({ device, handle, open, onTo
       </div>
       {!device.paired && <p className="mt-2 text-[11px] text-slate-500">{t('pair_hint')}</p>}
       {open && device.paired && <DeviceSettings device={device} handle={handle} />}
+      {showPicker && (
+        <PersonPickerModal
+          device={device}
+          onSelect={onConfirmPerson}
+          onCancel={() => {
+            setShowPicker(false);
+            setPendingAction(null);
+          }}
+          pending={pendingAction ? busy(pendingAction) : false}
+        />
+      )}
       {confirmForget && (
         <ConfirmDialog
           title={t('forget_title')}

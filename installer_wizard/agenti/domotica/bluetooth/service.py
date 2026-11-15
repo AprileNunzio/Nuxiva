@@ -44,6 +44,8 @@ class BluetoothService:
         self.scan_task: asyncio.Task | None = None
         self.input_rev = ""
         self.updated_at = 0.0
+        self.nearby_cache: dict[str, dict] = {}
+        self.last_auto_scan = 0.0
         self.lock = asyncio.Lock()
 
     @staticmethod
@@ -101,7 +103,20 @@ class BluetoothService:
         async with self.lock:
             ctrl = await adapter.controller()
             ready = ctrl["present"] and ctrl["installed"]
-            devs = [describe(d) for d in await adapter.devices()] if ready else []
+            live_devs = [describe(d) for d in await adapter.devices()] if ready else []
+            now = time.time()
+            for d in live_devs:
+                d["last_seen"] = now
+                self.nearby_cache[d["mac"]] = d
+            # Retain discovered devices for up to 300s (5 minutes) so they don't vanish immediately
+            self.nearby_cache = {
+                m: d for m, d in self.nearby_cache.items()
+                if (now - d.get("last_seen", 0) < 300) or d.get("paired") or d.get("connected")
+            }
+            dev_map = dict(self.nearby_cache)
+            for d in live_devs:
+                dev_map[d["mac"]] = d
+            devs = list(dev_map.values())
             routing = await router.apply(devs) if devs else {}
             await hid.apply(devs)
             self._publish(devs, routing)
@@ -130,7 +145,11 @@ class BluetoothService:
             await adapter.power(True)
             await adapter.scan(seconds)
         except (OSError, adapter.BluetoothError) as exc:
-            log.warning("Ricerca Bluetooth non riuscita: %s", exc)
+            log.warning("Ricerca Bluetooth non riuscita: %s (tentativo di ripristino automatico)", exc)
+            try:
+                await adapter.reset_adapter()
+            except Exception:
+                pass
         finally:
             self.scanning_until = 0.0
         try:
@@ -148,6 +167,10 @@ class BluetoothService:
                         await self._prepare()
                     elif ctrl["present"] and ctrl["installed"]:
                         await self._reconnect(state["devices"])
+                        # Auto-scan: keeps the discovery alive automatically without user manual action
+                        if ctrl.get("powered") and not self.scanning() and time.time() - self.last_auto_scan > 35:
+                            self.last_auto_scan = time.time()
+                            self.start_scan()
                 except (OSError, ValueError, adapter.BluetoothError) as exc:
                     log.warning("Controllo Bluetooth non riuscito: %s", exc)
             await asyncio.sleep(TICK)

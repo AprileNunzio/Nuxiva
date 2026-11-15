@@ -7,7 +7,7 @@ WEB = Path(__file__).resolve().parents[1] / "web" / "display"
 class AvatarSpaceTest(unittest.TestCase):
     def test_avatar_moves_only_when_widgets_cover_it(self):
         desk = (WEB / "desk.js").read_text(encoding="utf-8")
-        self.assertIn("if (!takeover && zone && !covers(normal.concat(pinned), W, H)) zone = null;", desk)
+        self.assertIn("if (!portrait && !takeover && zone && !covers(normal.concat(pinned), W, H)) zone = null;", desk)
         self.assertNotIn("!blocked.length && !covers", desk)
         self.assertIn("voice: true", desk)
 
