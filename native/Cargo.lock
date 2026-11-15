@@ -45,7 +45,7 @@ dependencies = [
 
 [[package]]
 name = "agency-action"
-version = "5.8.3"
+version = "5.8.5"
 dependencies = [
  "agency-domain",
  "serde",
@@ -55,7 +55,7 @@ dependencies = [
 
 [[package]]
 name = "agency-codeindex"
-version = "5.8.3"
+version = "5.8.5"
 dependencies = [
  "getrandom 0.3.4",
  "serde",
@@ -64,7 +64,7 @@ dependencies = [
 
 [[package]]
 name = "agency-domain"
-version = "5.8.3"
+version = "5.8.5"
 dependencies = [
  "serde",
  "serde_json",
@@ -73,7 +73,7 @@ dependencies = [
 
 [[package]]
 name = "agency-foresight"
-version = "5.8.3"
+version = "5.8.5"
 dependencies = [
  "serde",
  "serde_json",
@@ -82,7 +82,7 @@ dependencies = [
 
 [[package]]
 name = "agency-forge"
-version = "5.8.3"
+version = "5.8.5"
 dependencies = [
  "serde",
  "serde_json",
@@ -91,7 +91,7 @@ dependencies = [
 
 [[package]]
 name = "agency-ledger"
-version = "5.8.3"
+version = "5.8.5"
 dependencies = [
  "getrandom 0.3.4",
  "hmac",
@@ -105,7 +105,7 @@ dependencies = [
 
 [[package]]
 name = "agency-planner"
-version = "5.8.3"
+version = "5.8.5"
 dependencies = [
  "agency-domain",
  "serde",
@@ -114,7 +114,7 @@ dependencies = [
 
 [[package]]
 name = "agency-scheduler"
-version = "5.8.3"
+version = "5.8.5"
 dependencies = [
  "serde",
  "thiserror 2.0.21",
@@ -122,7 +122,7 @@ dependencies = [
 
 [[package]]
 name = "agency-thought"
-version = "5.8.3"
+version = "5.8.5"
 dependencies = [
  "agency-domain",
  "agency-planner",

@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Sincronizzazione di native/Cargo.lock con la versione di rilascio 5.8.5",
+    "en": "Synchronize native/Cargo.lock with release 5.8.5",
+    "fr": "Synchronisation de native/Cargo.lock avec la version de release 5.8.5",
+    "es": "Sincronización de native/Cargo.lock con la versión de lanzamiento 5.8.5"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Aggiornato il lockfile native/Cargo.lock per allineare i crate dell'area di lavoro al rilascio 5.8.5, risolvendo l'errore di clippy bloccato con il flag --locked su CI.",
+      "en": "Updated native/Cargo.lock to align workspace crates with release 5.8.5, fixing the clippy failure when invoked with --locked on CI.",
+      "fr": "Mise à jour du fichier native/Cargo.lock pour aligner les crates du workspace sur la release 5.8.5, corrigeant l'échec de clippy avec --locked en CI.",
+      "es": "Actualizado el archivo native/Cargo.lock para alinear los crates del workspace con la versión 5.8.5, corrigiendo el fallo de clippy con --locked en CI."
+    }
+  ]
+}
