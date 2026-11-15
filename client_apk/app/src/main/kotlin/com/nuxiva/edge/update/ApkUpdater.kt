@@ -75,6 +75,9 @@ class ApkUpdater(private val context: Context) {
                 else -> current.copy(offer = parsed, lastCheck = now(), step = if (current.step == UpdateStep.Failed && parsed == null) UpdateStep.Idle else current.step)
             }
         }
+        if (parsed != null && state.value.step == UpdateStep.Idle) {
+            download()
+        }
     }
 
     fun download() {
@@ -122,6 +125,7 @@ class ApkUpdater(private val context: Context) {
             verify(file, offer)
             prefs.edit().putString(PENDING, offer.version).apply()
             state.update { it.copy(step = UpdateStep.AwaitingUser) }
+            install()
         } catch (error: UpdateFailure) {
             file.delete()
             fail(error.code)

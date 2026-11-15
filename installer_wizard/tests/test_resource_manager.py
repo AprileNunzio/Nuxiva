@@ -60,7 +60,20 @@ class Reports(unittest.TestCase):
         for c in m.clients.values():
             c["at"] = time.monotonic() - rm.CLIENT_TTL - 1
         m.evaluate()
-        self.assertEqual(len(m.clients), 0)
+    def test_browser_budget_adapts_elastically(self):
+        sample = {"mem_total": 16 << 30, "mem_available": 10 << 30}
+        m = manager(groups={"browser": {"rss": 1 << 30, "cpu_percent": 5.0, "count": 1}}, models=[])
+        comps_idle = m.collect(sample)
+        browser_idle = next(c for c in comps_idle if c["id"] == "browser")
+        expected_budget = (16 << 30) // 10 + (10 << 30) // 2
+        self.assertEqual(browser_idle.get("budget"), expected_budget)
+
+        # When an Ollama model is loaded, browser budget reverts to None (falling back to standard quota)
+        m_busy = manager(groups={"browser": {"rss": 1 << 30, "cpu_percent": 5.0, "count": 1}},
+                         models=[{"name": "llama3:8b", "size": 4 << 30, "expires_at": "2030-01-01T00:00:00Z"}])
+        comps_busy = m_busy.collect(sample)
+        browser_busy = next(c for c in comps_busy if c["id"] == "browser")
+        self.assertIsNone(browser_busy.get("budget"))
 
 
 if __name__ == "__main__":

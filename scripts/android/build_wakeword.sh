@@ -10,4 +10,4 @@ if ! command -v cargo-ndk >/dev/null 2>&1; then
 fi
 
 cd "$root/native"
-cargo ndk -t arm64-v8a -t armeabi-v7a -t x86_64 -o "$out" build --release --locked -p nuxiva-wakeword-jni
+cargo ndk -t arm64-v8a -t armeabi-v7a -t x86_64 -o "$out" build --release -p nuxiva-wakeword-jni

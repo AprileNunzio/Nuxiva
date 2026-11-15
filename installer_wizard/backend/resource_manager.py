@@ -75,13 +75,20 @@ class ResourceManager:
         self.history: deque = deque(maxlen=180)
         self.log: deque = deque(maxlen=200)
 
-    def collect(self) -> list[dict]:
+    def collect(self, sample: dict | None = None) -> list[dict]:
         components = []
+        models = loaded_models()
+        avail = sample.get("mem_available", 0) if isinstance(sample, dict) else 0
+        total = sample.get("mem_total", 0) if isinstance(sample, dict) else 0
+        elastic_browser_budget = (total // 10 + avail // 2) if (avail > 0 and not models and total > 0) else None
         for key, entry in groups(self.pid).items():
             cls, reclaim = PROCESS_CLASS[key]
-            components.append({"id": key, "kind": "process", "class": cls, "rss": entry["rss"], "idle_ms": 0,
-                               "visible": True, "reclaimable": reclaim, "cpu_percent": min(entry["cpu_percent"], 100.0 * 64)})
-        for model in loaded_models():
+            item = {"id": key, "kind": "process", "class": cls, "rss": entry["rss"], "idle_ms": 0,
+                    "visible": True, "reclaimable": reclaim, "cpu_percent": min(entry["cpu_percent"], 100.0 * 64)}
+            if key == "browser" and elastic_browser_budget is not None:
+                item["budget"] = elastic_browser_budget
+            components.append(item)
+        for model in models:
             ident = re.sub(r"[^A-Za-z0-9_.:/-]", "", model["name"])[:120]
             size = model.get("size")
             components.append({"id": f"model.{re.sub(r'[^a-z0-9_.-]', '-', ident.lower())[:56]}", "kind": "model", "class": "normal",
@@ -96,14 +103,15 @@ class ResourceManager:
             for s in client["surfaces"]:
                 cls = "protected" if s["id"] in PROTECTED_SURFACES else "normal"
                 components.append({"id": f"{device[:12].lower()}.{s['id']}"[:64], "kind": "surface", "class": cls,
-                                   "rss": int(s["mb"] * 1048576), "idle_ms": int(s["idle_ms"] / client["scale"]), "visible": s["visible"],
-                                   "reclaimable": True, "_device": device, "_surface": s["id"]})
+                                    "rss": int(s["mb"] * 1048576), "idle_ms": int(s["idle_ms"] / client["scale"]), "visible": s["visible"],
+                                    "reclaimable": True, "_device": device, "_surface": s["id"]})
         return components
 
     def evaluate(self) -> dict:
-        components = self.collect()
+        sample = system_sample()
+        components = self.collect(sample)
         names = {c["id"]: c["_name"] for c in components if "_name" in c}
-        payload = {"system": system_sample(), "previous": self.level,
+        payload = {"system": sample, "previous": self.level,
                    "components": [{k: v for k, v in c.items() if not k.startswith("_")} for c in components]}
         result = plan(payload)
         self.level = result["level"]

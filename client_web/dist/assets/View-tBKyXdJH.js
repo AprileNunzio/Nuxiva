@@ -1,1 +1,0 @@
-import{m as r}from"./index-B-SBDjUZ.js";import{View as t}from"./View-DZ-Fquxn.js";import"./locale-en-DwEC_Tj2.js";import"./locale-es-D3EZ9tni.js";import"./locale-fr-CQZn-kZN.js";import"./locale-it-0VmME8Nm.js";import"./app_scanner-DsCGgeAP.js";function f(){return r.jsx(t,{})}export{f as View,f as default};

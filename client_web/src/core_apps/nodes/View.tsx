@@ -10,6 +10,7 @@ import { MeshNodeItem, UsbPort } from './types';
 import { InstallationCards } from './components/InstallationCards';
 import { tierLabel } from './humanize';
 import { ResourcesPanel } from './components/ResourcesPanel';
+import { RequestsPanel } from '../../node_apps/client_link/components/RequestsPanel';
 
 export const View: React.FC = () => {
   const { t } = useScopedI18n('core_apps/nodes');
@@ -68,6 +69,7 @@ export const View: React.FC = () => {
       description={t('description')}
       onReload={() => void load()}
     >
+      <RequestsPanel handle={links} />
       <Panel title={t('res_title')}>
         <ResourcesPanel />
       </Panel>

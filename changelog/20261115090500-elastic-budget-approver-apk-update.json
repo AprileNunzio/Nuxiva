@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Budget RAM elastico per il browser, approvatore nodi visibile e APK auto-aggiornante",
+    "en": "Elastic browser RAM budget, visible node approver and auto-updating APK",
+    "fr": "Budget RAM élastique pour le navigateur, approbateur de nœuds visible et APK auto-actualisé",
+    "es": "Presupuesto RAM elástico para el navegador, aprobador de nodos visible y APK autoactualizable"
+  },
+  "features": [
+    {
+      "it": "Il Resource Manager espande dinamicamente il budget di memoria del browser quando Ollama non ha modelli caricati e c'è RAM disponibile, riabbassandolo al valore base solo quando serve all'AI.",
+      "en": "The Resource Manager dynamically expands the browser memory budget when Ollama has no loaded models and RAM is available, shrinking back to base only when needed for AI.",
+      "fr": "Le gestionnaire de ressources étend dynamiquement le budget mémoire du navigateur lorsque Ollama n'a aucun modèle chargé et que de la RAM est disponible, réduisant au besoin pour l'IA.",
+      "es": "El Resource Manager expande dinámicamente el presupuesto de memoria del navegador cuando Ollama no tiene modelos cargados y hay RAM disponible, reduciéndolo solo cuando hace falta para la IA."
+    },
+    {
+      "it": "La schermata Nodi e Server mostra il pannello delle richieste in attesa direttamente in evidenza, consentendo all'amministratore di approvare o rifiutare le nuove connessioni.",
+      "en": "The Nodes and Server view displays pending connection requests prominently, allowing the administrator to approve or reject new node connections.",
+      "fr": "La vue Nœuds et Serveur affiche directement en évidence les demandes de connexion en attente, permettant à l'administrateur d'approuver ou rejeter les nouveaux nœuds.",
+      "es": "La vista Nodos y Servidor muestra directamente en primer plano las solicitudes de conexión pendientes, permitiendo al administrador aprobar o rechazar nuevos nodos."
+    },
+    {
+      "it": "L'app Android avvia automaticamente il download in background appena l'heartbeat segnala una nuova versione e lancia la conferma di installazione al termine della verifica.",
+      "en": "The Android app automatically starts the background download as soon as the heartbeat announces a new version and launches the installation confirmation once verified.",
+      "fr": "L'application Android lance automatiquement le téléchargement en arrière-plan dès que le heartbeat annonce une nouvelle version et propose l'installation après vérification.",
+      "es": "La aplicación Android inicia automáticamente la descarga en segundo plano cuando el heartbeat anuncia una nueva versión y abre la confirmación de instalación tras verificar."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto il controllo del test di rilascio Windows verso release.yml e rimosso il flag bloccante --locked nella compilazione Android per evitare errori durante il build.",
+      "en": "Fixed Windows release test check against release.yml and removed the blocking --locked flag during Android wake word build to avoid cross-compilation lockfile errors.",
+      "fr": "Correction du test de release Windows vers release.yml et suppression du flag bloquant --locked lors du build Android pour éviter les erreurs de lockfile en cross-compilation.",
+      "es": "Corregida la prueba de lanzamiento Windows hacia release.yml y eliminado el flag bloqueante --locked en la compilación Android para evitar fallos de lockfile en cross-compilación."
+    }
+  ]
+}

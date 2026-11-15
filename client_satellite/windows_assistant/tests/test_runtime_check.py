@@ -82,8 +82,8 @@ class SpecTest(unittest.TestCase):
         self.assertIn('/Delete /TN "ATENA"', text)
 
     def test_release_is_published_even_without_signing_key(self):
-        text = (ROOT.parent.parent / ".github" / "workflows" / "windows-assistant.yml").read_text(encoding="utf-8")
-        self.assertIn("without a signed manifest", text)
+        text = (ROOT.parent.parent / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+        self.assertIn("Windows manifest is not signed", text)
         self.assertIn("--latest", text)
 
     def test_signing_key_generator_matches_manifest_format(self):
