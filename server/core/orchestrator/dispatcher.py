@@ -137,14 +137,26 @@ class OrchestratorDispatcher:
             weight=biometric_score,
         )
 
+        vocal_energy_rms = float((context_override or {}).get("vocal_energy_rms") or 0.15)
+        pitch_hz = float((context_override or {}).get("pitch_hz") or 140.0)
+        hour_of_day = (context_override or {}).get("hour_of_day")
+
         with journey.span("router", "System 1 Router", "Riflesso rapido non autoregressivo") as s1_span:
-            sys1_decision = await system1_router.classify(sanitized_query)
-            s1_span.ok(f"{sys1_decision.intent.value} (conf: {sys1_decision.confidence:.2f}, {sys1_decision.latency_ms:.1f}ms)")
+            sys1_decision = await system1_router.classify(
+                sanitized_query,
+                vocal_energy_rms=vocal_energy_rms,
+                pitch_hz=pitch_hz,
+                hour_of_day=hour_of_day,
+            )
+            s1_span.ok(f"{sys1_decision.intent.value} (conf: {sys1_decision.confidence:.2f}, {sys1_decision.latency_ms:.1f}ms, stile: {sys1_decision.delivery_style})")
         logger.info(
-            "System 1 Non-Autoregressive Decision: %s (confidence: %.2f in %.2f ms)",
+            "System 1 Reflex Decision: %s (confidence: %.2f in %.2f ms, style: %s, lang: %s, filler: '%s')",
             sys1_decision.intent.value,
             sys1_decision.confidence,
             sys1_decision.latency_ms,
+            sys1_decision.delivery_style,
+            sys1_decision.language,
+            sys1_decision.immediate_filler,
         )
 
         with journey.span("classifier", "Classificatore Intenti", "Analisi semantica dell'intento") as class_span:
@@ -331,9 +343,34 @@ class OrchestratorDispatcher:
 
         if sys1_decision.intent == System1Intent.COMPLEX_TASK and extracted_intent == "GENERAL_INTELLIGENCE":
             journey.step("decision", "Instradamento → System 2", "compito complesso senza agente dedicato: ragionamento latente (scartati: conversazione, agenti, progetto)")
+            
+            # Zero-silenzio riflesso: emette la risposta speculativa immediata prima del ragionamento esteso
+            if sys1_decision.immediate_filler:
+                journey.step(
+                    "reflex",
+                    "Riflesso vocale speculativo",
+                    f"Zero-silenzio filler: '{sys1_decision.immediate_filler}' (stile: {sys1_decision.delivery_style}, vol: {sys1_decision.volume_scale:.2f}, lang: {sys1_decision.language})",
+                )
+                graph_client.upsert_node(
+                    node_id=task_id,
+                    node_type=NodeType.CONCEPT,
+                    label=f"Task: {sanitized_query[:40]}",
+                    properties={
+                        "status": "THINKING",
+                        "immediate_vocal_filler": sys1_decision.immediate_filler,
+                        "delivery_style": sys1_decision.delivery_style,
+                        "volume_scale": sys1_decision.volume_scale,
+                        "language": sys1_decision.language,
+                    },
+                )
+
             with journey.span("system2", "System 2 · ragionamento latente", "pensiero esteso prima della risposta") as s2_span:
                 sys2_result = await system2_engine.execute(sanitized_query, context_override)
                 s2_span.ok(f"modello {sys2_result.model_used} · {sys2_result.latency_ms:.0f} ms")
+
+            # Plasticità continua: auto-apprende il task per velocizzare i comandi futuri
+            system1_router.learn(sanitized_query, "complex_task", "system2_latent_engine")
+
             res = AgentTaskResponse(
                 task_id=task_id,
                 agent_id="system2_latent_engine",
@@ -343,6 +380,9 @@ class OrchestratorDispatcher:
                     "thinking": sys2_result.thinking,
                     "model": sys2_result.model_used,
                     "tool_calls": sys2_result.tool_calls,
+                    "immediate_vocal_filler": sys1_decision.immediate_filler,
+                    "delivery_style": sys1_decision.delivery_style,
+                    "volume_scale": sys1_decision.volume_scale,
                 },
                 speech_output=sys2_result.response,
                 execution_time_ms=sys2_result.latency_ms,

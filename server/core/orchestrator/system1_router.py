@@ -6,6 +6,8 @@ from typing import Dict, Any, Optional
 from pydantic import BaseModel, Field
 from server.features.llm_gateway.contracts import CognitiveEngineVersion
 
+from server.core.orchestrator.reflex_bridge import reflex_bridge
+
 class System1Intent(str, Enum):
     CONVERSATION = "conversation"
     ACTION_DIRECT = "action_direct"
@@ -24,6 +26,13 @@ class System1Decision(BaseModel):
     parameters: Dict[str, Any] = Field(default_factory=dict)
     selected_engine: Optional[CognitiveEngineVersion] = None
     complexity_psi: Optional[float] = None
+    language: str = "it"
+    delivery_style: str = "normal"
+    volume_scale: float = 1.0
+    immediate_filler: str = ""
+    is_whisper: bool = False
+    is_night: bool = False
+    is_reflex_guaranteed: bool = False
 
 class System1Router:
     def __init__(self) -> None:
@@ -233,14 +242,38 @@ class System1Router:
         user_emotion: float = 0.0,
         semantic_surprise: float = 0.1,
         hardware_pressure: float = 0.0,
+        vocal_energy_rms: float = 0.15,
+        pitch_hz: float = 140.0,
+        hour_of_day: Optional[int] = None,
     ) -> System1Decision:
         t0 = time.perf_counter()
-        logits, target_agent, direct_action, surface_action, params = self._compute_logits(query)
-        probs = self._softmax(logits)
+        
+        # 1. Multitask Reflex Evaluation (Acoustics, Language, Zero-Silence Fillers, Plasticity)
+        reflex_eval = reflex_bridge.evaluate(
+            query,
+            vocal_energy_rms=vocal_energy_rms,
+            pitch_hz=pitch_hz,
+            hour_of_day=hour_of_day,
+        )
 
-        best_key = max(probs, key=probs.get)
-        intent = System1Intent(best_key)
-        confidence = round(probs[best_key], 4)
+        logits, target_agent, direct_action, surface_action, params = self._compute_logits(query)
+
+        # Check if learned plasticity memory guarantees fast execution
+        if reflex_eval.get("should_execute_fast"):
+            intent = System1Intent.ACTION_DIRECT
+            confidence = float(reflex_eval.get("fast_confidence", 0.95))
+            fast_action = reflex_eval.get("fast_action") or ""
+            if "." in fast_action:
+                parts = fast_action.split(".", 1)
+                target_agent = parts[0]
+                direct_action = parts[1]
+            is_reflex_guaranteed = True
+        else:
+            probs = self._softmax(logits)
+            best_key = max(probs, key=probs.get)
+            intent = System1Intent(best_key)
+            confidence = round(probs[best_key], 4)
+            is_reflex_guaranteed = False
 
         complex_logit = logits.get("complex_task", 0.5)
         task_complexity = min(1.0, max(0.0, complex_logit / 10.0))
@@ -261,6 +294,13 @@ class System1Router:
             parameters=params,
             selected_engine=selected_engine,
             complexity_psi=psi,
+            language=reflex_eval.get("language", "it"),
+            delivery_style=reflex_eval.get("delivery_style", "normal"),
+            volume_scale=float(reflex_eval.get("volume_scale", 1.0)),
+            immediate_filler=reflex_eval.get("immediate_filler", ""),
+            is_whisper=bool(reflex_eval.get("is_whisper", False)),
+            is_night=bool(reflex_eval.get("is_night", False)),
+            is_reflex_guaranteed=is_reflex_guaranteed,
         )
 
     async def classify(
@@ -269,8 +309,23 @@ class System1Router:
         user_emotion: float = 0.0,
         semantic_surprise: float = 0.1,
         hardware_pressure: float = 0.0,
+        vocal_energy_rms: float = 0.15,
+        pitch_hz: float = 140.0,
+        hour_of_day: Optional[int] = None,
     ) -> System1Decision:
-        return self.classify_sync(query, user_emotion, semantic_surprise, hardware_pressure)
+        return self.classify_sync(
+            query,
+            user_emotion,
+            semantic_surprise,
+            hardware_pressure,
+            vocal_energy_rms=vocal_energy_rms,
+            pitch_hz=pitch_hz,
+            hour_of_day=hour_of_day,
+        )
+
+    def learn(self, query: str, intent: str, action: str) -> bool:
+        return reflex_bridge.learn(query, intent, action)
 
 system1_router = System1Router()
+
 
