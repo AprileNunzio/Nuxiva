@@ -31,22 +31,26 @@ def _assets(release: dict) -> dict[str, str]:
     return {a.get("name", ""): a.get("browser_download_url", "") for a in release.get("assets") or []}
 
 
+def _bare(tag: str) -> str:
+    return tag.removeprefix("assistant-").removeprefix("v")
+
+
 def latest() -> tuple[str, dict[str, str]] | None:
     releases = json.loads(_get(RELEASES, 2_000_000).decode("utf-8"))
     candidates = []
     for release in releases if isinstance(releases, list) else []:
         tag = str(release.get("tag_name", ""))
         assets = _assets(release)
-        if (tag.startswith("assistant-v") and not release.get("draft") and not release.get("prerelease")
+        if (tag.startswith(("v", "assistant-v")) and not release.get("draft") and not release.get("prerelease")
                 and assets.get("manifest.json") and assets.get("manifest.sig")):
             try:
-                candidates.append((manifest.version_key(tag.removeprefix("assistant-v")), tag, assets))
+                candidates.append((manifest.version_key(_bare(tag)), tag, assets))
             except manifest.UpdateRejected:
                 log.warning("Release con versione non valida ignorata: %s", tag)
     if not candidates:
         return None
     _key, tag, assets = max(candidates, key=lambda candidate: candidate[0])
-    return tag.removeprefix("assistant-v"), assets
+    return _bare(tag), assets
 
 
 def read_state() -> dict:

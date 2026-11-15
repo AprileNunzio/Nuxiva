@@ -1,0 +1,186 @@
+name: Release
+
+on:
+  workflow_run:
+    workflows: ["Nuxiva CI Pipeline"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      part:
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      needed: ${{ steps.decide.outputs.needed }}
+      version: ${{ steps.decide.outputs.version }}
+      previous_tag: ${{ steps.decide.outputs.previous_tag }}
+      sha: ${{ steps.bump.outputs.sha }}
+    steps:
+      - name: Checkout Main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Tested Commit Is Still The Tip
+        id: tip
+        env:
+          TESTED: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          if [ -n "$TESTED" ] && [ "$(git rev-parse HEAD)" != "$TESTED" ]; then
+            echo "::notice::main moved past the tested commit, the next CI run will release"
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "stale=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Decide Version
+        id: decide
+        env:
+          FORCE: ${{ github.event_name == 'workflow_dispatch' && '--force' || '' }}
+          PART: ${{ inputs.part || 'patch' }}
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.tip.outputs.stale }}" = "true" ]; then
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          else
+            python3 scripts/release/plan.py $FORCE --part "$PART"
+          fi
+
+      - name: Align Every Component And Publish The Bump
+        id: bump
+        if: steps.decide.outputs.needed == 'true'
+        env:
+          VERSION: ${{ steps.decide.outputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 scripts/release/version.py set "$VERSION"
+          python3 scripts/release/version.py check
+          python3 scripts/release/bump_note.py "$VERSION"
+          python3 scripts/ci/changelog_valid.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "release: $VERSION" \
+            -m "Versione $VERSION allineata automaticamente su server, app Android, installer Windows e crate Rust; nessun bump manuale." \
+            -m "Version $VERSION aligned automatically across server, Android app, Windows installer and Rust crates; no manual bump."
+          git push origin HEAD:main
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          gh workflow run ci.yml --ref main || echo "::warning::could not start CI for the release commit"
+
+  android:
+    needs: plan
+    if: needs.plan.outputs.needed == 'true' && needs.plan.outputs.sha != ''
+    uses: ./.github/workflows/android.yml
+    with:
+      ref: ${{ needs.plan.outputs.sha }}
+    secrets: inherit
+
+  windows:
+    needs: plan
+    if: needs.plan.outputs.needed == 'true' && needs.plan.outputs.sha != ''
+    uses: ./.github/workflows/windows-assistant.yml
+    with:
+      ref: ${{ needs.plan.outputs.sha }}
+    secrets: inherit
+
+  publish:
+    needs: [plan, android, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Release Commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.sha }}
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download Android Build
+        uses: actions/download-artifact@v4
+        with:
+          name: Nuxiva
+          path: dist
+
+      - name: Download Windows Build
+        uses: actions/download-artifact@v4
+        with:
+          name: Nuxiva_Setup
+          path: dist
+
+      - name: Verify Alignment And Assets
+        env:
+          VERSION: ${{ needs.plan.outputs.version }}
+        run: |
+          set -euo pipefail
+          python3 scripts/release/version.py check
+          test "$(cat VERSION)" = "$VERSION"
+          for file in Nuxiva.apk Nuxiva_Setup.exe manifest.json; do test -s "dist/$file"; done
+          test "$(sha256sum dist/Nuxiva.apk | cut -d' ' -f1)" = "$(tr -d '[:space:]' < dist/Nuxiva.apk.sha256)"
+
+      - name: Verify Signed Windows Manifest
+        run: |
+          set -euo pipefail
+          if [ -f dist/manifest.sig ]; then
+            python3 -m pip install --quiet cryptography
+            cd client_satellite/windows_assistant
+            python3 -I -c "import sys; sys.path.insert(0, '.'); from pathlib import Path; from updates import manifest; root = Path('../../dist'); release = manifest.verify((root / 'manifest.json').read_bytes(), (root / 'manifest.sig').read_bytes()); manifest.check_file((root / 'Nuxiva_Setup.exe').read_bytes(), release)"
+          else
+            echo "::warning::Windows manifest is not signed: automatic Windows updates stay off"
+          fi
+
+      - name: Build Release Document
+        env:
+          VERSION: ${{ needs.plan.outputs.version }}
+          PREVIOUS: ${{ needs.plan.outputs.previous_tag }}
+          SHA: ${{ needs.plan.outputs.sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          assets=$(ls dist/Nuxiva.apk dist/Nuxiva_Setup.exe dist/manifest.json dist/manifest.sig 2>/dev/null)
+          python3 scripts/release/release_notes.py --version "$VERSION" --tag "v$VERSION" --commit "$SHA" \
+            --previous-tag "$PREVIOUS" --repository "$REPO" --assets $assets --out dist
+          python3 -c "import json,sys; d=json.load(open('dist/release.json')); sys.exit(0 if {a['platform'] for a in d['assets']} >= {'android','windows'} else 1)"
+          (cd dist && sha256sum Nuxiva.apk Nuxiva_Setup.exe release.json > SHA256SUMS)
+
+      - name: Publish Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.plan.outputs.version }}
+          SHA: ${{ needs.plan.outputs.sha }}
+        run: |
+          set -euo pipefail
+          files="dist/Nuxiva.apk dist/Nuxiva.apk.sha256 dist/Nuxiva_Setup.exe dist/manifest.json dist/release.json dist/SHA256SUMS"
+          if [ -f dist/manifest.sig ]; then files="$files dist/manifest.sig"; fi
+          if gh release view "v$VERSION" > /dev/null 2>&1; then
+            gh release upload "v$VERSION" $files --clobber
+            gh release edit "v$VERSION" --title "Nuxiva $VERSION" --notes-file dist/release_body.md --latest
+          else
+            gh release create "v$VERSION" $files --target "$SHA" --title "Nuxiva $VERSION" --notes-file dist/release_body.md --latest
+          fi

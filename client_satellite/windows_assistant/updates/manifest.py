@@ -11,7 +11,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
 PUBLIC_KEY = "DN6SKGGnjtJbKYc7I4CajVCrV8X1hLrXYDR0U9x5qOU="
 REPOSITORY = "AprileNunzio/NUXIVA"
-DOWNLOAD_RE = re.compile(rf"https://github\.com/{re.escape(REPOSITORY)}/releases/download/assistant-v[0-9.]+/[A-Za-z0-9_.-]+\.exe")
+DOWNLOAD_RE = re.compile(rf"https://github\.com/{re.escape(REPOSITORY)}/releases/download/(?:assistant-)?v[0-9.]+/[A-Za-z0-9_.-]+\.exe")
 VERSION_RE = re.compile(r"\d+(?:\.\d+){1,3}")
 MAX_SIZE = 400 * 1024 * 1024
 
@@ -53,7 +53,7 @@ def verify(manifest: bytes, signature: bytes, public_key: str = PUBLIC_KEY) -> R
     version, url, digest, size = (data.get(k) for k in ("version", "url", "sha256", "size"))
     version_key(str(version))
     if (not isinstance(url, str) or not DOWNLOAD_RE.fullmatch(url)
-            or f"/assistant-v{version}/" not in url):
+            or not (f"/v{version}/" in url or f"/assistant-v{version}/" in url)):
         raise UpdateRejected("indirizzo di download non autorizzato")
     if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
         raise UpdateRejected("impronta SHA-256 non valida")

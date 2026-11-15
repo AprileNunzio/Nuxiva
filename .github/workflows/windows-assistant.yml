@@ -1,15 +1,19 @@
 name: Windows Assistant
 
 on:
-  push:
-    branches: [main]
+  pull_request:
     paths:
       - "client_satellite/windows_assistant/**"
       - ".github/workflows/windows-assistant.yml"
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   assistant:
@@ -20,6 +24,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.sha }}
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
@@ -37,18 +43,6 @@ jobs:
       - name: Client Tests
         run: python -m unittest discover -s tests -t . -v
 
-      - name: Version
-        id: version
-        shell: pwsh
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          $version = (Select-String -Path settings\paths.py -Pattern '^VERSION = "([0-9.]+)"').Matches[0].Groups[1].Value
-          "value=$version" >> $env:GITHUB_OUTPUT
-          gh release view "assistant-v$version" *> $null
-          if ($LASTEXITCODE -eq 0) { "exists=true" >> $env:GITHUB_OUTPUT } else { "exists=false" >> $env:GITHUB_OUTPUT }
-          exit 0
-
       - name: Install Inno Setup
         run: choco install innosetup -y --no-progress
 
@@ -65,28 +59,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Nuxiva_Setup
-          path: client_satellite/windows_assistant/build/installer/Nuxiva_Setup.exe
+          path: |
+            client_satellite/windows_assistant/build/installer/Nuxiva_Setup.exe
+            client_satellite/windows_assistant/build/installer/manifest.json
+            client_satellite/windows_assistant/build/installer/manifest.sig
           if-no-files-found: error
           retention-days: 30
-
-      - name: Publish Release
-        if: steps.version.outputs.exists == 'false'
-        shell: pwsh
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          $version = "${{ steps.version.outputs.value }}"
-          $installer = "build\installer\Nuxiva_Setup.exe"
-          if (-not (Test-Path -LiteralPath $installer -PathType Leaf)) { throw "Missing release artifact: $installer" }
-          $files = @($installer, "build\installer\manifest.json")
-          $signed = Test-Path -LiteralPath "build\installer\manifest.sig" -PathType Leaf
-          if ($signed) {
-            $files += "build\installer\manifest.sig"
-            python -c "from pathlib import Path; from updates import manifest; root = Path('build/installer'); release = manifest.verify((root / 'manifest.json').read_bytes(), (root / 'manifest.sig').read_bytes()); manifest.check_file((root / 'Nuxiva_Setup.exe').read_bytes(), release)"
-            if ($LASTEXITCODE -ne 0) { throw "Release signature or installer verification failed" }
-            $notes = "Installer di Nuxiva per Windows $version. Si installa da solo e gli aggiornamenti automatici si installano solo se il manifesto è firmato."
-          } else {
-            Write-Warning "Signing key unavailable: publishing the installer without a signed manifest, automatic updates stay off."
-            $notes = "Installer di Nuxiva per Windows $version. Si installa da solo. Gli aggiornamenti automatici restano disattivati finché il manifesto non è firmato."
-          }
-          gh release create "assistant-v$version" @files --title "Nuxiva $version" --latest --notes $notes

@@ -29,7 +29,7 @@ def release(tag, name=android_release.APK, digest=DIGEST, **extra):
 
 class ReleaseTest(unittest.TestCase):
     def test_newest_published_apk_is_chosen(self):
-        chosen = android_release.newest([release("android-v5.8.1"), release("android-v5.10.0"), release("assistant-v9.0.0"),
+        chosen = android_release.newest([release("android-v5.8.1"), release("android-v5.10.0"), release("other-v9.0.0"),
                                          release("android-v6.0.0", draft=True), release("android-v7.0.0", name="other.apk")])
         self.assertEqual((chosen["version"], chosen["sha256"]), ("5.10.0", "ab" * 32))
         self.assertNotIn("key", chosen)

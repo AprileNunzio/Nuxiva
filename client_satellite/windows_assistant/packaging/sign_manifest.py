@@ -13,7 +13,7 @@ KEY_ENV = "NUXIVA_ASSISTANT_SIGNING_KEY"
 
 def manifest(installer: Path, version: str) -> bytes:
     data = installer.read_bytes()
-    url = f"https://github.com/{REPOSITORY}/releases/download/assistant-v{version}/{installer.name}"
+    url = f"https://github.com/{REPOSITORY}/releases/download/v{version}/{installer.name}"
     body = {"version": version, "url": url, "sha256": hashlib.sha256(data).hexdigest(), "size": len(data)}
     return json.dumps(body, sort_keys=True, separators=(",", ":")).encode("utf-8")
 

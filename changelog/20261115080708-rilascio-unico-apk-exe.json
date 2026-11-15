@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Un solo rilascio con APK e installer Windows",
+    "en": "One release with APK and Windows installer",
+    "fr": "Une seule version avec APK et installateur Windows",
+    "es": "Una sola versión con APK e instalador de Windows"
+  },
+  "features": [
+    {
+      "it": "Ogni rilascio contiene sia l'app Android (Nuxiva.apk) sia l'installer Windows (Nuxiva_Setup.exe).",
+      "en": "Every release contains both the Android app (Nuxiva.apk) and the Windows installer (Nuxiva_Setup.exe).",
+      "fr": "Chaque version contient l'application Android (Nuxiva.apk) et l'installateur Windows (Nuxiva_Setup.exe).",
+      "es": "Cada versión contiene la aplicación Android (Nuxiva.apk) y el instalador de Windows (Nuxiva_Setup.exe)."
+    },
+    {
+      "it": "La versione sale da sola a ogni rilascio e resta uguale su tutti i componenti.",
+      "en": "The version rises by itself at every release and stays identical on all components.",
+      "fr": "La version augmente toute seule à chaque publication et reste identique sur tous les composants.",
+      "es": "La versión sube sola en cada publicación y es idéntica en todos los componentes."
+    },
+    {
+      "it": "Ogni rilascio include un file release.json dettagliato con novità e correzioni in quattro lingue.",
+      "en": "Every release includes a detailed release.json file with new features and fixes in four languages.",
+      "fr": "Chaque version inclut un fichier release.json détaillé avec nouveautés et corrections en quatre langues.",
+      "es": "Cada versión incluye un archivo release.json detallado con novedades y correcciones en cuatro idiomas."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Non possono più uscire un'app Android e un installer Windows con versioni diverse.",
+      "en": "An Android app and a Windows installer with different versions can no longer be published.",
+      "fr": "Une application Android et un installateur Windows de versions différentes ne peuvent plus être publiés.",
+      "es": "Ya no se pueden publicar una app Android y un instalador de Windows con versiones distintas."
+    }
+  ]
+}

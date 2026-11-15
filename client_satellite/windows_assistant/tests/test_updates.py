@@ -80,12 +80,30 @@ class LatestTest(unittest.TestCase):
             {"tag_name": "assistant-v2.0.0", "assets": [asset("manifest.json")]},
             {"tag_name": "assistant-v3.0.0", "draft": True, "assets": [asset("manifest.json"), asset("manifest.sig")]},
             {"tag_name": "assistant-v5.0.0", "prerelease": True, "assets": [asset("manifest.json"), asset("manifest.sig")]},
-            {"tag_name": "v4.0.0", "assets": [asset("manifest.json"), asset("manifest.sig")]},
+            {"tag_name": "other-v4.0.0", "assets": [asset("manifest.json"), asset("manifest.sig")]},
         ]
         with mock.patch.object(updater, "_get", return_value=json.dumps(releases).encode()):
             version, assets = updater.latest()
         self.assertEqual(version, "1.10.0")
         self.assertIn("manifest.sig", assets)
+
+
+class UnifiedReleaseTest(unittest.TestCase):
+    def test_unified_tag_wins_over_legacy_and_is_accepted_in_the_manifest(self):
+        def asset(name):
+            return {"name": name, "browser_download_url": f"https://x/{name}"}
+
+        releases = [
+            {"tag_name": "assistant-v5.8.3", "assets": [asset("manifest.json"), asset("manifest.sig")]},
+            {"tag_name": "v5.8.4", "assets": [asset("manifest.json"), asset("manifest.sig")]},
+        ]
+        with mock.patch.object(updater, "_get", return_value=json.dumps(releases).encode()):
+            version, _assets = updater.latest()
+        self.assertEqual(version, "5.8.4")
+        key, public = keypair()
+        url = "https://github.com/AprileNunzio/NUXIVA/releases/download/v5.8.4/Nuxiva_Setup.exe"
+        data, signature = signed(key, url=url, version="5.8.4")
+        self.assertEqual(manifest.verify(data, signature, public).version, "5.8.4")
 
 
 class StateTest(unittest.TestCase):

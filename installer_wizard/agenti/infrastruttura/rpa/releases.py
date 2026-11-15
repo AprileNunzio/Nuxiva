@@ -10,7 +10,7 @@ API = f"https://api.github.com/repos/{REPOSITORY}/releases?per_page=20"
 INSTALLER = "Nuxiva_Setup.exe"
 LEGACY_INSTALLER = "NUXIVA_Assistente_Setup.exe"
 CACHE_SECONDS = 3600
-TAG_RE = re.compile(r"assistant-v(\d+(?:\.\d+){1,3})")
+TAG_RE = re.compile(r"(?:assistant-)?v(\d+(?:\.\d+){1,3})")
 _cache: dict[bool, tuple[float, str]] = {}
 _info: dict[str, tuple[float, dict]] = {}
 

@@ -11,7 +11,7 @@ def release(tag, assets=(releases.INSTALLER,), **extra):
 
 class ReleasesTest(unittest.TestCase):
     def test_the_newest_published_installer_is_chosen(self):
-        chosen = releases.pick([release("assistant-v1.2.0"), release("assistant-v1.10.0"), release("v9.0.0"),
+        chosen = releases.pick([release("assistant-v1.2.0"), release("assistant-v1.10.0"), release("other-v9.0.0"),
                                 release("assistant-v2.0.0", draft=True), release("assistant-v3.0.0", assets=("manifest.json",))])
         self.assertEqual(chosen, f"{BASE}/assistant-v1.10.0/{releases.INSTALLER}")
 
@@ -25,7 +25,7 @@ class ReleasesTest(unittest.TestCase):
         self.assertEqual(info["name"], releases.LEGACY_INSTALLER)
 
     def test_no_installer_means_no_redirect(self):
-        self.assertEqual(releases.pick([release("v1.0.0")]), "")
+        self.assertEqual(releases.pick([release("other-v1.0.0")]), "")
 
     def test_foreign_download_hosts_are_rejected(self):
         foreign = {"tag_name": "assistant-v9.0.0", "assets": [{"name": releases.INSTALLER, "browser_download_url": "https://evil.example/x.exe"}]}

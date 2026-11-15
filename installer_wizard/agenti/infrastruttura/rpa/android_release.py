@@ -4,12 +4,12 @@ import time
 
 import httpx
 
-from agenti.rpa import releases
+from agenti.rpa import release_meta, releases
 
 log = logging.getLogger("nuxiva.rpa")
 APK = "Nuxiva.apk"
 LEGACY_APK = "Nuxiva_Node.apk"
-TAG_RE = re.compile(r"android-v(\d+(?:\.\d+){1,3})")
+TAG_RE = re.compile(r"(?:android-)?v(\d+(?:\.\d+){1,3})")
 CACHE_SECONDS = 3600
 _cache: tuple[float, dict] = (0.0, {})
 
@@ -32,7 +32,8 @@ def newest(items: list) -> dict:
             continue
         key = tuple(int(n) for n in match.group(1).split("."))
         if not best or key > best["key"]:
-            best = {"key": key, "version": match.group(1), "name": name, "url": url, "sha256": digest}
+            best = {"key": key, "version": match.group(1), "name": name, "url": url, "sha256": digest, "tag": tag,
+                    "notes_url": release_meta.official_url(tag) if release_meta.NAME in assets else ""}
     return {k: v for k, v in best.items() if k != "key"}
 
 
