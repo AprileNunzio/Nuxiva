@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Rilascio 5.8.12",
+    "en": "Release 5.8.12",
+    "fr": "Version 5.8.12",
+    "es": "Versión 5.8.12"
+  },
+  "fixes": [
+    {
+      "it": "Versione 5.8.12 allineata su server, app Android e installer Windows.",
+      "en": "Version 5.8.12 aligned across server, Android app and Windows installer.",
+      "fr": "Version 5.8.12 alignée sur le serveur, l'application Android et l'installateur Windows.",
+      "es": "Versión 5.8.12 alineada en servidor, aplicación Android e instalador de Windows."
+    }
+  ]
+}
