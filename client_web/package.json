@@ -1,6 +1,6 @@
 {
   "name": "nuxiva-web-console",
-  "version": "5.8.5",
+  "version": "5.8.6",
   "private": true,
   "type": "module",
   "scripts": {

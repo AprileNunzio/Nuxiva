@@ -28,7 +28,7 @@ executables = [
 
 setup(
     name="NUXIVA Satellite",
-    version="5.8.5",
+    version="5.8.6",
     description="Client Desktop Interattivo e Context Bridge per NUXIVA",
     author="NunzioTech",
     options={"build_exe": build_exe_options},
