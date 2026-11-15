@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Correzione del controllo di qualità dell'hub nativo Android",
+    "en": "Fix for the Android native hub quality check",
+    "fr": "Correction du contrôle qualité du hub natif Android",
+    "es": "Corrección de la comprobación de calidad del hub nativo de Android"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "I dati dei widget dell'hub nativo Android ora si aggiornano con un effetto dedicato, come richiesto dal controllo di qualità.",
+      "en": "The Android native hub widget data now refreshes through a dedicated effect, as the quality check requires.",
+      "fr": "Les données des widgets du hub natif Android se rafraîchissent maintenant via un effet dédié, comme l'exige le contrôle qualité.",
+      "es": "Los datos de los widgets del hub nativo de Android ahora se actualizan con un efecto dedicado, como exige la comprobación de calidad."
+    }
+  ]
+}

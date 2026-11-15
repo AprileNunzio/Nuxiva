@@ -1,6 +1,9 @@
 package com.nuxiva.edge.hub
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,11 +28,12 @@ data class HubVitals(
 fun rememberVitals(graph: AppGraph): State<HubVitals> {
     val links by graph.runtime.links.collectAsState()
     val profiles by graph.profiles.profiles.collectAsState()
-    return produceState(HubVitals(), links, profiles) {
+    val state = remember { mutableStateOf(HubVitals()) }
+    LaunchedEffect(links, profiles) {
         val enabled = profiles.filter { it.enabled }
         val online = enabled.count { links[it.nodeId] is LinkState.Online }
         while (true) {
-            value = withContext(Dispatchers.IO) {
+            state.value = withContext(Dispatchers.IO) {
                 val power = graph.power.snapshot()
                 val total = graph.inspector.facts().ramMb
                 val ram = if (total > 0) ((total - graph.inspector.availableRamMb()).coerceAtLeast(0) * 100 / total).toInt() else null
@@ -38,6 +42,7 @@ fun rememberVitals(graph: AppGraph): State<HubVitals> {
             delay(VITALS_MILLIS)
         }
     }
+    return state
 }
 
 @Composable
