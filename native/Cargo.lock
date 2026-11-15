@@ -2308,6 +2308,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-peer-core"
+version = "5.8.3"
+dependencies = [
+ "ed25519-dalek",
+ "getrandom 0.3.4",
+ "nuxiva-node-core",
+ "serde",
+ "serde_json",
+ "sha2",
+ "zeroize",
+]
+
+[[package]]
 name = "nuxiva-percept-core"
 version = "5.8.3"
 dependencies = [

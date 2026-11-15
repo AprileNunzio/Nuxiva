@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Rete paritaria di nodi: base per distribuire il lavoro tra server, PC e telefoni",
+    "en": "Peer-to-peer node mesh: foundation to share work between server, PCs and phones",
+    "fr": "Réseau pair à pair de nœuds : base pour répartir le travail entre serveur, PC et téléphones",
+    "es": "Red entre iguales de nodos: base para repartir el trabajo entre servidor, PC y teléfonos"
+  },
+  "features": [
+    {
+      "it": "Ogni dispositivo dichiara la propria potenza (processore, memoria, scheda grafica, batteria, rete) e i lavori pesanti vengono assegnati al nodo più adatto.",
+      "en": "Every device declares its own power (processor, memory, graphics, battery, network) and heavy jobs go to the most suitable node.",
+      "fr": "Chaque appareil déclare sa puissance (processeur, mémoire, graphisme, batterie, réseau) et les tâches lourdes vont au nœud le plus adapté.",
+      "es": "Cada dispositivo declara su potencia (procesador, memoria, gráficos, batería, red) y los trabajos pesados van al nodo más adecuado."
+    },
+    {
+      "it": "Se un dispositivo si spegne, il lavoro passa automaticamente a un altro; il server non è più un punto unico da cui dipende tutto, e i messaggi tra nodi sono firmati.",
+      "en": "If a device goes offline, the work moves automatically to another one; the server is no longer a single point everything depends on, and messages between nodes are signed.",
+      "fr": "Si un appareil s'éteint, le travail passe automatiquement à un autre ; le serveur n'est plus un point unique dont tout dépend, et les messages entre nœuds sont signés.",
+      "es": "Si un dispositivo se apaga, el trabajo pasa automáticamente a otro; el servidor ya no es un punto único del que depende todo, y los mensajes entre nodos van firmados."
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+# Rete paritaria di nodi / Peer-to-peer node mesh
+
+## Obiettivo / Goal
+
+IT: la pagina 80 deve girare per intero sul dispositivo che la mostra (APK incluso) senza consumare risorse del server. Il server è un nodo come gli altri: fino a 100 dispositivi connessi, ognuno usa la propria potenza, e per i carichi pesanti uno scheduler sceglie il nodo adatto. Esempio: il progetto viene elaborato in background dal server, lo smartphone mostra la parte grafica.
+
+EN: page 80 must run entirely on the device that shows it (the APK included) without using server resources. The server is just another node: up to 100 connected devices, each using its own power, and for heavy work a scheduler picks the right node. Example: the server processes the project in the background while the phone renders the graphics.
+
+## Audit: cosa fa il server oggi / what the server does today
+
+Verificato nel codice / verified in code:
+
+- La grafica della pagina 80 è già nel browser: `installer_wizard/web/display` (circa 2,7 MB di JS/CSS, WebGL e Canvas in `particles.js`, `avatar.js`, `kernel/`, `agency/office3d.js`). Il server non produce pixel per la pagina 80.
+- Il server serve gli asset statici (`pages.py`, `FreshStatic`) con versione `ASSET_VERSION`: ogni client li scarica dal server.
+- Il server costruisce gli snapshot di stato (`backend/snapshot.py`, cache condivisa da 1 s e cache delta per ambito) e li invia in streaming a ogni client; il demone Rust `display-daemon` pianifica widget e diff.
+- L'APK apre la pagina dentro una WebView puntata all'origine del server (`client_apk/.../hub/HubWebView.kt`): oggi non contiene gli asset e dipende dalla rete per ogni avvio.
+- Lavori generativi pesanti (particelle, creazioni 3D in `agenti/creativita`) nascono lato server e arrivano al client già calcolati.
+
+Da spostare / to move:
+
+1. Impacchettare gli asset di `web/display` dentro l'APK e servirli da origine locale, collegando al server solo il canale di stato firmato. Il server smette di servire asset a questi client.
+2. Far arrivare ai dispositivi solo dati di stato (diff), mai pixel o frame.
+3. I lavori generativi pesanti diventano job `Render`/`Compute` assegnati dallo scheduler: il risultato viaggia come dati geometrici, il rendering finale resta sul dispositivo con la GPU.
+
+## Fase 1: crate `nuxiva-peer-core` (questo commit / this commit)
+
+- Identità per nodo: l'id del nodo è la sua chiave pubblica Ed25519 (64 esadecimali). Nessuna fiducia implicita: un nodo entra solo se la sua chiave è iscritta esplicitamente in `TrustBook`.
+- Messaggi firmati (`Envelope`, dominio `nuxiva-peer-v1`): firma su mittente, sequenza, tempo e SHA-256 del payload. Finestra anti-replay a 64 posizioni, tolleranza di orologio 60 s, payload massimo 16 KiB, payload JSON tipizzato (`Message`) con campi sconosciuti rifiutati.
+- Registro capacità (`Registry`): CPU (core e punteggio), RAM, GPU (VRAM e punteggio), batteria e ricarica, rete (banda e RTT), ruoli. Stati vivo, sospetto, morto con scadenze configurabili; annunci e heartbeat con numeri di sequenza che scartano i dati vecchi; massimo 256 nodi.
+- Scheduler (`Scheduler`): requisiti hard (ruolo, core, RAM, VRAM, soglia batteria per tipo di lavoro), punteggio deterministico, affinità di visualizzazione (un job `Render` va prima sul dispositivo che mostra, se idoneo), prenotazione delle risorse, lease con rinnovo, failover su nodo morto o lease scaduto con nodi già falliti esclusi, fallback degradato (requisiti dimezzati, batteria minima 15%) prima di aspettare capacità, scadenza e tentativi massimi, invio idempotente.
+- Coordinatore per job: scelto per hashing rendezvous tra i nodi vivi, quindi lo scheduling è distribuito e nessun nodo, server compreso, è l'unico coordinatore. Le assegnazioni valgono solo se firmate da uno dei primi tre candidati.
+- Trasporto (`Gossip`): diffusione epidemica con fanout 5 e TTL 6, deduplica per id messaggio, nessun hub centrale.
+
+## Test di carico / load test
+
+`native/crates/peer-core/tests/load_100.rs` simula 100 nodi (1 server, 20 desktop, 79 telefoni con batteria diversa), tutti con messaggi firmati e verificati:
+
+- 300 job misti completati senza fallimenti; il server invia meno del 3% dei messaggi e nessun nodo supera 4 volte la media; almeno l'80% dei job in background gira su nodi non mobili e almeno l'80% dei render gira sul dispositivo richiedente.
+- 30 nodi su 100, server compreso, cadono a metà: tutti i job dei richiedenti sopravvissuti finiscono tramite failover e reinvio.
+- Traffico di un nodo non iscritto, replay, payload manomesso e assegnazione di un nodo non coordinatore vengono rifiutati e non eseguono nulla.
+
+Semantica: consegna almeno una volta (at-least-once); un job può eseguire due volte durante un cambio di coordinatore, e gli esiti sono deduplicati per id.
+
+## Prossime fasi / next phases
+
+2. Ponte `nuxiva-native` verso Python e integrazione col registro dei nodi esistente (`agenti/infrastruttura/nodes`), con test di parità.
+3. Trasporto reale (WebSocket firmati) sopra `Envelope`, e portare lo stesso formato in Kotlin (`client_apk/logic`).
+4. APK con asset locali di pagina 80 e canale di stato al posto del caricamento da origine server.
+5. Prova su rete reale con più dispositivi.
