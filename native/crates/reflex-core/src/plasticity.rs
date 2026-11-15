@@ -1,7 +1,7 @@
 #![forbid(unsafe_code)]
 
-use std::sync::RwLock;
 use serde::{Deserialize, Serialize};
+use std::sync::RwLock;
 
 pub const EMBED_DIM: usize = 1024;
 pub const CONFORMAL_THRESHOLD: f32 = 0.82;
@@ -53,7 +53,8 @@ fn tokens(text: &str) -> Vec<String> {
 
 fn add_feature(vec: &mut [f32], key: &[u8], weight: f32) {
     let h = fnv(key);
-    let slot = usize::try_from(h % (EMBED_DIM as u64)).unwrap_or(0);
+    let rem = h.checked_rem(EMBED_DIM as u64).unwrap_or(0);
+    let slot = usize::try_from(rem).unwrap_or(0);
     let sign = if (h >> 63) == 0 { 1.0 } else { -1.0 };
     if let Some(cell) = vec.get_mut(slot) {
         *cell += sign * weight;
@@ -139,10 +140,13 @@ impl PlasticityMemory {
                 reinforcement_count: 5,
             },
             Prototype {
-                query_exemplar: "spiega la teoria della relatività e l'effetto fotoelettrico".to_owned(),
+                query_exemplar: "spiega la teoria della relatività e l'effetto fotoelettrico"
+                    .to_owned(),
                 intent: "complex_task".to_owned(),
                 action: "system2_latent_engine".to_owned(),
-                embedding: compute_embedding("spiega la teoria della relatività e l'effetto fotoelettrico"),
+                embedding: compute_embedding(
+                    "spiega la teoria della relatività e l'effetto fotoelettrico",
+                ),
                 reinforcement_count: 3,
             },
             Prototype {
@@ -189,11 +193,11 @@ impl PlasticityMemory {
         })
     }
 
+    #[must_use]
     pub fn reinforce(&self, query: &str, intent: &str, action: &str) -> bool {
         let query_emb = compute_embedding(query);
-        let mut guard = match self.prototypes.write() {
-            Ok(g) => g,
-            Err(_) => return false,
+        let Ok(mut guard) = self.prototypes.write() else {
+            return false;
         };
 
         for p in guard.iter_mut() {

@@ -291,11 +291,11 @@ mod tests {
     #[test]
     fn the_majority_fixes_a_misheard_word() {
         let out = ballot(&[
-            ("Jarvis e tempo fa domani", 1.5),
-            ("Jarvis che tempo fa domani", 1.0),
-            ("Jarvis che tempo fa domani?", 1.0),
+            ("Nuxiva e tempo fa domani", 1.5),
+            ("Nuxiva che tempo fa domani", 1.0),
+            ("Nuxiva che tempo fa domani?", 1.0),
         ]);
-        assert_eq!(out.text, "Jarvis che tempo fa domani");
+        assert_eq!(out.text, "Nuxiva che tempo fa domani");
         assert_eq!(out.changed, 1);
         assert!(out.agreement > 0.7 && out.agreement < 1.0);
     }

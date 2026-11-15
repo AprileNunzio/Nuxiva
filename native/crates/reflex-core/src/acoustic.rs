@@ -44,7 +44,7 @@ impl AcousticAnalyzer {
 
     #[must_use]
     pub fn is_night(hour: u8) -> bool {
-        hour >= Self::NIGHT_START_HOUR || hour < Self::NIGHT_END_HOUR
+        !(Self::NIGHT_END_HOUR..Self::NIGHT_START_HOUR).contains(&hour)
     }
 
     #[must_use]

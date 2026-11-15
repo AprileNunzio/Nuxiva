@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Motore cognitivo reflex puro in Rust e architettura a 4 fasi",
+    "en": "Pure Rust reflex engine and 4-phase cognitive architecture",
+    "fr": "Moteur réflexe pur en Rust et architecture cognitive à 4 phases",
+    "es": "Motor de reflejo puro en Rust y arquitectura cognitiva de 4 fases"
+  },
+  "features": [
+    {
+      "it": "Nuovo crate nuxiva-reflex-core modulare: sensing whisper e circadiano, catalogo dinamico universale senza stringhe hardcoded, oracolo formale a zero allucinazioni, gate gaze-acustico naturale senza wake word, barge-in asimmetrico e sentinella proattiva con plasticità continua.",
+      "en": "New modular nuxiva-reflex-core crate: whisper and circadian sensing, universal dynamic lexicon without hardcoded strings, zero-hallucination formal oracle, natural gaze-acoustic gate without wake word, asymmetric barge-in, and proactive sentinel with continuous plasticity.",
+      "fr": "Nouveau crate nuxiva-reflex-core modulaire: détection chuchotement et circadienne, lexique universel dynamique sans chaînes codées en dur, oracle formel sans hallucination, porte regard-acoustique sans mot d'activation, barge-in asymétrique et sentinelle proactive.",
+      "es": "Nuevo crate nuxiva-reflex-core modular: detección susurro y circadiana, léxico universal dinámico sin cadenas fijas, oráculo formal sin alucinaciones, puerta mirada-acústica sin palabra clave, interrupción asimétrica y centinela proactivo con plasticidad continua."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretta la precedenza degli intenti in system1_router.py per garantire la priorità di lavagna e browser e rispettare i contratti di test del kernel.",
+      "en": "Corrected intent precedence in system1_router.py to ensure whiteboard and browser priority and uphold kernel test contracts.",
+      "fr": "Correction de la priorité des intentions dans system1_router.py pour garantir la priorité du tableau et du navigateur.",
+      "es": "Corregida la prioridad de intenciones en system1_router.py para asegurar la precedencia de pizarra y navegador."
+    }
+  ]
+}

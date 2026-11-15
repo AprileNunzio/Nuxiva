@@ -13,7 +13,7 @@ NS = "{http://schemas.microsoft.com/windows/2004/02/mit/task}"
 
 class AgentNameTest(unittest.TestCase):
     def test_names_are_sanitized_for_files_and_display(self):
-        self.assertEqual(agent_name.clean("Hey  Jarvis"), "Jarvis")
+        self.assertEqual(agent_name.clean("Hey  Nuxiva"), "Nuxiva")
         self.assertEqual(agent_name.clean('Ni<c>o:/\\"x'), "Nicox")
         self.assertEqual(agent_name.clean("A" * 80), "A" * agent_name.MAX_LENGTH)
         self.assertEqual(agent_name.clean(None), "")

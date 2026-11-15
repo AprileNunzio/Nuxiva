@@ -258,8 +258,19 @@ class System1Router:
 
         logits, target_agent, direct_action, surface_action, params = self._compute_logits(query)
 
-        # Check if learned plasticity memory guarantees fast execution
-        if reflex_eval.get("should_execute_fast"):
+        probs = self._softmax(logits)
+        best_key = max(probs, key=probs.get)
+        intent = System1Intent(best_key)
+        confidence = round(probs[best_key], 4)
+        is_reflex_guaranteed = False
+
+        # Plasticity auto-learning overrides ONLY when an explicit learned action is matched
+        # and it does not conflict with sovereign canvas or browser intents
+        if (
+            intent not in (System1Intent.WHITEBOARD_CANVAS, System1Intent.BROWSER_ACTION)
+            and reflex_eval.get("should_execute_fast")
+            and reflex_eval.get("fast_action")
+        ):
             intent = System1Intent.ACTION_DIRECT
             confidence = float(reflex_eval.get("fast_confidence", 0.95))
             fast_action = reflex_eval.get("fast_action") or ""
@@ -268,12 +279,6 @@ class System1Router:
                 target_agent = parts[0]
                 direct_action = parts[1]
             is_reflex_guaranteed = True
-        else:
-            probs = self._softmax(logits)
-            best_key = max(probs, key=probs.get)
-            intent = System1Intent(best_key)
-            confidence = round(probs[best_key], 4)
-            is_reflex_guaranteed = False
 
         complex_logit = logits.get("complex_task", 0.5)
         task_complexity = min(1.0, max(0.0, complex_logit / 10.0))

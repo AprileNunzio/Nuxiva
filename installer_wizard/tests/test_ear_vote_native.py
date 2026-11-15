@@ -20,7 +20,7 @@ NATIVE = native_core.load()
 READY = NATIVE is not None and hasattr(NATIVE, "ear_vote")
 
 CASES = (
-    [("Jarvis e tempo fa domani", 1.5), ("Jarvis che tempo fa domani", 1.0), ("Jarvis che tempo fa domani?", 1.0)],
+    [("Nuxiva e tempo fa domani", 1.5), ("Nuxiva che tempo fa domani", 1.0), ("Nuxiva che tempo fa domani?", 1.0)],
     [("tempo fa domani", 1.5), ("che tempo fa domani", 1.0), ("che tempo fa domani", 1.0)],
     [("accendi la luce", 1.5), ("accendi la luce grazie", 1.0), ("accendi la luce", 1.0)],
     [("accendi la luce", 1.0), ("Accendi la luce.", 1.0)],
@@ -34,7 +34,7 @@ CASES = (
 class VoteTest(unittest.TestCase):
 
     def test_majority_repairs_what_one_microphone_misheard(self):
-        self.assertEqual(vote_mod.py_vote(list(CASES[0]))[0], "Jarvis che tempo fa domani")
+        self.assertEqual(vote_mod.py_vote(list(CASES[0]))[0], "Nuxiva che tempo fa domani")
         self.assertEqual(vote_mod.py_vote(list(CASES[1]))[0], "che tempo fa domani")
         self.assertEqual(vote_mod.py_vote(list(CASES[2]))[0], "accendi la luce")
         text, agreement, changed = vote_mod.py_vote(list(CASES[3]))
@@ -71,12 +71,12 @@ class ConsensusTest(unittest.IsolatedAsyncioTestCase):
                 pcm = np.zeros(samples, dtype="<i2").tobytes()
                 return [("webcam", 18.0, pcm), ("laptop", 22.0, pcm), ("muto", -100.0, pcm)]
 
-        heard = iter(["Jarvis che tempo fa domani", "Jarvis che tempo fa domani"])
+        heard = iter(["Nuxiva che tempo fa domani", "Nuxiva che tempo fa domani"])
         stub = SimpleNamespace(HOME_LANG="it", transcribe=lambda *a: (next(heard), "it"), hallucination=lambda t: False)
         with mock.patch.object(consensus, "stt", stub), \
              mock.patch.dict("os.environ", {"NUXIVA_EAR_MODE": "offline"}):
-            text = await consensus.agree(Provider(), np.zeros(16000, dtype=np.float32), "Jarvis e tempo fa domani", "it")
-        self.assertEqual(text, "Jarvis che tempo fa domani")
+            text = await consensus.agree(Provider(), np.zeros(16000, dtype=np.float32), "Nuxiva e tempo fa domani", "it")
+        self.assertEqual(text, "Nuxiva che tempo fa domani")
 
     async def test_nothing_changes_without_several_microphones_or_when_disabled(self):
         from agenti.ear import consensus
