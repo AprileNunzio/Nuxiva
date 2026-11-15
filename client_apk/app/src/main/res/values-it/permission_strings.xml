@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="perm_guide_title">Servono dei permessi</string>
+    <string name="perm_guide_intro">Nuxiva funziona al meglio con questi permessi consentiti. Android sta bloccando:</string>
+    <string name="perm_guide_how">Apri le impostazioni dell\'app, scegli Autorizzazioni e consenti ogni voce. Nuxiva li usa solo per le funzioni che attivi.</string>
+    <string name="perm_guide_open">Apri le impostazioni</string>
+    <string name="perm_guide_later">Più tardi</string>
+    <string name="perm_mic_name">Microfono</string>
+    <string name="perm_mic_why">per sentire la parola di attivazione e i tuoi comandi vocali.</string>
+    <string name="perm_cam_name">Fotocamera</string>
+    <string name="perm_cam_why">per mostrare le immagini della camera e riconoscere le persone, solo quando lo attivi.</string>
+    <string name="perm_loc_name">Posizione</string>
+    <string name="perm_loc_why">per meteo, tragitti e promemoria legati ai luoghi, e per vedere i nodi vicini.</string>
+    <string name="perm_notif_name">Notifiche</string>
+    <string name="perm_notif_why">per mostrare che la connessione al server è attiva e avvisarti di eventi importanti.</string>
+</resources>

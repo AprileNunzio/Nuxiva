@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Errori di rete spiegati e permessi consentiti di default",
+    "en": "Network errors explained and permissions allowed by default",
+    "fr": "Erreurs réseau expliquées et autorisations accordées par défaut",
+    "es": "Errores de red explicados y permisos permitidos por defecto"
+  },
+  "features": [
+    {
+      "it": "Se il PC Windows non raggiunge NUXIVA, l'errore indica indirizzo e porta, la causa probabile e una diagnostica delle porte 443 e 8443. Nuxiva.exe --diagnose mostra lo stesso rapporto e lo stato dei permessi di Windows.",
+      "en": "When the Windows PC cannot reach NUXIVA, the error shows address and port, the likely cause and a check of ports 443 and 8443. Nuxiva.exe --diagnose shows the same report plus the Windows permission state.",
+      "fr": "Si le PC Windows n'atteint pas NUXIVA, l'erreur indique adresse et port, la cause probable et un contrôle des ports 443 et 8443. Nuxiva.exe --diagnose affiche le même rapport et l'état des autorisations Windows.",
+      "es": "Si el PC Windows no alcanza NUXIVA, el error indica dirección y puerto, la causa probable y una comprobación de los puertos 443 y 8443. Nuxiva.exe --diagnose muestra el mismo informe y el estado de los permisos de Windows."
+    },
+    {
+      "it": "Se Windows blocca microfono o fotocamera, compare una finestra che spiega cosa serve, perché e apre la pagina giusta delle impostazioni. Su Android lo stesso avviene per microfono, camera, posizione e notifiche.",
+      "en": "If Windows blocks the microphone or camera, a window explains what is needed and why and opens the right settings page. On Android the same happens for microphone, camera, location and notifications.",
+      "fr": "Si Windows bloque le microphone ou la caméra, une fenêtre explique ce qu'il faut et pourquoi et ouvre la bonne page des paramètres. Sur Android, il en va de même pour microphone, caméra, localisation et notifications.",
+      "es": "Si Windows bloquea el micrófono o la cámara, una ventana explica qué hace falta y por qué y abre la página correcta de ajustes. En Android ocurre lo mismo con micrófono, cámara, ubicación y notificaciones."
+    },
+    {
+      "it": "Le azioni di uso quotidiano (modificare file con copia di sicurezza, finestre, ricerca online, webcam, calcolo locale) sono consentite di default; script, PowerShell e SSH continuano a chiedere conferma. L'installer crea le regole del firewall di Windows.",
+      "en": "Everyday actions (editing files with a backup, windows, online research, webcam, local compute) are allowed by default; scripts, PowerShell and SSH still ask for confirmation. The installer creates the Windows firewall rules.",
+      "fr": "Les actions courantes (modifier des fichiers avec sauvegarde, fenêtres, recherche en ligne, webcam, calcul local) sont autorisées par défaut ; scripts, PowerShell et SSH demandent toujours confirmation. L'installateur crée les règles du pare-feu Windows.",
+      "es": "Las acciones cotidianas (editar archivos con copia de seguridad, ventanas, búsqueda en línea, webcam, cálculo local) están permitidas por defecto; scripts, PowerShell y SSH siguen pidiendo confirmación. El instalador crea las reglas del cortafuegos de Windows."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il messaggio «Non riesco ad aprire i widget: WinError 10060» ora spiega che il server non risponde e da cosa può dipendere.",
+      "en": "The «Cannot open the widgets: WinError 10060» message now explains that the server is not answering and what may cause it.",
+      "fr": "Le message « Impossible d'ouvrir les widgets : WinError 10060 » explique maintenant que le serveur ne répond pas et pourquoi.",
+      "es": "El mensaje «No puedo abrir los widgets: WinError 10060» ahora explica que el servidor no responde y por qué puede ocurrir."
+    }
+  ]
+}

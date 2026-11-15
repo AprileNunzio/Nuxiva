@@ -8,6 +8,10 @@ from app import runtime_check  # noqa: E402
 
 if "--smoke-test" in sys.argv:
     sys.exit(runtime_check.smoke())
+if "--diagnose" in sys.argv:
+    from app import selfcheck  # noqa: E402
+    ctypes.windll.user32.MessageBoxW(None, selfcheck.run(), "Nuxiva", 0x40)
+    sys.exit(0)
 STARTUP_CODE = runtime_check.ensure()
 if STARTUP_CODE:
     sys.exit(STARTUP_CODE)

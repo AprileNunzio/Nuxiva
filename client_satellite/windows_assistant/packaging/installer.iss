@@ -81,9 +81,13 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueName: 
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\ATENA_is1"; Flags: deletekey
 
 [Run]
+Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall delete rule name=""Nuxiva"""; Flags: runhidden waituntilterminated
+Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall add rule name=""Nuxiva"" dir=in action=allow program=""{app}\{#AppExe}"" enable=yes profile=private,domain remoteip=LocalSubnet"; Flags: runhidden waituntilterminated
+Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall add rule name=""Nuxiva"" dir=out action=allow program=""{app}\{#AppExe}"" enable=yes profile=any"; Flags: runhidden waituntilterminated
 Filename: "{app}\{#AppExe}"; Parameters: "{code:EnrollmentParameters}"; Flags: nowait
 
 [UninstallRun]
+Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall delete rule name=""Nuxiva"""; Flags: runhidden; RunOnceId: "RemoveFirewallRules"
 Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""Nuxiva"" /F"; Flags: runhidden; RunOnceId: "RemoveAutostartTask"
 Filename: "{cmd}"; Parameters: "/C reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v ""NUXIVA Assistente"" /f"; Flags: runhidden; RunOnceId: "RemoveLegacyAutostart"
 

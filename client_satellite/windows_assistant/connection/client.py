@@ -5,7 +5,7 @@ import ssl
 import time
 from urllib.parse import urlsplit
 
-from connection import tls
+from connection import diagnose, tls
 from connection.devicekey import DeviceKey
 
 log = logging.getLogger("nuxiva.link")
@@ -22,6 +22,10 @@ class ServerError(Exception):
 
 
 class SignatureRejected(ServerError):
+    pass
+
+
+class Unreachable(ServerError):
     pass
 
 
@@ -61,7 +65,7 @@ def first_contact(server: str, timeout: float = 10) -> tuple[str, str]:
         raise ServerError("Il certificato del server non è firmato dall'autorità che dichiara: possibile intermediario "
                           "in rete, abbinamento bloccato") from exc
     except (OSError, ssl.SSLError, http.client.HTTPException) as exc:
-        raise ServerError(f"NUXIVA non raggiungibile in HTTPS su {host}:{port}: {exc}") from exc
+        raise Unreachable(diagnose.explain(exc, host, port)) from exc
     return tls.pem_fingerprint(pem), pem
 
 
@@ -92,7 +96,7 @@ class Client:
         except ssl.SSLCertVerificationError as exc:
             raise tls.mismatch(exc) from exc
         except (OSError, ssl.SSLError, http.client.HTTPException) as exc:
-            raise ServerError(f"NUXIVA non raggiungibile: {exc}") from exc
+            raise Unreachable(diagnose.explain(exc, host, port)) from exc
         finally:
             conn.close()
         if response.status == 401:

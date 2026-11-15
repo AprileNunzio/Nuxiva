@@ -1,9 +1,7 @@
 package com.nuxiva.edge.ui
 
-import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,7 +12,7 @@ import androidx.core.content.ContextCompat
 
 class MainActivity : ComponentActivity() {
     private val model: AppViewModel by viewModels()
-    private val firstRun = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { launchHub() }
+    private val firstRun = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { explainThenLaunch() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,13 +35,17 @@ class MainActivity : ComponentActivity() {
 
     private fun startup() {
         val hub = model.hubPrefs.value
-        val missing = wanted().filter { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }
+        val missing = PermissionGuide.requestable().filter { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }
         if (!hub.permissionsAsked && missing.isNotEmpty()) {
             model.updateHub { it.copy(permissionsAsked = true) }
             firstRun.launch(missing.toTypedArray())
             return
         }
-        launchHub()
+        explainThenLaunch()
+    }
+
+    private fun explainThenLaunch() {
+        if (!PermissionGuide.show(this) { launchHub() }) launchHub()
     }
 
     private fun launchHub() {
@@ -51,14 +53,6 @@ class MainActivity : ComponentActivity() {
         if (!model.shouldOpenHub()) return
         com.nuxiva.edge.hub.HubActivity.start(this)
         finish()
-    }
-
-    private fun wanted(): List<String> = buildList {
-        add(Manifest.permission.RECORD_AUDIO)
-        add(Manifest.permission.CAMERA)
-        add(Manifest.permission.ACCESS_FINE_LOCATION)
-        add(Manifest.permission.ACCESS_COARSE_LOCATION)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) add(Manifest.permission.POST_NOTIFICATIONS)
     }
 
     private fun handle(incoming: Intent?, fresh: Boolean) {

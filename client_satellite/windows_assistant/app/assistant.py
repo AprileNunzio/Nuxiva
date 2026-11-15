@@ -23,14 +23,16 @@ from backup.snapshots import Snapshots
 from compute.probe import OllamaProbe
 from compute.idle import session_is_idle
 from compute.relay import ComputeRelay
-from connection import tls
-from connection.client import Client, ServerError
+from connection import diagnose, tls
+from connection.client import Client, ServerError, Unreachable
 from connection import declare
 from connection.devicekey import DeviceKey
 from connection.heartbeat import Heartbeat
 from connection.inbox import Inbox
 from connection.metrics import Sampler
 from i18n.strings import t
+from permissions import os_access
+from permissions.catalog import Level
 from permissions.gate import Gate
 from permissions.policy import Policy
 from screenshot.hotkey import PrintScreenHotkey
@@ -154,7 +156,16 @@ class Assistant:
             tvwindow.open_window(tvwindow.widgets_url(self.cfg["server"], str(link.get("path") or "")), tvwindow.WIDGETS)
         except (ServerError, ValueError) as exc:
             log.warning("Widget non aperti: %s", exc)
-            self.ui.dispatch.post(self.ui.alert, f"Non riesco ad aprire i widget: {exc}")
+            self.ui.dispatch.post(self.ui.alert, t("widgets.failed", reason=self._network_report(exc)))
+
+    def _network_report(self, exc: Exception) -> str:
+        if not isinstance(exc, Unreachable):
+            return str(exc)
+        try:
+            return f"{exc}\n\n" + "\n".join(diagnose.probe(self.cfg["server"]))
+        except OSError as probe_exc:
+            log.warning("Diagnostica di rete fallita: %s", probe_exc)
+            return str(exc)
 
     def _security(self, message: str) -> None:
         log.error(message)
@@ -185,7 +196,17 @@ class Assistant:
         if key == "senses.microphone":
             self.voice.mic.muted = not self.voice.continuous()
 
+    def _audit_access(self) -> None:
+        wanted = [kind for kind, key in (("microphone", "senses.microphone"), ("webcam", "senses.webcam"))
+                  if self.policy.level(key) is not Level.DENY]
+        blocked = os_access.blocked(wanted)
+        if "microphone" in wanted and self.voice.mic.error and "microphone" not in blocked:
+            log.warning("Microfono non disponibile senza blocco di privacy: %s", self.voice.mic.error)
+        for kind in blocked:
+            self.ui.access_needed(kind)
+
     def start(self) -> None:
+        self.ui.root.after(2500, self._audit_access)
         self.focus.start()
         self.voice.start()
         if self.has_server:

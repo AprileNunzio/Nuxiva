@@ -8,6 +8,7 @@ from settings import agent_name
 from permissions.catalog import Capability
 from permissions.gate import Answer, Request
 from ui import confirm_view, theme
+from ui.access_view import AccessWindow
 from ui.dispatcher import Dispatcher
 from ui.orb import Orb
 from ui.panel import Panel
@@ -101,6 +102,9 @@ class Interface:
                        {"permissions": self.open_permissions, "unpair": self.actions["unpair"],
                         "saved": self.actions["settings_saved"], "models": self.actions["models"],
                         "hardware": self.actions["hardware"]})
+
+    def access_needed(self, kind: str) -> None:
+        AccessWindow(self.root, kind)
 
     def open_permissions(self) -> None:
         PermissionsWindow(self.root, self.actions["policy"](), self.actions["permissions_changed"])

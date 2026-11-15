@@ -27,29 +27,32 @@ CAPABILITIES = (
     Capability("files.folders", "File e cartelle", "Creare cartelle", "Nuove cartelle nelle tue cartelle personali.", Level.ALLOW),
     Capability("files.create", "File e cartelle", "Creare file", "Nuovi documenti, pagine web, codice, script (senza eseguirli).", Level.ALLOW),
     Capability("files.modify", "File e cartelle", "Modificare o sostituire file esistenti",
-               "Prima di ogni modifica NUXIVA salva una copia di sicurezza.", Level.ASK),
+               "Prima di ogni modifica NUXIVA salva una copia di sicurezza.", Level.ALLOW),
     Capability("files.read", "File e cartelle", "Leggere file e cercare", "Leggere documenti, elencare cartelle, cercare file per nome.", Level.ALLOW),
     Capability("files.outside", "File e cartelle", "Lavorare fuori dalle cartelle personali",
                "Dischi e cartelle di sistema. Sconsigliato.", Level.DENY, True),
     Capability("open.files", "Aprire", "Aprire documenti e cartelle", "Con il programma predefinito di Windows.", Level.ALLOW),
     Capability("open.apps", "Aprire", "Avviare applicazioni", "Solo programmi presenti nel menu Start.", Level.ALLOW),
     Capability("open.web", "Aprire", "Aprire siti web", "Solo indirizzi http e https nel browser.", Level.ALLOW),
-    Capability("research.web", t("research.group"), t("research.confirm"), t("research.hint"), Level.ASK),
+    Capability("research.web", t("research.group"), t("research.confirm"), t("research.hint"), Level.ALLOW),
     Capability("input.type", "Scrivere e desktop", "Scrivere nel programma aperto", "Incolla il testo dove si trova il cursore.", Level.ALLOW),
     Capability("input.clipboard", "Scrivere e desktop", "Usare gli appunti", "Copiare testo negli appunti.", Level.ALLOW),
     Capability("desktop.control", "Scrivere e desktop", "Gestire finestre e tasti",
-               "Portare in primo piano, ridurre o ingrandire finestre, premere combinazioni di tasti.", Level.ASK),
+               "Portare in primo piano, ridurre o ingrandire finestre, premere combinazioni di tasti.", Level.ALLOW),
     Capability("scripts.run", "Esecuzione", "Eseguire script", "File .ps1, .bat, .cmd, .py nelle cartelle consentite.", Level.ASK, True),
     Capability("shell.powershell", "Esecuzione", "Eseguire comandi PowerShell",
                "Comandi scritti da NUXIVA: vedrai sempre il comando esatto prima di confermare.", Level.ASK, True),
     Capability("remote.ssh", "Esecuzione", "Comandi SSH su altri computer",
                "Solo con chiavi SSH già configurate e server già conosciuti.", Level.ASK, True),
-    Capability("compute.ollama", t("compute.group"), t("compute.ollama.title"), t("compute.ollama.hint"), Level.ASK),
+    Capability("compute.ollama", t("compute.group"), t("compute.ollama.title"), t("compute.ollama.hint"), Level.ALLOW),
     Capability("senses.screen", "Sensi", "Guardare lo schermo", "Testo o immagine della finestra su cui lavori, solo quando serve.", Level.ALLOW),
-    Capability("senses.webcam", "Sensi", "Usare la webcam", "Una sola foto, solo quando lo chiedi.", Level.ASK),
+    Capability("senses.webcam", "Sensi", "Usare la webcam", "Una sola foto, solo quando lo chiedi.", Level.ALLOW),
     Capability("senses.microphone", "Sensi", "Ascolto continuo «Nuxiva»",
                "Se negato, NUXIVA ascolta solo quando premi i tasti rapidi.", Level.ALLOW),
 )
+
+LEGACY_ASK = frozenset({"files.modify", "research.web", "desktop.control", "compute.ollama", "senses.webcam"})
+POLICY_VERSION = 2
 
 BY_KEY = {c.key: c for c in CAPABILITIES}
 GROUPS = tuple(dict.fromkeys(c.group for c in CAPABILITIES))

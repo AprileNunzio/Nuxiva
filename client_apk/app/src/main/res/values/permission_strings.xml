@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="perm_guide_title">Permissions needed</string>
+    <string name="perm_guide_intro">Nuxiva works best when these permissions are allowed. Android is blocking:</string>
+    <string name="perm_guide_how">Open the app settings, choose Permissions and allow each item. Nuxiva only uses them for the features you turn on.</string>
+    <string name="perm_guide_open">Open settings</string>
+    <string name="perm_guide_later">Later</string>
+    <string name="perm_mic_name">Microphone</string>
+    <string name="perm_mic_why">to hear the wake word and your voice commands.</string>
+    <string name="perm_cam_name">Camera</string>
+    <string name="perm_cam_why">to show the camera feed and recognise people, only when you enable it.</string>
+    <string name="perm_loc_name">Location</string>
+    <string name="perm_loc_why">for weather, routes and place-based reminders, and to see nearby nodes.</string>
+    <string name="perm_notif_name">Notifications</string>
+    <string name="perm_notif_why">to keep the connection to your server visible and to alert you about important events.</string>
+</resources>

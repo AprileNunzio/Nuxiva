@@ -27,10 +27,35 @@ class PolicyTest(unittest.TestCase):
 
     def test_risky_capabilities_start_by_asking_and_outside_folders_are_denied(self):
         policy = policy_module.Policy(self.file)
-        for key in ("shell.powershell", "scripts.run", "remote.ssh", "files.modify", "desktop.control"):
+        for key in ("shell.powershell", "scripts.run", "remote.ssh"):
             self.assertIs(policy.level(key), Level.ASK, key)
         self.assertIs(policy.level("files.outside"), Level.DENY)
         self.assertTrue(BY_KEY["shell.powershell"].risky)
+
+    def test_everyday_capabilities_are_allowed_by_default(self):
+        policy = policy_module.Policy(self.file)
+        for key in ("files.modify", "desktop.control", "senses.webcam", "senses.microphone", "compute.ollama", "research.web"):
+            self.assertIs(policy.level(key), Level.ALLOW, key)
+
+    def test_a_legacy_file_lifts_old_default_questions_but_keeps_explicit_choices(self):
+        policy = policy_module.Policy(self.file)
+        levels = {k: v.value for k, v in policy.levels.items()}
+        levels.update({"files.modify": "ask", "senses.webcam": "deny", "desktop.control": "ask"})
+        legacy = {"levels": levels, "folders": [], "mac": policy._mac(levels, [])}
+        self.file.write_text(json.dumps(legacy), encoding="utf-8")
+        migrated = policy_module.Policy(self.file)
+        self.assertFalse(migrated.tampered)
+        self.assertIs(migrated.level("files.modify"), Level.ALLOW)
+        self.assertIs(migrated.level("desktop.control"), Level.ALLOW)
+        self.assertIs(migrated.level("senses.webcam"), Level.DENY)
+        self.assertEqual(json.loads(self.file.read_text(encoding="utf-8"))["v"], 2)
+
+    def test_a_forged_version_is_treated_as_tampered(self):
+        policy_module.Policy(self.file)
+        data = json.loads(self.file.read_text(encoding="utf-8"))
+        data["v"] = 1
+        self.file.write_text(json.dumps(data), encoding="utf-8")
+        self.assertTrue(policy_module.Policy(self.file).tampered)
 
     def test_choices_persist_and_are_signed(self):
         policy_module.Policy(self.file).set("shell.powershell", Level.ALLOW)
