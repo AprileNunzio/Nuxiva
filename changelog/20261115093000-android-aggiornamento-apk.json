@@ -9,10 +9,10 @@
   },
   "features": [
     {
-      "it": "Quando esce una versione nuova, il server la comunica ai dispositivi Android. In Impostazioni, Aggiornamenti, l'app scarica l'APK solo dalla release ufficiale su GitHub, controlla l'impronta SHA-256 e che nome del pacchetto, versione e firma coincidano con l'app installata, poi propone l'installazione. Android chiede sempre la conferma: non si installa mai in silenzio.",
-      "en": "When a new version is released the server tells Android devices. In Settings, Updates, the app downloads the APK only from the official GitHub release, checks the SHA-256 fingerprint and that package name, version and signature match the installed app, then offers to install. Android always asks for confirmation: nothing is ever installed silently.",
-      "fr": "Quand une nouvelle version sort, le serveur la signale aux appareils Android. Dans Réglages, Mises à jour, l'app télécharge l'APK uniquement depuis la release officielle sur GitHub, vérifie l'empreinte SHA-256 et que nom du paquet, version et signature correspondent à l'app installée, puis propose l'installation. Android demande toujours confirmation : rien ne s'installe en silence.",
-      "es": "Cuando sale una versión nueva, el servidor la comunica a los dispositivos Android. En Ajustes, Actualizaciones, la app descarga el APK solo de la release oficial en GitHub, comprueba la huella SHA-256 y que nombre del paquete, versión y firma coincidan con la app instalada, y luego propone instalar. Android siempre pide confirmación: nada se instala en silencio."
+      "it": "Il server segnala ai dispositivi Android la versione nuova. In Impostazioni l'app scarica l'APK solo dalla release ufficiale, controlla impronta SHA-256, pacchetto e firma, poi propone l'installazione: Android chiede sempre conferma, mai installazione silenziosa.",
+      "en": "The server tells Android devices about a new version. In Settings the app downloads the APK only from the official release, checks SHA-256 fingerprint, package and signature, then offers to install: Android always asks for confirmation, never a silent install.",
+      "fr": "Le serveur signale aux appareils Android la nouvelle version. Dans Réglages l'app télécharge l'APK uniquement depuis la release officielle, vérifie empreinte SHA-256, paquet et signature, puis propose l'installation : Android demande toujours confirmation, jamais d'installation silencieuse.",
+      "es": "El servidor avisa a los dispositivos Android de la versión nueva. En Ajustes la app descarga el APK solo de la release oficial, comprueba huella SHA-256, paquete y firma, y propone instalar: Android siempre pide confirmación, nunca instala en silencio."
     },
     {
       "it": "Ogni nodo Android riporta al server lo stato dell'aggiornamento (in attesa, in download, pronto, fallito) con un codice d'errore breve, per la cronologia della flotta.",
