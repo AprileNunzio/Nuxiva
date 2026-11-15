@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Rete tra dispositivi: annunci degli indirizzi sulla rete locale",
+    "en": "Device network: address announcements on the local network",
+    "fr": "Réseau d'appareils : annonces d'adresses sur le réseau local",
+    "es": "Red de dispositivos: anuncios de direcciones en la red local"
+  },
+  "features": [
+    {
+      "it": "Pronta la base per annunciare e ricevere gli indirizzi dei dispositivi sulla rete locale con verifica della firma; il collegamento al server e alle app arriva nei prossimi aggiornamenti.",
+      "en": "The foundation is ready to announce and receive device addresses on the local network with signature checks; the connection to the server and apps comes in the next updates.",
+      "fr": "La base est prête pour annoncer et recevoir les adresses des appareils sur le réseau local avec vérification de la signature ; la liaison avec le serveur et les applications arrive dans les prochaines mises à jour.",
+      "es": "Lista la base para anunciar y recibir las direcciones de los dispositivos en la red local con comprobación de la firma; la conexión con el servidor y las aplicaciones llega en las próximas actualizaciones."
+    }
+  ]
+}

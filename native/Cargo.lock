@@ -2321,6 +2321,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-peer-net"
+version = "5.8.3"
+dependencies = [
+ "nuxiva-peer-core",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "nuxiva-percept-core"
 version = "5.8.3"
 dependencies = [

@@ -1,0 +1,67 @@
+{
+  "cases": [
+    {
+      "envelope": {
+        "from": "6e7a1cdd29b0b78fd13af4c5598feff4ef2a97166e3ca6f2e4fbfccd80505bf1",
+        "payload": "{\"type\":\"locate\",\"addrs\":[\"192.168.1.20:7000\",\"nodo-1.local:7000\"]}",
+        "seq": 4,
+        "sig": "e31dc22296dce1f4bf4ba4255697eada19e98a7f284e6c162828bc781cdef0758f98e52af1b830e0de28035806f0628fe285f98a1f199923dad58ae6d44ebd09",
+        "ts": 1700000000000,
+        "ttl": 6
+      },
+      "expect": "ok",
+      "name": "valid"
+    },
+    {
+      "envelope": {
+        "from": "6e7a1cdd29b0b78fd13af4c5598feff4ef2a97166e3ca6f2e4fbfccd80505bf1",
+        "payload": "{\"type\":\"locate\",\"addrs\":[\"192.168.1.99:7000\",\"nodo-1.local:7000\"]}",
+        "seq": 4,
+        "sig": "e31dc22296dce1f4bf4ba4255697eada19e98a7f284e6c162828bc781cdef0758f98e52af1b830e0de28035806f0628fe285f98a1f199923dad58ae6d44ebd09",
+        "ts": 1700000000000,
+        "ttl": 6
+      },
+      "expect": "peer.error.signature",
+      "name": "tampered_payload"
+    },
+    {
+      "envelope": {
+        "from": "8a875fff1eb38451577acd5afee405456568dd7c89e090863a0557bc7af49f17",
+        "payload": "{\"type\":\"locate\",\"addrs\":[\"10.0.0.5:7000\"]}",
+        "seq": 1,
+        "sig": "2c377b45c6824989ad8bc93b071c4f2ff5e460079b82da246320c74ad0e3a3838ca2720529b6cb5c0c89477731f6c24e23615fdd6edd7fcc4ffd16b44e01cb0e",
+        "ts": 1700000000000,
+        "ttl": 6
+      },
+      "expect": "peer.error.untrusted",
+      "name": "unknown_sender"
+    },
+    {
+      "envelope": {
+        "from": "6e7a1cdd29b0b78fd13af4c5598feff4ef2a97166e3ca6f2e4fbfccd80505bf1",
+        "payload": "{\"type\":\"locate\",\"addrs\":[\"0.0.0.0:7000\"]}",
+        "seq": 5,
+        "sig": "435a1f5851363a2b188e18d57b245fb5c8803d47f319489d928835014c80e8f993f3f75c9968027e16d430405fb1447507cb9c404f28e2165fb7c45cf024bf00",
+        "ts": 1700000000000,
+        "ttl": 6
+      },
+      "expect": "peer.error.field",
+      "name": "wildcard_address"
+    },
+    {
+      "envelope": {
+        "from": "6e7a1cdd29b0b78fd13af4c5598feff4ef2a97166e3ca6f2e4fbfccd80505bf1",
+        "payload": "{\"type\":\"locate\",\"addrs\":[]}",
+        "seq": 6,
+        "sig": "2183d4e7887594925395d4326eff10d7ffff30d6dd7c62f096e01fe4621972f9e29965a4d348ea1f5545bc75b5bcce5c2ce2b146a13c0fbe8903cb7025d02a00",
+        "ts": 1700000000000,
+        "ttl": 6
+      },
+      "expect": "peer.error.limit",
+      "name": "empty_addresses"
+    }
+  ],
+  "trusted": [
+    "6e7a1cdd29b0b78fd13af4c5598feff4ef2a97166e3ca6f2e4fbfccd80505bf1"
+  ]
+}

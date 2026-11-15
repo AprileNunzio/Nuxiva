@@ -39,6 +39,16 @@ EN: every node publishes a signed `Locate` record with its current addresses. Wh
 
 Verificato nel test `tests/locator.rs` con 100 nodi finti: 6 nodi cambiano indirizzo e almeno 98 su 99 lo sanno entro 8 secondi simulati; un nodo spento durante il cambio lo recupera dopo il rientro; record vecchi, manomessi o di nodi non iscritti vengono ignorati. Non è ancora collegato alla rete reale: serve il trasporto della fase successiva.
 
+## Fase 3: trasporto UDP e verifica in Python / UDP transport and Python verification
+
+IT: il crate `nuxiva-peer-net` invia e riceve record `Locate` firmati in un datagramma UDP (massimo 1200 byte, adatto alla rete locale e al broadcast), con limite di frequenza per sorgente e scarto di dati malformati, troppo grandi o di nodi non iscritti. In Python `agenti/nodes/peer_envelope.py` verifica la stessa busta con le stesse regole; i due lati sono tenuti allineati da un file di vettori condiviso (`native/crates/peer-core/tests/fixtures/locate.json`) usato dai test Rust e Python.
+
+Non ancora fatto: l'invio periodico dal server, l'ascolto nel client Windows e nell'APK, e l'inserimento dell'id del server (chiave pubblica) nel codice di abbinamento. Senza quell'id il client non sa di quale chiave fidarsi, quindi oggi il Windows che non raggiunge il server non viene ancora aiutato da questa fase.
+
+EN: the `nuxiva-peer-net` crate sends and receives signed `Locate` records in a UDP datagram (max 1200 bytes, suited to the local network and broadcast), with per-source rate limiting and dropping of malformed, oversized or unenrolled data. In Python `agenti/nodes/peer_envelope.py` verifies the same envelope with the same rules; both sides are kept aligned by a shared vector file (`native/crates/peer-core/tests/fixtures/locate.json`) used by the Rust and Python tests.
+
+Not done yet: periodic sending from the server, listening in the Windows client and the APK, and adding the server id (public key) to the pairing code. Without that id the client does not know which key to trust, so the Windows PC that cannot reach the server is not yet helped by this phase.
+
 ## Test di carico / load test
 
 `native/crates/peer-core/tests/load_100.rs` simula 100 nodi (1 server, 20 desktop, 79 telefoni con batteria diversa), tutti con messaggi firmati e verificati:
