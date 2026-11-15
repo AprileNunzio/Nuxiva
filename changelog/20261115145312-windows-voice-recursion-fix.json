@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Risoluzione ricorsione infinita nella sintesi vocale assistente Windows",
+    "en": "Fix infinite recursion in Windows assistant voice synthesis",
+    "fr": "Correction récursion infinie synthèse vocale assistant Windows",
+    "es": "Corrección de recursión infinita en síntesis vocal asistente Windows"
+  },
+  "fixes": [
+    {
+      "it": "Corretta la chiamata a self.ear.send in Voice._send per evitare l'errore maximum recursion depth exceeded durante l'avvio della risposta vocale dell'assistente Windows.",
+      "en": "Fixed call to self.ear.send in Voice._send preventing maximum recursion depth exceeded errors during Windows assistant voice playback.",
+      "fr": "Correction de l'appel self.ear.send dans Voice._send évitant l'erreur maximum recursion depth exceeded lors de la réponse vocale Windows.",
+      "es": "Corregida la llamada a self.ear.send en Voice._send evitando el error maximum recursion depth exceeded durante la respuesta de voz de Windows."
+    }
+  ]
+}

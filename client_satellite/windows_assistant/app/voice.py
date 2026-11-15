@@ -65,8 +65,8 @@ class Voice:
             ear.send_audio(pcm)
 
     def _send(self, **message) -> None:
-        if self.has_server:
-            self._send(**message)
+        if self.has_server and self.ear:
+            self.ear.send(**message)
         self.local_ear.send(**message)
 
     def start(self) -> None:
