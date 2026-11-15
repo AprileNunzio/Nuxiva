@@ -5,6 +5,7 @@ import { formatBytes } from '../../shared/kit';
 import { useResource } from '../../shared/useResource';
 import { RESOURCES_URL } from '../api';
 import { ResourceLevel, ResourceSnapshot } from '../types';
+import { componentLabel, groupRepeats } from '../humanize';
 
 const LEVEL_INK: Record<ResourceLevel, string> = {
   calm: 'text-emerald-600 dark:text-emerald-400',
@@ -38,7 +39,7 @@ export const ResourcesPanel: React.FC = () => {
 
   const budgets = new Map((state.budgets ?? []).map((b) => [b.id, b]));
   const components = [...(state.components ?? [])].filter((c) => SAFE.test(c.id)).sort((a, b) => b.rss - a.rss).slice(0, 12);
-  const actions = (data?.log ?? []).filter((a) => SAFE.test(a.id)).slice(-6).reverse();
+  const actions = groupRepeats((data?.log ?? []).filter((a) => SAFE.test(a.id)).slice(-12).reverse(), (a) => `${a.action}|${a.id}|${a.reason}`).slice(0, 6);
   const total = Math.max(1, state.system.mem_total);
 
   return (
@@ -59,7 +60,7 @@ export const ResourcesPanel: React.FC = () => {
         <div className="text-sm text-on-surface-variant">{t('res_cores', { count: state.system.cores })}</div>
       </header>
       <p className="max-w-3xl text-sm text-on-surface-variant">{t(`res_hint_${state.level}`)}</p>
-      <ul className="flex flex-col gap-3">
+      <ul className="grid gap-x-8 gap-y-3 cq-2xl:grid-cols-2">
         {components.map((c) => {
           const budget = budgets.get(c.id);
           return (
@@ -67,7 +68,7 @@ export const ResourcesPanel: React.FC = () => {
               <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
                 <span className="flex items-center gap-2 font-medium text-on-surface">
                   {c.class === 'protected' && <ShieldCheck className="h-4 w-4 text-emerald-500" aria-label={t('res_protected')} />}
-                  {c.id}
+                  {componentLabel(c.id, t)}
                   <span className="text-xs text-on-surface-variant">{t(`res_kind_${c.kind}`)}</span>
                 </span>
                 <span className="font-mono text-xs text-on-surface-variant">
@@ -86,11 +87,10 @@ export const ResourcesPanel: React.FC = () => {
           <p className="text-sm text-on-surface-variant">{t('res_no_actions')}</p>
         ) : (
           <ul className="flex flex-col gap-1 text-sm text-on-surface">
-            {actions.map((a) => (
-              <li key={`${a.at}-${a.id}-${a.action}`}>
-                {t('res_action_line', { action: t(`res_action_${a.action}`), id: a.id, reason: t(`res_reason_${a.reason}`), size: formatBytes(a.reclaim) })}
-              </li>
-            ))}
+            {actions.map(({ item: a, count }) => {
+              const line = t('res_action_line', { action: t(`res_action_${a.action}`), id: componentLabel(a.id, t), reason: t(`res_reason_${a.reason}`), size: formatBytes(a.reclaim) });
+              return <li key={`${a.at}-${a.id}-${a.action}`}>{count > 1 ? t('res_action_repeat', { line, count }) : line}</li>;
+            })}
           </ul>
         )}
       </div>

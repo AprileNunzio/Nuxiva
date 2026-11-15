@@ -8,6 +8,7 @@ import { AppFrame, Btn, Empty, Loading, Panel, Pill, Row } from '../shared/kit';
 import { fetchNodes, fetchUsbPorts, deleteNode } from './api';
 import { MeshNodeItem, UsbPort } from './types';
 import { InstallationCards } from './components/InstallationCards';
+import { tierLabel } from './humanize';
 import { ResourcesPanel } from './components/ResourcesPanel';
 
 export const View: React.FC = () => {
@@ -76,7 +77,7 @@ export const View: React.FC = () => {
         ) : nodes.length === 0 ? (
           <Empty>{t('empty')}</Empty>
         ) : (
-          <ul className="grid gap-2 cq-lg:grid-cols-2 cq-3xl:grid-cols-3">
+          <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,19rem),1fr))] gap-2">
             {nodes.map((node) => (
               <Row
                 key={node.id}
@@ -97,7 +98,7 @@ export const View: React.FC = () => {
                   </Pill>
                 </div>
                 <p className="mt-1 break-all text-xs text-on-surface-variant">
-                  {[node.tier, node.ip].filter(Boolean).join(' · ')}
+                  {[tierLabel(node.tier, t), node.ip].filter(Boolean).join(' · ')}
                 </p>
                 {node.source === 'local' && (
                   <p className="mt-1 text-xs text-on-surface-variant">{t('local_host')}</p>

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 from pathlib import Path
 import subprocess
@@ -17,6 +18,7 @@ from node_network_probe import (
 from node_wifi_tasks import collect_node_tasks, connect_wifi, scan_system_wifi
 from node_ollama_processes import local_processes as _local_llm_processes, stop_local_ollama
 
+log = logging.getLogger("nuxiva.node_api")
 router = APIRouter(prefix="/api/v5/nodes", tags=["Node Plane"], dependencies=[Depends(require_admin)])
 admin_routes = router
 
@@ -122,10 +124,19 @@ def list_nodes() -> List[Dict[str, Any]]:
         from mesh_topology import compose_topology, paired_nodes
         return compose_topology(p2p_mesh, paired_nodes()).get("nodes", [])
     except Exception:
+        log.exception("Topologia dei nodi non disponibile: elenco ridotto")
         import socket
         h = socket.gethostname()
-        return [{"id": h, "name": h, "tier": "Tier-1 (Host & Virtual Core)", "type": "compute",
-                 "ip": "127.0.0.1", "status": "online", "source": "local", "online": True}]
+        host = {"id": h, "name": h, "tier": "Tier-1 (Host & Virtual Core)", "type": "compute",
+                "ip": "127.0.0.1", "status": "online", "source": "local", "online": True}
+        try:
+            from mesh_topology import PAIRED_KIND, paired_nodes
+            others = [{"id": n["id"], "name": n.get("name") or n["id"], "tier": n.get("type_label"), "type": PAIRED_KIND.get(n.get("type"), "satellite"),
+                       "ip": n.get("ip"), "source": "paired", "online": bool(n.get("online"))} for n in paired_nodes()]
+        except Exception:
+            log.exception("Elenco dei nodi abbinati non disponibile")
+            others = []
+        return [host, *others]
 
 
 @router.get("/{node_id}")

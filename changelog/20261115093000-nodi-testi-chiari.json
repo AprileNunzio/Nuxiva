@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {"it": "Nodi e Server: testi chiari e spazio meglio usato", "en": "Nodes & Servers: clear texts and better use of space", "fr": "Nœuds et serveurs : textes clairs et meilleur usage de l'espace", "es": "Nodos y servidores: textos claros y mejor uso del espacio"},
+  "fixes": [{
+    "it": "In Nodi e Server i nomi tecnici diventano parole comprensibili, le azioni ripetute sono raggruppate e le schede dei dispositivi usano tutta la larghezza.",
+    "en": "In Nodes & Servers technical names become plain words, repeated actions are grouped and device cards use the full width.",
+    "fr": "Dans Nœuds et serveurs, les noms techniques deviennent des mots clairs, les actions répétées sont regroupées et les cartes d'appareils occupent toute la largeur.",
+    "es": "En Nodos y servidores los nombres técnicos pasan a palabras claras, las acciones repetidas se agrupan y las tarjetas de dispositivos usan todo el ancho."
+  },{
+    "it": "Se la mappa della rete non risponde, l'elenco dei nodi mostra comunque i PC abbinati, compreso quello Windows.",
+    "en": "If the network map does not answer, the node list still shows the paired PCs, including the Windows one.",
+    "fr": "Si la carte du réseau ne répond pas, la liste des nœuds affiche quand même les PC associés, y compris celui sous Windows.",
+    "es": "Si el mapa de la red no responde, la lista de nodos muestra igualmente los PC emparejados, incluido el de Windows."
+  }]
+}
