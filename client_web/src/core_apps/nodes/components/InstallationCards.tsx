@@ -1,13 +1,76 @@
-import React from 'react';
-import { Cpu, Laptop, Monitor, Smartphone, Terminal } from 'lucide-react';
+import React, { useState } from 'react';
+import { Box, Cpu, Laptop, LucideIcon, Monitor, Smartphone, Terminal } from 'lucide-react';
 import { useScopedI18n } from '../../../shared/i18n/useScopedI18n';
 import { LinksHandle } from '../../../node_apps/client_link/hooks/useLinks';
-import { Btn } from '../../shared/kit';
 import { UsbPort } from '../types';
 import { AndroidEnroll } from './AndroidEnroll';
 import { PcLinkPanel } from './PcLinkPanel';
-import { PlatformBlock } from './PlatformBlock';
-import { WindowsDownload } from './WindowsDownload';
+import { WindowsGuide } from './WindowsGuide';
+import { DockerGuide } from './DockerGuide';
+import { Esp32Guide } from './Esp32Guide';
+import { MacosGuide } from './MacosGuide';
+
+export type PlatformId = 'windows' | 'android' | 'linux' | 'docker' | 'esp32' | 'macos';
+
+interface PlatformMeta {
+  readonly id: PlatformId;
+  readonly icon: LucideIcon;
+  readonly titleKey: string;
+  readonly badgeKey: string;
+  readonly descKey: string;
+  readonly stepCount: number;
+}
+
+const PLATFORMS: readonly PlatformMeta[] = [
+  {
+    id: 'windows',
+    icon: Monitor,
+    titleKey: 'install_windows_title',
+    badgeKey: 'install_windows_badge',
+    descKey: 'install_windows_desc',
+    stepCount: 3,
+  },
+  {
+    id: 'android',
+    icon: Smartphone,
+    titleKey: 'install_android_title',
+    badgeKey: 'install_android_badge',
+    descKey: 'install_android_desc',
+    stepCount: 4,
+  },
+  {
+    id: 'linux',
+    icon: Terminal,
+    titleKey: 'install_linux_title',
+    badgeKey: 'install_linux_badge',
+    descKey: 'install_linux_desc',
+    stepCount: 3,
+  },
+  {
+    id: 'docker',
+    icon: Box,
+    titleKey: 'install_docker_title',
+    badgeKey: 'install_docker_badge',
+    descKey: 'install_docker_desc',
+    stepCount: 3,
+  },
+  {
+    id: 'esp32',
+    icon: Cpu,
+    titleKey: 'install_esp32_title',
+    badgeKey: 'install_esp32_badge',
+    descKey: 'install_esp32_desc',
+    stepCount: 3,
+  },
+  {
+    id: 'macos',
+    icon: Laptop,
+    titleKey: 'install_macos_title',
+    badgeKey: 'install_macos_badge',
+    descKey: 'install_macos_desc',
+    stepCount: 3,
+  },
+];
 
 export const InstallationCards: React.FC<{
   readonly links: LinksHandle;
@@ -16,35 +79,111 @@ export const InstallationCards: React.FC<{
   readonly detectUsb: () => void;
 }> = ({ links, usbPorts, detectingUsb, detectUsb }) => {
   const { t } = useScopedI18n('core_apps/nodes');
+  const [selected, setSelected] = useState<PlatformId>('windows');
+
+  const activePlatform = PLATFORMS.find((p) => p.id === selected) ?? PLATFORMS[0];
+  const ActiveIcon = activePlatform.icon;
+
   return (
-    <section aria-label={t('install_platforms')} className="grid items-start gap-x-8 gap-y-10 cq-lg:grid-cols-2">
-      <PlatformBlock id="linux" icon={Terminal} steps={3}>
-        <PcLinkPanel handle={links} />
-      </PlatformBlock>
-      <PlatformBlock id="windows" icon={Monitor} steps={2}>
-        <WindowsDownload />
-      </PlatformBlock>
-      <PlatformBlock id="android" icon={Smartphone} steps={4} wide>
-        <AndroidEnroll />
-      </PlatformBlock>
-      <PlatformBlock id="esp32" icon={Cpu} steps={3}>
-        <div className="flex flex-col gap-2">
-          <div>
-            <Btn busy={detectingUsb} onClick={detectUsb}>{t('install_esp32_start')}</Btn>
+    <section aria-label={t('install_platforms')} className="flex flex-col gap-6">
+      <div className="flex flex-col gap-1">
+        <p className="text-xs text-on-surface-variant">
+          {t('install_platforms_intro')}
+        </p>
+      </div>
+
+      {/* Interactive Selection Cards */}
+      <div
+        role="tablist"
+        aria-label={t('install_platforms')}
+        className="grid grid-cols-2 gap-3 cq-sm:grid-cols-3 cq-lg:grid-cols-6"
+      >
+        {PLATFORMS.map((platform) => {
+          const Icon = platform.icon;
+          const isActive = platform.id === selected;
+          return (
+            <button
+              key={platform.id}
+              type="button"
+              role="tab"
+              id={`tab-${platform.id}`}
+              aria-selected={isActive}
+              aria-controls={`panel-${platform.id}`}
+              onClick={() => setSelected(platform.id)}
+              className={`group relative flex flex-col items-start gap-2.5 rounded-3xl p-4 text-left transition-all ${
+                isActive
+                  ? 'bg-primary-container/30 ring-2 ring-primary shadow-sm'
+                  : 'bg-surface-container-low hover:bg-surface-container hover:shadow-xs'
+              }`}
+            >
+              <div className="flex w-full items-center justify-between">
+                <span
+                  className={`flex h-10 w-10 items-center justify-center rounded-2xl transition-colors ${
+                    isActive
+                      ? 'bg-primary text-on-primary'
+                      : 'bg-surface-container-high text-on-surface-variant group-hover:text-primary'
+                  }`}
+                >
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </span>
+                {isActive && (
+                  <span className="flex h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true" />
+                )}
+              </div>
+              <div className="min-w-0">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-on-surface-variant">
+                  {t(platform.badgeKey)}
+                </span>
+                <h3 className="truncate text-sm font-bold text-on-surface">
+                  {t(platform.titleKey)}
+                </h3>
+              </div>
+              <p className="line-clamp-2 text-[11px] leading-tight text-on-surface-variant">
+                {t(platform.descKey)}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Selected Platform Detailed Guide Panel */}
+      <div
+        role="tabpanel"
+        id={`panel-${activePlatform.id}`}
+        aria-labelledby={`tab-${activePlatform.id}`}
+        className="rounded-3xl border border-outline-variant/40 bg-surface-container-lowest p-5 shadow-sm sm:p-6"
+      >
+        <header className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant/30 pb-4">
+          <div className="flex items-center gap-3">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-container text-on-primary-container">
+              <ActiveIcon className="h-6 w-6" aria-hidden="true" />
+            </span>
+            <div>
+              <h2 className="text-lg font-bold text-on-surface">{t(activePlatform.titleKey)}</h2>
+              <p className="text-xs text-on-surface-variant">
+                {t(activePlatform.id === 'macos' ? 'install_pending' : 'install_steps_count', {
+                  count: activePlatform.stepCount,
+                })}{' '}
+                · {t(activePlatform.badgeKey)}
+              </p>
+            </div>
           </div>
-          <div aria-live="polite" className="break-all text-xs text-on-surface-variant">
-            {usbPorts &&
-              (usbPorts.length ? (
-                <ul className="flex flex-col gap-1">
-                  {usbPorts.map((port) => <li key={port.device}>{port.device} · {port.description}</li>)}
-                </ul>
-              ) : (
-                <p>{t('install_esp32_no_ports')}</p>
-              ))}
+        </header>
+
+        {selected === 'windows' && <WindowsGuide />}
+        {selected === 'android' && <AndroidEnroll />}
+        {selected === 'linux' && (
+          <div className="space-y-4">
+            <p className="text-sm text-on-surface-variant">{t('install_linux_guide')}</p>
+            <PcLinkPanel handle={links} />
           </div>
-        </div>
-      </PlatformBlock>
-      <PlatformBlock id="macos" icon={Laptop} steps={3} />
+        )}
+        {selected === 'docker' && <DockerGuide />}
+        {selected === 'esp32' && (
+          <Esp32Guide usbPorts={usbPorts} detectingUsb={detectingUsb} detectUsb={detectUsb} />
+        )}
+        {selected === 'macos' && <MacosGuide />}
+      </div>
     </section>
   );
 };

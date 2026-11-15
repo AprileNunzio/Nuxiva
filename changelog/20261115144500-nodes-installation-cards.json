@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Card interattive per installazione nodi e guida Windows",
+    "en": "Interactive node installation cards and Windows guide",
+    "fr": "Cartes interactives d'installation de nœuds et guide Windows",
+    "es": "Tarjetas interactivas de instalación de nodos y guía Windows"
+  },
+  "features": [
+    {
+      "it": "Nuove card interattive per l'installazione dei nodi (Windows, Android, Linux, Docker, ESP32, macOS) con guide dettagliate, generatore di codici a 6 cifre e risoluzione guidata per l'assistente Windows.",
+      "en": "Interactive node installation cards (Windows, Android, Linux, Docker, ESP32, macOS) with detailed guides, 6-digit pairing code generation, and guided troubleshooting for Windows assistant.",
+      "fr": "Cartes interactives d'installation des nœuds (Windows, Android, Linux, Docker, ESP32, macOS) avec guides détaillés, générateur de code à 6 chiffres et dépannage guidé pour l'assistant Windows.",
+      "es": "Tarjetas interactivas de instalación de nodos (Windows, Android, Linux, Docker, ESP32, macOS) con guías detalladas, generador de código de 6 dígitos y resolución guiada para el asistente Windows."
+    }
+  ]
+}
