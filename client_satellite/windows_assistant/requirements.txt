@@ -10,3 +10,4 @@ keyboard>=0.13.5
 pyperclip>=1.8
 cryptography>=42
 python-docx>=1.1,<2
+comtypes>=1.2.0

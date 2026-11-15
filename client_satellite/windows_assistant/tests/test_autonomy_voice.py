@@ -145,6 +145,38 @@ class SpeechTest(unittest.TestCase):
         self.assertEqual(len(clamp("a " * 2000)), MAX_CHARS)
         self.assertEqual(clamp("  a \n b "), "a b")
 
+    def test_default_rate_is_two(self):
+        from autonomy.tts import SapiSpeech
+        speech = SapiSpeech()
+        self.assertEqual(speech.rate, 2)
+
+    def test_synthesize_empty_raises(self):
+        from autonomy.tts import LocalSpeechError, SapiSpeech
+        with self.assertRaises(LocalSpeechError):
+            SapiSpeech().synthesize("   ")
+
+    def test_synthesize_uses_com_when_successful(self):
+        from unittest.mock import patch
+        from autonomy.tts import SapiSpeech
+        with patch("autonomy.tts._synthesize_com") as mock_com, \
+             patch("autonomy.tts._synthesize_powershell") as mock_ps:
+            mock_com.side_effect = lambda text, cult, rate, out: (out.write_bytes(b"RIFFWAV"), True)[1]
+            data = SapiSpeech().synthesize("Ciao mondo", "it")
+            self.assertEqual(data, b"RIFFWAV")
+            self.assertTrue(mock_com.called)
+            self.assertFalse(mock_ps.called)
+
+    def test_synthesize_falls_back_to_powershell_when_com_returns_false(self):
+        from unittest.mock import patch
+        from autonomy.tts import SapiSpeech
+        with patch("autonomy.tts._synthesize_com", return_value=False) as mock_com, \
+             patch("autonomy.tts._synthesize_powershell") as mock_ps:
+            mock_ps.side_effect = lambda text, cult, rate, out: out.write_bytes(b"FALLBACK_WAV")
+            data = SapiSpeech().synthesize("Ciao mondo", "it")
+            self.assertEqual(data, b"FALLBACK_WAV")
+            self.assertTrue(mock_com.called)
+            self.assertTrue(mock_ps.called)
+
 
 class WavTest(unittest.TestCase):
     def test_pcm_is_wrapped_as_16k_mono(self):

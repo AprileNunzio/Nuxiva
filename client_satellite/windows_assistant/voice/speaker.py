@@ -38,7 +38,7 @@ class Speaker:
             try:
                 sd.play(audio, rate)
                 started = time.monotonic()
-                deadline = len(audio) / rate + 0.3
+                deadline = len(audio) / rate + 0.04
                 while not self._stop.is_set():
                     elapsed = time.monotonic() - started
                     if elapsed >= deadline:

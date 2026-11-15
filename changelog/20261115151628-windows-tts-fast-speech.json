@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Ottimizzazione velocità sintesi vocale ed eliminazione pause nell'assistente Windows",
+    "en": "Speech synthesis speed optimization and pause elimination in Windows assistant",
+    "fr": "Optimisation de la synthèse vocale et suppression des pauses sur l'assistant Windows",
+    "es": "Optimización de velocidad de síntesis de voz y eliminación de pausas en asistente Windows"
+  },
+  "fixes": [
+    {
+      "it": "Implementata sintesi vocale SAPI COM in-process via comtypes per generare audio in millisecondi anziché tramite avvio di processi PowerShell esterni per ogni frase.",
+      "en": "Implemented in-process SAPI COM speech synthesis via comtypes to produce audio in milliseconds instead of launching external PowerShell processes for every sentence chunk.",
+      "fr": "Implémentation de la synthèse vocale SAPI COM in-process via comtypes générant l'audio en millisecondes au lieu de lancer des processus PowerShell par chunk.",
+      "es": "Implementada síntesis de voz SAPI COM in-process mediante comtypes para generar audio en milisegundos en vez de iniciar procesos PowerShell externos por frase."
+    },
+    {
+      "it": "Ridotto il margine di attesa playback da 300ms a 40ms per eliminare le pause artificiali tra chunk consecutivi e impostato il rate predefinito a 2 per un ritmo fluido.",
+      "en": "Reduced playback wait margin from 300ms to 40ms to eliminate artificial gaps between consecutive chunks and set default speech rate to 2 for a fluid conversational tempo.",
+      "fr": "Réduction de la marge d'attente de lecture de 300ms à 40ms pour éliminer les blancs entre fragments et réglage du débit à 2 pour un rythme fluide.",
+      "es": "Reducido el margen de espera de reproducción de 300ms a 40ms para eliminar silencios entre fragmentos y ajustada la velocidad a 2 para un ritmo fluido."
+    }
+  ]
+}
