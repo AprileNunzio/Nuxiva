@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {"it": "Formattazione del codice nativo ripristinata", "en": "Native code formatting restored", "fr": "Formatage du code natif rétabli", "es": "Formato del código nativo restablecido"},
+  "fixes": [{
+    "it": "Il codice nativo della telemetria dei nodi è stato riformattato, così la verifica automatica torna verde e gli aggiornamenti non restano bloccati.",
+    "en": "The native node telemetry code was reformatted so the automatic check is green again and updates are no longer blocked.",
+    "fr": "Le code natif de la télémétrie des nœuds a été reformaté afin que la vérification automatique redevienne verte et que les mises à jour ne soient plus bloquées.",
+    "es": "El código nativo de la telemetría de nodos se ha reformateado para que la comprobación automática vuelva a estar en verde y las actualizaciones no queden bloqueadas."
+  }]
+}

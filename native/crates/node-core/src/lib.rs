@@ -26,9 +26,6 @@ pub use signer::{DeviceKey, SignedHeaders, random_nonce};
 mod tests;
 #[cfg(test)]
 #[allow(clippy::expect_used, clippy::indexing_slicing)]
-mod tests_telemetry;
-#[cfg(test)]
-#[allow(clippy::expect_used, clippy::indexing_slicing)]
 mod tests_declare;
 #[cfg(test)]
 #[allow(clippy::expect_used, clippy::indexing_slicing)]
@@ -36,3 +33,6 @@ mod tests_identity;
 #[cfg(test)]
 #[allow(clippy::expect_used, clippy::indexing_slicing)]
 mod tests_signer;
+#[cfg(test)]
+#[allow(clippy::expect_used, clippy::indexing_slicing)]
+mod tests_telemetry;
