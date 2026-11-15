@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Rete tra dispositivi: se un dispositivo cambia rete o IP, gli altri lo ritrovano",
+    "en": "Device network: if a device changes network or IP, the others find it again",
+    "fr": "Réseau d'appareils : si un appareil change de réseau ou d'IP, les autres le retrouvent",
+    "es": "Red de dispositivos: si un dispositivo cambia de red o IP, los demás lo vuelven a encontrar"
+  },
+  "features": [
+    {
+      "it": "Ogni dispositivo annuncia con una firma i propri indirizzi e gli altri li ricevono e li aggiornano, anche se il dispositivo era spento durante il cambio.",
+      "en": "Each device announces its own addresses with a signature and the others receive and update them, even if the device was off during the change.",
+      "fr": "Chaque appareil annonce ses adresses avec une signature et les autres les reçoivent et les mettent à jour, même si l'appareil était éteint pendant le changement.",
+      "es": "Cada dispositivo anuncia sus direcciones con una firma y los demás las reciben y actualizan, incluso si el dispositivo estaba apagado durante el cambio."
+    }
+  ]
+}

@@ -35,6 +35,9 @@ pub struct SimNode {
     pub next_tick: i64,
     pub started: bool,
     pub finished: std::collections::BTreeSet<u64>,
+    pub addrs: Vec<String>,
+    pub directory: Directory,
+    pub next_sync: i64,
 }
 
 impl SimNode {
@@ -62,6 +65,9 @@ impl SimNode {
             next_tick: 250,
             started: false,
             finished: std::collections::BTreeSet::new(),
+            addrs: Vec::new(),
+            directory: Directory::new(),
+            next_sync: offset + 10_000,
         }
     }
 
@@ -142,6 +148,10 @@ impl Sim {
                     .heartbeat(&env.from, env.seq, *load, now);
             }
             Message::Leave => self.nodes[me].registry.leave(&env.from),
+            Message::Locate { .. } => {
+                let node = &mut self.nodes[me];
+                let _ = node.directory.learn(&node.verifier, env, now);
+            }
             Message::Submit { spec } => {
                 if self.nodes[me].finished.contains(&spec.id) {
                     self.emit(
@@ -200,6 +210,11 @@ impl Sim {
             self.nodes[i].started = true;
             let caps = self.nodes[i].caps;
             self.emit(i, &Message::Announce { caps }, TTL);
+            self.publish_address(i);
+        }
+        if now >= self.nodes[i].next_sync {
+            self.nodes[i].next_sync = now + 10_000;
+            self.sync_directory(i);
         }
         if now >= self.nodes[i].next_heartbeat {
             self.nodes[i].next_heartbeat = now + 5_000;
@@ -300,5 +315,45 @@ impl Sim {
 
     pub fn role_of(&self, i: usize) -> Roles {
         self.nodes[i].caps.roles
+    }
+}
+
+impl Sim {
+    pub fn publish_address(&mut self, i: usize) {
+        if self.nodes[i].addrs.is_empty() {
+            self.nodes[i].addrs = vec![format!("10.0.{i}.1:7000")];
+        }
+        let addrs = self.nodes[i].addrs.clone();
+        self.emit(i, &Message::Locate { addrs }, TTL);
+    }
+
+    pub fn change_address(&mut self, i: usize, addr: &str) {
+        self.nodes[i].addrs = vec![addr.to_owned()];
+        self.publish_address(i);
+    }
+
+    pub fn sync_directory(&mut self, i: usize) {
+        let peers: Vec<usize> = (0..self.nodes.len())
+            .filter(|j| *j != i && self.nodes[*j].alive)
+            .collect();
+        if peers.is_empty() {
+            return;
+        }
+        let j = peers[self.rng.below(peers.len() as u64) as usize];
+        let now = self.now;
+        let mine = self.nodes[i].directory.digest();
+        let theirs = self.nodes[j].directory.digest();
+        let for_me = self.nodes[j].directory.newer_than(&mine);
+        let for_them = self.nodes[i].directory.newer_than(&theirs);
+        self.nodes[i].sent += 1 + for_them.len() as u64;
+        self.nodes[j].sent += 1 + for_me.len() as u64;
+        for env in for_me {
+            let node = &mut self.nodes[i];
+            let _ = node.directory.learn(&node.verifier, &env, now);
+        }
+        for env in for_them {
+            let node = &mut self.nodes[j];
+            let _ = node.directory.learn(&node.verifier, &env, now);
+        }
     }
 }

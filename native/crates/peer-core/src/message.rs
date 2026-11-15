@@ -26,6 +26,9 @@ pub enum Message {
         job: u64,
         ok: bool,
     },
+    Locate {
+        addrs: Vec<String>,
+    },
     Leave,
 }
 
@@ -62,6 +65,7 @@ impl Message {
                     Ok(())
                 }
             }
+            Self::Locate { addrs } => crate::addr::check_addrs(addrs),
             Self::Leave => Ok(()),
         }
     }

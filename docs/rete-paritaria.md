@@ -31,6 +31,14 @@ Da spostare / to move:
 - Coordinatore per job: scelto per hashing rendezvous tra i nodi vivi, quindi lo scheduling è distribuito e nessun nodo, server compreso, è l'unico coordinatore. Le assegnazioni valgono solo se firmate da uno dei primi tre candidati.
 - Trasporto (`Gossip`): diffusione epidemica con fanout 5 e TTL 6, deduplica per id messaggio, nessun hub centrale.
 
+## Fase 2: rubrica firmata degli indirizzi / signed address book
+
+IT: ogni nodo pubblica un record `Locate` firmato con i propri indirizzi correnti. Quando un dispositivo cambia rete o IP ne emette uno nuovo con sequenza maggiore; il record si propaga per gossip e ogni nodo tiene l'ultimo valido per ciascun id (`Directory`). Ogni nodo può scrivere solo il proprio record, perché il mittente firmato coincide con il soggetto, quindi non serve un consenso globale né una catena: i record convergono da soli. Ogni 10 secondi un nodo confronta i digest con un pari a caso e scambia i record mancanti (anti-entropia), così chi era spento li recupera al rientro. `candidates(id)` restituisce gli indirizzi in ordine, con quelli appena falliti in fondo (`report_failure` / `report_success`). Indirizzi validati: IP o nome host con porta, niente 0.0.0.0, multicast, porta 0 o schemi.
+
+EN: every node publishes a signed `Locate` record with its current addresses. When a device changes network or IP it emits a new one with a higher sequence; the record spreads by gossip and each node keeps the latest valid one per id (`Directory`). A node can only write its own record because the signed sender is the subject, so no global consensus or chain is needed: records converge on their own. Every 10 seconds a node compares digests with a random peer and exchanges the missing records (anti-entropy), so a node that was offline catches up on return. `candidates(id)` returns the addresses in order, with recently failed ones last. Addresses are validated: IP or hostname with port, no 0.0.0.0, multicast, port 0 or schemes.
+
+Verificato nel test `tests/locator.rs` con 100 nodi finti: 6 nodi cambiano indirizzo e almeno 98 su 99 lo sanno entro 8 secondi simulati; un nodo spento durante il cambio lo recupera dopo il rientro; record vecchi, manomessi o di nodi non iscritti vengono ignorati. Non è ancora collegato alla rete reale: serve il trasporto della fase successiva.
+
 ## Test di carico / load test
 
 `native/crates/peer-core/tests/load_100.rs` simula 100 nodi (1 server, 20 desktop, 79 telefoni con batteria diversa), tutti con messaggi firmati e verificati:

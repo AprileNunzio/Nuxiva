@@ -1,6 +1,8 @@
 #![forbid(unsafe_code)]
 
+pub mod addr;
 pub mod capability;
+pub mod directory;
 pub mod election;
 pub mod envelope;
 pub mod error;
@@ -13,6 +15,7 @@ pub mod scheduler;
 pub mod score;
 
 pub use capability::{Capabilities, Load, Roles, Tier};
+pub use directory::Directory;
 pub use envelope::{Envelope, PeerKey, TrustBook, Verifier};
 pub use error::{PeerError, PeerResult};
 pub use gossip::Gossip;

@@ -162,7 +162,7 @@ impl Verifier {
         &self.trust
     }
 
-    pub fn open(&mut self, envelope: &Envelope, now_ms: i64) -> PeerResult<Message> {
+    pub fn verify_signature(&self, envelope: &Envelope) -> PeerResult<Message> {
         if envelope.payload.len() > MAX_PAYLOAD || envelope.ttl > MAX_TTL {
             return Err(PeerError::Limit);
         }
@@ -171,9 +171,6 @@ impl Verifier {
             .keys
             .get(&envelope.from)
             .ok_or(PeerError::Untrusted)?;
-        if now_ms.abs_diff(envelope.ts) > SKEW_MS.unsigned_abs() {
-            return Err(PeerError::Clock);
-        }
         let raw: [u8; 64] = hexutil::decode(&envelope.sig)
             .map_err(|_| PeerError::Signature)?
             .try_into()
@@ -183,8 +180,14 @@ impl Verifier {
             &Signature::from_bytes(&raw),
         )
         .map_err(|_| PeerError::Signature)?;
-        let message: Message =
-            serde_json::from_str(&envelope.payload).map_err(|_| PeerError::Payload)?;
+        serde_json::from_str(&envelope.payload).map_err(|_| PeerError::Payload)
+    }
+
+    pub fn open(&mut self, envelope: &Envelope, now_ms: i64) -> PeerResult<Message> {
+        if now_ms.abs_diff(envelope.ts) > SKEW_MS.unsigned_abs() {
+            return Err(PeerError::Clock);
+        }
+        let message = self.verify_signature(envelope)?;
         let window = self.windows.entry(envelope.from.clone()).or_default();
         Self::admit(window, envelope.seq)?;
         Ok(message)
