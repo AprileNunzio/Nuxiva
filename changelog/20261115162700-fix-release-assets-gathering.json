@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Risolta raccolta asset release quando manifest.sig non e presente",
+    "en": "Fixed release assets gathering when manifest.sig is absent",
+    "fr": "Correction de la collecte des fichiers de release sans manifest.sig",
+    "es": "Corregida la recoleccion de archivos de release cuando no hay manifest.sig"
+  },
+  "fixes": [
+    {
+      "it": "Evitato codice di uscita 2 in release.yml consentendo la pubblicazione automatica di APK e installer senza firma Windows opzionale.",
+      "en": "Avoided exit code 2 in release.yml enabling automated publishing of APK and installer without optional Windows signature.",
+      "fr": "Evite le code de sortie 2 dans release.yml permettant la publication automatique de l APK et de l installateur sans signature Windows.",
+      "es": "Evitado el codigo de salida 2 en release.yml permitiendo la publicacion automatica de la APK y el instalador sin firma Windows."
+    }
+  ]
+}

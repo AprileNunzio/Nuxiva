@@ -163,7 +163,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          assets=$(ls dist/Nuxiva.apk dist/Nuxiva_Setup.exe dist/manifest.json dist/manifest.sig 2>/dev/null)
+          assets=$(ls dist/Nuxiva.apk dist/Nuxiva_Setup.exe dist/manifest.json dist/manifest.sig 2>/dev/null || true)
           python3 scripts/release/release_notes.py --version "$VERSION" --tag "v$VERSION" --commit "$SHA" \
             --previous-tag "$PREVIOUS" --repository "$REPO" --assets $assets --out dist
           python3 -c "import json,sys; d=json.load(open('dist/release.json')); sys.exit(0 if {a['platform'] for a in d['assets']} >= {'android','windows'} else 1)"
