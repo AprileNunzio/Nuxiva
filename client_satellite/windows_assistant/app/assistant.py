@@ -40,6 +40,7 @@ from screenshot.service import Service as Screenshots
 from senses import places
 from senses.windows import Focus
 from settings import agent_name, autostart, paths, protect, shortcuts, store
+from sync.documents_sync import DocumentsSync
 from updates.updater import Updater
 
 log = logging.getLogger("nuxiva")
@@ -80,6 +81,7 @@ class Assistant:
         )
         self.inbox = Inbox(self.client, lambda actions: self.ui.dispatch.post(self._actions, actions))
         self.backup = BackupScheduler(cfg, self.snapshots, lambda text: self.ui.dispatch.post(self.ui.note, text))
+        self.doc_sync = DocumentsSync(self.client, cfg, lambda text: self.ui.dispatch.post(self.ui.note, text))
         self.updater = Updater(lambda text: self.ui.dispatch.post(self.ui.note, text), self.quit)
         self.screenshots = Screenshots(paths.DATA_DIR / "screenshot-spool", lambda text: self.ui.dispatch.post(self.ui.note, text), t,
                                        hotkey_factory=PrintScreenHotkey)
@@ -115,6 +117,8 @@ class Assistant:
     def _on_reply(self, reply: dict) -> None:
         if isinstance(reply.get("settings"), dict):
             self.screenshots.apply(reply["settings"])
+        if isinstance(reply.get("sync"), dict):
+            self.doc_sync.apply_config(reply["sync"])
         self._agent_named(agent_name.clean(reply.get("assistant_name")))
         for command in reply.get("commands") or []:
             if command == "identify":
@@ -213,6 +217,7 @@ class Assistant:
             self.heartbeat.start()
             self.inbox.start()
             self.compute.start()
+            self.doc_sync.start()
         self.backup.start()
         self.updater.start()
         self.screenshots.start()
@@ -238,6 +243,7 @@ class Assistant:
         self.heartbeat.stop()
         self.inbox.stop()
         self.compute.stop()
+        self.doc_sync.stop()
         self.backup.stop()
         self.updater.stop()
         self.screenshots.stop()

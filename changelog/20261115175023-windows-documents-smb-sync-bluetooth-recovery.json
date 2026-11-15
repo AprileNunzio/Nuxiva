@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Sincronizzazione in tempo reale Documenti Windows con SMB server e diagnosi dettagliata Bluetooth",
+    "en": "Real-time Windows Documents and server SMB synchronization with detailed Bluetooth diagnostics",
+    "fr": "Synchronisation en temps réel des documents Windows avec SMB et diagnostics détaillés Bluetooth",
+    "es": "Sincronización en tiempo real de documentos Windows con SMB y diagnóstico detallado de Bluetooth"
+  },
+  "features": [
+    {
+      "it": "Creazione automatica della directory Nuxiva nei Documenti di Windows con sincronizzazione bidirezionale in tempo reale verso la condivisione SMB del server, isolata per persona.",
+      "en": "Automatic creation of the Nuxiva directory in Windows Documents with real-time bidirectional synchronization to server SMB shares, isolated by person.",
+      "fr": "Création automatique du dossier Nuxiva dans les Documents Windows avec synchronisation bidirectionnelle en temps réel vers SMB, isolée par personne.",
+      "es": "Creación automática de la carpeta Nuxiva en Documentos de Windows con sincronización bidireccional en tiempo real con SMB, aislada por persona."
+    },
+    {
+      "it": "Mostra il motivo dettagliato degli errori di connessione e abbinamento Bluetooth direttamente nel toast di notifica.",
+      "en": "Displays detailed explanation for Bluetooth connection and pairing failures directly inside the notification toast.",
+      "fr": "Affiche le motif détaillé des erreurs de connexion et d'appairage Bluetooth dans le toast de notification.",
+      "es": "Muestra el motivo detallado de los fallos de conexión y emparejamiento Bluetooth directamente en la notificación."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Risolto il reset hardware dell'adattatore Bluetooth arrestando la scansione attiva prima di ogni operazione di connessione o accoppiamento.",
+      "en": "Fixed Bluetooth adapter hardware reset by stopping active scanning before any connect or pairing operation.",
+      "fr": "Correction du reset matériel de l'adaptateur Bluetooth en arrêtant le scan actif avant chaque opération de connexion ou appairage.",
+      "es": "Corregido el reinicio de hardware del adaptador Bluetooth deteniendo el escaneo activo antes de cada conexión o emparejamiento."
+    },
+    {
+      "it": "Aggiunto debounce dello stato dell'adattatore Bluetooth per prevenire la scomparsa temporanea dell'interfaccia durante la re-enumerazione USB.",
+      "en": "Added debounce grace period for Bluetooth adapter state to avoid temporary interface disappearance during USB re-enumeration.",
+      "fr": "Ajout d'un délai de grâce pour l'état de l'adaptateur Bluetooth afin d'éviter la disparition temporaire de l'interface lors de la réénumération USB.",
+      "es": "Añadido periodo de gracia para el estado del adaptador Bluetooth para evitar la desaparición temporal de la interfaz durante la re-enumeración USB."
+    }
+  ]
+}

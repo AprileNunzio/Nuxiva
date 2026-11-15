@@ -86,9 +86,11 @@ class Registry:
                 raise PermissionError("node.error.revoked")
         token = secrets.token_urlsafe(32)
         kind = info.get("type") if info.get("type") in TYPES else "other"
+        person_slug = clean_text(info.get("person_slug") or info.get("user") or "")
         self.data["nodes"][node_id] = {"pubkey": pubkey, "profile": "satellite", "second_server_allowed": False, "grants": [],
                                        "id": node_id, "name": clean_text(info.get("name")) or node_id, "type": kind,
                                        "room": clean_text(info.get("room")), "token": _hash(token),
+                                       "person_slug": person_slug,
                                        "paired_at": time.time(), "last_seen": 0, "commands": []}
         self._save()
         return token
@@ -101,6 +103,9 @@ class Registry:
 
     def heartbeat(self, node: dict, report: dict, ip: str) -> list[str]:
         metrics = report.get("metrics") if isinstance(report.get("metrics"), dict) else {}
+        person_slug = clean_text(report.get("person_slug") or report.get("user") or "")
+        if person_slug and not node.get("person_slug"):
+            node["person_slug"] = person_slug
         node.update(last_seen=time.time(), ip=ip, version=clean_text(report.get("version"), 40),
                     hostname=clean_text(report.get("hostname"), 60),
                     capabilities=[clean_text(c, 30) for c in (report.get("capabilities") or [])[:12]],
@@ -171,6 +176,8 @@ class Registry:
             node["name"] = clean_text(changes["name"]) or node["id"]
         if "room" in changes:
             node["room"] = clean_text(changes["room"])
+        if "person_slug" in changes:
+            node["person_slug"] = clean_text(changes["person_slug"])
         if "settings" in changes:
             node["settings"] = self._settings(node.get("settings") or {}, changes["settings"])
         self._save()

@@ -121,21 +121,32 @@ async def scan(seconds: int) -> None:
     await ctl("--timeout", str(seconds), "scan", "on", timeout=seconds + 10)
 
 
+async def stop_scan() -> None:
+    try:
+        await ctl("scan", "off", timeout=5)
+    except Exception:
+        pass
+    await asyncio.sleep(0.35)
+
+
 async def pair(mac: str) -> None:
     mac = valid_mac(mac)
+    await stop_scan()
     await ctl("pairable", "on")
     code, out = await ctl("--agent=NoInputNoOutput", "pair", mac, timeout=45)
     failed = code != 0 or "Failed to pair" in out
     if failed and "AlreadyExists" not in out:
+        tail = out.strip().splitlines()[-1] if out.strip() else f"code {code}"
         # Graceful fallback: BLE peripherals (e.g. Fitbit/sensors) often reject classic pairing
         try:
             await trust(mac)
             await connect(mac)
             return
-        except Exception:
-            pass
-        tail = out.strip().splitlines()[-1] if out.strip() else f"code {code}"
-        raise BluetoothError(tail[:200])
+        except Exception as connect_exc:
+            raise BluetoothError(
+                f"Accoppiamento classico non riuscito ({tail}) e connessione diretta BLE fallita: {connect_exc}. "
+                "Verifica che il dispositivo sia acceso, con battito cardiaco visibile e vicino all'adattatore."
+            )
     await trust(mac)
 
 
@@ -148,7 +159,9 @@ async def untrust(mac: str) -> None:
 
 
 async def connect(mac: str) -> None:
-    await _run("connect", valid_mac(mac), timeout=30, ok=("Connection successful", "AlreadyConnected"))
+    mac = valid_mac(mac)
+    await stop_scan()
+    await _run("connect", mac, timeout=30, ok=("Connection successful", "AlreadyConnected"))
 
 
 async def disconnect(mac: str) -> None:

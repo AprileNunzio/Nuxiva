@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse
 from state import store
 from config import PUBLIC_PORT
 
-from agenti.nodes import compute_routes, deviceauth, enroll_routes, esp32_routes, screenshot, server, trust_routes
+from agenti.nodes import compute_routes, deviceauth, enroll_routes, esp32_routes, screenshot, server, sync_routes, trust_routes
 from agenti.nodes.audit import audit
 from agenti.nodes.beacon import beacon
 from agenti.nodes.requests import requests
@@ -24,6 +24,7 @@ _failures: dict[str, list[float]] = {}
 public_routes.include_router(enroll_routes.public_routes)
 public_routes.include_router(compute_routes.public_routes)
 public_routes.include_router(esp32_routes.public_routes)
+public_routes.include_router(sync_routes.public_routes)
 admin_routes.include_router(compute_routes.admin_routes)
 admin_routes.include_router(enroll_routes.admin_routes)
 admin_routes.include_router(esp32_routes.admin_routes)
@@ -80,10 +81,22 @@ async def node_heartbeat(request: Request):
     if not was_online:
         store.event("INFO", f"Nodo online: {node['name']}", "nodes")
     apk = await _apk_offer(body)
+    person_slug = node.get("person_slug") or "default"
+    try:
+        from agenti.shares import archive as shares_archive
+        shares_archive.person_folder(person_slug)
+    except Exception:
+        pass
+    sync_info = {
+        "enabled": True,
+        "person_slug": person_slug,
+        "folder": "Nuxiva",
+        "smb_path": f"\\\\{request.url.hostname or 'NUXIVA'}\\condivisa\\persone\\{person_slug}",
+    }
     return {"commands": commands, "actions": inbox.take(node["id"]), "heartbeat": 30, "agent": _agent_sha(), **apk,
             "update_target": _server_version(), "modules": _module_shas(), "assistant_name": _assistant_name(),
             "settings": screenshot.with_default_target(registry.effective(node["id"]), request.url.hostname or ""),
-            "custom": sorted(node.get("settings") or {})}
+            "sync": sync_info, "custom": sorted(node.get("settings") or {})}
 
 
 async def _apk_offer(body: dict) -> dict:

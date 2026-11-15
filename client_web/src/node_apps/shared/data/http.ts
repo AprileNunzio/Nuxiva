@@ -2,8 +2,9 @@ export class NodeModuleError extends Error {
   constructor(
     readonly code: string,
     readonly status: number,
+    readonly detailMessage?: string,
   ) {
-    super(code);
+    super(detailMessage ? `${code}: ${detailMessage}` : code);
     this.name = 'NodeModuleError';
   }
 }
@@ -14,8 +15,19 @@ export async function requestJson<T>(url: string, init?: RequestInit): Promise<T
   const response = await fetch(url, { cache: 'no-store', credentials: 'same-origin', ...init, headers: { ...JSON_HEADERS, ...init?.headers } });
   if (!response.ok) {
     const payload: unknown = await response.json().catch(() => null);
-    const detail = typeof payload === 'object' && payload !== null ? (payload as { detail?: unknown }).detail : null;
-    throw new NodeModuleError(typeof detail === 'string' ? detail : 'request_failed', response.status);
+    let code = 'request_failed';
+    let detailMessage: string | undefined;
+    if (typeof payload === 'object' && payload !== null) {
+      const detail = (payload as { detail?: unknown }).detail;
+      if (typeof detail === 'string') {
+        code = detail;
+      } else if (typeof detail === 'object' && detail !== null) {
+        const obj = detail as { code?: string; message?: string };
+        if (typeof obj.code === 'string') code = obj.code;
+        if (typeof obj.message === 'string') detailMessage = obj.message;
+      }
+    }
+    throw new NodeModuleError(code, response.status, detailMessage);
   }
   return (await response.json()) as T;
 }

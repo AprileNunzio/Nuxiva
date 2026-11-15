@@ -163,6 +163,26 @@ const KNOWN_CODES = new Set([
   'fullscreen_toggle_failed',
 ]);
 
+const getCauseDetail = (cause: unknown): string | null => {
+  if (!cause) return null;
+  if (typeof cause === 'object') {
+    const obj = cause as Record<string, unknown>;
+    if (typeof obj.detailMessage === 'string' && obj.detailMessage.trim()) {
+      return obj.detailMessage.trim();
+    }
+    if (typeof obj.message === 'string' && obj.message.trim()) {
+      const msg = obj.message.trim();
+      if (msg && msg !== 'request_failed' && !msg.startsWith('node_') && !msg.startsWith('bluetooth_')) {
+        return msg;
+      }
+    }
+  }
+  if (typeof cause === 'string' && cause.trim() && !cause.startsWith('node_') && !cause.startsWith('bluetooth_')) {
+    return cause.trim();
+  }
+  return null;
+};
+
 export const ErrorToastHost: React.FC = () => {
   const { t } = useScopedI18n('shared/errors');
   const [errors, setErrors] = useState<readonly ReportedError[]>([]);
@@ -186,29 +206,35 @@ export const ErrorToastHost: React.FC = () => {
       data-tone="dark"
       className="pointer-events-none fixed inset-x-4 bottom-20 z-[200005] flex flex-col items-center gap-2 sm:inset-x-auto sm:right-4 sm:items-end"
     >
-      {errors.map((entry) => (
-        <div
-          key={entry.id}
-          role="alert"
-          className={`pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-xl border bg-slate-950/95 p-3 text-sm shadow-xl backdrop-blur-xl ${
-            entry.severity === 'critical' ? 'border-rose-500/50 text-rose-100' : 'border-amber-400/40 text-amber-50'
-          }`}
-        >
-          <AlertTriangle
-            className={`mt-0.5 h-4 w-4 shrink-0 ${entry.severity === 'critical' ? 'text-rose-400' : 'text-amber-300'}`}
-            aria-hidden="true"
-          />
-          <p className="flex-1 leading-snug">{t(KNOWN_CODES.has(entry.code) ? `error_${entry.code}` : 'error_generic')}</p>
-          <button
-            type="button"
-            onClick={() => dismiss(entry.id)}
-            aria-label={t('dismiss')}
-            className="rounded-md p-1 text-slate-400 transition hover:bg-slate-800 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+      {errors.map((entry) => {
+        const detail = getCauseDetail(entry.cause);
+        return (
+          <div
+            key={entry.id}
+            role="alert"
+            className={`pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-xl border bg-slate-950/95 p-3 text-sm shadow-xl backdrop-blur-xl ${
+              entry.severity === 'critical' ? 'border-rose-500/50 text-rose-100' : 'border-amber-400/40 text-amber-50'
+            }`}
           >
-            <X className="h-4 w-4" aria-hidden="true" />
-          </button>
-        </div>
-      ))}
+            <AlertTriangle
+              className={`mt-0.5 h-4 w-4 shrink-0 ${entry.severity === 'critical' ? 'text-rose-400' : 'text-amber-300'}`}
+              aria-hidden="true"
+            />
+            <div className="flex-1 leading-snug">
+              <p className="font-medium">{t(KNOWN_CODES.has(entry.code) ? `error_${entry.code}` : 'error_generic')}</p>
+              {detail && <p className="mt-1 text-xs opacity-90 break-words text-rose-200/90 font-mono">{detail}</p>}
+            </div>
+            <button
+              type="button"
+              onClick={() => dismiss(entry.id)}
+              aria-label={t('dismiss')}
+              className="rounded-md p-1 text-slate-400 transition hover:bg-slate-800 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
+        );
+      })}
     </div>
   );
 };

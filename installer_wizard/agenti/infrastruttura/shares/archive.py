@@ -125,3 +125,20 @@ def overview() -> list[dict]:
         rows.append({"kind": kind, "name": name, "description": DESCRIPTIONS[kind], "count": len(items),
                      "latest": [p.name for p in items[:3]]})
     return rows
+
+
+def person_folder(slug: str) -> Path:
+    clean_slug = clean(slug, fallback="utente").lower()
+    target = ROOT / "persone" / clean_slug
+    target.mkdir(parents=True, exist_ok=True)
+    note = target / README
+    if not note.exists():
+        try:
+            note.write_text(
+                f"Cartella sincronizzata di Nuxiva per {clean_slug}.\n"
+                "I file creati qui o nella cartella Documenti\\Nuxiva vengono sincronizzati in tempo reale.\n",
+                encoding="utf-8"
+            )
+        except OSError:
+            pass
+    return target

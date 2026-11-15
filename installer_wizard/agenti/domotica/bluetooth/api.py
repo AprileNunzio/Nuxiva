@@ -101,7 +101,17 @@ async def bluetooth_action(mac: str, action: str, request: Request, user: str = 
     try:
         await ACTIONS[action](mac)
     except adapter.BluetoothError as exc:
-        raise HTTPException(502, f"bluetooth_{action}_failed") from exc
+        err_str = str(exc).strip()
+        explanation = err_str
+        if "org.bluez.Error.Failed" in err_str:
+            explanation = f"{err_str} (Dispositivo non raggiungibile o ha rifiutato la connessione. Verifica che sia visibile e vicino)"
+        elif "org.bluez.Error.InProgress" in err_str:
+            explanation = "Operazione Bluetooth già in corso. Attendi qualche secondo e riprova."
+        elif "org.bluez.Error.NotReady" in err_str:
+            explanation = "Adattatore Bluetooth non pronto o occupato. Riprova."
+        elif "timeout" in err_str.lower():
+            explanation = "Tempo scaduto durante il tentativo di connessione con il dispositivo."
+        raise HTTPException(502, detail={"code": f"bluetooth_{action}_failed", "message": explanation}) from exc
     notice = ""
     if action == "pair":
         try:

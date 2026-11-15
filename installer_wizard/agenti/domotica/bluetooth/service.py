@@ -46,6 +46,7 @@ class BluetoothService:
         self.updated_at = 0.0
         self.nearby_cache: dict[str, dict] = {}
         self.last_auto_scan = 0.0
+        self.last_present_at = 0.0
         self.lock = asyncio.Lock()
 
     @staticmethod
@@ -102,9 +103,19 @@ class BluetoothService:
     async def refresh(self) -> dict:
         async with self.lock:
             ctrl = await adapter.controller()
+            now = time.time()
+            if ctrl["present"]:
+                self.last_present_at = now
+            elif now - self.last_present_at < 4.0:
+                cached_ctrl = self.state.get("controller") or {}
+                if cached_ctrl.get("present"):
+                    ctrl["present"] = True
+                    ctrl["installed"] = True
+                    for k in ("name", "address", "powered", "pairable"):
+                        if cached_ctrl.get(k):
+                            ctrl[k] = cached_ctrl[k]
             ready = ctrl["present"] and ctrl["installed"]
             live_devs = [describe(d) for d in await adapter.devices()] if ready else []
-            now = time.time()
             for d in live_devs:
                 d["last_seen"] = now
                 self.nearby_cache[d["mac"]] = d
@@ -145,11 +156,7 @@ class BluetoothService:
             await adapter.power(True)
             await adapter.scan(seconds)
         except (OSError, adapter.BluetoothError) as exc:
-            log.warning("Ricerca Bluetooth non riuscita: %s (tentativo di ripristino automatico)", exc)
-            try:
-                await adapter.reset_adapter()
-            except Exception:
-                pass
+            log.warning("Ricerca Bluetooth completata o interrotta: %s", exc)
         finally:
             self.scanning_until = 0.0
         try:
