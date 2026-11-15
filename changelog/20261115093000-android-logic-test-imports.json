@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Import corretti di kotlin.test nei test di logica dell'APK Android",
+    "en": "Correct kotlin.test imports in Android APK logic tests",
+    "fr": "Imports kotlin.test corrects dans les tests logiques de l'APK Android",
+    "es": "Importaciones correctas de kotlin.test en las pruebas lógicas del APK de Android"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Sostituiti gli import errati di org.junit con kotlin.test in UpdateTest.kt del modulo logic per risolvere l'errore di compilazione dei test unitari su CI.",
+      "en": "Replaced incorrect org.junit imports with kotlin.test in UpdateTest.kt within the logic module to resolve unit test compilation failure on CI.",
+      "fr": "Remplacement des imports org.junit par kotlin.test dans UpdateTest.kt du module logic pour corriger l'erreur de compilation des tests unitaires en CI.",
+      "es": "Reemplazadas las importaciones incorrectas de org.junit por kotlin.test en UpdateTest.kt del módulo logic para corregir el fallo de compilación en CI."
+    }
+  ]
+}
