@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Correzione della compilazione dell'hub nativo Android",
+    "en": "Fix for the Android native hub build",
+    "fr": "Correction de la compilation du hub natif Android",
+    "es": "Corrección de la compilación del hub nativo de Android"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "L'hub nativo dell'app Android non compilava per l'uso delle dimensioni dello schermo dentro un blocco annidato; ora le dimensioni sono lette una volta sola.",
+      "en": "The Android app native hub did not compile because the screen size was used inside a nested block; the size is now read once.",
+      "fr": "Le hub natif de l'app Android ne compilait pas car la taille de l'écran était utilisée dans un bloc imbriqué ; elle est maintenant lue une seule fois.",
+      "es": "El hub nativo de la app Android no compilaba porque el tamaño de pantalla se usaba dentro de un bloque anidado; ahora se lee una sola vez."
+    }
+  ]
+}

@@ -66,7 +66,9 @@ fun MobileHubScreen(graph: AppGraph, prefs: HubPrefs, onMenu: () -> Unit) {
             .statusBarsPadding()
             .navigationBarsPadding(),
     ) {
-        val wide = maxWidth >= WIDE_BREAKPOINT
+        val width = maxWidth
+        val height = maxHeight
+        val wide = width >= WIDE_BREAKPOINT
         val audioOnly = when (prefs.layout) {
             HubLayout.Audio -> true
             HubLayout.Widgets -> false
@@ -78,7 +80,7 @@ fun MobileHubScreen(graph: AppGraph, prefs: HubPrefs, onMenu: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                CoreOrb(tone, reading?.level ?: 0f, min(maxWidth.value * 0.82f, maxHeight.value * 0.5f).dp, title, detail)
+                CoreOrb(tone, reading?.level ?: 0f, min(width.value * 0.82f, height.value * 0.5f).dp, title, detail)
                 Text(date, style = MaterialTheme.typography.bodyMedium, color = tokens.muted, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 20.dp))
                 Row(
                     Modifier.padding(top = 20.dp).horizontalScroll(rememberScrollState()),
@@ -98,7 +100,7 @@ fun MobileHubScreen(graph: AppGraph, prefs: HubPrefs, onMenu: () -> Unit) {
             ) {
                 fullSpan("core") {
                     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                        CoreOrb(tone, reading?.level ?: 0f, min(maxWidth.value * 0.5f, 260f).dp, title, detail)
+                        CoreOrb(tone, reading?.level ?: 0f, min(width.value * 0.5f, 260f).dp, title, detail)
                         Text(date, style = MaterialTheme.typography.bodyMedium, color = tokens.muted, modifier = Modifier.padding(top = 8.dp))
                     }
                 }
