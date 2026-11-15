@@ -361,8 +361,10 @@
         zone = { x: M, y: TOP, w: left - M - GAP, h: BOTTOM - TOP - 60 };
       }
     } else if (normal.length && portrait) {
-      const cols = W >= 560 ? 2 : 1, colW = Math.floor((W - 2 * M - GAP * (cols - 1)) / cols);
-      const colTops = Array(cols).fill(TOP);
+      const avatarH = Math.round(H * 0.36);
+      const portTop = TOP + avatarH + GAP;
+      const cols = Math.max(1, W >= 560 ? 2 : 1), colW = Math.floor((W - 2 * M - GAP * (cols - 1)) / cols);
+      const colTops = Array(cols).fill(portTop);
       for (const c of normal) {
         let chosen = 0;
         for (let i = 1; i < cols; i++) { if (colTops[i] < colTops[chosen]) chosen = i; }
@@ -371,31 +373,56 @@
         colTops[chosen] = y + h + GAP;
         blocked.push({ x, y, w, h });
       }
-      zone = { x: M, y: TOP - 20, w: W - 2 * M, h: Math.max(160, BOTTOM - TOP - 50) };
+      zone = { x: M, y: TOP - 20, w: W - 2 * M, h: Math.max(160, avatarH) };
     } else if (normal.length) {
       const availW = W - 2 * M;
-      const minColW = W < 1100 ? 260 : 320;
-      const maxCols = Math.max(2, Math.floor((availW + GAP) / (minColW + GAP)));
-      const cols = Math.max(1, Math.min(maxCols, Math.max(2, Math.ceil(normal.length / 2))));
-      const colW = Math.min(380, Math.floor((availW - (cols - 1) * GAP) / cols));
+      const minCenterW = Math.max(260, Math.min(520, W * 0.28));
+      const availSideW = availW - minCenterW - 2 * GAP;
+      const wingW = availSideW / 2;
+      const canFour = wingW >= 460;
+      const cols = Math.max(1, canFour ? 4 : 2);
+      const colW = cols === 4
+        ? Math.max(220, Math.min(350, Math.floor((wingW - GAP) / 2)))
+        : Math.max(240, Math.min(380, Math.floor(wingW)));
+      const colXs = cols === 4
+        ? [M, M + colW + GAP, W - M - 2 * colW - GAP, W - M - colW]
+        : [M, W - M - colW];
+      const outer = cols === 4 ? [0, 3] : [0, 1];
+      const inner = cols === 4 ? [1, 2] : [];
       const colTops = Array(cols).fill(TOP);
       for (const c of normal) {
-        let chosen = 0;
-        for (let i = 1; i < cols; i++) { if (colTops[i] < colTops[chosen]) chosen = i; }
-        const w = colW, h = measure(c, w), x = M + chosen * (colW + GAP), y = colTops[chosen];
+        const w = colW, h = measure(c, w);
+        const outerFit = outer.filter((i) => colTops[i] + h <= BOTTOM);
+        let chosen;
+        if (outerFit.length) {
+          chosen = outerFit.reduce((best, i) => (colTops[i] < colTops[best] ? i : best));
+        } else {
+          const innerFit = inner.filter((i) => colTops[i] + h <= BOTTOM);
+          if (innerFit.length) {
+            chosen = innerFit.reduce((best, i) => (colTops[i] < colTops[best] ? i : best));
+          } else {
+            chosen = 0;
+            for (let i = 1; i < cols; i++) { if (colTops[i] < colTops[chosen]) chosen = i; }
+          }
+        }
+        const x = colXs[chosen], y = colTops[chosen];
         place(c, x, y, w);
         colTops[chosen] = y + h + GAP;
         blocked.push({ x, y, w, h });
       }
-      const leftColX = M + colW + GAP, rightColX = M + (cols - 1) * (colW + GAP);
-      if (cols >= 3 && rightColX - leftColX > 180 && normal.length < cols * 2) {
-        zone = { x: leftColX, y: TOP, w: rightColX - leftColX - GAP, h: BOTTOM - TOP };
+      const leftBlocked = blocked.filter((b) => b.x < W / 2);
+      const rightBlocked = blocked.filter((b) => b.x >= W / 2);
+      const leftEdge = leftBlocked.length ? Math.max(...leftBlocked.map((b) => b.x + b.w)) : M;
+      const rightEdge = rightBlocked.length ? Math.min(...rightBlocked.map((b) => b.x)) : W - M;
+      const freeW = rightEdge - leftEdge - 2 * GAP;
+      if (freeW < availW * 0.58 || covers(normal.concat(pinned), W, H)) {
+        zone = { x: leftEdge + GAP, y: TOP - 20, w: Math.max(160, freeW), h: BOTTOM - TOP + 20 };
       } else {
         zone = null;
       }
     }
 
-    if (!takeover && zone && !covers(normal.concat(pinned), W, H)) zone = null;
+    if (!portrait && !takeover && zone && !covers(normal.concat(pinned), W, H)) zone = null;
     if (zone && Math.min(zone.w, zone.h) < Math.min(W, H) * VOICE_ONLY) zone = { ...zone, voice: true };
     document.body.classList.toggle("desk-has", normal.length > 0 || !!takeover);
     document.body.classList.toggle("desk-alert", !!takeover);

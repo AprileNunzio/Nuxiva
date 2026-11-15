@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-15",
+  "title": {
+    "it": "Layout widget multicolonna su pagina 80 a priorita laterale e protezione del nucleo 3D",
+    "en": "Page 80 multi-column widget layout with lateral priority and 3D nucleus protection",
+    "fr": "Disposition multi-colonnes des widgets page 80 à priorité latérale et protection du noyau 3D",
+    "es": "Diseño multicolumna de widgets página 80 con prioridad lateral y protección del núcleo 3D"
+  },
+  "fixes": [
+    {
+      "it": "Risolto il layout dei widget su pagina 80 distribuendo le schede prima sulle colonne esterne e poi sui lati interni se lo spazio verticale si esaurisce.",
+      "en": "Fixed page 80 widget layout by distributing cards first across outer columns and then utilizing inner lateral sides when vertical space runs out.",
+      "fr": "Correction de la disposition des widgets page 80 en distribuant les cartes d'abord sur les colonnes extérieures puis intérieures en cas de manque d'espace vertical.",
+      "es": "Corregido el diseño de widgets página 80 distribuyendo las tarjetas primero en las columnas exteriores y luego en las interiores si se agota el espacio vertical."
+    },
+    {
+      "it": "Garantita la totale non sovrapposizione al nucleo o personaggio 3D centrale mediante preservazione del corridoio di keep-out e aggiornamento dinamico della zona stage per il ridimensionamento e adattamento automatico.",
+      "en": "Guaranteed zero overlap with the central nucleus or 3D character by preserving the center keep-out corridor and dynamically updating the stage zone for automatic resizing and adaptation.",
+      "fr": "Garantie de non-chevauchement avec le noyau ou personnage 3D central en préservant le couloir central et en mettant à jour dynamiquement la zone de scène pour l'adaptation automatique.",
+      "es": "Garantizada la no superposición con el núcleo o personaje 3D central mediante preservación del corredor central y actualización dinámica de la zona de escenario para redimensionamiento automático."
+    }
+  ]
+}

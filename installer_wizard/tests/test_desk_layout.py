@@ -19,6 +19,13 @@ class LayoutSourceTest(unittest.TestCase):
         self.assertIn("cols = Math.max(1", source)
         self.assertIn("colTops[chosen] = y + h + GAP", source)
 
+    def test_lateral_first_and_center_keepout(self):
+        source = DESK.read_text()
+        self.assertIn("outerFit", source)
+        self.assertIn("innerFit", source)
+        self.assertIn("minCenterW", source)
+        self.assertIn("hooks.onStage(stage)", source)
+
     @unittest.skipUnless(shutil.which("node"), "node assente")
     def test_syntax(self):
         done = subprocess.run(["node", "--check", str(DESK)], capture_output=True, text=True)
