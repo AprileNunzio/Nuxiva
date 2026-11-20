@@ -1,7 +1,8 @@
-import glob
 import json
 import re
 from pathlib import Path
+
+from agenti.agency.scanner.recursive_scanner import recursive_scanner
 
 DEFAULT_CATALOG_DIR = Path(__file__).resolve().parents[1] / "departments_catalog"
 
@@ -18,28 +19,24 @@ def scan_departments(extra_dirs: list[Path] | None = None) -> dict[str, dict]:
     for d in dirs:
         if not d.exists() or not d.is_dir():
             continue
-        pattern = str(d / "*.json")
-        for filepath in sorted(glob.glob(pattern)):
-            try:
-                content = Path(filepath).read_text(encoding="utf-8")
-                data = json.loads(content)
-                if not isinstance(data, dict):
-                    continue
-                dep_id = _clean_str(data.get("id"), 40).lower()
-                if not dep_id:
-                    continue
-                departments[dep_id] = {
-                    "id": dep_id,
-                    "name": _clean_str(data.get("name"), 120) or f"Specialist · {dep_id.title()}",
-                    "department": _clean_str(data.get("department"), 120) or "Dipartimento Speciale",
-                    "prompt": _clean_str(data.get("prompt"), 2000),
-                    "skills": [str(s)[:60] for s in data.get("skills", []) if isinstance(s, (str, int))],
-                    "capabilities": [str(c)[:60] for c in data.get("capabilities", []) if isinstance(c, (str, int))],
-                    "widgets": [w for w in data.get("widgets", []) if isinstance(w, dict)],
-                    "path": str(filepath),
-                }
-            except Exception:
+        for file_path, data, category in recursive_scanner.scan_json_files(d):
+            dep_id = _clean_str(data.get("id"), 40).lower()
+            if not dep_id:
                 continue
+            rec = {
+                "id": dep_id,
+                "name": _clean_str(data.get("name"), 120) or f"Specialist · {dep_id.title()}",
+                "department": _clean_str(data.get("department"), 120) or "Dipartimento Speciale",
+                "category": category,
+                "prompt": _clean_str(data.get("prompt"), 2000),
+                "skills": [str(s)[:60] for s in data.get("skills", []) if isinstance(s, (str, int))],
+                "capabilities": [str(c)[:60] for c in data.get("capabilities", []) if isinstance(c, (str, int))],
+                "widgets": [w for w in data.get("widgets", []) if isinstance(w, dict)],
+                "path": str(file_path),
+            }
+            departments[dep_id] = rec
+            if category and category != "general":
+                departments[f"{category}.{dep_id}"] = rec
     return departments
 
 
@@ -110,21 +107,45 @@ def forge_department(
     widgets: list[dict] | None = None,
     capabilities: list[str] | None = None,
     target_dir: Path | None = None,
+    category: str = "general",
 ) -> dict:
     dest_dir = target_dir or DEFAULT_CATALOG_DIR
-    dest_dir.mkdir(parents=True, exist_ok=True)
+    cat_slug = recursive_scanner.clean_slug(category) or "general"
+    cat_dir = dest_dir / cat_slug
+    cat_dir.mkdir(parents=True, exist_ok=True)
     slug = re.sub(r"[^a-z0-9_-]", "_", domain.lower().strip())[:40] or "specialist"
     title = slug.replace("_", " ").title()
     record = {
         "id": slug,
         "name": name or f"Specialist · {title}",
         "department": dept_name or f"Dipartimento {title}",
+        "category": cat_slug,
         "prompt": prompt or f"Sei lo Specialista responsabile del dominio {title} per NunzioTech Agency.",
         "skills": skills or [f"{slug}-core", "domain-execution", "compliance", "verification"],
         "capabilities": capabilities or [f"{slug}_task", "data_synthesis"],
         "widgets": widgets or [{"id": f"{slug}_dashboard", "type": "domain_card", "title": f"Monitor {title}"}],
     }
-    file_path = dest_dir / f"{slug}.json"
+    file_path = cat_dir / f"{slug}.json"
     file_path.write_text(json.dumps(record, indent=2, ensure_ascii=False), encoding="utf-8")
     record["path"] = str(file_path)
     return record
+
+
+def list_categories(extra_dirs: list[Path] | None = None) -> list[str]:
+    deps = scan_departments(extra_dirs)
+    cats = {d.get("category", "general") for d in deps.values() if isinstance(d, dict)}
+    return sorted(cats)
+
+
+def get_departments_by_category(category: str, extra_dirs: list[Path] | None = None) -> list[dict]:
+    deps = scan_departments(extra_dirs)
+    target = category.lower().strip()
+    results = []
+    seen = set()
+    for d in deps.values():
+        if isinstance(d, dict) and d.get("category", "").lower() == target:
+            dep_id = d.get("id")
+            if dep_id and dep_id not in seen:
+                seen.add(dep_id)
+                results.append(d)
+    return results

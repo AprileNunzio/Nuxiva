@@ -9,8 +9,10 @@ DEFAULT_TOOLS_DIR = Path(__file__).resolve().parents[1] / "tools_catalog"
 
 def _import_module_from_file(filepath: Path) -> Any | None:
     try:
-        if filepath.parent.resolve() == DEFAULT_TOOLS_DIR.resolve():
-            return importlib.import_module(f"agenti.agency.tools_catalog.{filepath.stem}")
+        if DEFAULT_TOOLS_DIR.resolve() in filepath.resolve().parents:
+            rel_parts = filepath.relative_to(DEFAULT_TOOLS_DIR).with_suffix("").parts
+            mod_name = "agenti.agency.tools_catalog." + ".".join(rel_parts)
+            return importlib.import_module(mod_name)
         mod_name = f"agency_tool_{filepath.stem}"
         spec = importlib.util.spec_from_file_location(mod_name, filepath)
         if spec and spec.loader:
@@ -30,7 +32,7 @@ def scan_tools(extra_dirs: list[Path] | None = None) -> dict[str, Any]:
     for d in dirs:
         if not d.exists() or not d.is_dir():
             continue
-        for py_path in sorted(d.glob("*.py")):
+        for py_path in sorted(d.rglob("*.py")):
             if py_path.name.startswith("__"):
                 continue
             mod = _import_module_from_file(py_path)
@@ -47,7 +49,7 @@ def scan_tools(extra_dirs: list[Path] | None = None) -> dict[str, Any]:
                 for t in mod.TOOLS:
                     if hasattr(t, "name"):
                         tools[t.name] = t
-        for json_path in sorted(d.glob("*.json")):
+        for json_path in sorted(d.rglob("*.json")):
             try:
                 data = json.loads(json_path.read_text(encoding="utf-8"))
                 if isinstance(data, dict) and "name" in data and "description" in data:

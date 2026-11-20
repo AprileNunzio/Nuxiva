@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Scanner ricorsivi e partizionamento categorico per scalabilità enterprise a milioni di agenti",
+    "en": "Recursive scanners and categorical partitioning for enterprise scaling to millions of agents",
+    "fr": "Scanners récursifs et partitionnement catégoriel pour passage à l'échelle entreprise",
+    "es": "Escáneres recursivos y particionamiento categórico para escalabilidad empresarial"
+  },
+  "features": [
+    {
+      "it": "Implementato scanner ricorsivo universale e suddiviso departments_catalog in sottocartelle categoriche (engineering, security, operations, business, creative, lifestyle, specialized) per prevenire colli di bottiglia e supportare fino a 1.000.000 di agenti.",
+      "en": "Implemented universal recursive scanner and partitioned departments_catalog into categorical subdirectories (engineering, security, operations, business, creative, lifestyle, specialized) to prevent bottlenecks and support up to 1,000,000 agents.",
+      "fr": "Implémentation d'un scanner récursif universel et partitionnement de departments_catalog en sous-dossiers catégoriels pour prévenir les goulets d'étranglement et supporter jusqu'à 1 000 000 d'agents.",
+      "es": "Implementación de escáner recursivo universal y particionamiento de departments_catalog en subcarpetas categóricas para evitar cuellos de botella y soportar hasta 1.000.000 de agentes."
+    },
+    {
+      "it": "Adottata la regola di partizionamento gerarchico nello scaffolder del CEO: ogni progetto e modulo separa categoricamente domain, servizi, handler, componenti e tool MCP, garantendo audit di modularità enterprise.",
+      "en": "Adopted hierarchical partitioning rule in the CEO scaffolder: every project and module categorically partitions domains, services, handlers, components, and MCP tools, ensuring enterprise modularity audits.",
+      "fr": "Adoption de la règle de partitionnement hiérarchique dans le générateur du CEO : chaque projet et module sépare catégoriellement domaines, services, gestionnaires, composants et outils MCP.",
+      "es": "Adopción de la regla de particionamiento jerárquico en el andamiaje del CEO: cada proyecto y módulo separa categóricamente dominios, servicios, manejadores, componentes y herramientas MCP."
+    }
+  ]
+}

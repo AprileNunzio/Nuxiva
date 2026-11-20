@@ -55,12 +55,12 @@ class TestAgencyModernDevPairProgramming(unittest.IsolatedAsyncioTestCase):
         self.assertIn("security", trees)
 
         self.assertIn("frontend/package.json", trees["frontend"]["files"])
-        self.assertIn("frontend/src/services/api_client.ts", trees["frontend"]["files"])
-        self.assertIn("backend/manifest.json", trees["backend"]["files"])
-        self.assertIn("api/v1/openapi.json", trees["api"]["files"])
+        self.assertIn("frontend/src/services/gaming/api_client.ts", trees["frontend"]["files"])
+        self.assertIn("backend/src/domain/gaming/manifest.json", trees["backend"]["files"])
+        self.assertIn("api/v1/gaming/openapi.json", trees["api"]["files"])
         self.assertIn("mcp/mcp_server.json", trees["mcp"]["files"])
-        self.assertIn("mcp/tools/tools_manifest.json", trees["mcp"]["files"])
-        self.assertIn("security/policies/zero_trust.json", trees["security"]["files"])
+        self.assertIn("mcp/tools/gaming/tools_manifest.json", trees["mcp"]["files"])
+        self.assertIn("security/policies/gaming/zero_trust.json", trees["security"]["files"])
 
         self.assertEqual(len(scaffold["api_routes"]), len(caps))
         self.assertEqual(len(scaffold["mcp_tools"]), len(caps))
