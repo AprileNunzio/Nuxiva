@@ -72,7 +72,11 @@ fn decide(
         }
         let excess = component.rss.saturating_sub(budget);
         let kind = if component.kind == Kind::Cache {
-            ActionKind::Drop
+            if component.id.contains("memory") || component.id.contains("vector") {
+                ActionKind::Consolidate
+            } else {
+                ActionKind::Drop
+            }
         } else {
             ActionKind::Trim
         };

@@ -270,4 +270,78 @@ impl TaskGraph {
         }
         p.finish()
     }
+
+    pub fn replan_subgraph(
+        &mut self,
+        failed_id: &TaskId,
+        replacement_specs: &[TaskSpec],
+    ) -> Result<(), PlanError> {
+        let Some(failed_task) = self.tasks.get(failed_id) else {
+            return Err(PlanError::NotFound(failed_id.clone()));
+        };
+        let upstream_deps: Vec<String> = failed_task
+            .depends_on()
+            .iter()
+            .map(|id| id.as_str().to_string())
+            .collect();
+
+        let mut staged = self.tasks.clone();
+        let mut replacement_terminal_ids = Vec::new();
+
+        for spec in replacement_specs {
+            let mut adjusted = spec.clone();
+            if adjusted.depends_on.is_empty() {
+                adjusted.depends_on.clone_from(&upstream_deps);
+            }
+            let new_task = Task::from_spec(&adjusted)?;
+            if staged.contains_key(new_task.id()) {
+                return Err(PlanError::Duplicate(new_task.id().clone()));
+            }
+            replacement_terminal_ids.push(new_task.id().as_str().to_string());
+            staged.insert(new_task.id().clone(), new_task);
+        }
+
+        let mut updated_tasks = Vec::new();
+        for task in staged.values() {
+            if task.depends_on().contains(failed_id) {
+                let mut new_deps: Vec<String> = task
+                    .depends_on()
+                    .iter()
+                    .filter(|d| *d != failed_id)
+                    .map(|id| id.as_str().to_string())
+                    .collect();
+                for term_id in &replacement_terminal_ids {
+                    if !new_deps.contains(term_id) {
+                        new_deps.push(term_id.clone());
+                    }
+                }
+                let spec = TaskSpec {
+                    id: task.id().as_str().to_string(),
+                    title: task.title().as_str().to_string(),
+                    role: task.role().as_str().to_string(),
+                    depends_on: new_deps,
+                    acceptance: task
+                        .acceptance()
+                        .iter()
+                        .map(|c| c.text().as_str().to_string())
+                        .collect(),
+                    estimate_seconds: task.estimate_seconds(),
+                    max_attempts: task.max_attempts(),
+                    budget_tokens: task.budget().map(agency_domain::TaskBudget::max_tokens),
+                    budget_seconds: task.budget().map(agency_domain::TaskBudget::max_seconds),
+                };
+                let rebuilt = Task::from_spec(&spec)?;
+                updated_tasks.push(rebuilt);
+            }
+        }
+
+        for updated in updated_tasks {
+            staged.insert(updated.id().clone(), updated);
+        }
+
+        let candidate = Self { tasks: staged };
+        candidate.validate()?;
+        *self = candidate;
+        Ok(())
+    }
 }

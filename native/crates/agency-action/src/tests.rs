@@ -232,3 +232,65 @@ fn acceptance_gate_requires_verified_proofs_and_artifacts() {
         assert_eq!(verdict.verified_proofs, 1);
     }
 }
+
+#[test]
+fn test_preflight_invariants_allow_and_deny() {
+    use crate::preflight::{
+        ActionCommandSpec, ActionInvariant, PreflightSimulator, PreflightVerdict,
+    };
+
+    let invariants = vec![
+        ActionInvariant::FilesystemBoundary {
+            allowed_root: "/home/antigravity/workspace".to_string(),
+        },
+        ActionInvariant::ForbiddenPatterns {
+            blacklisted_tokens: vec!["rm -rf /".to_string(), "mkfs".to_string()],
+        },
+        ActionInvariant::ResourceQuota {
+            max_payload_bytes: 1024,
+            max_files: 5,
+        },
+    ];
+    let sim = PreflightSimulator::new(invariants);
+
+    let valid_spec = ActionCommandSpec {
+        command: "cargo check".to_string(),
+        working_dir: "/home/antigravity/workspace/proj".to_string(),
+        modified_files: vec!["/home/antigravity/workspace/proj/src/lib.rs".to_string()],
+        payload_bytes: 256,
+    };
+    assert_eq!(sim.evaluate(&valid_spec), PreflightVerdict::Allowed);
+
+    let boundary_violation = ActionCommandSpec {
+        command: "cargo check".to_string(),
+        working_dir: "/etc".to_string(),
+        modified_files: vec![],
+        payload_bytes: 0,
+    };
+    assert!(matches!(
+        sim.evaluate(&boundary_violation),
+        PreflightVerdict::Denied { .. }
+    ));
+
+    let pattern_violation = ActionCommandSpec {
+        command: "rm -rf / --no-preserve-root".to_string(),
+        working_dir: "/home/antigravity/workspace".to_string(),
+        modified_files: vec![],
+        payload_bytes: 0,
+    };
+    assert!(matches!(
+        sim.evaluate(&pattern_violation),
+        PreflightVerdict::Denied { .. }
+    ));
+
+    let quota_violation = ActionCommandSpec {
+        command: "cat big".to_string(),
+        working_dir: "/home/antigravity/workspace".to_string(),
+        modified_files: vec![],
+        payload_bytes: 5000,
+    };
+    assert!(matches!(
+        sim.evaluate(&quota_violation),
+        PreflightVerdict::Denied { .. }
+    ));
+}

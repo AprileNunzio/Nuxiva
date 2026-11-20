@@ -148,3 +148,119 @@ fn independent_tasks_dispatch_in_parallel() -> Result<(), PlanError> {
     );
     Ok(())
 }
+
+#[test]
+fn test_replan_subgraph_autonomous_recovery() -> Result<(), PlanError> {
+    use agency_domain::TaskSpec;
+
+    let specs = vec![
+        TaskSpec {
+            id: "t_root".into(),
+            title: "Root Task".into(),
+            role: "dev".into(),
+            depends_on: vec![],
+            acceptance: vec![],
+            estimate_seconds: 10,
+            max_attempts: 1,
+            budget_tokens: None,
+            budget_seconds: None,
+        },
+        TaskSpec {
+            id: "t_middle".into(),
+            title: "Middle Task".into(),
+            role: "dev".into(),
+            depends_on: vec!["t_root".into()],
+            acceptance: vec![],
+            estimate_seconds: 10,
+            max_attempts: 1,
+            budget_tokens: None,
+            budget_seconds: None,
+        },
+        TaskSpec {
+            id: "t_leaf".into(),
+            title: "Leaf Task".into(),
+            role: "dev".into(),
+            depends_on: vec!["t_middle".into()],
+            acceptance: vec![],
+            estimate_seconds: 10,
+            max_attempts: 1,
+            budget_tokens: None,
+            budget_seconds: None,
+        },
+    ];
+
+    let mut graph = TaskGraph::from_specs(&specs)?;
+    let middle_id = agency_domain::TaskId::new("t_middle")?;
+    let leaf_id = agency_domain::TaskId::new("t_leaf")?;
+
+    complete(&mut graph, "t_root")?;
+
+    graph.update(&middle_id, |t| {
+        t.start()?;
+        t.fail()
+    })?;
+
+    assert!(graph.blocked().contains(&leaf_id));
+
+    let recovery_specs = vec![
+        TaskSpec {
+            id: "t_middle_fix1".into(),
+            title: "Fix Step 1".into(),
+            role: "dev".into(),
+            depends_on: vec![],
+            acceptance: vec![],
+            estimate_seconds: 5,
+            max_attempts: 1,
+            budget_tokens: None,
+            budget_seconds: None,
+        },
+        TaskSpec {
+            id: "t_middle_fix2".into(),
+            title: "Fix Step 2".into(),
+            role: "dev".into(),
+            depends_on: vec!["t_middle_fix1".into()],
+            acceptance: vec![],
+            estimate_seconds: 5,
+            max_attempts: 1,
+            budget_tokens: None,
+            budget_seconds: None,
+        },
+    ];
+
+    graph.replan_subgraph(&middle_id, &recovery_specs)?;
+
+    let fix1_id = agency_domain::TaskId::new("t_middle_fix1")?;
+
+    assert!(graph.ready().contains(&&fix1_id));
+
+    complete(&mut graph, "t_middle_fix1")?;
+    complete(&mut graph, "t_middle_fix2")?;
+
+    assert!(graph.ready().contains(&&leaf_id));
+    Ok(())
+}
+
+#[test]
+fn test_anti_oscillation_guard_lifecycle() {
+    use crate::oscillation::{AntiOscillationGuard, OscillationVerdict};
+
+    let mut guard = AntiOscillationGuard::new(3);
+    assert_eq!(
+        guard.record_failure("git_merge"),
+        OscillationVerdict::Permitted { attempt: 1 }
+    );
+    assert_eq!(
+        guard.record_failure("git_merge"),
+        OscillationVerdict::Permitted { attempt: 2 }
+    );
+    assert_eq!(
+        guard.record_failure("git_merge"),
+        OscillationVerdict::OscillationDetected {
+            failures: 3,
+            max_allowed: 3
+        }
+    );
+
+    guard.reset("git_merge");
+    assert_eq!(guard.failure_count("git_merge"), 0);
+}

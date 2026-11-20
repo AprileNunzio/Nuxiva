@@ -264,3 +264,52 @@ fn settings_reject_nonsense() {
     assert!(PerceptSettings::from_json("{\"min_speaker_permille\":1200}").is_err());
     assert!(PerceptSettings::from_json("{}").is_ok());
 }
+
+#[test]
+fn test_sensory_drift_detection() {
+    use crate::drift::{CrossModalPerceptFrame, SensoryDriftAlert, SensoryDriftDetector};
+
+    let mut detector = SensoryDriftDetector::new(5_000_000, 3);
+
+    let normal_frame = CrossModalPerceptFrame {
+        hw_timestamp_ns: 1_000_000_000,
+        jitter_offset_ns: 100_000,
+        audio_level_rms: 0.45,
+        vision_motion_score: 0.30,
+        presence_detected: true,
+        active_speaker: None,
+        vitals_cpu_percent: 12.5,
+        vitals_ram_available_mb: 8192,
+    };
+    assert_eq!(detector.record_frame(&normal_frame), None);
+
+    let jittery_frame = CrossModalPerceptFrame {
+        jitter_offset_ns: 8_000_000,
+        ..normal_frame.clone()
+    };
+    assert!(matches!(
+        detector.record_frame(&jittery_frame),
+        Some(SensoryDriftAlert::ExcessiveJitter { .. })
+    ));
+
+    let saturated_frame = CrossModalPerceptFrame {
+        audio_level_rms: 0.999,
+        ..normal_frame.clone()
+    };
+    assert!(matches!(
+        detector.record_frame(&saturated_frame),
+        Some(SensoryDriftAlert::SignalSaturated { .. })
+    ));
+
+    let silent_frame = CrossModalPerceptFrame {
+        audio_level_rms: 0.0,
+        vision_motion_score: 0.0,
+        ..normal_frame
+    };
+    assert_eq!(detector.record_frame(&silent_frame), None);
+    assert_eq!(detector.record_frame(&silent_frame), None);
+    assert!(matches!(
+        detector.record_frame(&silent_frame),
+        Some(SensoryDriftAlert::SensorFrozenOrLoss { .. })
+    ));
+}

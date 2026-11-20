@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+mod drift;
 mod error;
 mod fuser;
 mod fusion;
@@ -7,6 +8,7 @@ mod observation;
 mod settings;
 mod source;
 
+pub use drift::{CrossModalPerceptFrame, SensoryDriftAlert, SensoryDriftDetector};
 pub use error::{PerceptError, PerceptResult};
 pub use fuser::Fuser;
 pub use fusion::Fusion;

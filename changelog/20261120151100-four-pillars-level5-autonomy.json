@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Chiusura architetturale al 100% dei 4 pilastri autonomi di Livello 5",
+    "en": "100% architectural closure of the 4 Level-5 autonomous pillars",
+    "fr": "Clôture architecturale à 100% des 4 piliers autonomes de Niveau 5",
+    "es": "Cierre arquitectónico al 100% de los 4 pilares autónomos de Nivel 5"
+  },
+  "features": [
+    {
+      "it": "Portati i 4 pilastri al 100% di autonomia: PreflightSimulator per la sicurezza delle azioni, replan_subgraph e AntiOscillationGuard per la pianificazione a ciclo chiuso, CrossModalPerceptFrame e SensoryDriftDetector per la percezione sincrona, e ActionKind::Consolidate per il self-healing preventivo delle risorse.",
+      "en": "Advanced all 4 pillars to 100% autonomy: PreflightSimulator for operational security, replan_subgraph and AntiOscillationGuard for closed-loop goal recovery, CrossModalPerceptFrame and SensoryDriftDetector for synchronous perception, and ActionKind::Consolidate for proactive self-healing resource governor.",
+      "fr": "Progression des 4 piliers à 100% d'autonomie: PreflightSimulator pour la sécurité opérationnelle, replan_subgraph et AntiOscillationGuard pour la récupération en boucle fermée, CrossModalPerceptFrame et SensoryDriftDetector pour la perception synchrone, et ActionKind::Consolidate pour l'auto-guérison préventive.",
+      "es": "Avance de los 4 pilares al 100% de autonomía: PreflightSimulator para la seguridad operativa, replan_subgraph y AntiOscillationGuard para la recuperación en bucle cerrado, CrossModalPerceptFrame y SensoryDriftDetector para la percepción síncrona, y ActionKind::Consolidate para la autorreparación preventiva."
+    }
+  ]
+}

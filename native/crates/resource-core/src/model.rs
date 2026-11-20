@@ -59,6 +59,7 @@ pub enum ActionKind {
     Trim,
     Drop,
     Throttle,
+    Consolidate,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Default, Deserialize)]

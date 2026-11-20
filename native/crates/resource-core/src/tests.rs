@@ -84,6 +84,17 @@ fn over_budget_cache_is_dropped_when_elevated() {
 }
 
 #[test]
+fn over_budget_memory_vector_cache_is_consolidated_when_elevated() {
+    let p = plan(&input(
+        3072,
+        vec![comp("vector_memory", Kind::Cache, Class::Low, 3 * GB)],
+        None,
+    ));
+    assert!(p.level >= Level::Elevated);
+    assert_eq!(p.actions[0].action, ActionKind::Consolidate);
+}
+
+#[test]
 fn level_has_hysteresis() {
     let held = plan(&input(2560, vec![], Some(Level::High)));
     let fresh = plan(&input(2560, vec![], None));

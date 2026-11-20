@@ -1,6 +1,7 @@
 pub mod batch;
 pub mod error;
 pub mod patch;
+pub mod preflight;
 pub mod transaction;
 pub mod verify;
 pub mod worktree;
@@ -13,6 +14,7 @@ pub use error::ActionError;
 pub use patch::{
     LineRangeView, PatchOutcome, ReplacementChunk, apply_surgical_patches, view_line_range,
 };
+pub use preflight::{ActionCommandSpec, ActionInvariant, PreflightSimulator, PreflightVerdict};
 pub use transaction::{ActionTransaction, FileSnapshot, TransactionStatus};
 pub use verify::{GateVerdict, evaluate_gate};
 pub use worktree::{MergeReport, StagedEdit, WorkspaceCoordinator};
