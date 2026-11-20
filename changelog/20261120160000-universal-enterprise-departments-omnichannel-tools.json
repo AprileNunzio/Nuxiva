@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Matrice universale di reparti specializzati e strumenti operativi",
+    "en": "Universal matrix of specialized departments and operational tools",
+    "fr": "Matrice universelle de départements spécialisés et outils",
+    "es": "Matriz universal de departamentos especializados y herramientas"
+  },
+  "features": [
+    {
+      "it": "Espanso il catalogo scansionato a tutti gli archetipi (marketing, social media, creator, web studio, medico, famiglia/casalinga, tecnico sul campo). Aggiunti strumenti per Telegram, SMS, domotica Home Assistant, comparazione prezzi NVR, aggiunta carrello Amazon e diagnostica hardware.",
+      "en": "Expanded scanned catalog across all archetypes (marketing, social media, creator, web studio, doctor, family/home, field technician). Added tools for Telegram, SMS, Home Assistant domotica, NVR price comparison, Amazon cart actions, and hardware diagnostics.",
+      "fr": "Expansion du catalogue scanné à tous les archétypes (marketing, réseaux sociaux, créateur, studio web, médecin, famille/maison, technicien). Ajout d'outils pour Telegram, SMS, domotique Home Assistant, comparaison de prix NVR, actions panier Amazon et diagnostic matériel.",
+      "es": "Ampliación del catálogo escaneado a todos los arquetipos (marketing, redes sociales, creador, estudio web, médico, familia/hogar, técnico). Añadidas herramientas para Telegram, SMS, domótica Home Assistant, comparación de precios NVR, acciones de carrito Amazon y diagnóstico de hardware."
+    }
+  ]
+}

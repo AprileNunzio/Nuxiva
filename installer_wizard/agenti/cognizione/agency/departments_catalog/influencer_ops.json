@@ -1,0 +1,11 @@
+{
+  "id": "influencer_ops",
+  "name": "Christian · Talent & Influencer Lead",
+  "department": "Talent & Creator Partnerships",
+  "prompt": "Sei il Talent Manager per Creator e Influencer di NunzioTech Agency. Gestisci accordi commerciali con brand, contratti di sponsorizzazione, media kit e tariffe ADV.",
+  "skills": ["brand-partnerships", "media-kit", "sponsorship-deals", "influencer-contracts", "creator-monetization"],
+  "capabilities": ["contract_negotiation", "rate_card_pricing", "brand_outreach"],
+  "widgets": [
+    {"id": "influencer_deals_card", "type": "deals_pipeline", "title": "Trattative Brand & Sponsorizzazioni"}
+  ]
+}

@@ -44,17 +44,36 @@ def scan_departments(extra_dirs: list[Path] | None = None) -> dict[str, dict]:
     return departments
 
 
+DOMAIN_SYNONYMS = {
+    "customer": ("chiam", "chiamami", "telefon", "fonia", "voce", "call", "voice", "whatsapp", "ordine", "assistenza", "supporto", "ticket", "notifica", "telegram", "sms", "luci", "camera", "casa"),
+    "sales": ("email", "mail", "pec", "preventiv", "acquist", "vendit", "cliente", "lead", "commerciale"),
+    "finance": ("fattur", "fattura", "sdi", "xml", "iva", "bonific", "pagament", "fisco", "bilancio", "contabil"),
+    "field_tech": ("nvr", "telecam", "cctv", "hikvision", "router", "ping", "porta", "guast", "diagnostic", "hardware", "server", "telemetri", "rete"),
+    "marketing": ("campagn", "funnel", "adv", "marketing", "copywriting", "growth", "seo"),
+    "social_media": ("social", "instagram", "tiktok", "reel", "post", "editoriale", "community", "facebook"),
+    "influencer_ops": ("influencer", "creator", "sponsor", "media kit", "talent", "collaboraz", "brand"),
+    "web_studio": ("sito", "landing", "web", "pizzeria", "ecommerce", "negozio", "portfolio", "pagina"),
+    "medical": ("medicin", "medic", "farmac", "clinica", "sintom", "paziente", "dottor", "terapia", "diagnosi", "paracetamolo", "ibuprofene", "cefalea"),
+    "family_home": ("spesa", "famigli", "bambin", "figl", "scuola", "compiti", "menu", "casa", "pasti", "pulizie", "promemori"),
+    "integrations": ("mcp", "google", "slack", "shopify", "stripe", "calendario", "integraz", "webhook", "api"),
+}
+
+
 def find_specialist(query: str, extra_dirs: list[Path] | None = None) -> dict | None:
     deps = scan_departments(extra_dirs)
-    tokens = [t.lower() for t in re.split(r"\W+", query) if len(t) >= 3]
+    lower_query = query.lower()
+    tokens = [t.lower() for t in re.split(r"\W+", lower_query) if len(t) >= 3]
     if not tokens:
         return None
     for dep_id, prof in deps.items():
         if dep_id in tokens:
             return prof
+    for dep_id, syns in DOMAIN_SYNONYMS.items():
+        if dep_id in deps and any(s in lower_query for s in syns):
+            return deps[dep_id]
     for dep_id, prof in deps.items():
         search_space = f"{dep_id} {prof['name']} {prof['department']} {' '.join(prof['skills'])} {' '.join(prof['capabilities'])}".lower()
-        if any(tok in search_space for tok in tokens):
+        if any(tok in search_space or search_space in tok for tok in tokens):
             return prof
     return None
 

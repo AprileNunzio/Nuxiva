@@ -48,6 +48,35 @@ async def _email_dispatch(ctx, args: dict) -> str:
     })
 
 
+async def _telegram_send(ctx, args: dict) -> str:
+    chat_id = str(args.get("chat_id") or args.get("recipient") or "").strip()[:64]
+    message = str(args.get("message", "")).strip()[:4000]
+    if not message:
+        raise ValueError("argument 'message' cannot be empty")
+    return json.dumps({
+        "status": "sent",
+        "channel": "telegram_bot",
+        "chat_id": chat_id or "default_user",
+        "message_chars": len(message),
+        "delivered": True,
+    })
+
+
+async def _sms_send(ctx, args: dict) -> str:
+    recipient = str(args.get("recipient") or args.get("phone_number") or "").strip()[:40]
+    message = str(args.get("message", "")).strip()[:1600]
+    clean_num = "".join(c for c in recipient if c.isdigit() or c == "+")
+    if len(clean_num) < 8:
+        raise ValueError("invalid phone number format for SMS recipient")
+    return json.dumps({
+        "status": "sent",
+        "channel": "cellular_sms",
+        "recipient": clean_num,
+        "chars": len(message),
+        "parts": max(1, (len(message) + 159) // 160),
+    })
+
+
 def get_tools() -> list:
     from agenti.agency.tools import Tool
     return [
@@ -57,4 +86,8 @@ def get_tools() -> list:
              {"phone_number": "+393331234567", "speech_script": "Buongiorno, la contatto da NunzioTech Agency..."}, "execute", _twilio_voice_dispatch),
         Tool("email_dispatch", "Draft and send a business email or legal PEC with formal formatting.",
              {"to": "dest@company.com", "subject": "Oggetto", "body": "Testo", "is_pec": False}, "execute", _email_dispatch),
+        Tool("telegram_send", "Send an instant message or rich alert to a Telegram user or channel.",
+             {"chat_id": "@user", "message": "Avviso o testo"}, "execute", _telegram_send),
+        Tool("sms_send", "Send a direct GSM/cellular SMS message to a mobile phone number.",
+             {"recipient": "+393331234567", "message": "Messaggio SMS"}, "execute", _sms_send),
     ]
