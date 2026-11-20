@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Nuova applicazione AI Studio su :8080 con memoria unificata, progetti e Canvas",
+    "en": "New AI Studio workspace on :8080 with unified memory, projects, and Canvas",
+    "fr": "Nouvel espace de travail AI Studio sur :8080 avec mémoire unifiée et Canvas",
+    "es": "Nueva aplicación AI Studio en :8080 con memoria unificada, proyectos y Canvas"
+  },
+  "features": [
+    {
+      "it": "Introdotta l'applicazione indipendente AI Studio: chat multi-thread persistenti, memoria unificata cross-thread tra testo scritto e parlato vocale, gestione progetti dedicati e selezione modalità modello.",
+      "en": "Introduced independent AI Studio app: persistent multi-thread chats, cross-thread unified memory across written text and voice speech, dedicated project management, and model mode selector.",
+      "fr": "Introduction de l'application indépendante AI Studio: discussions multi-fils persistantes, mémoire unifiée inter-fils texte et voix, gestion de projets dédiés et sélecteur de mode de modèle.",
+      "es": "Introducida la aplicación independiente AI Studio: chats multihilo persistentes, memoria unificada entre texto y voz hablada, gestión de proyectos dedicados y selector de modo de modelo."
+    },
+    {
+      "it": "Implementato il Canvas Artefatti interattivo con anteprima live di codice, pagine HTML e diagrammi, assieme al salvataggio sicuro Zero-Trust nelle cartelle di rete SMB Nuxiva.",
+      "en": "Implemented interactive Artifacts Canvas with live preview for code, HTML, and diagrams, coupled with Zero-Trust safe saving directly to internal Nuxiva SMB shared folders.",
+      "fr": "Implémentation du Canvas Artefacts interactif avec aperçu en direct de code, pages HTML et diagrammes, avec enregistrement sécurisé Zero-Trust dans les partages SMB Nuxiva.",
+      "es": "Implementado el Canvas de Artefactos interactivo con vista previa en vivo de código, páginas HTML y diagramas, junto con guardado seguro Zero-Trust en carpetas de red SMB de Nuxiva."
+    },
+    {
+      "it": "Creato il core ad alte prestazioni in Rust in nuxiva-chat-core e nuxiva-native per la protezione Zero-Trust da directory traversal su percorsi SMB e per l'estrazione rapida degli artefatti.",
+      "en": "Created high-performance pure Rust engine in nuxiva-chat-core and nuxiva-native for Zero-Trust path traversal prevention on SMB paths and rapid artifact extraction.",
+      "fr": "Création du moteur haute performance en Rust pur dans nuxiva-chat-core et nuxiva-native pour la protection Zero-Trust contre les traversées de répertoires SMB et l'extraction rapide.",
+      "es": "Creado motor de alto rendimiento en Rust puro en nuxiva-chat-core e nuxiva-native para la prevención Zero-Trust de path traversal en rutas SMB y extracción rápida de artefactos."
+    }
+  ]
+}

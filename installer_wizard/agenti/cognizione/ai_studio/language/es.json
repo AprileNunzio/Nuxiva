@@ -1,0 +1,19 @@
+{
+  "title": "AI Studio",
+  "description": "Espacio de trabajo inteligente con chats independientes, memoria unificada entre hilos y voz, proyectos y almacenamiento SMB.",
+  "new_thread": "Nuevo Chat",
+  "new_project": "Nuevo Proyecto",
+  "send": "Enviar",
+  "thinking": "Razonamiento en curso...",
+  "artifacts": "Artefactos",
+  "memory": "Memoria Nuxiva",
+  "smb_save": "Guardar en Compartida",
+  "smb_saved": "Guardado exitosamente",
+  "upload_file": "Subir archivo adjunto",
+  "voice_input": "Escucha de voz",
+  "voice_recalled": "Recordado de la voz",
+  "fast_mode": "Rápido",
+  "reasoning_mode": "Razonamiento",
+  "creative_mode": "Creativo",
+  "code_mode": "Código"
+}

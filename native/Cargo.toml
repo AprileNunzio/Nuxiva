@@ -30,6 +30,7 @@ collapsible_if = "allow"
 chunks_exact_to_as_chunks = "allow"
 approx_constant = "allow"
 manual_is_multiple_of = "allow"
+map_unwrap_or = "allow"
 
 [profile.release]
 lto = "fat"

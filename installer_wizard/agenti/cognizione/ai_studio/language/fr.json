@@ -1,0 +1,19 @@
+{
+  "title": "AI Studio",
+  "description": "Espace de travail intelligent avec discussions indépendantes, mémoire unifiée inter-fils et vocale, projets et stockage SMB.",
+  "new_thread": "Nouvelle Discussion",
+  "new_project": "Nouveau Projet",
+  "send": "Envoyer",
+  "thinking": "Raisonnement en cours...",
+  "artifacts": "Artefacts",
+  "memory": "Mémoire Nuxiva",
+  "smb_save": "Enregistrer dans le Partage",
+  "smb_saved": "Enregistré avec succès",
+  "upload_file": "Télécharger une pièce jointe",
+  "voice_input": "Écoute vocale",
+  "voice_recalled": "Rappelé de la voix",
+  "fast_mode": "Rapide",
+  "reasoning_mode": "Raisonnement",
+  "creative_mode": "Créatif",
+  "code_mode": "Code"
+}

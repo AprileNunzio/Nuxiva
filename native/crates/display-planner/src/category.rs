@@ -102,12 +102,12 @@ pub fn category_of(widget: &str) -> Category {
 
 #[must_use]
 pub fn known_widgets() -> Vec<String> {
-    registry()
-        .read()
-        .map(|map| {
+    match registry().read() {
+        Ok(map) => {
             let mut ids: Vec<String> = map.keys().cloned().collect();
             ids.sort();
             ids
-        })
-        .unwrap_or_default()
+        }
+        Err(_) => Vec::new(),
+    }
 }

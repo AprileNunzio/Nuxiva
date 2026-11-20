@@ -1,0 +1,25 @@
+{
+  "id": "ai_studio",
+  "name": "AI Studio",
+  "icon": "Bot",
+  "category": "cognizione",
+  "order": 5,
+  "pinned": true,
+  "panel": "ai_studio",
+  "description": "Spazio di lavoro intelligente con chat indipendenti, memoria unificata cross-thread e vocale, progetti, allegati e salvataggio SMB.",
+  "capabilities": [
+    "Chat indipendenti con memoria unificata",
+    "Trascrizione vocale e ricordi cross-thread integrati",
+    "Gestione progetti e obiettivi dedicati",
+    "Ispezione e anteprima interattiva degli artefatti",
+    "Integrazione diretta con cartelle di rete SMB Nuxiva"
+  ],
+  "api": "api.py",
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Nuxiva",
+    "technique": "3d",
+    "id": "ai_studio",
+    "url": "https://github.com/AprileNunzio/Nuxiva"
+  }
+}

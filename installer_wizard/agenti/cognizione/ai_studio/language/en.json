@@ -1,0 +1,19 @@
+{
+  "title": "AI Studio",
+  "description": "Intelligent workspace with independent chats, cross-thread and voice unified memory, projects, and SMB storage.",
+  "new_thread": "New Chat",
+  "new_project": "New Project",
+  "send": "Send",
+  "thinking": "Reasoning in progress...",
+  "artifacts": "Artifacts",
+  "memory": "Nuxiva Memory",
+  "smb_save": "Save to Shared Folder",
+  "smb_saved": "Saved successfully",
+  "upload_file": "Upload attachment",
+  "voice_input": "Voice listening",
+  "voice_recalled": "Recalled from voice",
+  "fast_mode": "Fast",
+  "reasoning_mode": "Reasoning",
+  "creative_mode": "Creative",
+  "code_mode": "Code"
+}

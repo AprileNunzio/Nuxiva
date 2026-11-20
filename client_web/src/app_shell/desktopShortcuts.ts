@@ -5,6 +5,7 @@ const STORAGE_KEY = 'nuxiva_desktop_pinned_shortcuts';
 const EVENT_NAME = 'nuxiva:desktop_shortcuts_updated';
 
 export const DEFAULT_DESKTOP_IDS: readonly string[] = [
+  'ai_studio',
   'explorer',
   'store',
   'network',

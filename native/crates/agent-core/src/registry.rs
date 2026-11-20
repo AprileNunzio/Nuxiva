@@ -218,11 +218,10 @@ fn build(found: &[Found], signature: String) -> Snapshot {
             });
             continue;
         }
-        let dir = item
-            .path
-            .parent()
-            .map(|p| p.display().to_string())
-            .unwrap_or_default();
+        let dir = match item.path.parent() {
+            Some(p) => p.display().to_string(),
+            None => String::new(),
+        };
         snap.by_category
             .entry(m.category.clone())
             .or_default()

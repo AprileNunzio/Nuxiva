@@ -9,10 +9,10 @@ fn object(value: &Value) -> Option<&Map<String, Value>> {
 }
 
 fn required(map: &Map<String, Value>) -> HashSet<&str> {
-    map.get("required")
-        .and_then(Value::as_array)
-        .map(|items| items.iter().filter_map(Value::as_str).collect())
-        .unwrap_or_default()
+    match map.get("required").and_then(Value::as_array) {
+        Some(items) => items.iter().filter_map(Value::as_str).collect(),
+        None => HashSet::new(),
+    }
 }
 
 fn properties_extend(old: &Map<String, Value>, new: &Map<String, Value>) -> bool {
