@@ -308,6 +308,62 @@ def _build_shared_brain(data: dict, base: dict, tasks: list[dict], questions: li
     }
 
 
+UNIVERSAL_WIDGETS = [
+    {
+        "id": "widget_universal_presence_clock",
+        "type": "presence_clock_orb",
+        "title": "Presenza & Ritmo Circadiano",
+        "style": "borderless_glassmorphic",
+        "visual": {"border": "none", "background": "transparent", "glow": "rgba(255, 255, 255, 0.15)"},
+    },
+    {
+        "id": "widget_universal_voice_orb",
+        "type": "holographic_voice_orb",
+        "title": "Interfaccia Vocale Full-Duplex & Barge-In",
+        "style": "borderless_glassmorphic",
+        "visual": {"border": "none", "background": "transparent", "glow": "cyan", "waveform": True},
+    },
+    {
+        "id": "widget_universal_automations_pill",
+        "type": "floating_automations_strip",
+        "title": "Flussi e Automazioni Attive",
+        "style": "borderless_glassmorphic",
+        "visual": {"border": "none", "background": "transparent", "pills": True},
+    },
+]
+
+
+def _build_contextual_widgets(data: dict, base: dict, agents: list[dict]) -> list[dict]:
+    activity = str(data.get("current_activity") or base.get("goal") or "").lower()
+    widgets = []
+    if any(k in activity for k in ("cucin", "forno", "ricett", "timer", "piatto")):
+        widgets.append({
+            "id": "contextual_cooking_timer",
+            "type": "floating_cooking_timer",
+            "title": "Timer di Cottura Attivo",
+            "style": "borderless_glassmorphic",
+            "visual": {"border": "none", "background": "transparent", "glow": "amber", "radial_progress": True},
+            "remaining_seconds": 720,
+        })
+    if any(k in activity for k in ("compit", "studio", "scuola", "matematica", "tutor")):
+        widgets.append({
+            "id": "contextual_socratic_canvas",
+            "type": "socratic_thinking_canvas",
+            "title": "Lavagna Maieutica & Passi Guidati",
+            "style": "borderless_glassmorphic",
+            "visual": {"border": "none", "background": "transparent", "glow": "cyan", "interactive_graph": True},
+        })
+    if any(k in activity for k in ("favol", "fiaba", "nanna", "bambin", "racconto")):
+        widgets.append({
+            "id": "contextual_dreamscape_player",
+            "type": "storyteller_dreamscape",
+            "title": "Fiaba in Corso & Onde Rilassanti",
+            "style": "borderless_glassmorphic",
+            "visual": {"border": "none", "background": "transparent", "glow": "indigo", "floating_text": True},
+        })
+    return widgets
+
+
 def enrich_focus(data: dict, base: dict) -> dict:
     project = data.get("project") or {}
     tasks = base.get("tasks") or []
@@ -321,6 +377,11 @@ def enrich_focus(data: dict, base: dict) -> dict:
     shared_brain = _build_shared_brain(data, base, tasks, questions, tools)
     active_person = data.get("active_person") or base.get("active_person")
     co_present = data.get("co_present_slugs") or base.get("co_present_slugs") or []
+    contextual_w = _build_contextual_widgets(data, base, agents)
+    dept_widgets = [
+        {**w, "style": "borderless_glassmorphic", "visual": {"border": "none", "background": "transparent"}}
+        for a in agents for w in a.get("widgets", [])
+    ]
     return {
         **base,
         "agency_name": AGENCY_NAME,
@@ -333,7 +394,9 @@ def enrich_focus(data: dict, base: dict) -> dict:
             "kanban": kanban,
             "shared_brain": shared_brain,
             "active_automations": automations.get_active_automations(),
-            "department_widgets": [w for a in agents for w in a.get("widgets", [])],
+            "department_widgets": dept_widgets,
+            "universal_widgets": UNIVERSAL_WIDGETS,
+            "contextual_active_widgets": contextual_w,
             "active_person": active_person,
             "co_present_slugs": co_present,
             "circadian_context": circadian.resolve_circadian_context(person_slug=active_person, co_present_slugs=co_present),

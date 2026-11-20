@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Voce full-duplex con barge-in, auto-riparazione tool, memoria causale e widget moderni",
+    "en": "Full-duplex voice with barge-in, self-healing tools, causal memory and modern widgets",
+    "fr": "Voix full-duplex avec barge-in, auto-réparation d'outils, mémoire causale et widgets",
+    "es": "Voz full-duplex con barge-in, autorreparación de herramientas, memoria causal y widgets"
+  },
+  "features": [
+    {
+      "it": "Implementata voce full-duplex a bassa latenza con soppressione immediata barge-in, governatore di auto-riparazione codici per API esterne, grafo di memoria episodica con inferenza causale e widget fluttuanti eleganti senza contorni né sfondi per ogni agente.",
+      "en": "Implemented low-latency full-duplex voice with instant barge-in suppression, self-healing governor for external APIs, episodic memory graph with causal inference, and elegant borderless transparent floating widgets for every agent.",
+      "fr": "Implémentation de la voix full-duplex basse latence avec barge-in immédiat, gouverneur d'auto-réparation pour API externes, graphe de mémoire épisodique causale et widgets flottants transparents sans bordures pour chaque agent.",
+      "es": "Implementación de voz full-duplex de baja latencia con barge-in instantáneo, gobernador de autorreparación de APIs externas, grafo de memoria episódica causal y widgets flotantes transparentes sin bordes para cada agente."
+    }
+  ]
+}
