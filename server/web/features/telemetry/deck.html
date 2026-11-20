@@ -1,0 +1,53 @@
+    <section id="deck-telemetry" class="plancia-section">
+      <div class="grid-3col">
+        <div class="tactical-card">
+          <div class="card-header"><span class="card-title" data-i18n="telem_rust_title">⚡ Rust Bus &amp; LangID</span></div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
+            <div style="padding:0.75rem; background:rgba(0,240,255,0.05); border-radius:8px;">
+              <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="telem_router_latency">Latenza Topic Router (bus-core):</span>
+              <h2 style="color:var(--cyan-glow); font-family:var(--font-mono);">0.08 ms</h2>
+            </div>
+            <div style="padding:0.75rem; background:rgba(16,185,129,0.05); border-radius:8px;">
+              <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="telem_lang_detection">Rilevamento Lingua (langid):</span>
+              <h2 style="color:#34d399; font-family:var(--font-mono);">0.04 ms (0 Token LLM)</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header"><span class="card-title" data-i18n="telem_ternary_title">🧠 Decisioni a Logica Ternaria</span></div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
+            <div style="padding:0.75rem; background:rgba(139,92,246,0.05); border-radius:8px;">
+              <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="telem_fast_pass">Fast-Pass (+1) Senza Chiamate:</span>
+              <h2 style="color:var(--purple-glow); font-family:var(--font-mono);">78% delle query</h2>
+            </div>
+            <div style="padding:0.75rem; background:rgba(245,158,11,0.05); border-radius:8px;">
+              <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="telem_anti_loop">Stalli Anti-Loop Neutralizzati (-1):</span>
+              <h2 id="metric-anti-loop-interventions" style="color:var(--amber-glow); font-family:var(--font-mono);">12 Interventi</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header"><span class="card-title" data-i18n="telem_host_title">🖥️ Risorse Sistema Host</span></div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                <span data-i18n="telem_cpu_label">CPU Load:</span> <span id="telem-cpu-val" style="color:var(--cyan-glow);">14%</span>
+              </div>
+              <div class="progress-container"><div id="telem-cpu-bar" class="progress-bar-fill" style="width:14%;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                <span data-i18n="telem_ram_label">RAM Usage:</span> <span id="telem-ram-val" style="color:#34d399;">38%</span>
+              </div>
+              <div class="progress-container"><div id="telem-ram-bar" class="progress-bar-fill" style="width:38%; background:linear-gradient(90deg, #10b981, #00f0ff);"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- PLANCIA 8: ASSISTENTI & BOT MULTI-PERSONA (PERSONALIZZAZIONI)     -->
+    <!-- ================================================================= -->

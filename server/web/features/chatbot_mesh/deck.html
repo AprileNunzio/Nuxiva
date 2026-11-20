@@ -1,0 +1,119 @@
+    <section id="deck-chatbot-mesh" class="plancia-section">
+      <div class="grid-3col">
+        <!-- Colonna 1: Selettore Persona Casa & Chatbot Esperto -->
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="persona_title">👥 Persona &amp; Chatbot</span>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:1rem;">
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;" data-i18n="persona_label">PERSONA DELLA CASA:</label>
+              <select id="chatbot-user-selector" style="width:100%; background:rgba(0,0,0,0.5); border:1px solid var(--border-glow); color:var(--cyan-glow); padding:0.5rem; border-radius:6px; font-family:var(--font-mono);">
+                <option value="user_primary" data-i18n="user_role_admin">👑 Utente Primario (Admin / Owner)</option>
+                <option value="user_family" data-i18n="user_role_family">🏡 Membro Famiglia (Family)</option>
+                <option value="user_guest" data-i18n="user_role_guest">🌟 Ospite / Visitatore (Guest)</option>
+                <option value="user_staff" data-i18n="user_role_staff">💼 Personale di Servizio (Staff)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:6px;" data-i18n="select_bot_label">SELEZIONA AGENTE CHATBOT:</label>
+              <div id="chatbot-agents-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:420px; overflow-y:auto;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header">
+            <div>
+              <span class="card-title"><span data-i18n="customization_title">⚙️ Personalizzazione per</span> <span id="chatbot-active-user-title" style="color:var(--cyan-glow);">Utente Primario</span></span>
+              <p style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;" data-i18n="customization_subtitle">Isolato in /data/user_agent_configs/ — mai sovrascritto</p>
+            </div>
+            <button id="btn-save-chatbot-persona" class="tactical-btn" style="padding:0.35rem 0.75rem; font-size:0.8rem;" data-i18n="btn_save_persona">💾 Salva</button>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:0.9rem; max-height:560px; overflow-y:auto;">
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted);" data-i18n="nickname_label">SOPRANNOME DELL'AGENTE PER QUESTO UTENTE:</label>
+              <input type="text" id="chatbot-input-nickname" data-i18n-placeholder="nickname_placeholder" placeholder="Es. Astra, Alfred, MyCoder..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; margin-top:4px;">
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted);" data-i18n="tone_label">TONO E STILE DI CONVERSAZIONE:</label>
+              <select id="chatbot-select-tone" style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:var(--cyan-glow); padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono);">
+                <option value="friendly" data-i18n="tone_friendly">😊 Amichevole e Collaborativo</option>
+                <option value="formal" data-i18n="tone_formal">👔 Formale ed Istituzionale</option>
+                <option value="concise" data-i18n="tone_concise">⚡ Ultra-Sintetico e Diretto</option>
+                <option value="technical" data-i18n="tone_technical">🛠️ Rigoroso e Tecnico</option>
+                <option value="kid_safe" data-i18n="tone_kids">🧸 A Misura di Bambino (Educativo)</option>
+                <option value="poetic" data-i18n="tone_poetic">🎭 Poetico ed Espressivo</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted);">🎙️ MOTORE VOCALE TTS ATTIVO (ISTRUZIONI EMOTIVE):</label>
+              <select id="chatbot-select-tts-engine" style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:var(--cyan-glow); padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono);">
+                <option value="elevenlabs">🎙️ ElevenLabs Neural (Audio Tags [laughs], [sighs]...)</option>
+                <option value="piper">🔊 Piper ONNX Locale (Punteggiatura e Ritmo)</option>
+                <option value="kokoro">🧠 Kokoro Neurale (Prosodia e Pause Fonetiche)</option>
+                <option value="azure">☁️ Microsoft Azure / Edge (SSML Stili & Pause)</option>
+                <option value="openai">🤖 OpenAI TTS (Cadenza Naturale)</option>
+                <option value="bark">🐶 Suno Bark (Tag Sonori e Non-Verbali)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted);" data-i18n="prompt_label">ISTRUZIONI &amp; PREFERENZE PRIVATE DI QUESTA PERSONA:</label>
+              <textarea id="chatbot-user-prompt" rows="3" data-i18n-placeholder="prompt_placeholder" placeholder="Es. Rispondimi solo in elenchi puntati; non fissare appuntamenti prima delle 10:00..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono); font-size:0.8rem;"></textarea>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted);" data-i18n="notes_label">NOTE PERSONALI / MEMORIA CONDIVISA:</label>
+              <textarea id="chatbot-user-knowledge" rows="2" data-i18n-placeholder="notes_placeholder" placeholder="Es. Le mie passioni, progetti personali, allergeni o abitudini di casa..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono); font-size:0.8rem;"></textarea>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;" data-i18n="active_widgets_label">WIDGET INTERATTIVI ATTIVI PER QUESTA PERSONA:</label>
+              <div id="chatbot-widgets-checkboxes" style="display:grid; grid-template-columns:1fr 1fr; gap:0.4rem;">
+              </div>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;" data-i18n="enabled_tools_label">TOOL ABILITATI PER QUESTA PERSONA:</label>
+              <div id="chatbot-tools-checkboxes" style="display:flex; flex-direction:column; gap:0.3rem;">
+              </div>
+            </div>
+
+            <div style="padding:0.75rem; background:rgba(0,240,255,0.03); border:1px dashed var(--border-glow); border-radius:8px;">
+              <span style="font-size:0.7rem; color:var(--cyan-glow); font-family:var(--font-mono); display:block; margin-bottom:4px;" data-i18n="preview_tone_label">🔮 ANTEPRIMA TONO DI RISPOSTA:</span>
+              <p id="chatbot-tone-live-preview" style="font-size:0.78rem; color:#fff; font-style:italic;">
+                "Ciao! Sono il tuo assistente. Come posso aiutarti oggi?"
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card" style="display:flex; flex-direction:column;">
+          <div class="card-header">
+            <div>
+              <span class="card-title"><span data-i18n="chat_channel_title">💬 Canale Chat:</span> <span id="chatbot-active-agent-name" style="color:var(--cyan-glow);">-</span></span>
+              <span id="chatbot-channel-badge" class="badge-tag" style="background:rgba(0,240,255,0.15); color:var(--cyan-glow); margin-left:6px;" data-i18n="chat_channel_badge">Multi-Channel Bot Hub</span>
+            </div>
+            <button id="btn-clear-chat-history" class="tactical-btn secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-i18n="btn_clear_chat">Pulisci</button>
+          </div>
+          <div class="card-body" style="flex:1; display:flex; flex-direction:column; justify-content:space-between; padding:0.75rem; min-height:480px;">
+            <div id="chatbot-messages-stream" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:0.6rem; padding-right:4px; margin-bottom:0.75rem; max-height:360px;">
+            </div>
+
+            <div id="chatbot-rendered-widgets" style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:0.75rem;">
+            </div>
+
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              <input type="text" id="chatbot-message-input" data-i18n-placeholder="chat_input_placeholder" placeholder="Parla con il chatbot o richiedi un'azione..." style="flex:1; background:rgba(0,0,0,0.5); border:1px solid var(--border-glow); color:#fff; padding:0.6rem 0.8rem; border-radius:6px; font-family:var(--font-sans); font-size:0.85rem;">
+              <button id="btn-chatbot-send" class="tactical-btn" style="padding:0.6rem 1.2rem;" data-i18n="btn_chat_send">Invia</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+

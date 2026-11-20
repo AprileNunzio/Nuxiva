@@ -139,13 +139,22 @@ def create_application() -> FastAPI:
     if web_dir.exists():
         app.mount("/static", StaticFiles(directory=str(web_dir)), name="static")
 
+        from fastapi.responses import HTMLResponse
+        from server.web.html_compositor import compose_html
+
         @app.get("/")
         async def serve_index():
-            return FileResponse(str(web_dir / "index.html"))
+            try:
+                return HTMLResponse(content=compose_html(), media_type="text/html")
+            except Exception:
+                return FileResponse(str(web_dir / "index.html"))
 
         @app.get("/web")
         async def serve_web_page():
-            return FileResponse(str(web_dir / "index.html"))
+            try:
+                return HTMLResponse(content=compose_html(), media_type="text/html")
+            except Exception:
+                return FileResponse(str(web_dir / "index.html"))
 
 
     @app.get("/health")

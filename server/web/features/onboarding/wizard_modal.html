@@ -1,0 +1,138 @@
+  <div id="admin-wizard-overlay" class="wizard-overlay">
+    <div class="wizard-modal-box">
+      <!-- Header Wizard -->
+      <div class="wizard-header-bar">
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+          <span style="font-size:1.5rem; animation:floatBob 2.5s infinite;">🪄</span>
+          <div>
+            <h3 style="font-family:var(--font-display); font-size:1.25rem; color:#fff;" id="wizard-title-label" data-i18n="admin_wizard_title">Auto-Configurazione NUXIVA Guidata</h3>
+            <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="admin_wizard_subtitle">Semplicità estrema a step per tutta la casa &amp; impresa</p>
+          </div>
+        </div>
+        <button id="btn-close-wizard" style="background:transparent; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="wizard-stepper-progress">
+        <div class="step-node active" id="step-node-1">
+          <div class="step-circle">1</div>
+          <span class="step-title-text" data-i18n="step1_title">Profilo</span>
+        </div>
+        <div style="flex:1; height:2px; background:var(--border-glow); margin:0 0.5rem;"></div>
+        <div class="step-node" id="step-node-2">
+          <div class="step-circle">2</div>
+          <span class="step-title-text" data-i18n="step2_title">Agenti &amp; Bot</span>
+        </div>
+        <div style="flex:1; height:2px; background:var(--border-glow); margin:0 0.5rem;"></div>
+        <div class="step-node" id="step-node-3">
+          <div class="step-circle">3</div>
+          <span class="step-title-text" data-i18n="step3_title">Tool &amp; Widget</span>
+        </div>
+        <div style="flex:1; height:2px; background:var(--border-glow); margin:0 0.5rem;"></div>
+        <div class="step-node" id="step-node-4">
+          <div class="step-circle">4</div>
+          <span class="step-title-text" data-i18n="step4_title">Attiva</span>
+        </div>
+      </div>
+
+      <div class="wizard-body-viewport">
+        <div class="wizard-step-pane active" id="wizard-step-1">
+          <div class="quick-autoconfig-hero">
+            <div>
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <span style="font-size:1.4rem;">⚡</span>
+                <strong style="color:var(--emerald-glow); font-size:1rem;" data-i18n="hero_autoconfig_badge">Modalità Smart Zero-Fatigue (Consigliata)</strong>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;" data-i18n="hero_autoconfig_desc">
+                Nuxiva analizza automaticamente l'hardware del PC, scansiona i sensori e configura per te tutti gli agenti e widget ottimali.
+              </p>
+            </div>
+            <button id="btn-wizard-instant-autoconfig" class="tactical-btn" style="background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700; white-space:nowrap; padding:0.6rem 1.2rem;" data-i18n="admin_wizard_auto_btn">
+              🚀 1-Clic Auto Setup
+            </button>
+          </div>
+
+          <h4 style="font-size:0.85rem; color:var(--cyan-glow); margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.5px;" data-i18n="select_env_title">Oppure seleziona il tuo ambiente principale:</h4>
+          
+          <div class="card-selection-grid">
+            <div class="selectable-wizard-card selected" data-env="smart_home">
+              <span style="font-size:2rem;">🏡</span>
+              <strong style="color:#fff; font-size:0.95rem;" data-i18n="env_home_title">Casa &amp; Famiglia</strong>
+              <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="env_home_desc">Attiva Maggiordomo, Segretaria, Autista, Smart Home, privacy dei bimbi e widget meteo/musica.</p>
+            </div>
+            <div class="selectable-wizard-card" data-env="enterprise">
+              <span style="font-size:2rem;">🏢</span>
+              <strong style="color:#fff; font-size:0.95rem;" data-i18n="env_enterprise_title">Studio &amp; Azienda</strong>
+              <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="env_enterprise_desc">Attiva Capo Agente, Project Director, Coder Fullstack, DevOps e drafting CAD R12.</p>
+            </div>
+            <div class="selectable-wizard-card" data-env="creator">
+              <span style="font-size:2rem;">📱</span>
+              <strong style="color:#fff; font-size:0.95rem;" data-i18n="env_creator_title">Content Creator &amp; Social</strong>
+              <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="env_creator_desc">Pianificazione Instagram, Telegram broadcast, copy virale e studio multimediale.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="wizard-step-pane" id="wizard-step-2">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <div>
+              <h4 style="font-size:0.95rem; color:#fff;" data-i18n="step2_heading">Assistenti Consigliati per il tuo Profilo</h4>
+              <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="step2_desc">Scansionati dinamicamente. Puoi attivarli o disattivarli con un solo tocco.</p>
+            </div>
+            <button id="btn-wizard-select-all-agents" class="tactical-btn secondary" style="padding:0.25rem 0.6rem; font-size:0.72rem;" data-i18n="btn_select_all">Seleziona Tutti</button>
+          </div>
+          <div id="wizard-agents-scanned-container" class="card-selection-grid">
+          </div>
+        </div>
+
+        <div class="wizard-step-pane" id="wizard-step-3">
+          <div style="margin-bottom:1rem;">
+            <h4 style="font-size:0.95rem; color:#fff;" data-i18n="step3_heading">Strumenti &amp; Widget Rilevati a Runtime</h4>
+            <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="step3_desc">Nessun catalogo fisso: Nuxiva ha trovato questi moduli installati nel sistema.</p>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+            <div>
+              <strong style="font-size:0.8rem; color:var(--cyan-glow); display:block; margin-bottom:0.5rem;" data-i18n="tools_active_label">🛠️ STRUMENTI ATTIVI:</strong>
+              <div id="wizard-tools-scanned-list" style="display:flex; flex-direction:column; gap:0.4rem; max-height:220px; overflow-y:auto;">
+              </div>
+            </div>
+            <div>
+              <strong style="font-size:0.8rem; color:var(--purple-glow); display:block; margin-bottom:0.5rem;" data-i18n="widgets_active_label">📊 WIDGET INTERATTIVI:</strong>
+              <div id="wizard-widgets-scanned-list" style="display:flex; flex-direction:column; gap:0.4rem; max-height:220px; overflow-y:auto;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wizard-step-pane" id="wizard-step-4">
+          <div style="text-align:center; padding:1rem 0;">
+            <div style="font-size:3rem; animation:glowPulse 2s infinite; display:inline-block; border-radius:50%; padding:0.5rem;">✨</div>
+            <h3 style="color:#fff; font-size:1.3rem; margin-top:0.75rem;" data-i18n="step4_heading">Tutto Pronto! Il tuo Nuxiva OS è Ottimizzato</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); max-width:500px; margin:0.5rem auto 1.5rem auto;" data-i18n="step4_desc">
+              Abbiamo impostato il modello Ternario Bonsai a zero-costi, configurato le tue plance e abilitato i chatbot dedicati ad ogni membro della casa.
+            </p>
+
+            <div id="wizard-summary-pills" style="display:flex; justify-content:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.5rem;">
+              <span class="telemetry-pill accent">Profilo: Casa &amp; Famiglia</span>
+              <span class="telemetry-pill">Modello: Bonsai 27B (1.58b)</span>
+              <span class="telemetry-pill">Agenti Attivi: 10</span>
+              <span class="telemetry-pill">Lingua: Italiano (Setup)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wizard-footer-bar">
+        <button id="btn-wizard-prev" class="tactical-btn secondary" style="display:none;" data-i18n="btn_prev">&larr; Indietro</button>
+        <div style="margin-left:auto; display:flex; gap:0.75rem;">
+          <button id="btn-wizard-skip" class="tactical-btn secondary" data-i18n="btn_skip">Chiudi</button>
+          <button id="btn-wizard-next" class="tactical-btn" data-i18n="btn_next">Avanti &rarr;</button>
+          <button id="btn-wizard-finish" class="tactical-btn" style="display:none; background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700;" data-i18n="btn_finish">
+            🚀 Entra nella Plancia
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE OVERLAY EMOTICONS E FINESTRA A SCOMPARSA (PAGINA 80) -->

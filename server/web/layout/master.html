@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUXIVA — Tactical Autonomous Cockpit</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/features/onboarding/wizard.css">
+  <link rel="stylesheet" href="/static/features/multimodal_surveillance/style.css">
+  <link rel="stylesheet" href="/static/features/human_affective_engine/style.css">
+  <link rel="stylesheet" href="/static/features/wearable_vitals_hub/style.css">
+  <link rel="stylesheet" href="/static/features/user_presence_vitals/style.css">
+  <link rel="stylesheet" href="/static/features/cognitive_triage_agents/style.css">
+  <link rel="stylesheet" href="/static/features/chatbot_mesh/emoticon_reactions.css">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+
+  <!-- HEADER TATTICO SUPERIORE -->
+  <header class="tactical-header">
+    <div class="brand-section">
+      <div class="brand-core-reactor">
+        <div class="brand-core-inner"></div>
+      </div>
+      <div class="brand-text">
+        <h1>NUXIVA <span>TACTICAL OS</span></h1>
+      </div>
+    </div>
+
+    <!-- Telemetria in tempo reale -->
+    <div class="tactical-telemetry-pills">
+      <div class="telemetry-pill accent">
+        <span class="pulse-dot"></span>
+        <span id="header-rust-bus" data-i18n="header_rust_bus">RUST BUS: 0.12ms</span>
+      </div>
+      <div class="telemetry-pill">
+        <span data-i18n="header_ternary_bypass">78% Bypass Token</span>
+      </div>
+      <div class="telemetry-pill warning" id="hud-presence-status">
+        <span class="pulse-dot"></span>
+        <span id="hud-presence-text" data-i18n="header_presence">WEBCAM: In attesa utente</span>
+      </div>
+      <div class="telemetry-pill">
+        <span data-i18n="header_lang">LINGUA:</span>
+        <select id="lang-selector" style="background:transparent; color:var(--cyan-glow); border:none; font-family:var(--font-mono); font-weight:700; cursor:pointer; outline:none;">
+          <option value="it" style="background:#0b0f19; color:#fff;">🇮🇹 IT</option>
+          <option value="en" style="background:#0b0f19; color:#fff;">🇬🇧 EN</option>
+          <option value="fr" style="background:#0b0f19; color:#fff;">🇫🇷 FR</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <nav class="plance-navbar">
+    <button class="plancia-tab-btn active" data-deck="deck-projects" id="tab-nav-projects">
+      <span>🚀</span> <span class="tab-label">Plancia War Room &amp; Progetti 24/7</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-cognitive-flow" id="tab-nav-flow">
+      <span>⚡</span> <span class="tab-label">Plancia Flusso Cognitivo</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-agent-vault" id="tab-nav-vault">
+      <span>🛠️</span> <span class="tab-label">Plancia Agent Vault &amp; Windows</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-rbac" id="tab-nav-rbac">
+      <span>🛡️</span> <span class="tab-label">Plancia RBAC &amp; Personale</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-proximity-hud" id="tab-nav-hud">
+      <span>👁️</span> <span class="tab-label">Plancia Proximity HUD</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-cad-media" id="tab-nav-cad">
+      <span>📐</span> <span class="tab-label">Plancia CAD &amp; Media Studio</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-telemetry" id="tab-nav-telemetry">
+      <span>📊</span> <span class="tab-label">Plancia Telemetria &amp; Kernel</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-chatbot-mesh" id="tab-nav-chatbot">
+      <span>💬</span> <span class="tab-label">Plancia Assistenti &amp; Bot</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-multimodal-surveillance" id="tab-nav-multimodal-surveillance">
+      <span>📡</span> <span class="tab-label">Plancia Sorveglianza &amp; Satelliti</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-affective-engine" id="tab-nav-affective-engine">
+      <span>💓</span> <span class="tab-label">Plancia Motore Affettivo &amp; Umore</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-wearables-vitals" id="tab-nav-wearables">
+      <span>⌚</span> <span class="tab-label">Plancia Indossabili &amp; Vitals</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-emergency-vitals" id="tab-nav-emergency">
+      <span>🚨</span> <span class="tab-label">Plancia Emergenze &amp; Prossimità</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-cognitive-triage" id="tab-nav-cognitive-triage">
+      <span>🧠</span> <span class="tab-label" data-i18n="tab_cognitive_triage">Plancia Triage Cognitivo &amp; Salute</span>
+    </button>
+    <button class="tactical-btn" id="btn-open-admin-wizard" style="margin-left:auto; background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700; border:none; box-shadow:0 0 15px rgba(0,240,255,0.4); animation:floatBob 3s ease-in-out infinite;">
+      <span data-i18n="btn_guided_setup">✨ Setup Guidato</span>
+    </button>
+  </nav>
+
+  <!-- VIEWPORT CENTRALE MULTI-PLANCIA -->
+  <main class="tactical-viewport">
+
+    <!-- ================================================================= -->
+    <!-- PLANCIA 1: WAR ROOM & MULTI-PROGETTI 24/7                         -->
+    <!-- ================================================================= -->
+
+    <!-- @include features/war_room/deck.html -->
+    <!-- @include features/cognitive_flow/deck.html -->
+    <!-- @include features/agent_vault/deck.html -->
+    <!-- @include features/rbac/deck.html -->
+    <!-- @include features/proximity_hud/deck.html -->
+    <!-- @include features/cad_media/deck.html -->
+    <!-- @include features/telemetry/deck.html -->
+    <!-- @include features/chatbot_mesh/deck.html -->
+    <!-- @include features/multimodal_surveillance/deck.html -->
+    <!-- @include features/human_affective_engine/deck.html -->
+    <!-- @include features/wearable_vitals_hub/deck.html -->
+    <!-- @include features/user_presence_vitals/deck.html -->
+    <!-- @include features/cognitive_triage_agents/deck.html -->
+  </main>
+
+  <footer class="bottom-command-bar">
+    <div style="display:flex; align-items:center; gap:0.5rem;">
+      <span style="color:var(--cyan-glow); font-size:1.2rem;">⚡</span>
+      <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--text-muted);">NUXIVA CORE:</span>
+    </div>
+    <div class="command-input-wrapper">
+      <input type="text" id="global-command-input" data-i18n-placeholder="input_command_placeholder" placeholder="Impartisci un comando, descrivi un nuovo progetto o interroga gli agenti...">
+    </div>
+    <button id="btn-global-dispatch" class="tactical-btn" data-i18n="btn_execute">Esegui</button>
+  </footer>
+
+  <!-- ================================================================= -->
+  <!-- MODAL WIZARD ANIMATO A STEP PER CONFIGURAZIONE RAPIDA / PRINCIPIANTI -->
+  <!-- ================================================================= -->
+
+  <!-- @include features/onboarding/wizard_modal.html -->
+  <!-- @include features/chatbot_mesh/emoticon_overlay.html -->
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>

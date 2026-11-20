@@ -1,0 +1,117 @@
+    <section id="deck-proximity-hud" class="plancia-section">
+      <div class="grid-2col" style="margin-bottom:1.5rem;">
+        <div class="tactical-card" style="grid-column: 1 / -1;">
+          <div class="card-header">
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <span class="card-title" data-i18n="vision_control_title">🎯 Controllo Visione: Mani &amp; Occhi (Live Gesture &amp; Gaze Hub)</span>
+              <span id="vision-camera-status-badge" class="badge-tag" style="background:rgba(0,240,255,0.15); color:var(--cyan-glow);" data-i18n="vision_badge_inactive">Disattivo</span>
+            </div>
+            <button id="btn-toggle-vision-camera" class="tactical-btn" style="background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700;" data-i18n="btn_toggle_vision">
+              📹 Avvia Telecamera Visione (Mani &amp; Occhi)
+            </button>
+          </div>
+          <div class="card-body" style="display:flex; flex-wrap:wrap; gap:1.5rem; align-items:flex-start;">
+            <div style="flex:1 1 500px; max-width:640px; position:relative; background:#070c18; border-radius:12px; overflow:hidden; border:1px solid rgba(0,240,255,0.3); box-shadow:0 0 25px rgba(0,240,255,0.15);">
+              <video id="vision-webcam-video" playsinline muted autoplay style="display:none;"></video>
+              <canvas id="vision-webcam-canvas" width="640" height="360" style="width:100%; height:auto; display:block; aspect-ratio:16/9;"></canvas>
+              <div style="position:absolute; top:10px; right:12px; pointer-events:none; font-family:var(--font-mono); font-size:0.75rem; color:#34d399; background:rgba(0,0,0,0.6); padding:2px 8px; border-radius:4px;">
+                ● LIVE STREAM SENSORY BUS
+              </div>
+            </div>
+
+            <div style="flex:1 1 340px; display:flex; flex-direction:column; gap:1.2rem;">
+              <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:1rem; display:flex; flex-direction:column; gap:0.8rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:0.85rem; color:var(--text-muted);" data-i18n="gesture_label">🖐️ Gesto Mani Rilevato:</span>
+                  <strong id="hud-gesture-current-label" style="font-size:1.1rem; color:#00f0ff; font-family:var(--font-mono);">NESSUNO</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:0.85rem; color:var(--text-muted);" data-i18n="gaze_label">👁️ Sguardo &amp; Attenzione:</span>
+                  <strong id="hud-gaze-state-label" style="font-size:1.0rem; color:#34d399; font-family:var(--font-mono);">🎯 Schermo (Focalizzato)</strong>
+                </div>
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                    <span style="color:var(--text-muted);" data-i18n="attention_index_label">Indice Attenzione Visiva:</span>
+                    <span id="hud-attention-percentage-val" style="color:var(--cyan-glow); font-family:var(--font-mono);">100%</span>
+                  </div>
+                  <div class="progress-container" style="height:8px;">
+                    <div id="hud-attention-bar-fill" class="progress-bar-fill" style="width:100%; background:linear-gradient(90deg, #10b981, #00f0ff);"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:0.6rem; font-size:0.85rem;">
+                <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer;">
+                  <input type="checkbox" id="chk-enable-hands-gesture" checked style="accent-color:var(--cyan-glow);">
+                  <span data-i18n="chk_hands_gesture">Abilita Controllo Navigazione con le Mani (Swipe, Pugno, Palmo)</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer;">
+                  <input type="checkbox" id="chk-enable-eye-gaze" checked style="accent-color:var(--cyan-glow);">
+                  <span data-i18n="chk_eye_gaze">Abilita Sguardo Attivo (Wake-on-Gaze) &amp; Auto-Lock per Distrazione (8s)</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer;">
+                  <input type="checkbox" id="chk-audio-feedback" checked style="accent-color:var(--cyan-glow);">
+                  <span data-i18n="chk_audio_feedback">Feedback Audio Cibernetico al Riconoscimento Gesti</span>
+                </label>
+                <div style="margin-top:0.4rem;">
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span style="color:var(--text-muted);" data-i18n="sensitivity_label">Sensibilità Riconoscimento:</span>
+                  </div>
+                  <input type="range" id="range-gesture-sensitivity" min="0.3" max="0.95" step="0.05" value="0.75" style="width:100%; accent-color:var(--cyan-glow);">
+                </div>
+              </div>
+
+              <div style="background:rgba(0,240,255,0.03); border:1px solid rgba(0,240,255,0.15); border-radius:8px; padding:0.8rem;">
+                <span style="font-size:0.8rem; font-family:var(--font-mono); color:var(--cyan-glow); display:block; margin-bottom:0.5rem;" data-i18n="test_bench_title">⚡ BANCO TEST RAPIDO GESTI:</span>
+                <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                  <button id="btn-test-gesture-swipe-l" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Cambia alla plancia successiva">👉 Swipe Destra</button>
+                  <button id="btn-test-gesture-swipe-r" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Cambia alla plancia precedente">👈 Swipe Sinistra</button>
+                  <button id="btn-test-gesture-fist" class="tactical-btn danger" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Blocca immediatamente lo schermo">✊ Pugno (Lock)</button>
+                  <button id="btn-test-gesture-palm" class="tactical-btn secondary" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Stop vocale o pausa">🖐️ Palmo (Pausa)</button>
+                  <button id="btn-test-gesture-thumb" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem; background:rgba(16,185,129,0.2); border-color:#10b981;" title="Conferma AI">👍 Pollice Su</button>
+                  <button id="btn-test-gesture-peace" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Attiva Assistente Bot">✌️ Segno V (Chat)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2col">
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="radar_title">👁️ Radar di Prossimità &amp; Presenza Biometrica</span>
+            <span id="hud-biometric-badge" class="badge-tag" style="background:rgba(0,240,255,0.2); color:var(--cyan-glow);" data-i18n="radar_badge_active">Attivo</span>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.5rem; min-height:340px;">
+            <div style="width:180px; height:180px; border-radius:50%; border:2px dashed var(--cyan-glow); display:flex; align-items:center; justify-content:center; position:relative; box-shadow:0 0 30px rgba(0,240,255,0.2);">
+              <div style="width:130px; height:130px; border-radius:50%; background:rgba(0,240,255,0.08); display:flex; align-items:center; justify-content:center;">
+                <span style="font-size:2.5rem;" id="hud-radar-icon">👤</span>
+              </div>
+            </div>
+            <div style="text-align:center;">
+              <h3 id="hud-detected-user-name" style="font-family:var(--font-display); font-size:1.3rem; color:#fff;" data-i18n="hud_user_default">Amministratore Primario (Owner)</h3>
+              <p id="hud-detection-details" style="font-family:var(--font-mono); font-size:0.8rem; color:#34d399; margin-top:4px;">Distanza: 0.8m | Confidenza Biometrica: 98%</p>
+            </div>
+            <div style="display:flex; gap:1rem;">
+              <button id="btn-toggle-presence-near" class="tactical-btn" data-i18n="btn_sim_near">Simula Avvicinamento (Sblocca)</button>
+              <button id="btn-toggle-presence-away" class="tactical-btn secondary" data-i18n="btn_sim_away">Simula Allontanamento (Proteggi)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="unlocked_projects_title">📋 Progetti Sbloccati con Visione &amp; Presenza</span>
+          </div>
+          <div class="card-body">
+            <div id="hud-projects-projected-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- PLANCIA 6: CAD & MEDIA STUDIO                                     -->
+    <!-- ================================================================= -->

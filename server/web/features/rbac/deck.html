@@ -1,0 +1,33 @@
+    <section id="deck-rbac" class="plancia-section">
+      <div class="grid-2col">
+        <!-- Selettore Profili Casa vs Azienda -->
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="rbac_users_title">👥 Utenti &amp; Personale Registrato</span>
+            <div style="display:flex; gap:0.5rem;">
+              <button class="tactical-btn secondary rbac-filter-btn active" data-filter="all" data-i18n="rbac_filter_all">Tutti</button>
+              <button class="tactical-btn secondary rbac-filter-btn" data-filter="home" data-i18n="rbac_filter_home">Casa / Staff</button>
+              <button class="tactical-btn secondary rbac-filter-btn" data-filter="enterprise" data-i18n="rbac_filter_enterprise">Azienda</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="rbac-users-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="rbac_matrix_title">🛡️ Matrice dei Permessi Granulare</span>
+          </div>
+          <div class="card-body">
+            <div style="margin-bottom:1rem; font-size:0.82rem; color:var(--text-muted);" data-i18n="rbac_matrix_explainer">
+              Ogni sezione, telecamera, comando o strumento è vincolato all'autorizzazione del profilo:
+            </div>
+            <div id="rbac-matrix-display" style="display:flex; flex-direction:column; gap:0.5rem; max-height:480px; overflow-y:auto;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+

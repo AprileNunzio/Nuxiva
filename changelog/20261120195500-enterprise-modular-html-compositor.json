@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Architettura Enterprise a componenti modulari HTML e compositor per server web",
+    "en": "Enterprise modular HTML component architecture and compositor for web server",
+    "fr": "Architecture Enterprise de composants HTML modulaires et compositeur web",
+    "es": "Arquitectura Enterprise de componentes HTML modulares y compositor web"
+  },
+  "features": [
+    {
+      "it": "Scomposizione del monolitico index.html in singoli componenti deck e modali indipendenti da 30-140 righe ciascuno, collocati nelle rispettive cartelle di feature.",
+      "en": "Decomposed the monolithic index.html into individual, independent deck and modal components of 30-140 lines each, organized in their feature folders.",
+      "fr": "Décomposition du fichier monolithique index.html en composants de decks et modaux indépendants de 30 à 140 lignes dans leurs dossiers de fonctionnalités.",
+      "es": "Descomposición del index.html monolítico en componentes individuales de decks y modales independientes de 30 a 140 líneas en sus carpetas de características."
+    },
+    {
+      "it": "Creato il modulo HTMLCompositor ad alte prestazioni con layout master, direttive di inclusione ed in-memory caching per il rendering server-side istantaneo.",
+      "en": "Created high-performance HTMLCompositor engine with master layout, include directives, and in-memory caching for instant server-side rendering.",
+      "fr": "Création du moteur HTMLCompositor haute performance avec gabarit principal, directives d'inclusion et mise en cache pour rendu instantané.",
+      "es": "Creado el motor HTMLCompositor de alto rendimiento con diseño maestro, directivas de inclusión y caché en memoria para renderizado instantáneo."
+    }
+  ]
+}

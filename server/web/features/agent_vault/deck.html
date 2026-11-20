@@ -1,0 +1,70 @@
+    <section id="deck-agent-vault" class="plancia-section">
+      <div class="grid-3col">
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="vault_catalog_title">🤖 Catalogo Agenti</span>
+          </div>
+          <div class="card-body" style="padding:0.75rem;">
+            <div id="agent-vault-selector-list" style="display:flex; flex-direction:column; gap:0.5rem;">
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card" style="grid-column: 2;">
+          <div class="card-header">
+            <div>
+              <span class="card-title" id="vault-selected-agent-name">Windows Power &amp; System Specialist</span>
+              <span style="font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted);" id="vault-selected-agent-path">Directory protetta: data/agents/windows_system_agent/</span>
+            </div>
+            <button id="btn-save-agent-instructions" class="tactical-btn" data-i18n="btn_save_instructions">Salva Modifiche</button>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:1rem;">
+            <div>
+              <label style="font-size:0.8rem; font-weight:600; color:var(--cyan-glow); display:block; margin-bottom:0.4rem;" data-i18n="vault_instructions_label">
+                Istruzioni Operative &amp; System Prompt (instructions.md):
+              </label>
+              <textarea id="vault-agent-instructions" class="tactical-input" rows="8" style="font-family:var(--font-mono); font-size:0.82rem; line-height:1.5;"></textarea>
+            </div>
+
+            <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:1rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                <span style="font-size:0.85rem; font-weight:600; color:#34d399;" data-i18n="vault_knowledge_title">📚 File di Conoscenza &amp; Regole (knowledge/):</span>
+                <button id="btn-add-knowledge-modal" class="tactical-btn secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-i18n="vault_add_rule_btn">+ Aggiungi Regola</button>
+              </div>
+              <div id="vault-knowledge-docs-list" style="display:flex; flex-direction:column; gap:0.4rem;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="vault_params_title">⚙️ Parametri &amp; Tool Custom</span>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:1rem;">
+            <div>
+              <label style="font-size:0.78rem; color:var(--text-muted);" data-i18n="vault_model_label">Modello LLM Preferito:</label>
+              <input type="text" id="vault-agent-model" class="tactical-input" value="default">
+            </div>
+            <div>
+              <label style="font-size:0.78rem; color:var(--text-muted);" data-i18n="vault_temp_label">Temperatura:</label>
+              <input type="number" id="vault-agent-temp" class="tactical-input" min="0" max="1" step="0.05" value="0.7">
+            </div>
+            <div>
+              <label style="font-size:0.78rem; color:var(--text-muted);" data-i18n="vault_widget_label">Widget Primario:</label>
+              <input type="text" id="vault-agent-widget" class="tactical-input" value="windows_desktop_control_widget">
+            </div>
+
+            <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:0.75rem;">
+              <span style="font-size:0.8rem; font-weight:600; color:var(--purple-glow);" data-i18n="vault_tools_title">🔧 Script Tool Custom (tools/):</span>
+              <div id="vault-custom-tools-list" style="margin-top:0.4rem; display:flex; flex-direction:column; gap:0.4rem;">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- PLANCIA 4: RBAC & GESTIONE PERSONALE (CASA & AZIENDA)             -->
+    <!-- ================================================================= -->

@@ -1,0 +1,38 @@
+    <section id="deck-cognitive-flow" class="plancia-section">
+      <div class="grid-2col">
+        <!-- Grafo e Nodi Dettagliati -->
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="flow_title">⚡ Grafo Decisionale Cognitivo Live</span>
+            <span class="badge-tag" style="background:rgba(0,240,255,0.2); color:var(--cyan-glow);" data-i18n="flow_badge">System 1 &amp; System 2</span>
+          </div>
+          <div class="card-body">
+            <div style="margin-bottom:1rem; padding:0.75rem; background:rgba(0,240,255,0.05); border:1px solid var(--border-neon); border-radius:8px; font-size:0.8rem;" data-i18n="flow_explainer">
+              Ogni passaggio analizza la richiesta: <strong>Agente chiamato</strong>, <strong>Tool richiesto</strong>, <strong>Widget proiettato</strong> e <strong>Decisione ternaria</strong> (+1, 0, -1).
+            </div>
+            <div id="cognitive-flow-nodes-list">
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="diagram_title">📊 Diagramma di Flusso Strutturato</span>
+          </div>
+          <div class="card-body">
+            <div id="mermaid-graph-container" style="background:rgba(5,8,17,0.7); border-radius:8px; padding:1rem; min-height:350px; overflow-x:auto;">
+              <div class="mermaid" id="mermaid-render-target">
+                graph TD
+                  Query([Richiesta Utente]) --> Laws{Leggi Fondamentali}
+                  Laws --> FastPath{Logica Ternaria: +1 Fast-Pass?}
+                  FastPath -- "+1" --> DirectTool[Esecuzione Senza LLM]
+                  FastPath -- "0" --> Sys2[System 2 Deliberazione]
+                  Sys2 --> AgentExec[Esecuzione Agente & Tool]
+                  AgentExec --> WidgetOut[Proiezione Widget Reattivo]
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
