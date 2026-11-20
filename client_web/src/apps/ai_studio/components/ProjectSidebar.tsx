@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStudioI18n } from '../scope';
-import type { Project, Thread } from '../types';
+import type { Project, Thread, Workpiece3DData } from '../types';
 
 interface ProjectSidebarProps {
   projects: Project[];
@@ -15,6 +15,7 @@ interface ProjectSidebarProps {
   onTogglePin: (thread: Thread) => void;
   onDeleteThread: (threadId: string) => void;
   onOpenMemoryHud: () => void;
+  onOpen3DViewer?: (data?: Workpiece3DData) => void;
 }
 
 export const ProjectSidebar: React.FC<ProjectSidebarProps> = ({
@@ -30,13 +31,17 @@ export const ProjectSidebar: React.FC<ProjectSidebarProps> = ({
   onTogglePin,
   onDeleteThread,
   onOpenMemoryHud,
+  onOpen3DViewer,
 }) => {
   const { t } = useStudioI18n();
   const [search, setSearch] = useState('');
 
   const currentProject = projects.find((p) => p.id === selectedProjectId);
 
-  const filteredThreads = threads.filter((th) => {
+  const isLiveVoiceSelected = selectedThreadId === 'th_live_voice_port80';
+
+  const manualThreads = threads.filter((th) => {
+    if (th.id === 'th_live_voice_port80') return false;
     if (selectedProjectId && th.project_id !== selectedProjectId) return false;
     if (search.trim()) {
       return th.title.toLowerCase().includes(search.toLowerCase());
@@ -93,10 +98,28 @@ export const ProjectSidebar: React.FC<ProjectSidebarProps> = ({
             </button>
           )}
 
+          {onOpen3DViewer && (
+            <button
+              type="button"
+              onClick={() => onOpen3DViewer({
+                title: currentProject ? `Lavorazione 3D · ${currentProject.name}` : 'Lavorazione 3D CAD & Laser CNC',
+                format: 'openscad',
+                material: 'PLA / Compensato Laser',
+                dimensions_mm: [60, 90, 30],
+                tolerance_mm: 0.15,
+                kerf_mm: 0.14,
+              })}
+              className="p-1.5 rounded-lg bg-slate-900 border border-slate-700/80 text-cyan-400 hover:text-cyan-300 hover:border-cyan-600 text-xs transition-colors"
+              title="Apri finestra lavorazione 3D"
+            >
+              🧊
+            </button>
+          )}
+
           <button
             type="button"
             onClick={onOpenMemoryHud}
-            className="p-1.5 rounded-lg bg-slate-900 border border-slate-700/80 text-cyan-400 hover:text-cyan-300 hover:border-cyan-600 text-xs transition-colors"
+            className="p-1.5 rounded-lg bg-slate-900 border border-slate-700/80 text-purple-400 hover:text-purple-300 hover:border-purple-600 text-xs transition-colors"
             title={t('memory_hud')}
           >
             🧠
@@ -112,11 +135,43 @@ export const ProjectSidebar: React.FC<ProjectSidebarProps> = ({
         />
       </div>
 
+      <div className="p-2 border-b border-slate-800/80 bg-slate-900/40">
+        <div
+          onClick={() => onSelectThread('th_live_voice_port80')}
+          className={`group relative flex flex-col p-2.5 rounded-xl text-xs cursor-pointer transition-all border shadow-md ${
+            isLiveVoiceSelected
+              ? 'bg-gradient-to-r from-cyan-950/80 to-blue-950/80 text-white font-semibold border-cyan-500 shadow-cyan-950/50'
+              : 'bg-slate-900/80 text-slate-200 hover:bg-slate-800 border-cyan-500/30 hover:border-cyan-400'
+          }`}
+        >
+          <div className="flex items-center justify-between gap-1 mb-1">
+            <span className="flex items-center gap-1.5 text-cyan-400 font-bold text-[11px] tracking-wide uppercase">
+              <span>📌</span>
+              <span>Conversazione Vocale</span>
+            </span>
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[9px] font-mono border border-cyan-500/40 animate-pulse">
+              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+              <span>PAGINA 80 LIVE</span>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 text-slate-300 text-xs mt-0.5">
+            <span className="text-sm">🎙️</span>
+            <span className="truncate flex-1">Stream audio duplex e trascrizioni voce</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-3 pt-2 pb-1 text-[10px] font-semibold tracking-wider text-slate-500 uppercase flex items-center justify-between">
+        <span>Chat Manuali & Progetti</span>
+        <span className="text-slate-600 font-mono">{manualThreads.length}</span>
+      </div>
+
       <div className="flex-1 overflow-y-auto p-2 flex flex-col gap-1">
-        {filteredThreads.length === 0 ? (
+        {manualThreads.length === 0 ? (
           <div className="text-center py-8 text-xs text-slate-500">{t('no_threads')}</div>
         ) : (
-          filteredThreads.map((thread) => {
+          manualThreads.map((thread) => {
             const isSelected = thread.id === selectedThreadId;
             return (
               <div
@@ -136,6 +191,23 @@ export const ProjectSidebar: React.FC<ProjectSidebarProps> = ({
                 </div>
 
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-1">
+                  {onOpen3DViewer && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpen3DViewer({
+                          title: `3D · ${thread.title}`,
+                          format: 'openscad',
+                          dimensions_mm: [50, 50, 20],
+                        });
+                      }}
+                      className="p-1 hover:text-cyan-300 text-slate-500"
+                      title="Visualizza lavorazione 3D"
+                    >
+                      🧊
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={(e) => {

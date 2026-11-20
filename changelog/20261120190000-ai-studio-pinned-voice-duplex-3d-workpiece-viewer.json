@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "AI Studio: UI moderna con stream vocale live pin, diff prima/dopo, pensiero/azioni a tendina, export e stampa",
+    "en": "AI Studio: modern UI with pinned live voice stream, before/after diffs, collapsible thoughts/actions, export and print",
+    "fr": "AI Studio: interface moderne avec flux vocal épinglé, diff avant/après, pensée/actions repliables, export et impression",
+    "es": "AI Studio: interfaz moderna con voz en vivo anclada, diff antes/después, pensamiento/acciones plegables, exportación e impresión"
+  },
+  "features": [
+    {
+      "it": "Integrazione in AI Studio della conversazione vocale live di pagina 80 fissata permanentemente in cima alla lista con replay audio, ascolto registrato e pulsanti di feedback.",
+      "en": "Integrated the page 80 live voice duplex stream permanently pinned at the top of AI Studio with audio replay, speech playback, and feedback buttons.",
+      "fr": "Intégration dans AI Studio de la conversation vocale directe page 80 épinglée en haut avec réécoute audio et boutons de retour.",
+      "es": "Integración en AI Studio de la conversación de voz en vivo de la página 80 anclada arriba con reproducción de audio y botones de feedback."
+    },
+    {
+      "it": "Aggiunto blocco a tendina per visualizzare pensiero e azioni dell'agente (analisi file, modifiche con contatori di righe e diff, esecuzione comandi e task) con chiusura/apertura dinamica.",
+      "en": "Added collapsible accordion block for agent thought and actions (file analysis, edits with line delta counters, command execution, tasks) with dynamic expand/collapse.",
+      "fr": "Ajout d'un bloc déroulant pour la pensée et les actions de l'agent (analyse de fichiers, modifications avec compteurs de lignes, exécution de commandes et tâches).",
+      "es": "Añadido bloque desplegable para pensamiento y acciones del agente (análisis de archivos, modificaciones con contadores de líneas, ejecución de comandos y tareas)."
+    },
+    {
+      "it": "Creato visualizzatore modale interattivo per il confronto prima/dopo dei file modificati con viste unificata e affiancata, statistiche di modifica e download/copia rapida.",
+      "en": "Created interactive modal diff viewer for before/after comparison of modified files with unified and side-by-side views, delta stats, and quick download/copy.",
+      "fr": "Création d'un visualiseur modal interactif de comparaison avant/après des fichiers modifiés avec vues unifiée et côte à côte, statistiques et téléchargement rapide.",
+      "es": "Creado visor modal interactivo para comparación antes/después de archivos modificados con vistas unificada y paralela, estadísticas y descarga rápida."
+    },
+    {
+      "it": "Aggiunta barra di strumenti rapidi, esportazione della conversazione in Markdown e JSON, supporto stampa diretta e finestra di visualizzazione 3D WebGL Three.js per lavorazioni CAD e taglio laser.",
+      "en": "Added quick tools bar, conversation export to Markdown and JSON, direct printing support, and interactive Three.js WebGL 3D workpiece viewer for CAD and laser cutting.",
+      "fr": "Ajout d'une barre d'outils rapides, export en Markdown et JSON, support d'impression directe et visionneuse 3D Three.js WebGL pour pièces CAD et découpe laser.",
+      "es": "Añadida barra de herramientas rápidas, exportación a Markdown y JSON, soporte de impresión directa y visor 3D Three.js WebGL para piezas CAD y corte láser."
+    }
+  ]
+}

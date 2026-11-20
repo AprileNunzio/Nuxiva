@@ -22,7 +22,7 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
 
   if (!artifact) return null;
 
-  const canPreview = artifact.kind === 'html' || artifact.kind === 'svg' || artifact.kind === 'markdown';
+  const canPreview = artifact.kind === 'html' || artifact.kind === 'svg' || artifact.kind === 'markdown' || artifact.kind === '3d';
 
   const handleCopy = async () => {
     try {
@@ -142,6 +142,17 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
               className="w-full h-full min-h-[400px] flex items-center justify-center p-4 bg-slate-900 rounded-xl border border-slate-800"
               dangerouslySetInnerHTML={{ __html: artifact.content }}
             />
+          ) : artifact.kind === '3d' ? (
+            <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center p-6 bg-slate-900 rounded-xl border border-slate-800 text-center gap-3">
+              <span className="text-5xl">🧊</span>
+              <span className="text-sm font-bold text-white">{artifact.title}</span>
+              <p className="text-xs text-slate-400 max-w-xs">
+                Modello 3D CAD parametrico ({artifact.language}). Visualizzabile in viewport 3D WebGL con assi e rotazione.
+              </p>
+              <pre className="w-full max-h-48 overflow-y-auto text-left font-mono text-[11px] p-2 bg-slate-950 rounded border border-slate-800 text-cyan-300">
+                <code>{artifact.content}</code>
+              </pre>
+            </div>
           ) : (
             <div className="whitespace-pre-wrap font-sans text-xs text-slate-200 leading-relaxed">
               {artifact.content}
