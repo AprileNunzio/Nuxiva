@@ -258,9 +258,33 @@ mod tests {
         let k1 = StudioCache::derive_key("q1", "fast", None);
         let k2 = StudioCache::derive_key("q2", "fast", None);
         let k3 = StudioCache::derive_key("q3", "fast", None);
-        cache.put(k1.clone(), "r1".into(), "".into(), "[]".into(), "fast".into(), 3600, 100);
-        cache.put(k2.clone(), "r2".into(), "".into(), "[]".into(), "fast".into(), 3600, 101);
-        cache.put(k3.clone(), "r3".into(), "".into(), "[]".into(), "fast".into(), 3600, 102);
+        cache.put(
+            k1.clone(),
+            "r1".into(),
+            "".into(),
+            "[]".into(),
+            "fast".into(),
+            3600,
+            100,
+        );
+        cache.put(
+            k2.clone(),
+            "r2".into(),
+            "".into(),
+            "[]".into(),
+            "fast".into(),
+            3600,
+            101,
+        );
+        cache.put(
+            k3.clone(),
+            "r3".into(),
+            "".into(),
+            "[]".into(),
+            "fast".into(),
+            3600,
+            102,
+        );
 
         assert!(cache.get(&k1, 200).is_none());
         assert!(cache.get(&k2, 200).is_some());

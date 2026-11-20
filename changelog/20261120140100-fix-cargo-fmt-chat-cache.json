@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Formattazione rustfmt del modulo cache di Chat Core",
+    "en": "Rustfmt formatting for Chat Core cache module",
+    "fr": "Formatage rustfmt du module de cache Chat Core",
+    "es": "Formateo rustfmt del módulo de caché Chat Core"
+  },
+  "fixes": [
+    {
+      "it": "Allineata la formattazione rustfmt delle chiamate di test nel modulo cache.rs per soddisfare i requisiti del job native-core nella pipeline CI.",
+      "en": "Aligned rustfmt formatting of test calls in cache.rs module to fulfill the requirements of the native-core job in the CI pipeline.",
+      "fr": "Alignement du formatage rustfmt des tests dans le module cache.rs pour satisfaire les exigences du job native-core dans la CI.",
+      "es": "Alineado el formateo rustfmt de llamadas de prueba en el módulo cache.rs para cumplir con los requisitos del job native-core en el CI."
+    }
+  ]
+}
