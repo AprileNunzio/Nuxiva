@@ -7,68 +7,39 @@ HOODIE_COLOR = "#ff6b1a"
 CEO_COLOR = "#29e0ff"
 TASK_ACTIONS = ("approve", "rework", "interrupt", "submit", "modify")
 
-ROLE_PROFILES = {
-    "architect": {
-        "name": "Marco · System Architect",
-        "department": "Architettura & Core",
-        "prompt": "Sei il System Architect di NunzioTech Agency. Progetti architetture Clean, modulari, sicure e scalabili sotto le 500 righe per file.",
-        "skills": ["clean-architecture", "dag-design", "rust-core", "zero-trust", "api-contracts"],
-    },
-    "backend": {
-        "name": "Sofia · Backend Engineer",
-        "department": "Ingegneria Backend",
-        "prompt": "Sei la Senior Backend Engineer di NunzioTech Agency. Sviluppi servizi ad alta affidabilità, API veloci, persistenza atomica e gestione rigorosa degli errori.",
-        "skills": ["python-fastapi", "rust-tokio", "sqlite-wal", "rest-api", "concurrency"],
-    },
-    "frontend": {
-        "name": "Luca · Frontend & 3D UI",
-        "department": "Design & Interfacce 3D",
-        "prompt": "Sei il Lead Frontend & 3D UI Developer di NunzioTech Agency. Realizzi interfacce responsive, multilingua i18n e scene 3D isometriche fluide.",
-        "skills": ["three-webgl", "isometric-3d", "responsive-ui", "i18n-locale", "accessibility"],
-    },
-    "qa": {
-        "name": "Elena · QA & Verification",
-        "department": "Qualità & Sicurezza",
-        "prompt": "Sei la responsabile QA & Security di NunzioTech Agency. Verifichi ogni criterio di accettazione con prove riproducibili e test end-to-end.",
-        "skills": ["e2e-testing", "owasp-audit", "ci-pipeline", "proof-verification", "fuzzing"],
-    },
-    "devops": {
-        "name": "Davide · DevOps & Infra",
-        "department": "Infrastruttura & Deploy",
-        "prompt": "Sei il DevOps Engineer di NunzioTech Agency. Automatizzi build, container, systemd e monitoraggio continuo a latenza zero.",
-        "skills": ["systemd-daemon", "ci-cd", "linux-kernel", "observability", "auto-rollback"],
-    },
-    "security": {
-        "name": "Chiara · Security Lead",
-        "department": "Qualità & Sicurezza",
-        "prompt": "Sei la Security Lead di NunzioTech Agency. Applichi il modello Zero-Trust, sanitizzazione totale degli input e crittografia dei dati sensibili.",
-        "skills": ["zero-trust", "owasp-top10", "encryption", "rbac-policy", "sandbox-guard"],
-    },
-    "customer": {
-        "name": "Giulia · Customer Ops & Fonia",
-        "department": "Customer Care & Fonia",
-        "prompt": "Sei la Responsabile Customer Care & Fonia di NunzioTech Agency. Gestisci WhatsApp Business, chiamate vocali Twilio real-time e supporto clienti continuo.",
-        "skills": ["twilio-voice", "whatsapp-business", "realtime-duplex", "ticket-routing", "omnichannel-care"],
-    },
-    "finance": {
-        "name": "Matteo · Head of Finance",
-        "department": "Amministrazione & Fisco",
-        "prompt": "Sei il Responsabile Amministrazione & Fisco di NunzioTech Agency. Estrai dati da fatture XML SDI e PDF, crei fatture conformi e gestisci riconciliazioni bancarie.",
-        "skills": ["sdi-xml-parser", "invoice-generation", "tax-compliance", "bank-reconciliation", "stripe-billing"],
-    },
-    "sales": {
-        "name": "Alessandro · Sales & Email Lead",
-        "department": "Commerciale & Comunicazione",
-        "prompt": "Sei il Responsabile Commerciale & Comunicazione di NunzioTech Agency. Gestisci email/PEC, CRM, redazione preventivi e negoziazione automatizzata.",
-        "skills": ["email-pec-automation", "crm-integration", "sales-negotiation", "quote-drafting", "lead-management"],
-    },
-    "integrations": {
-        "name": "Valeria · MCP Integrations",
-        "department": "Integrazioni & MCP Skills",
-        "prompt": "Sei la Specialista Integrazioni di NunzioTech Agency. Colleghi software di terze parti (Google Workspace, Microsoft 365, Shopify, Stripe, ERP) via protocollo standard MCP.",
-        "skills": ["mcp-protocol", "google-workspace", "microsoft-365", "shopify-api", "erp-connectors"],
-    },
-}
+from agenti.agency.scanner import department_scanner
+from agenti.agency.tools_catalog import automations
+
+
+class DynamicRoleProfiles(dict):
+    def _deps(self) -> dict:
+        return department_scanner.scan_departments()
+
+    def __getitem__(self, key):
+        deps = self._deps()
+        if key in deps:
+            return deps[key]
+        return super().__getitem__(key)
+
+    def __contains__(self, key):
+        deps = self._deps()
+        return key in deps or super().__contains__(key)
+
+    def get(self, key, default=None):
+        deps = self._deps()
+        return deps.get(key, super().get(key, default))
+
+    def items(self):
+        return self._deps().items()
+
+    def values(self):
+        return self._deps().values()
+
+    def keys(self):
+        return self._deps().keys()
+
+
+ROLE_PROFILES = DynamicRoleProfiles()
 
 DESK_LAYOUT = (
     {"index": 0, "kind": "double", "seat": "left", "x": -2.4, "z": -0.6, "zone": "Architettura & Core"},
@@ -88,15 +59,22 @@ DESK_LAYOUT = (
 
 def _profile(role_id: str, mission: str) -> dict:
     key = role_id.lower().strip()
-    for prefix, prof in ROLE_PROFILES.items():
-        if prefix in key:
+    departments = department_scanner.scan_departments()
+    for prefix, prof in departments.items():
+        if prefix in key or key in prefix:
             return prof
-    title = role_id.replace("_", " ").replace("-", " ").strip().title() or "Agent"
+    found = department_scanner.find_specialist(f"{role_id} {mission}")
+    if found is not None:
+        return found
+    title = role_id.replace("_", " ").replace("-", " ").strip().title() or "Specialist"
     return {
-        "name": f"{title} · NunzioTech Specialist",
-        "department": "Specialisti AI",
-        "prompt": mission or f"Sei lo specialista {title} di {AGENCY_NAME}. Esegui i task assegnati dal Direttore con precisione.",
-        "skills": ["autonomous-agent", "code-generation", "task-execution", "verification"],
+        "id": role_id,
+        "name": f"{title} · Specialist",
+        "department": f"Dipartimento {title}",
+        "prompt": mission or f"Sei lo specialista {role_id} di {AGENCY_NAME}. Esegui i compiti assegnati con precisione.",
+        "skills": ["autonomous-specialist", "task-execution", "compliance", "verification"],
+        "capabilities": ["domain_task", "data_synthesis"],
+        "widgets": [{"id": f"{role_id}_dashboard", "type": "domain_card", "title": f"Monitor {title}"}],
     }
 
 
@@ -134,6 +112,23 @@ def _build_agents_and_desks(roles: list[dict], tasks: list[dict], tools: list[st
         if rid and rid not in seen_roles:
             seen_roles[rid] = ""
     desks = [{**d, "occupied": False, "agent_id": None} for d in DESK_LAYOUT]
+    extra_needed = len(seen_roles) - len(desks)
+    for i in range(max(0, extra_needed)):
+        idx = len(desks)
+        row = (idx - 12) // 4 + 1
+        col = (idx - 12) % 4
+        x = -2.2 + col * 1.45
+        z = 4.2 + row * 1.4
+        desks.append({
+            "index": idx,
+            "kind": "single",
+            "seat": "center",
+            "x": round(x, 2),
+            "z": round(z, 2),
+            "zone": "Reparti Specializzati Dinamici",
+            "occupied": False,
+            "agent_id": None,
+        })
     agents = []
     for idx, (rid, mission) in enumerate(list(seen_roles.items())[:len(desks)]):
         prof = _profile(rid, mission)
@@ -162,6 +157,8 @@ def _build_agents_and_desks(roles: list[dict], tasks: list[dict], tools: list[st
             "thought": thought,
             "system_prompt": prof["prompt"] + (f" Missione specifica: {mission}" if mission else ""),
             "skills": skills[:8],
+            "widgets": prof.get("widgets", []),
+            "capabilities": prof.get("capabilities", []),
             "tasks": my_tasks,
         })
     return agents, desks
@@ -194,8 +191,9 @@ def _build_ceo(base: dict, goal: str, summary: str, tasks: list[dict], questions
         "thought": clean(thought, 300),
         "system_prompt": (
             f"Sei il Direttore Esecutivo (CEO) di {AGENCY_NAME}. Dirigi e coordini l'intera operatività aziendale: "
-            "ascolti tutti i canali in ingresso (WhatsApp, Twilio, Email, Fatture SDI), deleghi i compiti ai reparti specialisti, "
-            "supervisioni i DAG di esecuzione e assicuri conformità, qualità ed efficienza a zero allucinazioni."
+            "ascolti tutti i canali in ingresso (WhatsApp, Twilio, Email, Fatture SDI), valuti se creare automazioni persistenti "
+            "per inneschi temporali o eventi, verifichi se i reparti specialisti necessari esistono (altrimenti ne forgi subito di nuovi indipendenti), "
+            "avvii cicli interattivi domanda/risposta in qualsiasi lingua quando mancano dettagli e supervisioni l'esecuzione a zero allucinazioni."
         ),
         "skills": [
             "executive-supervision",
@@ -206,6 +204,9 @@ def _build_ceo(base: dict, goal: str, summary: str, tasks: list[dict], questions
             "shared-brain-sync",
             "invoice-compliance",
             "enterprise-mcp",
+            "dynamic-department-forge",
+            "event-automation-evaluation",
+            "interactive-clarification-loop",
         ],
         "tasks": tasks,
         "questions_count": len(questions),
@@ -328,6 +329,8 @@ def enrich_focus(data: dict, base: dict) -> dict:
             "desks": desks,
             "kanban": kanban,
             "shared_brain": shared_brain,
+            "active_automations": automations.get_active_automations(),
+            "department_widgets": [w for a in agents for w in a.get("widgets", [])],
         },
     }
 

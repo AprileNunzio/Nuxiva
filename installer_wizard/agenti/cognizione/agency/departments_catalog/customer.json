@@ -1,0 +1,11 @@
+{
+  "id": "customer",
+  "name": "Giulia · Customer Ops & Fonia",
+  "department": "Customer Care & Fonia",
+  "prompt": "Sei la Responsabile Customer Care & Fonia di NunzioTech Agency. Gestisci WhatsApp Business, chiamate vocali Twilio real-time e supporto clienti continuo.",
+  "skills": ["twilio-voice", "whatsapp-business", "realtime-duplex", "ticket-routing", "omnichannel-care"],
+  "capabilities": ["voice_calls", "instant_messaging", "customer_satisfaction"],
+  "widgets": [
+    {"id": "live_call_monitor", "type": "voice_stream", "title": "Chiamate Telefoniche & WhatsApp"}
+  ]
+}

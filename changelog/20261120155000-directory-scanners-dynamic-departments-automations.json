@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Scanner a directory per agenti, reparti e automazioni guidate da eventi",
+    "en": "Directory scanners for dynamic agents, departments and event automations",
+    "fr": "Scanners de répertoires pour agents dynamiques et automatisations",
+    "es": "Escáneres de directorios para agentes dinámicos y automatizaciones"
+  },
+  "features": [
+    {
+      "it": "Sostituita la definizione statica con scanner a directory per scoprire reparti, agenti e strumenti operativi. Aggiunta creazione on-demand di reparti specializzati indipendenti con widget UI dedicati, motore di automazioni guidate da eventi e loop di chiarimento interattivo multilingua.",
+      "en": "Replaced static definitions with directory scanners discovering departments, agents, and operational tools. Added on-demand dynamic specialist department forging with dedicated UI widgets, event-driven automation engine, and interactive multilingual clarification loop.",
+      "fr": "Remplacement des définitions statiques par des scanners de répertoires pour découvrir départements, agents et outils opérationnels. Ajout de la création à la demande de départements spécialisés avec widgets UI, moteur d'automatisation événementielle et boucle interactive de clarification.",
+      "es": "Reemplazadas definiciones estáticas por escáneres de directorios para descubrir departamentos, agentes y herramientas operativas. Añadida creación bajo demanda de departamentos especializados con widgets UI, motor de automatizaciones por eventos y bucle interactivo de clarificación."
+    }
+  ]
+}
