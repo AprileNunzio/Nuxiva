@@ -7,6 +7,7 @@ HOODIE_COLOR = "#ff6b1a"
 CEO_COLOR = "#29e0ff"
 TASK_ACTIONS = ("approve", "rework", "interrupt", "submit", "modify")
 
+from agenti.agency import circadian
 from agenti.agency.scanner import department_scanner
 from agenti.agency.tools_catalog import automations
 
@@ -331,6 +332,7 @@ def enrich_focus(data: dict, base: dict) -> dict:
             "shared_brain": shared_brain,
             "active_automations": automations.get_active_automations(),
             "department_widgets": [w for a in agents for w in a.get("widgets", [])],
+            "circadian_context": circadian.resolve_circadian_context(),
         },
     }
 

@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Motore circadiano adattivo e apprendimento autonomo abitudini widget",
+    "en": "Circadian adaptive engine and autonomous habit learning widgets",
+    "fr": "Moteur circadien adaptatif et apprentissage autonome des habitudes",
+    "es": "Motor circadiano adaptativo y aprendizaje autónomo de hábitos"
+  },
+  "features": [
+    {
+      "it": "Implementato il motore circadiano adattivo con apprendimento delle abitudini orarie: mostra autonomamente i widget di salute e sonno al mattino, borsa e mercati dalle 9, progetti dalle 12 e guida TV/relax alle 20, consolidando i pattern d'uso come un vero maggiordomo.",
+      "en": "Implemented circadian adaptive engine with hourly habit learning: autonomously surfaces health and sleep widgets in the morning, stock markets from 9 AM, projects from noon, and TV/relaxation at 8 PM, consolidating user patterns like a true butler.",
+      "fr": "Implémentation du moteur circadien adaptatif avec apprentissage des habitudes: affiche de manière autonome les widgets santé/sommeil le matin, marchés dès 9h, projets dès 12h et guide TV/détente à 20h, consolidant les habitudes comme un vrai majordome.",
+      "es": "Implementación del motor circadiano adaptativo con aprendizaje de hábitos: muestra de forma autónoma widgets de salud y sueño por la mañana, bolsa desde las 9, proyectos desde las 12 y guía TV/relax a las 20, consolidando rutinas como un auténtico mayordomo."
+    }
+  ]
+}
