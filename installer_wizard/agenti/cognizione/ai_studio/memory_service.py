@@ -56,21 +56,39 @@ class CrossMemoryService:
         return combined
 
     def learn(self, content: str, source: str = "written_chat", speaker: str = "", tags: List[str] | None = None) -> MemoryFact:
+        now_ts = int(time.time())
         fact = MemoryFact(
-            id=f"fact_{int(time.time())}_{uuid.uuid4().hex[:8]}",
+            id=f"fact_{now_ts}_{uuid.uuid4().hex[:8]}",
             source=source,
             content=content.strip(),
             speaker=speaker,
-            timestamp=int(time.time()),
+            timestamp=now_ts,
             tags=tags or [],
         )
         self.store.add_memory(fact)
         if self._rust_studio:
             try:
-                self._rust_studio.learn_statement(fact.content, "voice" if "voice" in source else "written", fact.speaker)
+                self._rust_studio.learn_statement(
+                    fact.content,
+                    "voice" if "voice" in source else "written",
+                    now_ts * 1000,
+                )
             except Exception:
                 pass
         return fact
+
+    def consolidate_and_prune(self, max_facts: int = 1000, half_life_seconds: int = 86400) -> dict:
+        consolidated = 0
+        pruned = 0
+        if self._rust_studio:
+            try:
+                consolidated = int(self._rust_studio.memory_consolidate())
+                now_ms = int(time.time() * 1000)
+                half_life_ms = half_life_seconds * 1000
+                pruned = int(self._rust_studio.memory_prune(now_ms, max_facts, half_life_ms))
+            except Exception:
+                pass
+        return {"consolidated": consolidated, "pruned": pruned}
 
     def recall(self, query: str, limit: int = 5) -> List[MemoryFact]:
         all_facts = self.get_all_facts()

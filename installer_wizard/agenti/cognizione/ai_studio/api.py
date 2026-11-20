@@ -188,6 +188,13 @@ async def learn_memory(body: MemoryLearnRequest, _=Depends(require_admin)) -> Di
     return fact.to_dict()
 
 
+@admin_routes.post("/memory/consolidate")
+async def consolidate_memory(_=Depends(require_admin)) -> Dict[str, Any]:
+    stats = service.memory.consolidate_and_prune()
+    return {"status": "ok", **stats}
+
+
+
 @public_routes.get("/smb/tree")
 async def smb_tree(folder: str = Query("")) -> List[Dict[str, Any]]:
     try:

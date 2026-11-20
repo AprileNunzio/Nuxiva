@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Consolidamento semantico della memoria e journal transazionale per le azioni",
+    "en": "Semantic memory consolidation and transactional action journal",
+    "fr": "Consolidation sémantique de mémoire et journal transactionnel pour les actions",
+    "es": "Consolidación semántica de memoria y registro transaccional para acciones"
+  },
+  "features": [
+    {
+      "it": "Introdotti il consolidamento semantico e il decadimento temporale della memoria con protezione dei fatti chiave in chat-core, uniti al journal di rollback atomico in agency-action.",
+      "en": "Introduced semantic memory consolidation and temporal decay with immune key protection in chat-core, combined with atomic rollback journal in agency-action.",
+      "fr": "Introduction de la consolidation sémantique et du déclin temporel en chat-core avec protection des faits clés, et journal de rollback atomique dans agency-action.",
+      "es": "Introducida consolidación semántica y decaimiento temporal en chat-core con protección de hechos clave, junto al registro de rollback atómico en agency-action."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto il passaggio del timestamp millisecondi nelle invocazioni native di learn_statement in CrossMemoryService.",
+      "en": "Fixed millisecond timestamp parameter passing in native learn_statement invocations in CrossMemoryService.",
+      "fr": "Correction du passage du timestamp millisecondes dans les appels natifs learn_statement de CrossMemoryService.",
+      "es": "Corregido el paso de marca de tiempo en milisegundos en invocaciones nativas de learn_statement en CrossMemoryService."
+    }
+  ]
+}

@@ -158,6 +158,22 @@ impl RustChatStudio {
         Ok(guard.memory_mut().build_system_injection(query))
     }
 
+    fn memory_consolidate(&self) -> PyResult<usize> {
+        let mut guard = self.engine.write().map_err(|_| poisoned())?;
+        Ok(guard.memory_mut().consolidate())
+    }
+
+    #[pyo3(signature = (now_ms, max_facts = 1000, half_life_ms = 86_400_000))]
+    fn memory_prune(&self, now_ms: u64, max_facts: usize, half_life_ms: u64) -> PyResult<usize> {
+        let mut guard = self.engine.write().map_err(|_| poisoned())?;
+        Ok(guard.memory_mut().prune(now_ms, max_facts, half_life_ms))
+    }
+
+    fn memory_len(&self) -> PyResult<usize> {
+        let guard = self.engine.read().map_err(|_| poisoned())?;
+        Ok(guard.memory().len())
+    }
+
     fn resolve_safe_smb_path(&self, category: &str, subpath: &str) -> PyResult<String> {
         let cat = SmbShareCategory::from_folder_name(category)
             .ok_or_else(|| PyValueError::new_err(format!("Unknown SMB category: {category}")))?;

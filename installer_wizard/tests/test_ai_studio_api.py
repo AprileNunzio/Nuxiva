@@ -156,3 +156,14 @@ class AiStudioApiTests(unittest.TestCase):
         self.assertEqual(msg2.status_code, 200)
         data2 = msg2.json()
         self.assertEqual(data1["content"], data2["content"])
+
+    def test_memory_consolidation_endpoint(self):
+        self.memory.learn("Preferisco il linguaggio Rust", "written_chat", "user")
+        self.memory.learn("Preferisco il linguaggio Rust", "voice_speech", "user")
+        res = self.client.post("/api/ai_studio/memory/consolidate")
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertEqual(data.get("status"), "ok")
+        self.assertIn("consolidated", data)
+        self.assertIn("pruned", data)
+
