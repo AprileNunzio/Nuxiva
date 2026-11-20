@@ -319,6 +319,7 @@ def enrich_focus(data: dict, base: dict) -> dict:
     raw_questions = project.get("questions") or []
     kanban = _build_kanban(tasks, raw_questions)
     shared_brain = _build_shared_brain(data, base, tasks, questions, tools)
+    active_person = data.get("active_person") or base.get("active_person")
     return {
         **base,
         "agency_name": AGENCY_NAME,
@@ -332,7 +333,8 @@ def enrich_focus(data: dict, base: dict) -> dict:
             "shared_brain": shared_brain,
             "active_automations": automations.get_active_automations(),
             "department_widgets": [w for a in agents for w in a.get("widgets", [])],
-            "circadian_context": circadian.resolve_circadian_context(),
+            "active_person": active_person,
+            "circadian_context": circadian.resolve_circadian_context(person_slug=active_person),
         },
     }
 

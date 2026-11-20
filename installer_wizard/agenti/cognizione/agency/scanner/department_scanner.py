@@ -55,6 +55,7 @@ DOMAIN_SYNONYMS = {
     "web_studio": ("sito", "landing", "web", "pizzeria", "ecommerce", "negozio", "portfolio", "pagina"),
     "medical": ("medicin", "medic", "farmac", "clinica", "sintom", "paziente", "dottor", "terapia", "diagnosi", "paracetamolo", "ibuprofene", "cefalea"),
     "family_home": ("spesa", "famigli", "bambin", "figl", "scuola", "compiti", "menu", "casa", "pasti", "pulizie", "promemori"),
+    "people_butler": ("persona", "persone", "abitudin", "gust", "preferenz", "passion", "hobby", "maggiordom", "profilo", "adatt"),
     "integrations": ("mcp", "google", "slack", "shopify", "stripe", "calendario", "integraz", "webhook", "api"),
 }
 

@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Adattamento circadiano multi-persona e preferenze salvate nell'app persone",
+    "en": "Multi-person adaptive circadian rhythm and preferences in people app",
+    "fr": "Adaptation circadienne multi-personne et préférences dans l'app personnes",
+    "es": "Adaptación circadiana multipersona y preferencias en app personas"
+  },
+  "features": [
+    {
+      "it": "Adattamento a ogni singola persona con salvataggio delle abitudini, passioni, gusti e preferenze nell'applicazione persone, integrando percezione multimodale visiva e vocale.",
+      "en": "Multi-person adaptation storing habits, passions, tastes, and preferences directly in the people app, integrated with visual and auditory perception.",
+      "fr": "Adaptation multi-personne enregistrant habitudes, passions, goûts et préférences dans l'application personnes, intégrant la perception visuelle et vocale.",
+      "es": "Adaptación multipersona guardando hábitos, pasiones, gustos y preferencias en la app personas, integrando percepción multimodal visual y auditiva."
+    }
+  ]
+}

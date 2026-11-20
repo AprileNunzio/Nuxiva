@@ -51,6 +51,10 @@ PROFILE_RULES = (
     ("hobbies", "tags", re.compile(r"\b(?:il mio hobby è|la mia passione è|mi appassiona|ho la passione per)\s+" + _ART + _VALUE + _END, re.I)),
     ("sports", "tags", re.compile(r"\btifo\s+(?:per\s+)?" + _ART + _VALUE + _END, re.I)),
     ("temperature", "number", re.compile(r"\b(?:sto bene|mi trovo bene|preferisco)\s+(?:con|a)\s+(\d{2})\s*gradi\b", re.I)),
+    ("movies", "tags", re.compile(r"\b(?:il mio film preferito|la mia serie preferita|il mio genere preferito|adoro guardare|mi piacciono i film|mi piace guardare)\s+(?:è|e'|sono|di)?\s*" + _ART + _VALUE + _END, re.I)),
+    ("drinks", "tags", re.compile(r"\b(?:la mia bevanda preferita|bevo di solito|adoro bere|mi piace bere)\s+(?:è|e'|di)?\s*" + _ART + _VALUE + _END, re.I)),
+    ("books", "tags", re.compile(r"\b(?:il mio libro preferito|il mio autore preferito|adoro leggere|leggo spesso)\s+(?:è|e'|di)?\s*" + _ART + _VALUE + _END, re.I)),
+    ("daily_habits", "tags", re.compile(r"\b(?:la mia abitudine è|ogni giorno|ogni mattina|ogni sera)\s+(?:di\s+)?" + _ART + _VALUE + _END, re.I)),
 )
 
 
