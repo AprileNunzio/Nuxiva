@@ -7,7 +7,6 @@ from access import require_admin
 from agenti.ai_studio import api
 from agenti.ai_studio.artifact_extractor import ArtifactExtractor
 from agenti.ai_studio.memory_service import CrossMemoryService
-from agenti.ai_studio.models import Attachment
 from agenti.ai_studio.service import StudioService
 from agenti.ai_studio.smb_service import SmbStudioService
 from agenti.ai_studio.store import StudioStore

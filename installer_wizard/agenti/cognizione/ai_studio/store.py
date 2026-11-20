@@ -3,7 +3,7 @@ import sqlite3
 import threading
 import time
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 from config import STATE_DIR
 from .models import Project, Thread, Message, Artifact, Attachment, MemoryFact
 

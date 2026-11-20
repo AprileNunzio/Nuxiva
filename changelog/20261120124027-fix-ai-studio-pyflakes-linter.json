@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Correzione analisi statica pyflakes per AI Studio",
+    "en": "Fix pyflakes static analysis for AI Studio",
+    "fr": "Correction de l'analyse statique pyflakes pour AI Studio",
+    "es": "Corrección de análisis estático pyflakes para AI Studio"
+  },
+  "fixes": [
+    {
+      "it": "Aggiunta l'importazione di Any in store.py e rimossi i moduli inutilizzati in service.py e test_ai_studio_api.py per superare tutti i controlli linter pyflakes della pipeline CI.",
+      "en": "Added Any import in store.py and removed unused modules in service.py and test_ai_studio_api.py to pass all pyflakes linter checks in the CI pipeline.",
+      "fr": "Ajout de l'import Any dans store.py et suppression des imports inutilisés dans service.py et test_ai_studio_api.py pour valider les vérifications pyflakes dans la CI.",
+      "es": "Añadida importación de Any en store.py y eliminadas importaciones no usadas en service.py y test_ai_studio_api.py para superar las verificaciones pyflakes del CI."
+    }
+  ]
+}

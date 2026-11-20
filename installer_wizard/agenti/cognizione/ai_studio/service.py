@@ -3,7 +3,7 @@ import time
 from typing import List, Optional, Tuple
 from .artifact_extractor import ArtifactExtractor
 from .memory_service import CrossMemoryService
-from .models import Artifact, Attachment, Message, Project, Thread
+from .models import Attachment, Message, Project, Thread
 from .smb_service import SmbStudioService
 from .store import StudioStore
 
