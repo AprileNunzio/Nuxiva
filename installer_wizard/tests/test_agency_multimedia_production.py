@@ -162,3 +162,42 @@ class TestAgencyMultimediaProduction(unittest.TestCase):
         self.assertIsNotNone(a_spec)
         self.assertEqual(a_spec["id"], "audio_producer")
 
+    def test_online_asset_harvesting(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            from agenti.agency.media_production import OnlineAssetHarvester
+            img = OnlineAssetHarvester.harvest_image("cyberpunk neon city", aspect_ratio="9:16", output_dir=tmp_dir)
+            self.assertEqual(img["status"], "online_harvested")
+            self.assertEqual(img["asset_type"], "image")
+            self.assertEqual(img["resolution"], "1080x1920")
+            self.assertTrue(Path(img["file_path"]).exists())
+
+            sfx = OnlineAssetHarvester.harvest_sfx("whoosh", output_dir=tmp_dir)
+            self.assertEqual(sfx["status"], "online_harvested")
+            self.assertEqual(sfx["asset_type"], "sfx")
+            self.assertTrue(Path(sfx["file_path"]).exists())
+
+            music = OnlineAssetHarvester.harvest_music("cinematic", output_dir=tmp_dir)
+            self.assertEqual(music["status"], "online_harvested")
+            self.assertEqual(music["asset_type"], "background_music")
+            self.assertTrue(Path(music["file_path"]).exists())
+
+            scenes = [
+                {"visual_prompt": "Futuristic car zooming", "transition": "whip_pan"},
+                {"visual_prompt": "Tech interface close up", "transition": "glitch"},
+            ]
+            enrichment = OnlineAssetHarvester.auto_enrich_video_assets(scenes, background_music_mood="energetic")
+            self.assertEqual(enrichment["total_assets_acquired"], 5)
+            self.assertIsNotNone(enrichment["background_music"])
+
+    def test_online_assets_harvest_tool(self):
+        ctx = Context(project_id="proj_online_media", folder="/tmp/test_online_folder")
+        out = asyncio.run(MEDIA_TOOLS["online_assets_harvest"].run(ctx, {
+            "asset_type": "image",
+            "query": "sunset ocean waves",
+            "aspect_ratio": "16:9",
+        }))
+        data = json.loads(out)
+        self.assertEqual(data["status"], "online_harvested")
+        self.assertEqual(data["resolution"], "1920x1080")
+
+

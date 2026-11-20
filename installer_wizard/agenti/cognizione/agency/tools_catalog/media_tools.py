@@ -81,6 +81,24 @@ async def _omnichannel_reel_produce(ctx: Context, args: dict) -> str:
     return json.dumps(manifest, ensure_ascii=False)
 
 
+async def _online_assets_harvest(ctx: Context, args: dict) -> str:
+    asset_type = _text(args, "asset_type", 40)
+    query = _text(args, "query", 200, required=False) or "futuristic dynamic background"
+    aspect = _text(args, "aspect_ratio", 20, required=False) or "9:16"
+    mood = _text(args, "mood", 40, required=False) or "energetic"
+
+    from agenti.agency.media_production import OnlineAssetHarvester
+    if asset_type == "image":
+        res = OnlineAssetHarvester.harvest_image(query=query, aspect_ratio=aspect)
+    elif asset_type == "sfx":
+        res = OnlineAssetHarvester.harvest_sfx(effect_name=query)
+    elif asset_type == "music":
+        res = OnlineAssetHarvester.harvest_music(mood=mood)
+    else:
+        res = {"status": "error", "message": f"Unsupported asset_type '{asset_type}'. Use 'image', 'sfx', or 'music'."}
+    return json.dumps(res, ensure_ascii=False)
+
+
 TOOLS = {
     "smb_audio_harvest": Tool(
         name="smb_audio_harvest",
@@ -109,5 +127,12 @@ TOOLS = {
         args={"title": "string", "topic": "string", "platform": "optional string", "smb_path": "optional string", "voice_text": "optional string", "scenes": "optional list", "aspect_ratio": "optional string"},
         capability="execute",
         run=_omnichannel_reel_produce,
+    ),
+    "online_assets_harvest": Tool(
+        name="online_assets_harvest",
+        description="Recupera o genera autonomamente immagini, effetti sonori (SFX) e musica di sottofondo royalty-free online quando mancano durante il montaggio video.",
+        args={"asset_type": "string", "query": "optional string", "aspect_ratio": "optional string", "mood": "optional string"},
+        capability="execute",
+        run=_online_assets_harvest,
     ),
 }

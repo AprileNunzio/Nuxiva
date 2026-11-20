@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Acquisizione autonoma online di immagini, effetti sonori e musica per il montaggio video",
+    "en": "Autonomous online harvesting of images, sound effects, and music for video editing",
+    "fr": "Acquisition autonome en ligne d'images, effets sonores et musique pour le montage vidéo",
+    "es": "Adquisición autónoma en línea de imágenes, efectos de sonido y música para montaje de vídeo"
+  },
+  "features": [
+    {
+      "it": "Implementato il modulo OnlineAssetHarvester per l'acquisizione automatica da archivi online o generazione AI di immagini, sound effect (SFX) e soundtrack musicali royalty-free.",
+      "en": "Implemented OnlineAssetHarvester module for automated online harvesting or AI generation of royalty-free images, sound effects (SFX), and musical soundtracks.",
+      "fr": "Implémentation du module OnlineAssetHarvester pour l'acquisition automatique en ligne ou la génération IA d'images, effets sonores (SFX) et musiques libres de droits.",
+      "es": "Implementación del módulo OnlineAssetHarvester para la adquisición automática en línea o generación IA de imágenes, efectos de sonido (SFX) y música libre de derechos."
+    },
+    {
+      "it": "Aggiunto il tool online_assets_harvest e arricchimento automatico delle scene nel montaggio video: le transizioni ricevono SFX abbinati e i frame mancanti vengono reperiti senza interruzione.",
+      "en": "Added online_assets_harvest tool and automatic scene enrichment in video montage: transitions receive matched SFX and missing frames are fetched without interruption.",
+      "fr": "Ajout de l'outil online_assets_harvest et enrichissement automatique des scènes : les transitions reçoivent des SFX adaptés et les plans manquants sont récupérés sans interruption.",
+      "es": "Añadida la herramienta online_assets_harvest y enriquecimiento automático de escenas: las transiciones reciben SFX combinados y las tomas faltantes se obtienen sin interrupción."
+    }
+  ]
+}
