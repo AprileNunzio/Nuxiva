@@ -63,6 +63,8 @@ DOMAIN_SYNONYMS = {
     "security_crypto_expert": ("sicurezza", "crypto", "crittografia", "zerotrust", "cifratura", "token", "audit", "pentest", "chacha", "aes", "ed25519", "argon2"),
     "video_editor": ("montagg", "video", "clip", "editing", "sottotitol", "render", "timeline", "tagli", "audio_sync", "sincronizz", "reel", "short"),
     "audio_producer": ("smb", "traccia", "audio", "sound", "suono", "musica", "jingle", "soundtrack", "voce_sintetic", "tts", "voce_ai", "waveform"),
+    "cad_3d_specialist": ("3d", "cad", "mesh", "stl", "obj", "openscad", "stampa_3d", "filamento", "resina", "slicing", "gcode_3d", "oggetto_3d", "tolleranz"),
+    "laser_cnc_specialist": ("laser", "taglio_laser", "incision", "cnc", "dxf", "svg_laser", "pantograf", "kerf", "vettor", "marcatura", "stampa_laser"),
 }
 
 

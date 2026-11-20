@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Motore di risoluzione autonoma universale per qualsiasi richiesta (3D CAD, taglio laser, web, media, IoT)",
+    "en": "Universal autonomous resolution engine for any request (3D CAD, laser cutting, web, media, IoT)",
+    "fr": "Moteur de résolution autonome universelle pour toute demande (CAD 3D, découpe laser, web, média, IoT)",
+    "es": "Motor de resolución autónoma universal para cualquier solicitud (CAD 3D, corte láser, web, medios, IoT)"
+  },
+  "features": [
+    {
+      "it": "Implementato il modulo universal_resolver che deduce ontologicamente prerequisiti, alloca tavoli di pair programming e soddisfa bisogni tecnici con cascata a 4 livelli a garanzia zero-blocco.",
+      "en": "Implemented universal_resolver module ontologically deducing prerequisites, allocating pair programming desks, and resolving technical needs via 4-level cascade with zero-block guarantee.",
+      "fr": "Implémentation du module universal_resolver déduisant ontologiquement les prérequis, allouant des bureaux de pair programming et résolvant les besoins par cascade à 4 niveaux garantie zéro blocage.",
+      "es": "Implementación del módulo universal_resolver deduciendo ontológicamente prerrequisitos, asignando escritorios de pair programming y resolviendo necesidades con cascada de 4 niveles con garantía de cero bloqueo."
+    },
+    {
+      "it": "Aggiunti gli specialisti cad_3d_specialist (Valerio) e laser_cnc_specialist (Ettore) con generazione parametrica di modelli OpenSCAD/STL e tracciati vettoriali SVG/DXF con compensazione kerf.",
+      "en": "Added specialists cad_3d_specialist (Valerio) and laser_cnc_specialist (Ettore) with parametric generation of OpenSCAD/STL models and SVG/DXF vector paths with kerf compensation.",
+      "fr": "Ajout des spécialistes cad_3d_specialist (Valerio) et laser_cnc_specialist (Ettore) avec génération paramétrique de modèles OpenSCAD/STL et tracés vectoriels SVG/DXF compensés en kerf.",
+      "es": "Añadidos los especialistas cad_3d_specialist (Valerio) y laser_cnc_specialist (Ettore) con generación paramétrica de modelos OpenSCAD/STL y trazados vectoriales SVG/DXF con compensación de kerf."
+    }
+  ]
+}
