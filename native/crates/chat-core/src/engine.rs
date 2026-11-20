@@ -1,15 +1,23 @@
 use crate::artifact::ArtifactParser;
+use crate::cache::StudioCache;
 use crate::memory::CrossMemoryVault;
 use crate::types::{Message, Project, Role, Thread};
 use std::collections::HashMap;
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct ChatStudioEngine {
     projects: HashMap<String, Project>,
     threads: HashMap<String, Thread>,
     messages: HashMap<String, Vec<Message>>,
     memory: CrossMemoryVault,
     artifact_parser: ArtifactParser,
+    cache: StudioCache,
+}
+
+impl Default for ChatStudioEngine {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ChatStudioEngine {
@@ -21,6 +29,7 @@ impl ChatStudioEngine {
             messages: HashMap::new(),
             memory: CrossMemoryVault::new(),
             artifact_parser: ArtifactParser::new(),
+            cache: StudioCache::new(2048, 32 * 1024 * 1024),
         }
     }
 
@@ -125,5 +134,14 @@ impl ChatStudioEngine {
     #[must_use]
     pub fn artifact_parser(&self) -> &ArtifactParser {
         &self.artifact_parser
+    }
+
+    #[must_use]
+    pub fn cache(&self) -> &StudioCache {
+        &self.cache
+    }
+
+    pub fn cache_mut(&mut self) -> &mut StudioCache {
+        &mut self.cache
     }
 }

@@ -60,6 +60,7 @@ export interface Message {
   attachments: Attachment[];
   memory_recalls: MemoryFact[];
   created_at: number;
+  cached?: boolean;
 }
 
 export interface SmbItem {

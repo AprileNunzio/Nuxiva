@@ -39,7 +39,8 @@ pub fn pressure(system: &System) -> f64 {
     let mem = (mem_percent(system) - 50.0).max(0.0) * 2.0;
     let swap = ratio(system.swap_used, system.swap_total) * 1.5;
     let gpu_mem = ratio(system.gpu_mem_used, system.gpu_mem_total);
-    let value = clean(system.cpu_percent)
+    let cpu = clean(system.cpu_percent) * 0.75;
+    let value = cpu
         .max(clean(system.gpu_percent))
         .max(gpu_mem)
         .max(mem)

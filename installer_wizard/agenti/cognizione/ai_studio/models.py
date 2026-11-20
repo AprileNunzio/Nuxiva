@@ -123,6 +123,7 @@ class Message:
     attachments: List[Attachment] = field(default_factory=list)
     memory_recalls: List[MemoryFact] = field(default_factory=list)
     created_at: int = 0
+    cached: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -135,6 +136,7 @@ class Message:
             "attachments": [a.to_dict() for a in self.attachments],
             "memory_recalls": [m.to_dict() for m in self.memory_recalls],
             "created_at": self.created_at,
+            "cached": self.cached,
         }
 
 

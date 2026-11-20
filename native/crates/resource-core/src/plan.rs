@@ -67,6 +67,9 @@ fn decide(
         ));
     }
     if component.rss > budget && level >= Level::Elevated {
+        if component.kind == Kind::Model {
+            return None;
+        }
         let excess = component.rss.saturating_sub(budget);
         let kind = if component.kind == Kind::Cache {
             ActionKind::Drop

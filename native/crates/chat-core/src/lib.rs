@@ -1,4 +1,5 @@
 pub mod artifact;
+pub mod cache;
 pub mod engine;
 mod intents;
 pub mod memory;
@@ -18,6 +19,7 @@ mod tests_strict;
 mod tests_studio;
 
 pub use artifact::ArtifactParser;
+pub use cache::{CacheEntry, CacheStats, StudioCache};
 pub use engine::ChatStudioEngine;
 pub use intents::{CONVERSATION, Intent, IntentError, IntentTable};
 pub use memory::CrossMemoryVault;

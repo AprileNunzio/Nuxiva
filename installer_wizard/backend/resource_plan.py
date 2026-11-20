@@ -107,7 +107,8 @@ def _pressure(system: dict) -> float:
     mem = max(0.0, _mem_percent(system) - 50.0) * 2.0
     swap = _ratio(system["swap_used"], system["swap_total"]) * 1.5
     gpu_mem = _ratio(system["gpu_mem_used"], system["gpu_mem_total"])
-    value = max(_clean(system["cpu_percent"]), _clean(system["gpu_percent"]), gpu_mem, mem, swap)
+    cpu = _clean(system["cpu_percent"]) * 0.75
+    value = max(cpu, _clean(system["gpu_percent"]), gpu_mem, mem, swap)
     return _round1(min(100.0, max(0.0, value)))
 
 
@@ -145,6 +146,8 @@ def _decide(c: dict, level: str, budget: int, cpu_busy: bool, scale: tuple[int, 
     if rank >= 3 and c["class"] == "low":
         return _release(c["kind"]), "critical_pressure", c["rss"]
     if c["rss"] > budget and rank >= 1:
+        if c["kind"] == "model":
+            return None
         return ("drop" if c["kind"] == "cache" else "trim"), "over_budget", c["rss"] - budget
     if cpu_busy and rank >= 2 and c["cpu_percent"] >= 50.0 and not c["visible"]:
         return "throttle", "cpu_hog", 0

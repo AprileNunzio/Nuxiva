@@ -62,8 +62,15 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
                 key={msg.id}
                 className={`flex flex-col gap-1.5 ${isUser ? 'items-end' : 'items-start'}`}
               >
-                <div className="text-[11px] font-medium text-slate-500 px-1">
-                  {isUser ? 'Tu' : 'Nuxiva'}
+                <div className="flex items-center gap-2 px-1">
+                  <span className="text-[11px] font-medium text-slate-500">
+                    {isUser ? t('role_user') : t('role_nuxiva')}
+                  </span>
+                  {!isUser && msg.cached && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-mono font-medium text-emerald-400 border border-emerald-500/20">
+                      ⚡ {t('cached_reply')}
+                    </span>
+                  )}
                 </div>
 
                 {!isUser && msg.memory_recalls && msg.memory_recalls.length > 0 && (

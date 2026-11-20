@@ -87,13 +87,18 @@ class ResourceManager:
                     "visible": True, "reclaimable": reclaim, "cpu_percent": min(entry["cpu_percent"], 100.0 * 64)}
             if key == "browser" and elastic_browser_budget is not None:
                 item["budget"] = elastic_browser_budget
+            elif key == "ollama" and total > 0:
+                item["budget"] = min(total // 10, max(128 * 1024 * 1024, entry["rss"] * 2))
             components.append(item)
         for model in models:
             ident = re.sub(r"[^A-Za-z0-9_.:/-]", "", model["name"])[:120]
             size = model.get("size")
-            components.append({"id": f"model.{re.sub(r'[^a-z0-9_.-]', '-', ident.lower())[:56]}", "kind": "model", "class": "normal",
-                               "rss": int(size) if isinstance(size, int) and size >= 0 else 0,
-                               "idle_ms": int(_expiry_idle_s(model.get("expires_at")) * 1000), "visible": False, "reclaimable": True,
+            model_size = int(size) if isinstance(size, int) and size >= 0 else 0
+            idle_ms = int(_expiry_idle_s(model.get("expires_at")) * 1000)
+            model_budget = max(int(model_size * 5 // 4), total * 25 // 100) if total > 0 else model_size
+            components.append({"id": f"model.{re.sub(r'[^a-z0-9_.-]', '-', ident.lower())[:56]}", "kind": "model", "class": "high",
+                               "rss": model_size, "budget": model_budget,
+                               "idle_ms": idle_ms, "visible": False, "reclaimable": idle_ms > 0,
                                "_name": ident})
         components.extend(trimmers.components())
         now = time.monotonic()

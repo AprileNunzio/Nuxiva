@@ -48,5 +48,8 @@
   "mode_code": "Codice",
   "smb_browser_title": "Archivio SMB Condiviso Nuxiva",
   "smb_select_file": "Allega Selezionato",
-  "folder_empty": "Cartella vuota"
+  "folder_empty": "Cartella vuota",
+  "role_user": "Tu",
+  "role_nuxiva": "Nuxiva",
+  "cached_reply": "Risposta in Cache (0ms)"
 }

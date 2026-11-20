@@ -48,5 +48,8 @@
   "mode_code": "Code",
   "smb_browser_title": "Nuxiva Shared SMB Archive",
   "smb_select_file": "Attach Selected",
-  "folder_empty": "Empty folder"
+  "folder_empty": "Empty folder",
+  "role_user": "You",
+  "role_nuxiva": "Nuxiva",
+  "cached_reply": "Cached Reply (0ms)"
 }

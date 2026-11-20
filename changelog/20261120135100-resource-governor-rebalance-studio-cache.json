@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Ribilanciamento quote RAM del governor e cache nativa AI Studio",
+    "en": "Governor RAM quota rebalancing and native AI Studio cache",
+    "fr": "Rééquilibrage des quotas RAM du gouverneur et cache natif AI Studio",
+    "es": "Reequilibrio de cuotas de RAM del gobernador y caché nativo de AI Studio"
+  },
+  "features": [
+    {
+      "it": "Implementata la cache nativa ad alte prestazioni in Rust con evizione LRU e invalidazione TTL integrata in AI Studio e collegata ai trimmers del governor.",
+      "en": "Implemented high-performance native Rust cache with LRU eviction and TTL expiration integrated in AI Studio and connected to governor trimmers.",
+      "fr": "Implémentation du cache natif haute performance en Rust avec éviction LRU et TTL intégré dans AI Studio et relié aux trimmers du gouverneur.",
+      "es": "Implementada caché nativa de alto rendimiento en Rust con desalojo LRU y TTL integrada en AI Studio y conectada a los trimmers del gobernador."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Risolto il falso stato critico e i budget insufficienti per modelli locali e browser; smorzata la pressione CPU del governor e rimosso il trim distruttivo dei modelli.",
+      "en": "Fixed false critical state and insufficient budgets for local models and browser; damped governor CPU pressure and removed destructive model trimming.",
+      "fr": "Correction du faux état critique et des budgets insuffisants pour modèles locaux et navigateur; pression CPU amortie et trim destructif supprimé.",
+      "es": "Corregido el falso estado crítico y presupuestos insuficientes para modelos locales y navegador; presión de CPU amortiguada y recorte de modelos eliminado."
+    }
+  ]
+}

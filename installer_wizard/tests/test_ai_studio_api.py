@@ -138,3 +138,21 @@ class AiStudioApiTests(unittest.TestCase):
 
         injection = self.memory.build_system_injection("preferenze tema lingua")
         self.assertIn("preferisce il tema scuro", injection)
+
+    def test_caching_hit_and_trim(self):
+        th = self.service.create_thread(title="Cache Test Thread", model_mode="fast")
+        msg1 = self.client.post(
+            f"/api/ai_studio/threads/{th.id}/messages",
+            json={"content": "Definisci un mutex in Rust", "attachments": []},
+        )
+        self.assertEqual(msg1.status_code, 200)
+        data1 = msg1.json()
+        self.assertFalse(data1.get("cached", False))
+
+        msg2 = self.client.post(
+            f"/api/ai_studio/threads/{th.id}/messages",
+            json={"content": "Definisci un mutex in Rust", "attachments": []},
+        )
+        self.assertEqual(msg2.status_code, 200)
+        data2 = msg2.json()
+        self.assertEqual(data1["content"], data2["content"])

@@ -171,10 +171,64 @@ impl RustChatStudio {
     }
 
     #[staticmethod]
-    fn format_smb_unc(host: &str, category: &str, subpath: &str) -> PyResult<String> {
-        let cat = SmbShareCategory::from_folder_name(category)
-            .ok_or_else(|| PyValueError::new_err(format!("Unknown SMB category: {category}")))?;
-        Ok(SmbPathGuard::format_unc(host, cat, subpath))
+    fn cache_derive_key(prompt: &str, model_mode: &str, project_id: Option<&str>) -> String {
+        nuxiva_chat_core::StudioCache::derive_key(prompt, model_mode, project_id)
+    }
+
+    fn cache_get(&self, key: &str, now_ms: u64) -> PyResult<Option<String>> {
+        let mut guard = self.engine.write().map_err(|_| poisoned())?;
+        match guard.cache_mut().get(key, now_ms) {
+            Some(entry) => serde_json::to_string(&entry)
+                .map(Some)
+                .map_err(|e| PyRuntimeError::new_err(e.to_string())),
+            None => Ok(None),
+        }
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn cache_put(
+        &self,
+        key: String,
+        content: String,
+        thought: String,
+        artifacts_json: String,
+        model_mode: String,
+        ttl_seconds: u64,
+        now_ms: u64,
+    ) -> PyResult<()> {
+        let mut guard = self.engine.write().map_err(|_| poisoned())?;
+        guard.cache_mut().put(
+            key,
+            content,
+            thought,
+            artifacts_json,
+            model_mode,
+            ttl_seconds,
+            now_ms,
+        );
+        Ok(())
+    }
+
+    fn cache_trim(&self, target_bytes: usize) -> PyResult<usize> {
+        let mut guard = self.engine.write().map_err(|_| poisoned())?;
+        Ok(guard.cache_mut().trim_to_bytes(target_bytes))
+    }
+
+    fn cache_clear(&self) -> PyResult<()> {
+        let mut guard = self.engine.write().map_err(|_| poisoned())?;
+        guard.cache_mut().clear();
+        Ok(())
+    }
+
+    fn cache_size_bytes(&self) -> PyResult<usize> {
+        let guard = self.engine.read().map_err(|_| poisoned())?;
+        Ok(guard.cache().current_bytes())
+    }
+
+    fn cache_stats_json(&self) -> PyResult<String> {
+        let guard = self.engine.read().map_err(|_| poisoned())?;
+        serde_json::to_string(&guard.cache().stats())
+            .map_err(|e| PyRuntimeError::new_err(e.to_string()))
     }
 }
 

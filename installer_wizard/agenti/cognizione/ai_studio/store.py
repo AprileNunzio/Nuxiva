@@ -58,6 +58,7 @@ class StudioStore:
                     attachments_json TEXT NOT NULL DEFAULT '[]',
                     memory_json TEXT NOT NULL DEFAULT '[]',
                     created_at INTEGER NOT NULL,
+                    cached INTEGER NOT NULL DEFAULT 0,
                     FOREIGN KEY(thread_id) REFERENCES threads(id) ON DELETE CASCADE
                 );
 
@@ -75,6 +76,10 @@ class StudioStore:
                 CREATE INDEX IF NOT EXISTS idx_learned_ts ON learned_memory(timestamp);
                 """
             )
+            try:
+                conn.execute("ALTER TABLE messages ADD COLUMN cached INTEGER NOT NULL DEFAULT 0")
+            except Exception:
+                pass
 
     def list_projects(self) -> List[Project]:
         query = """
@@ -286,6 +291,7 @@ class StudioStore:
                         attachments=attachments,
                         memory_recalls=memory_recalls,
                         created_at=row["created_at"],
+                        cached=bool(row["cached"]) if "cached" in row.keys() else False,
                     )
                 )
             return results
@@ -294,8 +300,8 @@ class StudioStore:
         with self._lock, self._get_connection() as conn:
             conn.execute(
                 """
-                INSERT INTO messages (id, thread_id, role, content, thought, artifacts_json, attachments_json, memory_json, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO messages (id, thread_id, role, content, thought, artifacts_json, attachments_json, memory_json, created_at, cached)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     message.id,
@@ -307,6 +313,7 @@ class StudioStore:
                     json.dumps([a.to_dict() for a in message.attachments]),
                     json.dumps([m.to_dict() for m in message.memory_recalls]),
                     message.created_at or int(time.time()),
+                    1 if message.cached else 0,
                 ),
             )
             conn.execute(
