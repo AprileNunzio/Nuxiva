@@ -61,6 +61,8 @@ DOMAIN_SYNONYMS = {
     "rust_expert": ("rust", "cargo", "tokio", "wasm", "webassembly", "axum", "microserviz", "concorrenz"),
     "php_expert": ("php", "php8", "composer", "symfony", "laravel", "swoole", "roadrunner", "esagonal", "psr"),
     "security_crypto_expert": ("sicurezza", "crypto", "crittografia", "zerotrust", "cifratura", "token", "audit", "pentest", "chacha", "aes", "ed25519", "argon2"),
+    "video_editor": ("montagg", "video", "clip", "editing", "sottotitol", "render", "timeline", "tagli", "audio_sync", "sincronizz", "reel", "short"),
+    "audio_producer": ("smb", "traccia", "audio", "sound", "suono", "musica", "jingle", "soundtrack", "voce_sintetic", "tts", "voce_ai", "waveform"),
 }
 
 

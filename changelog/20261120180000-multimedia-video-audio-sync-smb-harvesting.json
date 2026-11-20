@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Sincronizzazione video-audio, harvesting SMB e produzione multimediale autonoma",
+    "en": "Video-audio sync, SMB harvesting, and autonomous multimedia production",
+    "fr": "Synchronisation vidéo-audio, extraction SMB et production multimédia autonome",
+    "es": "Sincronización vídeo-audio, extracción SMB y producción multimedia autónoma"
+  },
+  "features": [
+    {
+      "it": "Aggiunti gli specialisti creativi video_editor (Leo) e audio_producer (Marco) per il montaggio video con sincronizzazione temporale e sintesi vocale neurale.",
+      "en": "Added creative specialists video_editor (Leo) and audio_producer (Marco) for video editing with temporal synchronization and neural voice synthesis.",
+      "fr": "Ajout des spécialistes créatifs video_editor (Leo) et audio_producer (Marco) pour le montage vidéo avec synchronisation temporelle et synthèse vocale neuronale.",
+      "es": "Añadidos los especialistas creativos video_editor (Leo) y audio_producer (Marco) para montaje de vídeo con sincronización temporal y síntesis de voz neuronal."
+    },
+    {
+      "it": "Implementato il motore media_production con harvesting ricorsivo di audio da cartelle condivise di rete SMB, generazione sottotitoli dinamici (.srt) e composizione timeline multicanale.",
+      "en": "Implemented media_production engine with recursive audio harvesting from SMB network shares, dynamic subtitle generation (.srt), and omnichannel timeline composition.",
+      "fr": "Implémentation du moteur media_production avec extraction récursive d'audio depuis des partages réseau SMB, sous-titres dynamiques (.srt) et composition multicanal.",
+      "es": "Implementación del motor media_production con extracción recursiva de audio desde carpetas compartidas de red SMB, subtítulos dinámicos (.srt) y composición multicanal."
+    }
+  ]
+}
