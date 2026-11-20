@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Clustering vettoriale continuo, memoria grafo-vettoriale e pruning biologico a 3 tier",
+    "en": "Continuous vector clustering, graph-vector memory and 3-tier biological pruning",
+    "fr": "Clustering vectoriel continu, mémoire graphe-vecteur et élagage biologique à 3 niveaux",
+    "es": "Clustering vectorial continuo, memoria grafo-vectorial y poda biológica de 3 niveles"
+  },
+  "features": [
+    {
+      "it": "Implementato il clustering continuo con centroidi mobili, nodi di sintesi semantica, grafo relazionale e gestione della memoria a 3 livelli (Hot, Warm, Cold) con decadimento di Ebbinghaus e demone di consolidamento.",
+      "en": "Implemented continuous clustering with moving centroids, semantic synthesis nodes, relational memory graph, and 3-tier memory management (Hot, Warm, Cold) with Ebbinghaus decay and sleep consolidation daemon.",
+      "fr": "Implémentation du clustering continu avec centroïdes mobiles, nœuds de synthèse sémantique, graphe relationnel et gestion de mémoire à 3 niveaux (Hot, Warm, Cold) avec décroissance d'Ebbinghaus et démon de consolidation.",
+      "es": "Implementado el clustering continuo con centroides móviles, nodos de síntesis semántica, grafo relacional y gestión de memoria de 3 niveles (Hot, Warm, Cold) con decaimiento de Ebbinghaus y demonio de consolidación."
+    }
+  ]
+}

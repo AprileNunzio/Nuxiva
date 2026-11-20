@@ -153,4 +153,57 @@ impl TernaryVector {
             Ok((dot as f32) / denom)
         }
     }
+
+    pub fn from_accum(accum: &[i32]) -> Result<Self, TernaryError> {
+        if accum.is_empty() {
+            return Err(TernaryError::EmptyVector);
+        }
+        let dim = accum.len();
+        let words_count = (dim.saturating_add(63)) / 64;
+        let mut pos_masks = vec![0u64; words_count];
+        let mut neg_masks = vec![0u64; words_count];
+
+        for (idx, &val) in accum.iter().enumerate() {
+            let word_idx = idx / 64;
+            let bit_idx = idx % 64;
+            let mask = 1u64 << bit_idx;
+            if val > 0 {
+                if let Some(w) = pos_masks.get_mut(word_idx) {
+                    *w |= mask;
+                }
+            } else if val < 0 {
+                if let Some(w) = neg_masks.get_mut(word_idx) {
+                    *w |= mask;
+                }
+            }
+        }
+
+        Ok(Self {
+            dim,
+            pos_masks,
+            neg_masks,
+        })
+    }
+
+    pub fn accumulate_into(&self, accum: &mut [i32]) -> Result<(), TernaryError> {
+        if self.dim != accum.len() {
+            return Err(TernaryError::DimensionMismatch {
+                expected: self.dim,
+                actual: accum.len(),
+            });
+        }
+        for (idx, slot) in accum.iter_mut().enumerate() {
+            let word_idx = idx / 64;
+            let bit_idx = idx % 64;
+            let mask = 1u64 << bit_idx;
+            let p = self.pos_masks.get(word_idx).copied().unwrap_or(0);
+            let n = self.neg_masks.get(word_idx).copied().unwrap_or(0);
+            if (p & mask) != 0 {
+                *slot = slot.saturating_add(1);
+            } else if (n & mask) != 0 {
+                *slot = slot.saturating_sub(1);
+            }
+        }
+        Ok(())
+    }
 }
