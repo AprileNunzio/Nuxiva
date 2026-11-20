@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Specialisti sviluppo moderno, scaffolder modulare, API/MCP universali e banchi pair programming",
+    "en": "Modern dev specialists, modular scaffolder, universal API/MCP, and pair programming desks",
+    "fr": "Spécialistes dév moderne, scaffolder modulaire, API/MCP universels et bureaux en binôme",
+    "es": "Especialistas dev moderno, andamiaje modular, API/MCP universales y mesas pair programming"
+  },
+  "features": [
+    {
+      "it": "Introdotti specialisti di programmazione moderna (HTML5 & Web Components, TSX & React 19, Rust & WebAssembly ad alte prestazioni, PHP 8 moderno & architettura esagonale, Sicurezza Zero-Trust & Crittografia avanzata).",
+      "en": "Introduced modern dev specialists (HTML5 & Web Components, TSX & React 19, high-performance Rust & WebAssembly, modern PHP 8 & hexagonal architecture, Zero-Trust Security & advanced cryptography).",
+      "fr": "Introduction de spécialistes du développement moderne (HTML5 & Web Components, TSX & React 19, Rust & WebAssembly haute performance, PHP 8 moderne & architecture hexagonale, sécurité Zero-Trust & cryptographie avancée).",
+      "es": "Incorporación de especialistas de desarrollo moderno (HTML5 & Web Components, TSX & React 19, Rust & WebAssembly de alto rendimiento, PHP 8 moderno & arquitectura hexagonal, seguridad Zero-Trust & criptografía avanzada)."
+    },
+    {
+      "it": "Creato scaffolder modulare autonomo che separa rigorosamente frontend e backend, generando contratti API REST/OpenAPI, manifesti server MCP con tools per ogni capacità e policy crittografiche Zero-Trust.",
+      "en": "Created autonomous modular scaffolder strictly separating frontend and backend, generating REST/OpenAPI contracts, MCP server manifests with tools for every capability, and Zero-Trust cryptographic policies.",
+      "fr": "Création d'un générateur modulaire autonome séparant strictement frontend et backend, produisant des contrats d'API REST/OpenAPI, des manifestes de serveur MCP avec outils pour chaque capacité et des politiques cryptographiques Zero-Trust.",
+      "es": "Creación de un generador modular autónomo que separa estrictamente frontend y backend, produciendo contratos de API REST/OpenAPI, manifiestos de servidor MCP con herramientas para cada capacidad y políticas criptográficas Zero-Trust."
+    },
+    {
+      "it": "Abilitato il supporto ai banchi di pair programming nelle stanze di progetto: due agenti lavorano contemporaneamente alla stessa scrivania con due PC e monitor attivi in collaborazione simultanea.",
+      "en": "Enabled pair programming desk support across project rooms: two agents work simultaneously at the same desk with dual active PCs and screens in concurrent collaboration.",
+      "fr": "Prise en charge des bureaux de travail en binôme dans les salles de projet : deux agents travaillent simultanément au même bureau avec deux PC et moniteurs actifs en collaboration concurrente.",
+      "es": "Habilitado soporte para escritorios de pair programming en las salas de proyecto: dos agentes trabajan simultáneamente en el mismo escritorio con dos PCs y pantallas activas en colaboración concurrente."
+    }
+  ]
+}

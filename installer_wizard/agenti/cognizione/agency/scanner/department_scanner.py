@@ -59,6 +59,11 @@ DOMAIN_SYNONYMS = {
     "culinary_chef": ("cucina", "ricett", "cucinare", "piatto", "cena", "pranzo", "ingrediente", "dispensa", "frigo", "forno", "cuoc", "pasta"),
     "storyteller_kids": ("favol", "fiaba", "racconto", "nanna", "storiella", "fiabe", "favola"),
     "integrations": ("mcp", "google", "slack", "shopify", "stripe", "calendario", "integraz", "webhook", "api"),
+    "html5_expert": ("html", "html5", "canvas", "pwa", "webcomponent", "webaudio", "markup", "accessib"),
+    "tsx_expert": ("tsx", "typescript", "react", "next", "vite", "jsx", "signal", "zustand", "frontend_reattiv"),
+    "rust_expert": ("rust", "cargo", "tokio", "wasm", "webassembly", "axum", "microserviz", "concorrenz"),
+    "php_expert": ("php", "php8", "composer", "symfony", "laravel", "swoole", "roadrunner", "esagonal", "psr"),
+    "security_crypto_expert": ("sicurezza", "crypto", "crittografia", "zerotrust", "cifratura", "token", "audit", "pentest", "chacha", "aes", "ed25519", "argon2"),
 }
 
 
@@ -71,11 +76,23 @@ def find_specialist(query: str, extra_dirs: list[Path] | None = None) -> dict | 
     for dep_id, prof in deps.items():
         if dep_id in tokens:
             return prof
+    best_dep = None
+    best_score = 0
     for dep_id, syns in DOMAIN_SYNONYMS.items():
-        if dep_id in deps:
-            for s in syns:
-                if any(t == s or (len(s) >= 4 and t.startswith(s)) for t in tokens):
-                    return deps[dep_id]
+        if dep_id not in deps:
+            continue
+        score = 0
+        for s in syns:
+            for t in tokens:
+                if t == s:
+                    score += 3
+                elif len(s) >= 4 and t.startswith(s):
+                    score += 2
+        if score > best_score:
+            best_score = score
+            best_dep = deps[dep_id]
+    if best_dep and best_score > 0:
+        return best_dep
     for dep_id, prof in deps.items():
         search_space = f"{dep_id} {prof['name']} {prof['department']} {' '.join(prof['skills'])} {' '.join(prof['capabilities'])}".lower()
         search_tokens = set(re.split(r"\W+", search_space))

@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from agenti.agency import project_room
+from agenti.agency.project_scaffolder import project_scaffolder
 from agenti.agency.scanner import tool_scanner
 
 
@@ -61,19 +62,32 @@ class OnDemandCapabilityGovernor:
         proj_id = f"proj_forge_{cap_name}_{int(time.time() * 1000)}"
         prompt_title = f"Modulo Autonomo: {cap_name.replace('_', ' ').title()}"
 
+        scaffold = project_scaffolder.scaffold_modular_architecture(
+            project_name=cap_name,
+            domain="on_demand_capability",
+            capabilities=[cap_name, "state_sync", "ui_render"],
+        )
+
         base_stub = {
             "id": proj_id,
             "title": prompt_title,
             "goal": f"Sviluppo completo e collaudo del modulo {cap_name} su richiesta di {person_slug}",
             "status": "planning",
+            "scaffold": scaffold,
+            "pair_programming": True,
         }
         ceo_stub = {"id": "ceo", "status": "planning"}
         shared_stub = {"rules_count": 1690, "reviews_count": 945}
 
+        pair_agents = [
+            {"id": "lead_frontend", "role": "tsx_expert", "seated": True, "status": "running"},
+            {"id": "lead_backend", "role": "rust_expert", "seated": True, "status": "running"},
+        ]
+
         project_room.build_project_room(
-            {"project": base_stub},
+            {"project": base_stub, "pair_programming": True},
             base_stub,
-            [{"id": "developer", "role": "developer", "seated": True, "status": "running"}],
+            pair_agents,
             ceo_stub,
             shared_stub,
         )
