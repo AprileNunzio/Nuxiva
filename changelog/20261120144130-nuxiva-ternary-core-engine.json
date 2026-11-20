@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Motore vettoriale ternario nativo a 1.58 bit per ricerca cognitiva hardware",
+    "en": "Native 1.58-bit ternary vector engine for hardware cognitive search",
+    "fr": "Moteur vectoriel ternaire natif 1.58-bit pour recherche cognitive matérielle",
+    "es": "Motor vectorial ternario nativo de 1.58 bits para búsqueda cognitiva de hardware"
+  },
+  "features": [
+    {
+      "it": "Creato il crate nuxiva-ternary-core con quantizzazione a 1.58 bit, bitmask disgiunte, calcolo bitwise senza moltiplicazioni e indice coarse-to-fine in memoria.",
+      "en": "Created the nuxiva-ternary-core crate with 1.58-bit quantization, disjoint bitmasks, multiplication-free bitwise dot product and in-memory coarse-to-fine index.",
+      "fr": "Création du crate nuxiva-ternary-core avec quantification 1.58-bit, masques disjoints, produit scalaire bitwise sans multiplication et index coarse-to-fine.",
+      "es": "Creado el crate nuxiva-ternary-core con cuantización de 1.58 bits, máscaras disjuntas, producto escalar bitwise sin multiplicaciones e índice en memoria."
+    }
+  ]
+}

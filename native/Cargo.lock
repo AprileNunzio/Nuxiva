@@ -2510,6 +2510,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-ternary-core"
+version = "5.8.14"
+dependencies = [
+ "serde",
+ "thiserror 2.0.21",
+]
+
+[[package]]
 name = "nuxiva-token-core"
 version = "5.8.14"
 dependencies = [
