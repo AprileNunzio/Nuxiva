@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Fusione sensoriale continua, attuazione domotica fisica e consolidamento abitudini",
+    "en": "Continuous sensor fusion, physical ambient actuation, and habit reinforcement",
+    "fr": "Fusion sensorielle continue, actionnement physique et renforcement des habitudes",
+    "es": "Fusión sensorial continua, actuación ambiental física y consolidación de hábitos"
+  },
+  "features": [
+    {
+      "it": "Implementata fusione sensoriale ambientale continua per tracciamento biometrico e occupazione stanze, ponte di attuazione domotica fisica unificato (Matter, Home Assistant, Zigbee) e governatore di rinforzo e consolidamento probabilistico delle abitudini.",
+      "en": "Implemented continuous ambient sensor fusion for biometric presence and room occupancy, unified physical actuation bridge (Matter, Home Assistant, Zigbee), and probabilistic habit reinforcement and consolidation governor.",
+      "fr": "Implémentation de la fusion sensorielle d'ambiance continue pour la présence biométrique et l'occupation des pièces, pont d'actionnement domotique physique unifié et gouverneur de renforcement probabiliste des habitudes.",
+      "es": "Implementación de fusión sensorial continua para presencia biométrica y ocupación de salas, puente de actuación física unificado (Matter, Home Assistant, Zigbee) y gobernador de consolidación probabilística de hábitos."
+    }
+  ]
+}

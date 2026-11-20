@@ -199,6 +199,8 @@ def update(slug: str, changes: dict) -> dict:
             elif key == "name":
                 first, _, last = str(value).strip().partition(" ")
                 profile["first_name"], profile["last_name"] = first, last
+            elif isinstance(key, str) and not key.startswith("_"):
+                profile[key] = value
         save(profile)
     if "relations" in changes:
         _sync_relations(profile, old_relations)
