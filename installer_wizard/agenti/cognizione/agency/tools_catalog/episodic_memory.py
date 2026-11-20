@@ -1,7 +1,7 @@
 import json
 
 from agenti.agency.episodic_graph import episodic_graph
-from agenti.agency.tools import Context, Tool, ToolError, _text
+from agenti.agency.tools import Context, Tool, _text
 
 
 async def _record_causal_episode(ctx: Context, args: dict) -> str:

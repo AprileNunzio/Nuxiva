@@ -1,7 +1,7 @@
 import json
 
 from agenti.agency.self_healing import healing_governor
-from agenti.agency.tools import Context, Tool, ToolError, _text
+from agenti.agency.tools import Context, Tool, _text
 
 
 async def _diagnose_and_repair_tool(ctx: Context, args: dict) -> str:

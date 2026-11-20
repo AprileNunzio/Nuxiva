@@ -8,6 +8,7 @@ CEO_COLOR = "#29e0ff"
 TASK_ACTIONS = ("approve", "rework", "interrupt", "submit", "modify")
 
 from agenti.agency import circadian
+from agenti.agency.project_room import build_project_room, list_project_rooms
 from agenti.agency.scanner import department_scanner
 from agenti.agency.tools_catalog import automations
 
@@ -58,16 +59,34 @@ DESK_LAYOUT = (
 )
 
 
+_DYNAMIC_AGENT_WIDGETS: dict[str, list[dict]] = {}
+
+
+def register_agent_widget(agent_id: str, widget_dict: dict) -> None:
+    key = str(agent_id).lower().strip()
+    widgets = _DYNAMIC_AGENT_WIDGETS.setdefault(key, [])
+    if not any(w.get("id") == widget_dict.get("id") for w in widgets):
+        widgets.append(widget_dict)
+
+
+def get_agent_dynamic_widgets(agent_id: str) -> list[dict]:
+    return list(_DYNAMIC_AGENT_WIDGETS.get(str(agent_id).lower().strip(), []))
+
+
 def _profile(role_id: str, mission: str) -> dict:
     key = role_id.lower().strip()
+    dyn_widgets = get_agent_dynamic_widgets(key)
     departments = department_scanner.scan_departments()
     for prefix, prof in departments.items():
         if prefix in key or key in prefix:
-            return prof
+            merged = list(prof.get("widgets", [])) + [w for w in dyn_widgets if not any(x.get("id") == w.get("id") for x in prof.get("widgets", []))]
+            return {**prof, "widgets": merged}
     found = department_scanner.find_specialist(f"{role_id} {mission}")
     if found is not None:
-        return found
+        merged = list(found.get("widgets", [])) + [w for w in dyn_widgets if not any(x.get("id") == w.get("id") for x in found.get("widgets", []))]
+        return {**found, "widgets": merged}
     title = role_id.replace("_", " ").replace("-", " ").strip().title() or "Specialist"
+    base_widgets = [{"id": f"{role_id}_dashboard", "type": "domain_card", "title": f"Monitor {title}"}]
     return {
         "id": role_id,
         "name": f"{title} · Specialist",
@@ -75,7 +94,7 @@ def _profile(role_id: str, mission: str) -> dict:
         "prompt": mission or f"Sei lo specialista {role_id} di {AGENCY_NAME}. Esegui i compiti assegnati con precisione.",
         "skills": ["autonomous-specialist", "task-execution", "compliance", "verification"],
         "capabilities": ["domain_task", "data_synthesis"],
-        "widgets": [{"id": f"{role_id}_dashboard", "type": "domain_card", "title": f"Monitor {title}"}],
+        "widgets": base_widgets + dyn_widgets,
     }
 
 
@@ -105,9 +124,9 @@ def _agent_thought(role_id: str, tasks: list[dict], project_status: str) -> tupl
 def _build_agents_and_desks(roles: list[dict], tasks: list[dict], tools: list[str], project_status: str) -> tuple[list[dict], list[dict]]:
     seen_roles: dict[str, str] = {}
     for r in roles:
-        rid = str(r.get("id") or "").strip()
+        rid = str(r.get("id") or "").strip() if isinstance(r, dict) else str(r or "").strip()
         if rid:
-            seen_roles[rid] = clean(r.get("mission"), 240)
+            seen_roles[rid] = clean(r.get("mission"), 240) if isinstance(r, dict) else ""
     for t in tasks:
         rid = str(t.get("role") or "").strip()
         if rid and rid not in seen_roles:
@@ -140,6 +159,16 @@ def _build_agents_and_desks(roles: list[dict], tasks: list[dict], tools: list[st
         if called:
             desk_slot["occupied"] = True
             desk_slot["agent_id"] = rid
+        pc = {
+            "pc_id": f"pc_{idx:03d}",
+            "hostname": f"ws-{rid or 'spare'}-{idx:02d}",
+            "status": "active" if called else "standby",
+            "screen_count": 2 if desk_slot.get("kind") == "double" else 1,
+            "glow_color": "#0ea5e9" if called else "#334155",
+            "assigned_worker": rid if called else None,
+        }
+        desk_slot["pc"] = pc
+        desk_slot["workstation"] = pc
         skills = list(prof["skills"])
         for tool_name in tools[:3]:
             if tool_name not in skills:
@@ -154,6 +183,7 @@ def _build_agents_and_desks(roles: list[dict], tasks: list[dict], tools: list[st
             "seated": called,
             "desk_index": desk_slot["index"],
             "desk_pos": {"x": desk_slot["x"], "z": desk_slot["z"], "kind": desk_slot["kind"]},
+            "workstation": pc,
             "avatar": {"hoodie": HOODIE_COLOR, "kind": "agent_3d"},
             "thought": thought,
             "system_prompt": prof["prompt"] + (f" Missione specifica: {mission}" if mission else ""),
@@ -162,6 +192,18 @@ def _build_agents_and_desks(roles: list[dict], tasks: list[dict], tools: list[st
             "capabilities": prof.get("capabilities", []),
             "tasks": my_tasks,
         })
+    for idx, d in enumerate(desks):
+        if "pc" not in d:
+            spare_pc = {
+                "pc_id": f"pc_{idx:03d}",
+                "hostname": f"ws-spare-{idx:02d}",
+                "status": "standby",
+                "screen_count": 2 if d.get("kind") == "double" else 1,
+                "glow_color": "#334155",
+                "assigned_worker": None,
+            }
+            d["pc"] = spare_pc
+            d["workstation"] = spare_pc
     return agents, desks
 
 
@@ -382,12 +424,15 @@ def enrich_focus(data: dict, base: dict) -> dict:
         {**w, "style": "borderless_glassmorphic", "visual": {"border": "none", "background": "transparent"}}
         for a in agents for w in a.get("widgets", [])
     ]
+    room = build_project_room(data, base, agents, ceo, shared_brain)
     return {
         **base,
         "agency_name": AGENCY_NAME,
         "office": {
             "agency_name": AGENCY_NAME,
-            "theme": "minimal_isometric_3d",
+            "theme": room.get("theme", "minimal_isometric_3d"),
+            "room": room,
+            "project_rooms": list_project_rooms(),
             "ceo": ceo,
             "agents": agents,
             "desks": desks,

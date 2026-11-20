@@ -4,15 +4,12 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from agenti.agency import circadian, office
+from agenti.agency import office
 from agenti.agency.circadian import (
     CircadianHabitTracker,
     PHASE_EVENING,
-    PHASE_MARKET,
     PHASE_MORNING,
     PHASE_NIGHT,
-    PHASE_PROJECTS,
-    compute_current_phase,
     resolve_circadian_context,
 )
 from agenti.agency.scanner import department_scanner
@@ -39,7 +36,7 @@ class TestAgencyPersonHabits(unittest.IsolatedAsyncioTestCase):
         self.tmp.cleanup()
 
     def test_multi_person_circadian_adaptation(self):
-        p_nunzio = people.ensure("nunzio", "Nunzio Aprile")
+        people.ensure("nunzio", "Nunzio Aprile")
         people.update("nunzio", {
             "wake_time": "06:00",
             "sleep_time": "23:00",
@@ -48,7 +45,7 @@ class TestAgencyPersonHabits(unittest.IsolatedAsyncioTestCase):
             "movies": ["fantascienza", "cyberpunk"],
         })
 
-        p_angelika = people.ensure("angelika", "Angelika Aprile")
+        people.ensure("angelika", "Angelika Aprile")
         people.update("angelika", {
             "wake_time": "08:30",
             "sleep_time": "00:30",

@@ -1,6 +1,6 @@
 import json
 
-from agenti.agency.tools import Context, Tool, ToolError, _text
+from agenti.agency.tools import Context, Tool, _text
 from agenti.agency.voice_bridge import voice_governor
 
 

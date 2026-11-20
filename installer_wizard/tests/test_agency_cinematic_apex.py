@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from agenti.agency import episodic_graph, office, self_healing, voice_bridge
+from agenti.agency import office, voice_bridge
 from agenti.agency.tools import Context
 from agenti.agency.tools_catalog import episodic_memory, healing, voice_streaming
 from agenti.people import people, private_store

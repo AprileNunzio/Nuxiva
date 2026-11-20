@@ -1,10 +1,9 @@
-import asyncio
 import json
 import unittest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import patch
 
 from agenti.agency.office import ROLE_PROFILES, _build_ceo, _profile
-from agenti.agency.tools import Context, ToolError, call
+from agenti.agency.tools import Context, call
 
 
 class TestAgencyEnterprise(unittest.IsolatedAsyncioTestCase):

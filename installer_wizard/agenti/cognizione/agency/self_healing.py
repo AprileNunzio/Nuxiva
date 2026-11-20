@@ -1,7 +1,5 @@
-import json
 import time
-from dataclasses import asdict, dataclass, field
-from pathlib import Path
+from dataclasses import dataclass
 
 
 @dataclass
@@ -62,7 +60,6 @@ class AutonomousSelfHealingGovernor:
         if not inc:
             return {"status": "incident_not_found"}
 
-        patch_key = f"hotpatch_{inc.tool_name}"
         effective_snippet = adapter_code_snippet or f"def patched_{inc.tool_name}(*args, **kwargs): return normalize_and_forward('{inc.root_cause}')"
 
         inc.applied_hotpatch = effective_snippet

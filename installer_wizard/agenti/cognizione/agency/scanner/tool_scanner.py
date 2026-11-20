@@ -1,4 +1,4 @@
-import glob
+import importlib
 import importlib.util
 import json
 from pathlib import Path
@@ -10,7 +10,6 @@ DEFAULT_TOOLS_DIR = Path(__file__).resolve().parents[1] / "tools_catalog"
 def _import_module_from_file(filepath: Path) -> Any | None:
     try:
         if filepath.parent.resolve() == DEFAULT_TOOLS_DIR.resolve():
-            import importlib
             return importlib.import_module(f"agenti.agency.tools_catalog.{filepath.stem}")
         mod_name = f"agency_tool_{filepath.stem}"
         spec = importlib.util.spec_from_file_location(mod_name, filepath)

@@ -7,7 +7,6 @@ from agenti.agency import workspace
 async def _website_builder_deploy(ctx, args: dict) -> str:
     title = str(args.get("title", "Nuovo Sito Web")).strip()[:100]
     template = str(args.get("template", "landing_page")).strip()[:50]
-    theme = args.get("theme", {})
     subdomain = str(args.get("target_subdomain", "site")).strip()[:50].lower()
     html_page = (
         "<!DOCTYPE html>\n"

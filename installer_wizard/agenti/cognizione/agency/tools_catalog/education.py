@@ -1,6 +1,6 @@
 import json
 
-from agenti.agency.tools import Context, Tool, ToolError, _text
+from agenti.agency.tools import Context, Tool, _text
 
 DIDACTIC_PROFILES = {
     "primaria": {"tone": "giocoso e rassicurante", "depth": "esempi pratici e metafore quotidiane"},

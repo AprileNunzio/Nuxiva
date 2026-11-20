@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Stanze progetto dinamiche, postazioni PC autonome, creazioni agenti e risoluzione lint CI",
+    "en": "Dynamic project rooms, autonomous PC workstations, agent creations, and CI lint fixes",
+    "fr": "Salles de projet dynamiques, postes PC autonomes, créations d'agents et correctifs CI",
+    "es": "Salas de proyecto dinámicas, puestos de PC autónomos, creaciones de agentes y correcciones CI"
+  },
+  "features": [
+    {
+      "it": "Ogni progetto è ora una stanza aziendale autonoma con dimensionamento dinamico, generazione automatica di banchi, PC e persone chiamate dal CEO a operare.",
+      "en": "Every project is now an autonomous company room with dynamic sizing, automatic generation of desks, PCs, and workers called by the CEO.",
+      "fr": "Chaque projet est désormais une salle d'entreprise autonome avec dimensionnement dynamique, génération automatique de bureaux, PC et travailleurs appelés par le CEO.",
+      "es": "Cada proyecto es ahora una sala de empresa autónoma con dimensionamiento dinámico, generación automática de escritorios, PC y trabajadores llamados por el CEO."
+    },
+    {
+      "it": "Tutti gli agenti dello sciame creano autonomamente automazioni reattive, strumenti operativi e widget fluttuanti eleganti senza contorni né sfondi, con conformità statica pyflakes completa.",
+      "en": "All swarm agents autonomously forge reactive automations, operational tools, and elegant borderless transparent floating widgets, with full pyflakes static compliance.",
+      "fr": "Tous les agents de l'essaim créent de manière autonome des automatisations, des outils opérationnels et des widgets flottants transparents, avec conformité statique pyflakes complète.",
+      "es": "Todos los agentes del enjambre crean de forma autónoma automatizaciones, herramientas operativas y widgets flotantes transparentes, con cumplimiento estático pyflakes completo."
+    }
+  ]
+}

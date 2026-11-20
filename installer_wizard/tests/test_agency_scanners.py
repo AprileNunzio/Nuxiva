@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from agenti.agency.office import _build_agents_and_desks, _build_ceo, _profile, enrich_focus
+from agenti.agency.office import _build_agents_and_desks, enrich_focus
 from agenti.agency.scanner.department_scanner import (
     find_specialist,
     forge_department,

@@ -1,5 +1,4 @@
 import json
-import re
 
 from agenti.agency.circadian import resolve_circadian_context
 from agenti.agency.tools import Context, Tool, ToolError, _text

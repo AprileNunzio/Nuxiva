@@ -4,6 +4,33 @@ import time
 _ACTIVE_AUTOMATIONS: dict[str, dict] = {}
 
 
+def create_automation(trigger, action, desc: str = "", name: str = "", widget: dict | None = None) -> dict:
+    auto_name = name or desc or f"auto_{int(time.time() * 1000)}"
+    w = widget or {
+        "id": f"aut_{int(time.time() * 1000)}",
+        "type": "automation_pill",
+        "title": auto_name,
+        "trigger": trigger,
+        "action": action,
+        "status": "active",
+        "style": "borderless_glassmorphic",
+        "visual": {"border": "none", "background": "transparent"},
+    }
+    record = {
+        "id": f"aut_{len(_ACTIVE_AUTOMATIONS) + 1}",
+        "name": auto_name,
+        "description": desc or f"Automazione autonoma: {auto_name}",
+        "trigger": trigger,
+        "action": action,
+        "widget": w,
+        "active": True,
+        "created_at": time.time(),
+        "invocations": 0,
+    }
+    _ACTIVE_AUTOMATIONS[auto_name] = record
+    return record
+
+
 async def _create_automation(ctx, args: dict) -> str:
     name = str(args.get("name", "")).strip()[:120]
     if not name:
@@ -11,34 +38,16 @@ async def _create_automation(ctx, args: dict) -> str:
     trigger = args.get("trigger", {})
     action = args.get("action", {})
     desc = str(args.get("description", "")).strip()[:400]
-    widget = args.get("widget") or {
-        "id": f"aut_{int(time.time())}",
-        "type": "automation_monitor",
-        "title": name,
-        "trigger": trigger,
-        "action": action,
-        "status": "active",
-    }
-    record = {
-        "id": f"aut_{len(_ACTIVE_AUTOMATIONS) + 1}",
-        "name": name,
-        "description": desc or f"Automazione autonoma: {name}",
-        "trigger": trigger,
-        "action": action,
-        "widget": widget,
-        "active": True,
-        "created_at": time.time(),
-        "invocations": 0,
-    }
-    _ACTIVE_AUTOMATIONS[name] = record
+    widget = args.get("widget")
+    record = create_automation(trigger, action, desc, name, widget)
     return json.dumps({
         "status": "created",
         "automation_id": record["id"],
-        "name": name,
+        "name": record["name"],
         "trigger": trigger,
         "action": action,
         "active": True,
-        "widget": widget,
+        "widget": record["widget"],
     }, ensure_ascii=False)
 
 
