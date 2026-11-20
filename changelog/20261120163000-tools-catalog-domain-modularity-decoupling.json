@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Disaccoppiamento modulare del catalogo strumenti in moduli atomici dedicati",
+    "en": "Modular decoupling of tools catalog into dedicated atomic modules",
+    "fr": "Découplage modulaire du catalogue d'outils en modules atomiques dédiés",
+    "es": "Desacoplamiento modular del catálogo de herramientas en módulos atómicos"
+  },
+  "features": [
+    {
+      "it": "Separazione rigorosa del catalogo strumenti in file indipendenti per dominio: education.py, culinary.py, storytelling.py e authz.py, eliminando file monolitici e garantendo modularità assoluta.",
+      "en": "Strict separation of tools catalog into independent domain files: education.py, culinary.py, storytelling.py, and authz.py, eliminating monolithic files and ensuring absolute modularity.",
+      "fr": "Séparation rigoureuse du catalogue d'outils en fichiers indépendants par domaine: education.py, culinary.py, storytelling.py et authz.py, éliminant les fichiers monolithiques.",
+      "es": "Separación rigurosa del catálogo de herramientas en archivos independientes por dominio: education.py, culinary.py, storytelling.py y authz.py, eliminando archivos monolíticos."
+    }
+  ]
+}

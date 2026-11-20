@@ -8,7 +8,7 @@ from agenti.agency import office
 from agenti.agency.circadian import resolve_circadian_context
 from agenti.agency.scanner import department_scanner
 from agenti.agency.tools import Context
-from agenti.agency.tools_catalog import level100_multiverse
+from agenti.agency.tools_catalog import authz, culinary, education, storytelling
 from agenti.people import people, private_store
 
 
@@ -29,12 +29,12 @@ class TestAgencyLevel100Multiverse(unittest.IsolatedAsyncioTestCase):
             p.stop()
         self.tmp.cleanup()
 
-    async def test_socratic_tutor_guide_does_not_reveal_direct_answer(self):
+    async def test_education_modular_tools_and_socratic_guidance(self):
         ctx = Context(project_id="test_proj", folder=".")
-        raw = await level100_multiverse._socratic_tutor_guide(ctx, {
+        raw = await education._socratic_tutor_guide(ctx, {
             "topic": "Equazioni di Secondo Grado",
             "student_query": "Come trovo le soluzioni di x^2 - 5x + 6 = 0?",
-            "grade_level": "terza_media",
+            "grade_level": "media",
         })
         res = json.loads(raw)
         self.assertEqual(res["status"], "socratic_guide_ready")
@@ -42,13 +42,19 @@ class TestAgencyLevel100Multiverse(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(res["direct_solution_revealed"])
         self.assertTrue(len(res["guiding_questions"]) >= 3)
 
+        raw_simple = await education._concept_simplifier(ctx, {
+            "concept": "Gravità",
+            "target_age": 8,
+        })
+        self.assertEqual(json.loads(raw_simple)["status"], "simplified")
+
         specialist = department_scanner.find_specialist("Un figlio chiede aiuto con i compiti di scuola")
         self.assertIsNotNone(specialist)
         self.assertEqual(specialist["id"], "education_tutor")
 
-    async def test_culinary_chef_crosses_pantry_and_allergies(self):
+    async def test_culinary_modular_tools_and_timer_sync(self):
         ctx = Context(project_id="test_proj", folder=".")
-        raw_recipe = await level100_multiverse._recipe_recommender(ctx, {
+        raw_recipe = await culinary._recipe_recommender(ctx, {
             "pantry_items": ["riso carnaroli", "zucchine", "olio evo", "parmigiano"],
             "allergies": ["nichel", "crostacei"],
             "max_minutes": 25,
@@ -58,7 +64,7 @@ class TestAgencyLevel100Multiverse(unittest.IsolatedAsyncioTestCase):
         self.assertIn("nichel", recipe["allergen_free_guarantee"])
         self.assertTrue(recipe["prep_and_cook_minutes"] <= 25)
 
-        raw_timer = await level100_multiverse._cooking_timer_sync(ctx, {
+        raw_timer = await culinary._cooking_timer_sync(ctx, {
             "dish_name": "Risotto alle Zucchine",
             "duration_minutes": 25,
             "family_dinner_target": "20:00",
@@ -66,13 +72,19 @@ class TestAgencyLevel100Multiverse(unittest.IsolatedAsyncioTestCase):
         timer = json.loads(raw_timer)
         self.assertEqual(timer["recommended_start_time"], "19:35")
 
+        raw_audit = await culinary._pantry_inventory_audit(ctx, {
+            "available_items": ["farina", "uova"],
+            "planned_meal": "torta_salata",
+        })
+        self.assertEqual(json.loads(raw_audit)["status"], "pantry_audited")
+
         specialist = department_scanner.find_specialist("Una mamma chiede aiuto per cucinare la cena")
         self.assertIsNotNone(specialist)
         self.assertEqual(specialist["id"], "culinary_chef")
 
-    async def test_bedtime_storyteller_generates_fable_with_ambient_modulation(self):
+    async def test_storytelling_modular_tools_and_ambient_preset(self):
         ctx = Context(project_id="test_proj", folder=".")
-        raw_story = await level100_multiverse._generate_bedtime_story(ctx, {
+        raw_story = await storytelling._generate_bedtime_story(ctx, {
             "child_name": "Luca",
             "theme": "il bosco degli animali gentili",
             "moral": "la forza dell'amicizia",
@@ -83,11 +95,17 @@ class TestAgencyLevel100Multiverse(unittest.IsolatedAsyncioTestCase):
         self.assertIn("warm_amber", story["ambient_preset"]["lighting"])
         self.assertIn("80_bpm_to_55_bpm", story["ambient_preset"]["tempo_deceleration"])
 
+        raw_ambient = await storytelling._ambient_bedtime_preset(ctx, {
+            "room": "cameretta",
+            "transition_minutes": 15,
+        })
+        self.assertEqual(json.loads(raw_ambient)["status"], "bedtime_preset_engaged")
+
         specialist = department_scanner.find_specialist("Un bambino chiede una favola per dormire")
         self.assertIsNotNone(specialist)
         self.assertEqual(specialist["id"], "storyteller_kids")
 
-    async def test_zero_trust_role_authorization_for_child_and_guest(self):
+    async def test_authz_modular_tools_zero_trust_and_co_presence(self):
         people.ensure("luca_child", "Luca Figlio")
         people.update("luca_child", {"role": "family", "subrole": "child"})
 
@@ -99,29 +117,35 @@ class TestAgencyLevel100Multiverse(unittest.IsolatedAsyncioTestCase):
 
         ctx = Context(project_id="test_proj", folder=".")
 
-        raw_child_gate = await level100_multiverse._authorize_action_by_role(ctx, {
+        raw_child_gate = await authz._authorize_action_by_role(ctx, {
             "person_slug": "luca_child",
             "action_kind": "gate_unlock",
         })
         self.assertFalse(json.loads(raw_child_gate)["allowed"])
 
-        raw_child_story = await level100_multiverse._authorize_action_by_role(ctx, {
+        raw_child_story = await authz._authorize_action_by_role(ctx, {
             "person_slug": "luca_child",
             "action_kind": "bedtime_story",
         })
         self.assertTrue(json.loads(raw_child_story)["allowed"])
 
-        raw_guest_fin = await level100_multiverse._authorize_action_by_role(ctx, {
+        raw_guest_fin = await authz._authorize_action_by_role(ctx, {
             "person_slug": "ospite_mario",
             "action_kind": "financial_read",
         })
         self.assertFalse(json.loads(raw_guest_fin)["allowed"])
 
-        raw_owner_gate = await level100_multiverse._authorize_action_by_role(ctx, {
+        raw_owner_gate = await authz._authorize_action_by_role(ctx, {
             "person_slug": "nunzio_owner",
             "action_kind": "gate_unlock",
         })
         self.assertTrue(json.loads(raw_owner_gate)["allowed"])
+
+        raw_co_eval = await authz._privacy_filter_co_presence(ctx, {
+            "active_person": "nunzio_owner",
+            "co_present_slugs": ["ospite_mario"],
+        })
+        self.assertTrue(json.loads(raw_co_eval)["masking_enforced"])
 
     def test_co_presence_privacy_masking_with_guests_in_room(self):
         people.ensure("nunzio", "Nunzio Aprile")
