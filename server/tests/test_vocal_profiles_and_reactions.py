@@ -1,11 +1,7 @@
 import unittest
 import asyncio
 from server.features.voice_engine.vocal_profiles.registry import vocal_profile_registry
-from server.features.voice_engine.vocal_profiles.contracts import BaseVocalProfile
-from server.features.voice_engine.reactions.reaction_service import (
-    emoticon_reaction_service,
-    REACTION_CATALOG
-)
+from server.features.voice_engine.reactions.reaction_service import emoticon_reaction_service
 from server.features.chatbot_mesh.chatbot_models import ChatMessagePayload, UserAgentPersonalization
 from server.features.chatbot_mesh.conversational_engine import conversational_bot_engine
 from server.features.chatbot_mesh.user_agent_customization_service import user_agent_customization_service

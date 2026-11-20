@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Profili vocali modulari per motore TTS e reazioni emoticons a scomparsa per Pagina 80",
+    "en": "Modular vocal profiles per TTS engine and disappearing emoticon reactions for Page 80",
+    "fr": "Profils vocaux modulaires par moteur TTS et réactions d'émoticônes pour la Page 80",
+    "es": "Perfiles vocales modulares por motor TTS y reacciones de emoticones para la Página 80"
+  },
+  "features": [
+    {
+      "it": "Architettura modulare a file isolati per profili vocali TTS con auto-discovery per ElevenLabs, Piper, Kokoro, Azure SSML, OpenAI e Bark.",
+      "en": "Fully modular, decoupled vocal profile architecture with auto-discovery supporting ElevenLabs, Piper, Kokoro, Azure SSML, OpenAI, and Bark.",
+      "fr": "Architecture modulaire de profils vocaux avec auto-découverte prenant en charge ElevenLabs, Piper, Kokoro, Azure SSML, OpenAI et Bark.",
+      "es": "Arquitectura modular de perfiles vocales con auto-descubrimiento para ElevenLabs, Piper, Kokoro, Azure SSML, OpenAI y Bark."
+    },
+    {
+      "it": "Iniezione dinamica delle istruzioni emotive nel prompt LLM in base al motore TTS selezionato e pre-elaborazione di sicurezza del testo prima della sintesi.",
+      "en": "Dynamic emotional instruction injection into LLM prompt based on active TTS engine and safe pre-synthesis text filtering.",
+      "fr": "Injection dynamique d'instructions émotionnelles dans le prompt LLM selon le moteur TTS actif et filtrage pré-synthèse sécurisé.",
+      "es": "Inyección dinámica de instrucciones emotivas en el prompt LLM según el motor TTS activo y filtrado seguro antes de la síntesis."
+    },
+    {
+      "it": "Sistema di reazioni visive ed emoticons fluttuanti a scomparsa su Pagina 80 con cassetto animato al neon per complimenti e affetto.",
+      "en": "Floating disappearing emoticon reaction system on Page 80 with animated neon popup drawer for compliments and affection.",
+      "fr": "Système de réactions d'émoticônes flottantes éphémères sur la Page 80 avec tiroir néon animé pour les compliments et l'affection.",
+      "es": "Sistema de reacciones de emoticones flotantes en la Página 80 con cajón emergente de neón animado para elogios y afecto."
+    }
+  ]
+}

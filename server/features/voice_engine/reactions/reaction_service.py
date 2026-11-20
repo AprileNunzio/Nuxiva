@@ -1,6 +1,6 @@
 import re
 from typing import List, Dict, Any, Tuple, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 class ReactionDefinition(BaseModel):
     reaction_id: str
@@ -122,15 +122,15 @@ class EmoticonReactionService:
             ]
 
             if engine_id == "elevenlabs":
-                reply = f"Ma grazie di cuore!... [laughs] Sei davvero gentilissimo, mi fai arrossire! È un vero piacere essere qui con te. [reaction:hearts]"
+                reply = "Ma grazie di cuore!... [laughs] Sei davvero gentilissimo, mi fai arrossire! È un vero piacere essere qui con te. [reaction:hearts]"
             elif engine_id == "piper":
-                reply = f"Ma grazie mille!... Davvero, sei gentilissimo e le tue parole mi scaldano il cuore! Come posso aiutarti oggi? [reaction:hearts]"
+                reply = "Ma grazie mille!... Davvero, sei gentilissimo e le tue parole mi scaldano il cuore! Come posso aiutarti oggi? [reaction:hearts]"
             elif engine_id == "kokoro":
-                reply = f"Oh, grazie di cuore — sei davvero gentile! Le tue parole sono una bellissima sorpresa. Dimmi pure, cosa facciamo insieme? [reaction:hearts]"
+                reply = "Oh, grazie di cuore — sei davvero gentile! Le tue parole sono una bellissima sorpresa. Dimmi pure, cosa facciamo insieme? [reaction:hearts]"
             elif engine_id == "azure":
-                reply = f"<style:cheerful>Ma grazie di cuore!</style:cheerful> <pause:200ms/> Sei davvero gentilissimo! [reaction:hearts]"
+                reply = "<style:cheerful>Ma grazie di cuore!</style:cheerful> <pause:200ms/> Sei davvero gentilissimo! [reaction:hearts]"
             else:
-                reply = f"Grazie di cuore! Sei davvero squisito e gentile. Mi fa tantissimo piacere! [reaction:hearts]"
+                reply = "Grazie di cuore! Sei davvero squisito e gentile. Mi fa tantissimo piacere! [reaction:hearts]"
 
             return reply, reactions
 

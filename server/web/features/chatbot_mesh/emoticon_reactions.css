@@ -1,0 +1,122 @@
+/* ========================================================================= */
+/* EMOTICON REACTIONS & FLOATING OVERLAY PER LA PAGINA 80                    */
+/* ========================================================================= */
+.emoticon-floating-stage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 99998;
+  overflow: hidden;
+}
+
+.floating-emoticon-particle {
+  position: absolute;
+  user-select: none;
+  font-size: 2.2rem;
+  filter: drop-shadow(0 0 12px rgba(244, 63, 94, 0.6));
+  animation: floatUpAndFade 2.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes floatUpAndFade {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.4) rotate(0deg);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0px) scale(1.25) rotate(-6deg);
+  }
+  30% {
+    transform: translateY(-50px) scale(1) rotate(6deg);
+  }
+  75% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-240px) scale(0.85) rotate(-12deg);
+  }
+}
+
+.emoticon-popup-drawer {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid var(--rose-glow);
+  box-shadow: 0 0 25px rgba(244, 63, 94, 0.4), inset 0 0 15px rgba(244, 63, 94, 0.1);
+  border-radius: 14px;
+  padding: 0.75rem 1.25rem;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  transform: translateY(120px) scale(0.9);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+}
+
+.emoticon-popup-drawer.active {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.emoticon-popup-icon {
+  font-size: 2rem;
+  animation: heartPulse 1.2s infinite alternate;
+}
+
+@keyframes heartPulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.25); filter: drop-shadow(0 0 10px #f43f5e); }
+}
+
+.emoticon-popup-text strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--rose-glow);
+  font-family: var(--font-display);
+  letter-spacing: 0.5px;
+}
+
+.emoticon-popup-text span {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.vocal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #c4b5fd;
+  font-size: 0.72rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  margin: 0 2px;
+  vertical-align: middle;
+}
+
+.reaction-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.4);
+  color: #fda4af;
+  font-size: 0.72rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  margin: 0 2px;
+  vertical-align: middle;
+}
