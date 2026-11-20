@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "AI Studio: reazioni emoji, sondaggi multi-step complessi, widget di dominio su porta 8080 e modifica codice parziale",
+    "en": "AI Studio: emoji reactions, complex multi-step surveys, domain widgets on port 8080, and partial code editing",
+    "fr": "AI Studio: réactions emoji, sondages complexes multi-étapes, widgets sur le port 8080 et édition partielle de code",
+    "es": "AI Studio: reacciones emoji, encuestas complejas multietapa, widgets en puerto 8080 y edición parcial de código"
+  },
+  "features": [
+    {
+      "it": "Aggiunto supporto completo alle reazioni emoji nei messaggi di conversazione con contatori dinamici, evidenziazione del voto e picker per oltre 14 reazioni espressive tra utente e Nuxiva.",
+      "en": "Added full support for emoji reactions in conversation messages with dynamic count badges, vote highlights, and an expressive picker with over 14 reaction types.",
+      "fr": "Ajout du support complet des réactions emoji avec compteurs dynamiques, surbrillance du vote et sélecteur de plus de 14 réactions expressives.",
+      "es": "Añadido soporte completo para reacciones emoji con contadores dinámicos, resaltado de voto y selector con más de 14 reacciones expresivas."
+    },
+    {
+      "it": "Integrato sistema interattivo di domande e sondaggi: domande a scelta rapida e questionari complessi multi-step per requisiti di progetto con barre di avanzamento percentuali.",
+      "en": "Integrated interactive questions and survey system: quick-choice inquiries and complex multi-step questionnaires for project requirements with percentage progress bars.",
+      "fr": "Intégration d'un système de questions et sondages interactifs: choix rapides et questionnaires multi-étapes complexes pour exigences de projet avec barres de progression.",
+      "es": "Integrado sistema de preguntas y encuestas interactivas: opciones rápidas y cuestionarios multietapa complejos para requisitos de proyecto con barras porcentuales."
+    },
+    {
+      "it": "Visualizzazione del conteggio totale delle righe di codice nei manufatti e strumento di modifica parziale per selezionare un intervallo specifico di righe senza riscrivere l'intero file.",
+      "en": "Displayed total code line counts in artifacts alongside a partial edit tool to target a specific line range without regenerating the full file.",
+      "fr": "Affichage du nombre total de lignes de code dans les artefacts et outil d'édition partielle pour cibler un intervalle spécifique sans réécrire tout le fichier.",
+      "es": "Visualización del conteo total de líneas de código en artefactos y herramienta de edición parcial para modificar un rango específico sin reescribir todo el archivo."
+    },
+    {
+      "it": "Integrati widget di dominio interattivi direttamente nella pagina 8080 per telemetria sensori ambientali/hardware, parametri di taglio laser CNC e stato di avanzamento progetti.",
+      "en": "Integrated interactive domain widgets directly on page 8080 for ambient/hardware sensor telemetry, laser CNC machining parameters, and project progress tracking.",
+      "fr": "Intégration de widgets interactifs sur la page 8080 pour la télémétrie des capteurs, les paramètres de découpe laser CNC et l'avancement des projets.",
+      "es": "Integrados widgets interactivos en la página 8080 para telemetría de sensores, parámetros de corte láser CNC y seguimiento del progreso de proyectos."
+    }
+  ]
+}

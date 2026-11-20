@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useStudioI18n } from './scope';
-import type { Project, Thread, Message, Artifact, Attachment, ModelMode, Workpiece3DData, FileDiff, AgentAction } from './types';
+import type { Project, Thread, Message, Artifact, Attachment, ModelMode, Workpiece3DData, FileDiff } from './types';
 import * as api from './api';
+import { getDefaultVoiceMessages } from './seedData';
 import { ProjectSidebar } from './components/ProjectSidebar';
 import { ConversationView } from './components/ConversationView';
 import { InputOmnibar } from './components/InputOmnibar';
@@ -11,7 +12,6 @@ import { MemoryInspectorModal } from './components/MemoryInspectorModal';
 import { NewProjectModal } from './components/NewProjectModal';
 import { Workpiece3DModal } from './components/Workpiece3DModal';
 import { FileDiffModal } from './components/FileDiffModal';
-
 
 export const View: React.FC = () => {
   const { t } = useStudioI18n();
@@ -35,7 +35,6 @@ export const View: React.FC = () => {
   const [isDiffModalOpen, setIsDiffModalOpen] = useState(false);
   const [currentDiffs, setCurrentDiffs] = useState<FileDiff[]>([]);
   const [selectedDiffId, setSelectedDiffId] = useState<string | undefined>(undefined);
-
 
   const loadProjects = useCallback(async () => {
     try {
@@ -78,92 +77,7 @@ export const View: React.FC = () => {
       if (thId === 'th_live_voice_port80') {
         const data = await api.fetchMessages(thId).catch(() => []);
         if (data.length === 0) {
-          const defaultVoiceMessages: Message[] = [
-            {
-              id: 'voice_msg_1',
-              thread_id: 'th_live_voice_port80',
-              role: 'user',
-              content: 'Ciao Nuxiva, verifica lo stato dei sensori e la lavorazione del pezzo 3D per la stampa.',
-              thought: '',
-              artifacts: [],
-              attachments: [],
-              memory_recalls: [{
-                id: 'mem_v1',
-                source: 'voice_speech',
-                content: 'Voce utente acquisita in duplex sulla porta 80',
-                speaker: 'Utente',
-                timestamp: Math.floor(Date.now() / 1000) - 30,
-                tags: ['voce', 'sensori', '3d'],
-              }],
-              created_at: Math.floor(Date.now() / 1000) - 30,
-            },
-            {
-              id: 'voice_msg_2',
-              thread_id: 'th_live_voice_port80',
-              role: 'assistant',
-              content: 'Sensori a regime. Ho preparato il pezzo 3D parametrico con tolleranza meccanica di 0.15mm e compensazione kerf. Puoi aprire la visualizzazione della lavorazione 3D direttamente nella finestra WebGL.',
-              thought: 'Trascrizione risposta audio duplex con modulo parametrico collegato e calcolo tolleranze.',
-              thinking_duration: '6m 36s',
-              actions: [
-                { id: 'act_1', kind: 'wait', label: 'Wait 6 seconds finished' },
-                { id: 'act_2', kind: 'command', label: 'Check gh run list', detail: 'gh run list -L 6' },
-                { id: 'act_3', kind: 'command', label: 'Check run 44790863567', detail: 'Check CI run logs' },
-                { id: 'act_4', kind: 'task', label: 'Checked task Check run 44790863567' },
-                { id: 'act_5', kind: 'command', label: 'Check run 44790863567 finished' },
-                { id: 'act_6', kind: 'analyze', ext: 'ts', target: 'types.ts', lines: '#L30-73' },
-                { id: 'act_7', kind: 'edit', ext: 'ts', target: 'types.ts', added: 14, removed: 1, diff_id: 'd_types' },
-                { id: 'act_8', kind: 'edit', ext: 'tsx', target: 'Workpiece3DModal.tsx', added: 312, removed: 0, diff_id: 'd_workpiece' },
-                { id: 'act_9', kind: 'analyze', ext: 'tsx', target: 'ProjectSidebar.tsx', lines: '#L105-170' },
-                { id: 'act_10', kind: 'analyze', ext: 'tsx', target: 'ProjectSidebar.tsx', lines: '#L1-50' },
-                { id: 'act_11', kind: 'edit', ext: 'tsx', target: 'ProjectSidebar.tsx', added: 77, removed: 5, diff_id: 'd_sidebar' },
-                { id: 'act_12', kind: 'edit', ext: 'tsx', target: 'ConversationView.tsx', added: 187, removed: 9, diff_id: 'd_conv' },
-                { id: 'act_13', kind: 'analyze', ext: 'tsx', target: 'View.tsx', lines: '#L10-60' },
-                { id: 'act_14', kind: 'think', label: 'Thinking', duration: '13s' },
-              ],
-              diffs: [
-                {
-                  id: 'd_types',
-                  filename: 'types.ts',
-                  ext: 'ts',
-                  added: 14,
-                  removed: 1,
-                  before_content: 'export interface Message {\n  id: string;\n  content: string;\n  thought: string;\n}',
-                  after_content: 'export interface Message {\n  id: string;\n  content: string;\n  thought: string;\n  thinking_duration?: string;\n  actions?: AgentAction[];\n  diffs?: FileDiff[];\n  audio_url?: string;\n  feedback?: "positive" | "negative" | null;\n}',
-                },
-                {
-                  id: 'd_workpiece',
-                  filename: 'Workpiece3DModal.tsx',
-                  ext: 'tsx',
-                  added: 312,
-                  removed: 0,
-                  before_content: '// File nuovo creato',
-                  after_content: 'import React, { useEffect, useRef, useState } from "react";\nimport * as THREE from "three";\nexport const Workpiece3DModal = () => { /* WebGL 3D CAD viewer */ };',
-                },
-                {
-                  id: 'd_sidebar',
-                  filename: 'ProjectSidebar.tsx',
-                  ext: 'tsx',
-                  added: 77,
-                  removed: 5,
-                  before_content: '// Project sidebar senza pin duplex',
-                  after_content: '// Project sidebar con pinned live voice duplex card (Pagina 80 Live)',
-                },
-              ],
-              artifacts: [{
-                id: 'art_voice_3d',
-                identifier: 'cad_workpiece_preview',
-                title: 'Pezzo Meccanico 3D (CAD Parametrico)',
-                kind: '3d',
-                language: 'openscad',
-                content: '$fn=40;\ndifference() {\n  cube([60,90,30], center=true);\n  cylinder(h=35, r=12, center=true);\n}',
-              }],
-              attachments: [],
-              memory_recalls: [],
-              created_at: Math.floor(Date.now() / 1000) - 25,
-            },
-
-          ];
-          setMessages(defaultVoiceMessages);
+          setMessages(getDefaultVoiceMessages());
           return;
         }
         setMessages(data);
@@ -199,6 +113,81 @@ export const View: React.FC = () => {
       kerf_mm: 0.14,
     });
     setIs3DModalOpen(true);
+  };
+
+  const handleOpenDiff = (diffId?: string, diffs?: FileDiff[]) => {
+    if (diffs && diffs.length > 0) {
+      setCurrentDiffs(diffs);
+      setSelectedDiffId(diffId || diffs[0].id);
+      setIsDiffModalOpen(true);
+    } else if (currentDiffs.length > 0) {
+      setSelectedDiffId(diffId || currentDiffs[0].id);
+      setIsDiffModalOpen(true);
+    }
+  };
+
+  const handleToggleReaction = (msgId: string, emoji: string) => {
+    setMessages((prev) =>
+      prev.map((m) => {
+        if (m.id !== msgId) return m;
+        const currentReactions = m.reactions || [];
+        const existingIdx = currentReactions.findIndex((r) => r.emoji === emoji);
+        if (existingIdx >= 0) {
+          const existing = currentReactions[existingIdx];
+          const hasUser = existing.authors.includes('user');
+          const newAuthors = hasUser ? existing.authors.filter((a) => a !== 'user') : [...existing.authors, 'user'];
+          const newCount = hasUser ? existing.count - 1 : existing.count + 1;
+          if (newCount <= 0) {
+            return { ...m, reactions: currentReactions.filter((_, i) => i !== existingIdx) };
+          }
+          const updated = [...currentReactions];
+          updated[existingIdx] = { ...existing, count: newCount, authors: newAuthors };
+          return { ...m, reactions: updated };
+        } else {
+          return {
+            ...m,
+            reactions: [...currentReactions, { emoji, count: 1, authors: ['user'] }],
+          };
+        }
+      })
+    );
+  };
+
+  const handleVotePoll = (msgId: string, pollId: string, optionId: string, stepIndex?: number) => {
+    setMessages((prev) =>
+      prev.map((m) => {
+        if (m.id !== msgId || !m.poll || m.poll.id !== pollId) return m;
+        const p = m.poll;
+        if (stepIndex !== undefined && p.steps && p.steps[stepIndex]) {
+          const newSteps = [...p.steps];
+          const targetStep = newSteps[stepIndex];
+          newSteps[stepIndex] = {
+            ...targetStep,
+            userVotedId: optionId,
+            options: targetStep.options.map((opt) =>
+              opt.id === optionId ? { ...opt, votes: opt.votes + 1 } : opt
+            ),
+          };
+          return { ...m, poll: { ...p, steps: newSteps } };
+        }
+        return {
+          ...m,
+          poll: {
+            ...p,
+            userVotedId: optionId,
+            options: p.options.map((opt) => (opt.id === optionId ? { ...opt, votes: opt.votes + 1 } : opt)),
+          },
+        };
+      })
+    );
+  };
+
+  const handleSubmitSurvey = (msgId: string, pollId: string, answers: Record<string, string>) => {
+    handleSendMessage(`[Sondaggio Requisiti Completato]: ${JSON.stringify(answers)}`, []);
+  };
+
+  const handlePartialEdit = (artifactTitle: string, startLine: number, endLine: number, instructions: string) => {
+    handleSendMessage(`[Modifica Parziale: "${artifactTitle}" (Righe ${startLine}-${endLine})]: ${instructions}`, []);
   };
 
   const handleNewChat = async () => {
@@ -287,21 +276,6 @@ export const View: React.FC = () => {
   const currentThread = threads.find((th) => th.id === selectedThreadId) || null;
   const currentProject = projects.find((p) => p.id === (currentThread?.project_id || selectedProjectId)) || null;
 
-  const handleOpenDiff = (diffId?: string, diffs?: FileDiff[]) => {
-    if (diffs && diffs.length > 0) {
-      setCurrentDiffs(diffs);
-      setSelectedDiffId(diffId || diffs[0].id);
-      setIsDiffModalOpen(true);
-    } else if (currentDiffs.length > 0) {
-      setSelectedDiffId(diffId || currentDiffs[0].id);
-      setIsDiffModalOpen(true);
-    }
-  };
-
-  const handleQuickPrompt = (prompt: string) => {
-    handleSendMessage(prompt, []);
-  };
-
   return (
     <div className="@container w-full h-full flex flex-col bg-slate-950 text-slate-100 overflow-hidden font-sans">
       <div className="flex md:hidden items-center justify-between px-3 py-2 bg-slate-900 border-b border-slate-800">
@@ -367,7 +341,10 @@ export const View: React.FC = () => {
             onOpenArtifact={setActiveArtifact}
             onOpen3DViewer={handleOpen3DViewer}
             onOpenDiff={handleOpenDiff}
-            onQuickPrompt={handleQuickPrompt}
+            onQuickPrompt={(prompt) => handleSendMessage(prompt, [])}
+            onToggleReaction={handleToggleReaction}
+            onVotePoll={handleVotePoll}
+            onSubmitSurvey={handleSubmitSurvey}
             onFeedback={(msgId, type) => {
               setMessages((prev) => prev.map((m) => (m.id === msgId ? { ...m, feedback: type } : m)));
             }}
@@ -387,6 +364,7 @@ export const View: React.FC = () => {
               artifact={activeArtifact}
               onClose={() => setActiveArtifact(null)}
               defaultSmbFolder={currentProject?.smb_folder || '04 Codice'}
+              onPartialEdit={handlePartialEdit}
             />
           </div>
         )}
@@ -430,4 +408,3 @@ export const View: React.FC = () => {
     </div>
   );
 };
-

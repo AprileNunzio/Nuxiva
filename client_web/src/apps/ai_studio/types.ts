@@ -83,6 +83,44 @@ export interface FileDiff {
   lines?: DiffLine[];
 }
 
+export interface Reaction {
+  emoji: string;
+  count: number;
+  authors: string[];
+}
+
+export interface PollOption {
+  id: string;
+  text: string;
+  votes: number;
+  description?: string;
+}
+
+export interface PollStep {
+  id: string;
+  category: string;
+  title: string;
+  options: PollOption[];
+  userVotedId?: string;
+}
+
+export interface Poll {
+  id: string;
+  question: string;
+  options: PollOption[];
+  userVotedId?: string;
+  isComplex?: boolean;
+  steps?: PollStep[];
+  currentStepIndex?: number;
+}
+
+export interface DomainWidget {
+  id: string;
+  title: string;
+  type: 'sensors' | 'laser_cnc' | 'code_snippet' | 'project_progress';
+  data?: Record<string, any>;
+}
+
 export interface Message {
   id: string;
   thread_id: string;
@@ -92,6 +130,9 @@ export interface Message {
   thinking_duration?: string;
   actions?: AgentAction[];
   diffs?: FileDiff[];
+  reactions?: Reaction[];
+  poll?: Poll;
+  widgets?: DomainWidget[];
   artifacts: Artifact[];
   attachments: Attachment[];
   memory_recalls: MemoryFact[];
@@ -100,6 +141,7 @@ export interface Message {
   audio_url?: string;
   feedback?: 'positive' | 'negative' | null;
 }
+
 
 export interface SmbItem {
   name: string;

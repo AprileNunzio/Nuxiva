@@ -7,12 +7,14 @@ interface ArtifactCanvasProps {
   artifact: Artifact | null;
   onClose: () => void;
   defaultSmbFolder?: string;
+  onPartialEdit?: (artifactTitle: string, startLine: number, endLine: number, instructions: string) => void;
 }
 
 export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
   artifact,
   onClose,
   defaultSmbFolder = '04 Codice',
+  onPartialEdit,
 }) => {
   const { t } = useStudioI18n();
   const [activeTab, setActiveTab] = useState<'code' | 'preview'>('preview');
@@ -20,8 +22,15 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
   const [savingSmb, setSavingSmb] = useState(false);
   const [savedUnc, setSavedUnc] = useState<string | null>(null);
 
+  const [isPartialEditOpen, setIsPartialEditOpen] = useState(false);
+  const [startLine, setStartLine] = useState<number>(1);
+  const [endLine, setEndLine] = useState<number>(10);
+  const [partialInstructions, setPartialInstructions] = useState<string>('');
+
   if (!artifact) return null;
 
+  const lines = artifact.content.split('\n');
+  const lineCount = lines.length;
   const canPreview = artifact.kind === 'html' || artifact.kind === 'svg' || artifact.kind === 'markdown' || artifact.kind === '3d';
 
   const handleCopy = async () => {
@@ -50,8 +59,15 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
     }
   };
 
+  const handleSendPartialEdit = () => {
+    if (!partialInstructions.trim()) return;
+    onPartialEdit?.(artifact.title, startLine, endLine, partialInstructions);
+    setIsPartialEditOpen(false);
+    setPartialInstructions('');
+  };
+
   return (
-    <aside className="w-full md:w-[480px] lg:w-[560px] h-full flex flex-col bg-slate-950 border-l border-slate-800/80 backdrop-blur-md shadow-2xl z-20">
+    <aside className="w-full md:w-[480px] lg:w-[580px] h-full flex flex-col bg-slate-950 border-l border-slate-800/80 backdrop-blur-md shadow-2xl z-20">
       <div className="px-4 py-3 border-b border-slate-800/80 bg-slate-900/80 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
           <span className="text-cyan-400 font-bold">📄</span>
@@ -60,6 +76,9 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
           </span>
           <span className="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-cyan-400 font-mono">
             {artifact.language}
+          </span>
+          <span className="px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-800/80 text-[10px] text-cyan-300 font-mono">
+            🔢 {lineCount} {lineCount === 1 ? 'riga' : 'righe'}
           </span>
         </div>
 
@@ -93,6 +112,19 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
 
           <button
             type="button"
+            onClick={() => setIsPartialEditOpen((prev) => !prev)}
+            className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-colors ${
+              isPartialEditOpen
+                ? 'bg-cyan-600 text-white border-cyan-500'
+                : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300'
+            }`}
+            title="Modifica solo una porzione del file"
+          >
+            ✂️ Modifica parte
+          </button>
+
+          <button
+            type="button"
             onClick={handleCopy}
             className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-200 transition-colors"
           >
@@ -118,6 +150,58 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
           </button>
         </div>
       </div>
+
+      {isPartialEditOpen && (
+        <div className="p-3 bg-slate-900 border-b border-slate-800 flex flex-col gap-2 text-xs">
+          <div className="flex items-center justify-between text-slate-300 font-semibold">
+            <span>✂️ Modifica Parziale (Intervallo di Righe)</span>
+            <span className="text-[11px] font-mono text-cyan-400">Totale: {lineCount} righe</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <label className="flex items-center gap-1 text-slate-400">
+              <span>Da riga:</span>
+              <input
+                type="number"
+                min={1}
+                max={lineCount}
+                value={startLine}
+                onChange={(e) => setStartLine(Number(e.target.value))}
+                className="w-16 px-2 py-1 rounded bg-slate-950 border border-slate-700 text-white font-mono text-xs"
+              />
+            </label>
+
+            <label className="flex items-center gap-1 text-slate-400">
+              <span>A riga:</span>
+              <input
+                type="number"
+                min={1}
+                max={lineCount}
+                value={endLine}
+                onChange={(e) => setEndLine(Number(e.target.value))}
+                className="w-16 px-2 py-1 rounded bg-slate-950 border border-slate-700 text-white font-mono text-xs"
+              />
+            </label>
+          </div>
+
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Istruzioni per modificare solo queste righe..."
+              value={partialInstructions}
+              onChange={(e) => setPartialInstructions(e.target.value)}
+              className="flex-1 px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs placeholder:text-slate-500"
+            />
+            <button
+              type="button"
+              onClick={handleSendPartialEdit}
+              className="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-xs transition-colors shadow-sm"
+            >
+              Applica
+            </button>
+          </div>
+        </div>
+      )}
 
       {savedUnc && (
         <div className="px-4 py-2 bg-emerald-950/40 border-b border-emerald-800/40 text-xs text-emerald-300 flex items-center justify-between">
@@ -159,9 +243,27 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
             </div>
           )
         ) : (
-          <pre className="font-mono text-xs text-slate-200 leading-relaxed overflow-x-auto whitespace-pre p-2">
-            <code>{artifact.content}</code>
-          </pre>
+          <div className="flex font-mono text-xs text-slate-200 leading-relaxed overflow-x-auto whitespace-pre">
+            <div className="select-none text-slate-600 pr-3 border-r border-slate-800 mr-3 text-right">
+              {lines.map((_, idx) => (
+                <div key={idx}>{idx + 1}</div>
+              ))}
+            </div>
+            <div className="flex-1">
+              {lines.map((line, idx) => {
+                const lineNum = idx + 1;
+                const isHighlighted = isPartialEditOpen && lineNum >= startLine && lineNum <= endLine;
+                return (
+                  <div
+                    key={idx}
+                    className={isHighlighted ? 'bg-cyan-950/60 text-cyan-200 border-l-2 border-cyan-400 pl-1' : ''}
+                  >
+                    {line || ' '}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         )}
       </div>
     </aside>
