@@ -107,6 +107,7 @@ def resolve_circadian_context(
     user_present: bool = True,
     custom_schedule: dict | None = None,
     person_slug: str | None = None,
+    co_present_slugs: list[str] | None = None,
 ) -> dict:
     hour = time.localtime().tm_hour if current_hour is None else current_hour
 
@@ -195,6 +196,30 @@ def resolve_circadian_context(
     else:
         greeting = f"Contesto circadiano attivo: {phase.replace('_', ' ').title()}"
 
+    privacy_masked = False
+    co_present = list(co_present_slugs or [])
+    if co_present:
+        try:
+            from agenti.people import people
+            co_profiles = [people.load(s) for s in co_present if s]
+            if any(cp and cp.get("role") in ("guest", "staff") for cp in co_profiles if cp) or "ospite" in co_present:
+                privacy_masked = True
+        except Exception:
+            privacy_masked = True
+
+    if privacy_masked:
+        masked_widgets = []
+        for w in base_widgets:
+            if w.get("type") in ("market_ticker", "vitals_card", "security_status", "kanban_board"):
+                masked_widgets.append({
+                    **w,
+                    "title": f"{w.get('title', '').split(':')[0]} (Discrezione Attiva per Ospiti)",
+                    "privacy_masked": True,
+                })
+            else:
+                masked_widgets.append(w)
+        base_widgets = masked_widgets
+
     return {
         "hour": hour,
         "phase": phase,
@@ -208,4 +233,6 @@ def resolve_circadian_context(
         "person_passions": person_passions,
         "person_tastes": person_tastes,
         "person_habits": person_habits,
+        "privacy_co_presence_masked": privacy_masked,
+        "co_present_slugs": co_present,
     }

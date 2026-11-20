@@ -17,7 +17,7 @@ RELATIONS = {
 
 ROLES = {"owner": "Proprietario", "family": "Famiglia", "friend": "Amico", "guest": "Ospite", "staff": "Collaboratore",
          "service": "Servizi (medico, tecnico…)"}
-SUBROLES = {"": "Nessuna mansione specifica", "butler": "Maggiordomo (Gestione Casa)",
+SUBROLES = {"": "Nessuna mansione specifica", "child": "Bambino / Minore", "butler": "Maggiordomo (Gestione Casa)",
             "nanny": "Tata / Babysitter (Bambini)", "cleaner": "Collaboratore Domestico / Pulizie"}
 MEMBERSHIPS = {"": "Nessuna", "home": "Casa", "business": "Attività", "both": "Casa e attività"}
 AUTHORIZATIONS = {"": "Come il ruolo", "info": "Solo informazioni", "home": "Casa e dispositivi", "personal": "Anche dati personali",

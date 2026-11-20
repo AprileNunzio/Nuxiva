@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Architettura modulare livello 100: tutor socratico, cucina, fiabe e zero trust",
+    "en": "Modular level 100 architecture: socratic tutor, chef, storytelling and zero trust",
+    "fr": "Architecture modulaire niveau 100: tuteur socratique, cuisine, contes et zero trust",
+    "es": "Arquitectura modular nivel 100: tutor socrático, cocina, cuentos y zero trust"
+  },
+  "features": [
+    {
+      "it": "Estensione modulare Livello 100 con reparti autonomi: tutor didattico socratico per compiti, chef per dispensa e orari cena, narratore di fiabe rilassanti per bambini, e matrice Zero-Trust con mascheramento riservatezza per co-presenza ospiti.",
+      "en": "Modular Level 100 extension with autonomous departments: Socratic didactic tutor for homework, pantry chef and dinner sync, soothing bedtime storyteller, and Zero-Trust matrix with privacy masking during guest co-presence.",
+      "fr": "Extension modulaire Niveau 100 avec départements autonomes: tuteur didactique socratique pour devoirs, chef culinaire et horaires dîner, conteur d'histoires pour enfants, et matrice Zero-Trust avec masquage de confidentialité pour invités.",
+      "es": "Extensión modular Nivel 100 con departamentos autónomos: tutor didáctico socrático para deberes, chef para despensa y cena, narrador de cuentos infantiles, y matriz Zero-Trust con enmascaramiento de privacidad ante invitados."
+    }
+  ]
+}

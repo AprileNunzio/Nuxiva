@@ -54,8 +54,11 @@ DOMAIN_SYNONYMS = {
     "influencer_ops": ("influencer", "creator", "sponsor", "media kit", "talent", "collaboraz", "brand"),
     "web_studio": ("sito", "landing", "web", "pizzeria", "ecommerce", "negozio", "portfolio", "pagina"),
     "medical": ("medicin", "medic", "farmac", "clinica", "sintom", "paziente", "dottor", "terapia", "diagnosi", "paracetamolo", "ibuprofene", "cefalea"),
-    "family_home": ("spesa", "famigli", "bambin", "figl", "scuola", "compiti", "menu", "casa", "pasti", "pulizie", "promemori"),
+    "family_home": ("spesa", "famigli", "pulizie", "manutenzion", "casa", "bollett", "rifiut"),
     "people_butler": ("persona", "persone", "abitudin", "gust", "preferenz", "passion", "hobby", "maggiordom", "profilo", "adatt"),
+    "education_tutor": ("compit", "studio", "scuola", "matematica", "fisica", "latino", "tutor", "lezione", "storia", "geografia", "scienze"),
+    "culinary_chef": ("cucina", "ricett", "cucinare", "piatto", "cena", "pranzo", "ingrediente", "dispensa", "frigo", "forno", "cuoc", "pasta"),
+    "storyteller_kids": ("favol", "fiaba", "racconto", "nanna", "storiella", "fiabe", "favola"),
     "integrations": ("mcp", "google", "slack", "shopify", "stripe", "calendario", "integraz", "webhook", "api"),
 }
 
@@ -70,11 +73,14 @@ def find_specialist(query: str, extra_dirs: list[Path] | None = None) -> dict | 
         if dep_id in tokens:
             return prof
     for dep_id, syns in DOMAIN_SYNONYMS.items():
-        if dep_id in deps and any(s in lower_query for s in syns):
-            return deps[dep_id]
+        if dep_id in deps:
+            for s in syns:
+                if any(t == s or (len(s) >= 4 and t.startswith(s)) for t in tokens):
+                    return deps[dep_id]
     for dep_id, prof in deps.items():
         search_space = f"{dep_id} {prof['name']} {prof['department']} {' '.join(prof['skills'])} {' '.join(prof['capabilities'])}".lower()
-        if any(tok in search_space or search_space in tok for tok in tokens):
+        search_tokens = set(re.split(r"\W+", search_space))
+        if any(tok in search_tokens for tok in tokens):
             return prof
     return None
 
