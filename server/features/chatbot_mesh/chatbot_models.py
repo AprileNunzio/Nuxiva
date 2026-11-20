@@ -41,6 +41,7 @@ class ChatbotResponsePayload(BaseModel):
     reply_text: str
     tools_invoked: List[Dict[str, Any]] = Field(default_factory=list)
     active_widgets: List[ChatbotWidgetSpec] = Field(default_factory=list)
+    reactions: List[Dict[str, Any]] = Field(default_factory=list)
     confidence: float = 1.0
     latency_ms: float = 0.0
     timestamp: float = Field(default_factory=time.time)
@@ -50,6 +51,7 @@ class UserAgentPersonalization(BaseModel):
     agent_id: str
     custom_nickname: str = "" # Come l'utente chiama l'agente (es. "Alfred", "Assistente Personale")
     preferred_tone: ChatbotTone = ChatbotTone.FRIENDLY
+    tts_engine: str = "elevenlabs" # Motore TTS attivo: "elevenlabs", "piper", "kokoro", "azure", "openai", "bark"
     custom_persona_prompt: str = "" # Prompt personale dell'utente per questo agente
     custom_knowledge_notes: str = "" # Note e nozioni personali che solo questo utente condivide con l'agente
     allowed_tools: List[str] = Field(default_factory=list) # Tool attivi per questo utente

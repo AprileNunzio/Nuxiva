@@ -573,6 +573,18 @@
             </div>
 
             <div>
+              <label style="font-size:0.75rem; color:var(--text-muted);">🎙️ MOTORE VOCALE TTS ATTIVO (ISTRUZIONI EMOTIVE):</label>
+              <select id="chatbot-select-tts-engine" style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:var(--cyan-glow); padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono);">
+                <option value="elevenlabs">🎙️ ElevenLabs Neural (Audio Tags [laughs], [sighs]...)</option>
+                <option value="piper">🔊 Piper ONNX Locale (Punteggiatura e Ritmo)</option>
+                <option value="kokoro">🧠 Kokoro Neurale (Prosodia e Pause Fonetiche)</option>
+                <option value="azure">☁️ Microsoft Azure / Edge (SSML Stili & Pause)</option>
+                <option value="openai">🤖 OpenAI TTS (Cadenza Naturale)</option>
+                <option value="bark">🐶 Suno Bark (Tag Sonori e Non-Verbali)</option>
+              </select>
+            </div>
+
+            <div>
               <label style="font-size:0.75rem; color:var(--text-muted);" data-i18n="prompt_label">ISTRUZIONI &amp; PREFERENZE PRIVATE DI QUESTA PERSONA:</label>
               <textarea id="chatbot-user-prompt" rows="3" data-i18n-placeholder="prompt_placeholder" placeholder="Es. Rispondimi solo in elenchi puntati; non fissare appuntamenti prima delle 10:00..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono); font-size:0.8rem;"></textarea>
             </div>
@@ -1284,6 +1296,16 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- STAGE OVERLAY EMOTICONS E FINESTRA A SCOMPARSA (PAGINA 80) -->
+  <div id="emoticon-floating-stage" class="emoticon-floating-stage"></div>
+  <div id="emoticon-popup-drawer" class="emoticon-popup-drawer">
+    <div class="emoticon-popup-icon" id="emoticon-popup-icon">💖</div>
+    <div class="emoticon-popup-text">
+      <strong id="emoticon-popup-title">Reazione Emotiva</strong>
+      <span id="emoticon-popup-sub">Nuxiva invia cuori e affetto</span>
     </div>
   </div>
 

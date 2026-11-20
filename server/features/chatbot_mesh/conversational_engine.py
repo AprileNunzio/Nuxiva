@@ -15,6 +15,8 @@ from server.features.chatbot_mesh.user_agent_customization_service import user_a
 from server.features.agent_tools.cad_tools import cad_generate_dxf
 from server.features.agent_tools.social_tools import instagram_generate_copy
 from server.features.agent_tools.google_suite_tools import google_calendar_schedule
+from server.features.voice_engine.vocal_profiles.registry import vocal_profile_registry
+from server.features.voice_engine.reactions.reaction_service import emoticon_reaction_service
 
 logger = logging.getLogger("nuxiva.conversational_engine")
 
@@ -60,15 +62,23 @@ class ConversationalBotEngine:
         if custom.custom_persona_prompt.strip():
             user_prompt_clause = f"\n### ISTRUZIONI PERSONALI SPECIFICHE DELL'UTENTE:\n{custom.custom_persona_prompt}\n"
 
+        tts_engine = getattr(custom, "tts_engine", "elevenlabs")
+        vocal_profile = vocal_profile_registry.get_profile(tts_engine)
+        vocal_instructions = vocal_profile.get_system_prompt_instructions()
+        reaction_instructions = emoticon_reaction_service.get_prompt_instructions()
+
         prompt = (
             f"{base_prompt}\n\n"
             f"--- PERSONALIZZAZIONE CONVERSAZIONALE (UTENTE: {user_id}) ---\n"
             f"{nickname_clause}\n"
             f"Stile richiesto: {tone_instruction}\n"
             f"Lingua obbligatoria di risposta: {lang.upper()}\n"
+            f"Motore Vocale TTS Attivo: {vocal_profile.display_name} ({vocal_profile.engine_id})\n"
             f"Tool abilitati per questo utente: {', '.join(custom.allowed_tools)}\n"
             f"{user_notes_clause}"
-            f"{user_prompt_clause}"
+            f"{user_prompt_clause}\n"
+            f"{vocal_instructions}\n"
+            f"{reaction_instructions}"
         )
         return prompt
 
@@ -86,10 +96,19 @@ class ConversationalBotEngine:
         tools_invoked: List[Dict[str, Any]] = []
         active_widgets: List[ChatbotWidgetSpec] = []
         reply_parts: List[str] = []
-
         lower_query = text.lower()
 
-        if ("cad" in lower_query or "dxf" in lower_query or "disegna" in lower_query) and "cad_drafting" in custom.allowed_tools:
+        # Rilevamento euristico complimenti affettuosi (es. "come sei bella Nuxiva")
+        compliment_match = emoticon_reaction_service.check_compliment_heuristics(
+            text,
+            getattr(custom, "tts_engine", "elevenlabs"),
+            custom.custom_nickname or "Nuxiva"
+        )
+        if compliment_match and not any(kw in lower_query for kw in ["cad", "dxf", "luce", "accendi", "spegni", "calendario"]):
+            comp_reply, _ = compliment_match
+            reply_parts.append(comp_reply)
+
+        elif ("cad" in lower_query or "dxf" in lower_query or "disegna" in lower_query) and "cad_drafting" in custom.allowed_tools:
             res = cad_generate_dxf(
                 project_id=f"chat_{user_id}",
                 part_name=f"Flangia_{user_id}",
@@ -214,6 +233,16 @@ class ConversationalBotEngine:
                 data={"agent": nick, "active_user": user_id, "channel": payload.channel.value},
             ))
 
+        # Estrazione reazioni visive ed emoticons per la pagina 80
+        extracted_reactions = emoticon_reaction_service.extract_reactions(final_text)
+        if extracted_reactions:
+            active_widgets.append(ChatbotWidgetSpec(
+                widget_id=f"react_{int(time.time()*1000)}",
+                widget_type="emoticon_reaction",
+                title="Reazione Emotiva a Scomparsa",
+                data={"reactions": extracted_reactions},
+            ))
+
         latency = round((time.time() - start_time) * 1000, 2)
         response = ChatbotResponsePayload(
             agent_id=agent_id,
@@ -221,6 +250,7 @@ class ConversationalBotEngine:
             reply_text=final_text,
             tools_invoked=tools_invoked,
             active_widgets=active_widgets,
+            reactions=extracted_reactions,
             latency_ms=latency,
         )
 

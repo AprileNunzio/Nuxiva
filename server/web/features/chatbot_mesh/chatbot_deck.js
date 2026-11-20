@@ -127,6 +127,10 @@ export async function loadUserAgentPersonalization() {
     if (toneSelect && c.preferred_tone) {
       toneSelect.value = c.preferred_tone;
     }
+    const ttsEngineSelect = document.getElementById("chatbot-select-tts-engine");
+    if (ttsEngineSelect && c.tts_engine) {
+      ttsEngineSelect.value = c.tts_engine;
+    }
     updateToneLivePreview(toneSelect?.value || "friendly", nickInput?.value || "Assistente");
 
     toneSelect?.addEventListener("change", (e) => {
@@ -198,6 +202,7 @@ async function saveUserAgentPersonalization() {
 
   const nickInput = document.getElementById("chatbot-input-nickname");
   const toneSelect = document.getElementById("chatbot-select-tone");
+  const ttsEngineSelect = document.getElementById("chatbot-select-tts-engine");
   const promptArea = document.getElementById("chatbot-user-prompt");
   const knowArea = document.getElementById("chatbot-user-knowledge");
 
@@ -216,6 +221,7 @@ async function saveUserAgentPersonalization() {
     agent_id: activeChatbotAgentId,
     custom_nickname: nickInput?.value.trim() || "",
     preferred_tone: toneSelect?.value || "friendly",
+    tts_engine: ttsEngineSelect?.value || "elevenlabs",
     custom_persona_prompt: promptArea?.value.trim() || "",
     custom_knowledge_notes: knowArea?.value.trim() || "",
     allowed_tools: selectedTools,
@@ -263,6 +269,64 @@ export async function loadChatbotHistory() {
   } catch (e) {}
 }
 
+export function triggerEmoticonReaction(reactionId = "hearts", label = "Cuori & Affetto", emojis = ["💖", "💕", "❤️", "🥰", "😍"]) {
+  const stage = document.getElementById("emoticon-floating-stage");
+  const drawer = document.getElementById("emoticon-popup-drawer");
+  const icon = document.getElementById("emoticon-popup-icon");
+  const title = document.getElementById("emoticon-popup-title");
+  const sub = document.getElementById("emoticon-popup-sub");
+
+  if (drawer) {
+    if (icon) icon.textContent = (emojis && emojis.length) ? emojis[0] : "💖";
+    if (title) title.textContent = label || "Reazione Emotiva";
+    if (sub) sub.textContent = `Nuxiva lancia ${reactionId} a scomparsa`;
+    drawer.classList.add("active");
+    clearTimeout(drawer._timeout);
+    drawer._timeout = setTimeout(() => {
+      drawer.classList.remove("active");
+    }, 3200);
+  }
+
+  if (stage) {
+    const list = (emojis && emojis.length) ? emojis : ["💖", "💕", "❤️", "🥰", "😍"];
+    const particleCount = 20;
+    for (let i = 0; i < particleCount; i++) {
+      const p = document.createElement("div");
+      p.className = "floating-emoticon-particle";
+      p.textContent = list[Math.floor(Math.random() * list.length)];
+      
+      const leftPercent = 10 + Math.random() * 80;
+      const startBottom = 30 + Math.random() * 70;
+      const delay = Math.random() * 0.7;
+      const size = 1.6 + Math.random() * 1.4;
+
+      p.style.left = `${leftPercent}%`;
+      p.style.bottom = `${startBottom}px`;
+      p.style.fontSize = `${size}rem`;
+      p.style.animationDelay = `${delay}s`;
+
+      stage.appendChild(p);
+      setTimeout(() => {
+        p.remove();
+      }, 3500);
+    }
+  }
+}
+
+function formatRichMessageText(text) {
+  let escaped = escapeHtml(text);
+  // Converte tag reazione visiva [reaction:tipo] in badge discreto
+  escaped = escaped.replace(/\[reaction:([a-zA-Z0-9_\-]+)\]/gi, (match, p1) => {
+    const icon = p1.toLowerCase() === 'hearts' ? '💖' : p1.toLowerCase() === 'sparkles' ? '✨' : p1.toLowerCase() === 'blush' ? '🥰' : '🎉';
+    return `<span class="reaction-badge">${icon} ${p1}</span>`;
+  });
+  // Converte tag vocali [laughs], [sighs], ecc. in chip grafici
+  escaped = escaped.replace(/\[([a-zA-Z_\s]{3,25})\]/g, (match, p1) => {
+    return `<span class="vocal-badge">🎙️ ${p1}</span>`;
+  });
+  return escaped;
+}
+
 function appendChatMessageBubble(sender, text, toolsUsed = []) {
   const stream = document.getElementById("chatbot-messages-stream");
   if (!stream) return;
@@ -285,7 +349,7 @@ function appendChatMessageBubble(sender, text, toolsUsed = []) {
 
   bubble.innerHTML = `
     <div style="font-size:0.68rem; color:var(--text-muted); margin-bottom:2px; font-family:var(--font-mono);">${sender}</div>
-    <div style="white-space:pre-wrap;">${escapeHtml(text)}</div>
+    <div style="white-space:pre-wrap;">${formatRichMessageText(text)}</div>
     ${toolsBadge}
   `;
 
@@ -317,6 +381,16 @@ async function sendChatbotMessage() {
 
     appendChatMessageBubble(`agent:${activeChatbotAgentId}`, resp.reply_text, resp.tools_invoked?.map(t => t.tool));
     renderChatbotWidgets(resp.active_widgets || []);
+
+    // Attivazione reazioni ed emoticons a scomparsa per la Pagina 80
+    if (resp.reactions && resp.reactions.length > 0) {
+      resp.reactions.forEach(r => triggerEmoticonReaction(r.reaction_id, r.label, r.emojis));
+    } else {
+      const match = resp.reply_text.match(/\[reaction:([a-zA-Z0-9_\-]+)\]/i);
+      if (match) {
+        triggerEmoticonReaction(match[1]);
+      }
+    }
   } catch (e) {
     appendChatMessageBubble(`system:error`, "Errore durante la comunicazione con il chatbot.");
   }
@@ -368,6 +442,16 @@ function renderChatbotWidgets(widgets) {
           <button class="tactical-btn" style="padding:0.25rem 0.6rem; font-size:0.75rem;">Copia Testo</button>
           <button class="tactical-btn secondary" style="padding:0.25rem 0.6rem; font-size:0.75rem;">Pianifica</button>
         </div>
+      `;
+    } else if (w.widget_type === "emoticon_reaction") {
+      const list = w.data.reactions || [];
+      list.forEach(r => triggerEmoticonReaction(r.reaction_id, r.label, r.emojis));
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="color:var(--rose-glow); font-size:0.82rem;">💖 ${w.title}</strong>
+          <span class="badge-tag" style="background:rgba(244,63,94,0.2); color:#fda4af;">FINESTRA A SCOMPARSA</span>
+        </div>
+        <p style="font-size:0.75rem; color:#fff; margin-top:4px;">Reazione a scomparsa lanciata: ${(w.data.reactions || []).map(r => r.label + ' ' + (r.emojis || []).slice(0, 3).join('')).join(', ')}</p>
       `;
     } else {
       card.innerHTML = `

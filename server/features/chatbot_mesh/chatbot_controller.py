@@ -7,8 +7,20 @@ from server.features.chatbot_mesh.chatbot_models import (
 )
 from server.features.chatbot_mesh.user_agent_customization_service import user_agent_customization_service
 from server.features.chatbot_mesh.conversational_engine import conversational_bot_engine
+from server.features.voice_engine.vocal_profiles.registry import vocal_profile_registry
+from server.features.voice_engine.reactions.reaction_service import REACTION_CATALOG
 
 chatbot_router = APIRouter(prefix="/chatbot", tags=["Chatbot & Conversational Mesh"])
+
+@chatbot_router.get("/vocal_profiles")
+async def list_vocal_profiles():
+    """Restituisce tutti i profili vocali TTS caricati modularmente con i relativi tag ed istruzioni."""
+    return {"status": "success", "profiles": vocal_profile_registry.list_profiles()}
+
+@chatbot_router.get("/reactions/catalog")
+async def list_reactions_catalog():
+    """Restituisce il catalogo delle reazioni ed emoticons a scomparsa per la Pagina 80."""
+    return {"status": "success", "reactions": [r.model_dump() for r in REACTION_CATALOG.values()]}
 
 @chatbot_router.get("/agents")
 async def list_conversational_agents():

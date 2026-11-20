@@ -6,6 +6,7 @@ import wave
 from io import BytesIO
 
 from server.features.voice_biometrics.audio_contracts import TTSRequest
+from server.features.voice_engine.vocal_profiles.registry import vocal_profile_registry
 
 logger = logging.getLogger("nuxiva.tts")
 
@@ -25,6 +26,7 @@ class PiperTTSEngine:
         return shutil.which(self.executable_path) is not None and os.path.exists(self._model_path(voice_profile))
 
     def generate_speech_raw(self, text: str, voice_profile: str, speed: float = 1.0) -> bytes:
+        prepared_text = vocal_profile_registry.get_profile("piper").prepare_for_synthesis(text)
         model_path = self._model_path(voice_profile)
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"TTS model not found: {model_path}")
@@ -35,7 +37,7 @@ class PiperTTSEngine:
             "--length_scale", str(round(1.0 / max(speed, 0.1), 3)),
             "--output_raw",
         ]
-        process = subprocess.run(command, input=text.encode("utf-8"), capture_output=True, timeout=60)
+        process = subprocess.run(command, input=prepared_text.encode("utf-8"), capture_output=True, timeout=60)
         if process.returncode != 0:
             raise RuntimeError(f"Piper failed: {process.stderr.decode(errors='ignore')[:200]}")
         return process.stdout
