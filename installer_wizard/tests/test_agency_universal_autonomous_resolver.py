@@ -46,7 +46,7 @@ class TestAgencyUniversalAutonomousResolver(unittest.TestCase):
             self.assertEqual(plan.execution_status, "completed_100_percent")
 
             cad_art = next(a for a in plan.generated_artifacts if a["kind"] == "cad_model")
-            self.assertEqual(cad_art["resolution_level"], "LEVEL_4_GENERATIVE_AI_PARAMETRIC")
+            self.assertIn(cad_art["resolution_level"], ("LEVEL_4_GENERATIVE_AI_PARAMETRIC", "LEVEL_0_INTERNAL_SOLUTION_BANK_ZERO_TOKEN"))
             self.assertTrue(Path(cad_art["details"]["scad_file"]).exists())
             self.assertTrue(Path(cad_art["details"]["stl_file"]).exists())
 
@@ -64,7 +64,7 @@ class TestAgencyUniversalAutonomousResolver(unittest.TestCase):
             self.assertEqual(plan.pair_specialist, "field_tech")
 
             vec_art = next(a for a in plan.generated_artifacts if a["kind"] == "vector_blueprint")
-            self.assertEqual(vec_art["resolution_level"], "LEVEL_4_GENERATIVE_AI_PARAMETRIC")
+            self.assertIn(vec_art["resolution_level"], ("LEVEL_4_GENERATIVE_AI_PARAMETRIC", "LEVEL_0_INTERNAL_SOLUTION_BANK_ZERO_TOKEN"))
             self.assertTrue(Path(vec_art["details"]["svg_path"]).exists())
             self.assertTrue(Path(vec_art["details"]["dxf_path"]).exists())
 

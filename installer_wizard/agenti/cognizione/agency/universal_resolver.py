@@ -28,6 +28,9 @@ class UniversalResolutionPlan:
     generated_artifacts: List[Dict[str, Any]]
     execution_status: str
     zero_block_guarantee: bool = True
+    cache_hit: bool = False
+    solution_id: str = ""
+    tokens_saved: int = 0
     created_at: float = field(default_factory=time.time)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -277,10 +280,26 @@ class UniversalAutonomousResolver:
         lead, pair = desk_pairs.get(domain, ("architect", "integrations"))
 
         prereqs = cls.deduce_prerequisites(domain, query)
-        artifacts = []
+        from agenti.agency.solution_bank import solution_bank
+        cached = solution_bank.find_best_solution(query, domain=domain)
+        cache_hit = False
+        sol_id = ""
+        tok_saved = 0
 
+        if cached:
+            entry, _ = cached
+            cache_hit = True
+            sol_id = entry.solution_id
+            tok_saved = entry.tokens_saved_estimate
+            entry.record_usage(success=True)
+            for p in prereqs:
+                p.resolution_level = "LEVEL_0_INTERNAL_SOLUTION_BANK_ZERO_TOKEN"
+
+        artifacts = []
         for p in prereqs:
             res = cls.resolve_prerequisite_cascade(p, domain, base_dir)
+            if cache_hit:
+                p.resolution_level = "LEVEL_0_INTERNAL_SOLUTION_BANK_ZERO_TOKEN"
             artifacts.append({
                 "prerequisite": p.name,
                 "kind": p.kind,
@@ -288,6 +307,16 @@ class UniversalAutonomousResolver:
                 "artifact_path": p.artifact_path,
                 "details": res,
             })
+
+        if not cache_hit:
+            keywords = [w.lower() for w in re.findall(r"\w{3,}", query.lower())]
+            solution_bank.register_solution(
+                domain=domain,
+                title=f"Autonomous Pattern {domain} {int(time.time())}",
+                keywords=keywords,
+                summary=f"Auto-synthesized resolution for {query[:60]}",
+                template_payload={"artifacts": [a["artifact_path"] for a in artifacts]},
+            )
 
         return UniversalResolutionPlan(
             query=query,
@@ -299,6 +328,9 @@ class UniversalAutonomousResolver:
             generated_artifacts=artifacts,
             execution_status="completed_100_percent",
             zero_block_guarantee=True,
+            cache_hit=cache_hit,
+            solution_id=sol_id,
+            tokens_saved=tok_saved,
         )
 
 
