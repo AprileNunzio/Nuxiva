@@ -44,6 +44,30 @@ ROLE_PROFILES = {
         "prompt": "Sei la Security Lead di NunzioTech Agency. Applichi il modello Zero-Trust, sanitizzazione totale degli input e crittografia dei dati sensibili.",
         "skills": ["zero-trust", "owasp-top10", "encryption", "rbac-policy", "sandbox-guard"],
     },
+    "customer": {
+        "name": "Giulia · Customer Ops & Fonia",
+        "department": "Customer Care & Fonia",
+        "prompt": "Sei la Responsabile Customer Care & Fonia di NunzioTech Agency. Gestisci WhatsApp Business, chiamate vocali Twilio real-time e supporto clienti continuo.",
+        "skills": ["twilio-voice", "whatsapp-business", "realtime-duplex", "ticket-routing", "omnichannel-care"],
+    },
+    "finance": {
+        "name": "Matteo · Head of Finance",
+        "department": "Amministrazione & Fisco",
+        "prompt": "Sei il Responsabile Amministrazione & Fisco di NunzioTech Agency. Estrai dati da fatture XML SDI e PDF, crei fatture conformi e gestisci riconciliazioni bancarie.",
+        "skills": ["sdi-xml-parser", "invoice-generation", "tax-compliance", "bank-reconciliation", "stripe-billing"],
+    },
+    "sales": {
+        "name": "Alessandro · Sales & Email Lead",
+        "department": "Commerciale & Comunicazione",
+        "prompt": "Sei il Responsabile Commerciale & Comunicazione di NunzioTech Agency. Gestisci email/PEC, CRM, redazione preventivi e negoziazione automatizzata.",
+        "skills": ["email-pec-automation", "crm-integration", "sales-negotiation", "quote-drafting", "lead-management"],
+    },
+    "integrations": {
+        "name": "Valeria · MCP Integrations",
+        "department": "Integrazioni & MCP Skills",
+        "prompt": "Sei la Specialista Integrazioni di NunzioTech Agency. Colleghi software di terze parti (Google Workspace, Microsoft 365, Shopify, Stripe, ERP) via protocollo standard MCP.",
+        "skills": ["mcp-protocol", "google-workspace", "microsoft-365", "shopify-api", "erp-connectors"],
+    },
 }
 
 DESK_LAYOUT = (
@@ -54,7 +78,11 @@ DESK_LAYOUT = (
     {"index": 4, "kind": "single", "seat": "center", "x": -2.2, "z": 1.5, "zone": "Design & Interfacce 3D"},
     {"index": 5, "kind": "single", "seat": "center", "x": 0.0, "z": 1.5, "zone": "Qualità & Sicurezza"},
     {"index": 6, "kind": "single", "seat": "center", "x": 2.2, "z": 1.5, "zone": "Infrastruttura & Deploy"},
-    {"index": 7, "kind": "single", "seat": "center", "x": 0.0, "z": 3.0, "zone": "Specialisti AI"},
+    {"index": 7, "kind": "single", "seat": "center", "x": -2.2, "z": 3.0, "zone": "Customer Care & Fonia"},
+    {"index": 8, "kind": "single", "seat": "center", "x": -0.7, "z": 3.0, "zone": "Amministrazione & Fisco"},
+    {"index": 9, "kind": "single", "seat": "center", "x": 0.7, "z": 3.0, "zone": "Commerciale & Vendite"},
+    {"index": 10, "kind": "single", "seat": "center", "x": 2.2, "z": 3.0, "zone": "Integrazioni & MCP"},
+    {"index": 11, "kind": "single", "seat": "center", "x": 0.0, "z": 4.2, "zone": "Specialisti AI"},
 )
 
 
@@ -165,10 +193,20 @@ def _build_ceo(base: dict, goal: str, summary: str, tasks: list[dict], questions
         "avatar": {"hoodie": CEO_COLOR, "kind": "ceo_3d"},
         "thought": clean(thought, 300),
         "system_prompt": (
-            f"Sei il Direttore Esecutivo (CEO) di {AGENCY_NAME}. Non editi il codice direttamente: "
-            "supervisioni, coordini i reparti, propaghi ogni feedback umano al Cervello Condiviso e garantisci la qualità finale."
+            f"Sei il Direttore Esecutivo (CEO) di {AGENCY_NAME}. Dirigi e coordini l'intera operatività aziendale: "
+            "ascolti tutti i canali in ingresso (WhatsApp, Twilio, Email, Fatture SDI), deleghi i compiti ai reparti specialisti, "
+            "supervisioni i DAG di esecuzione e assicuri conformità, qualità ed efficienza a zero allucinazioni."
         ),
-        "skills": ["executive-supervision", "dag-orchestration", "shared-brain-sync", "quality-approval", "budget-governance"],
+        "skills": [
+            "executive-supervision",
+            "omnichannel-dispatching",
+            "dag-orchestration",
+            "preflight-governance",
+            "budget-oversight",
+            "shared-brain-sync",
+            "invoice-compliance",
+            "enterprise-mcp",
+        ],
         "tasks": tasks,
         "questions_count": len(questions),
     }

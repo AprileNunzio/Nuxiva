@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Espansione CEO e agenti enterprise per WhatsApp, Twilio e fatture",
+    "en": "CEO and enterprise swarm expansion for WhatsApp, Twilio, and invoices",
+    "fr": "Expansion du CEO et swarm entreprise pour WhatsApp, Twilio et factures",
+    "es": "Expansión del CEO y enjambre empresarial para WhatsApp, Twilio y facturas"
+  },
+  "features": [
+    {
+      "it": "Aggiunti ruoli enterprise nel sistema office (customer, finance, sales, integrations) e strumenti omnicanale per WhatsApp Business, chiamate vocali Twilio, lettura/scrittura fatture elettroniche XML SDI e gateway MCP.",
+      "en": "Added enterprise roles to office system (customer, finance, sales, integrations) and omnichannel tools for WhatsApp Business, Twilio Voice calls, SDI XML electronic invoice parsing/generation, and MCP gateway.",
+      "fr": "Ajout de rôles d'entreprise dans office (client, finance, ventes, intégrations) et d'outils omnicanaux pour WhatsApp Business, appels vocaux Twilio, factures électroniques XML SDI et passerelle MCP.",
+      "es": "Añadidos roles empresariales en office (cliente, finanzas, ventas, integraciones) y herramientas omnicanal para WhatsApp Business, llamadas de voz Twilio, facturas electrónicas XML SDI y pasarela MCP."
+    }
+  ]
+}

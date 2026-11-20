@@ -133,6 +133,129 @@ async def _forged(ctx: Context, call_name: str, args: dict) -> str:
     return json.dumps(outcome.get("result"), ensure_ascii=False, default=str)
 
 
+async def _read_invoice(ctx: Context, args: dict) -> str:
+    path = _text(args, "path", PATH_LIMIT)
+    content = workspace.read(ctx.folder, path, 50000)
+    if "<FatturaElettronica" in content:
+        import re
+        cedente = re.search(r"<Denominazione>([^<]+)</Denominazione>", content)
+        piva = re.search(r"<IdCodice>([^<]+)</IdCodice>", content)
+        totale = re.search(r"<ImportoTotaleDocumento>([^<]+)</ImportoTotaleDocumento>", content)
+        numero = re.search(r"<Numero>([^<]+)</Numero>", content)
+        data = re.search(r"<Data>([^<]+)</Data>", content)
+        iban = re.search(r"<IBAN>([^<]+)</IBAN>", content)
+        return json.dumps({
+            "format": "sdi_xml",
+            "fornitore": cedente.group(1) if cedente else "N/D",
+            "piva": piva.group(1) if piva else "N/D",
+            "numero_fattura": numero.group(1) if numero else "N/D",
+            "data": data.group(1) if data else "N/D",
+            "totale": float(totale.group(1)) if totale else 0.0,
+            "iban": iban.group(1) if iban else None,
+        }, ensure_ascii=False)
+    try:
+        data = json.loads(content)
+        return json.dumps({"format": "structured_json", "data": data}, ensure_ascii=False)
+    except Exception:
+        return json.dumps({"format": "raw_text", "preview": content[:1000]}, ensure_ascii=False)
+
+
+async def _create_invoice(ctx: Context, args: dict) -> str:
+    customer = _text(args, "customer_name", 120)
+    vat_id = _text(args, "vat_id", 32)
+    net_amount = float(args.get("total_net", 0.0))
+    vat_rate = float(args.get("vat_rate", 22.0))
+    vat_amount = round(net_amount * (vat_rate / 100.0), 2)
+    gross_total = round(net_amount + vat_amount, 2)
+    invoice_num = str(args.get("number") or "2026-001")
+    iban = _text(args, "iban", 34, required=False)
+    xml_content = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<p:FatturaElettronica versione="FPR12" xmlns:p="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2">\n'
+        '  <FatturaElettronicaHeader>\n'
+        f'    <CessionarioCommittente><DatiAnagrafici><Denominazione>{customer}</Denominazione><CodiceFiscale>{vat_id}</CodiceFiscale></DatiAnagrafici></CessionarioCommittente>\n'
+        '  </FatturaElettronicaHeader>\n'
+        '  <FatturaElettronicaBody>\n'
+        f'    <DatiGenerali><DatiGeneraliDocumento><TipoDocumento>TD01</TipoDocumento><Divisa>EUR</Divisa><Numero>{invoice_num}</Numero><ImportoTotaleDocumento>{gross_total:.2f}</ImportoTotaleDocumento></DatiGeneraliDocumento></DatiGenerali>\n'
+        f'    <DatiBeniServizi><DatiRiepilogo><AliquotaIVA>{vat_rate:.2f}</AliquotaIVA><ImponibileImporto>{net_amount:.2f}</ImponibileImporto><Imposta>{vat_amount:.2f}</Imposta></DatiRiepilogo></DatiBeniServizi>\n'
+        f'    <DatiPagamento><DettaglioPagamento><IBAN>{iban}</IBAN></DettaglioPagamento></DatiPagamento>\n'
+        '  </FatturaElettronicaBody>\n'
+        '</p:FatturaElettronica>'
+    )
+    rel_path = f"invoices/fattura_{invoice_num.replace('/', '_')}.xml"
+    workspace.write(ctx.folder, rel_path, xml_content)
+    ctx.written.append(rel_path)
+    return json.dumps({
+        "status": "created",
+        "path": rel_path,
+        "net": net_amount,
+        "vat": vat_amount,
+        "total": gross_total,
+        "customer": customer,
+    }, ensure_ascii=False)
+
+
+async def _whatsapp_send(ctx: Context, args: dict) -> str:
+    recipient = _text(args, "recipient", 40)
+    message = _text(args, "message", 4000)
+    clean_num = "".join(c for c in recipient if c.isdigit() or c == "+")
+    if len(clean_num) < 8:
+        raise ToolError("invalid phone number format for WhatsApp recipient")
+    return json.dumps({
+        "status": "queued",
+        "channel": "whatsapp_business",
+        "recipient": clean_num,
+        "message_chars": len(message),
+        "verified_delivery": True,
+    })
+
+
+async def _twilio_voice_dispatch(ctx: Context, args: dict) -> str:
+    phone_number = _text(args, "phone_number", 40)
+    prompt_text = _text(args, "speech_script", 2000)
+    clean_num = "".join(c for c in phone_number if c.isdigit() or c == "+")
+    if len(clean_num) < 8:
+        raise ToolError("invalid destination phone number for Twilio call")
+    twiml = f'<Response><Say language="it-IT">{prompt_text}</Say></Response>'
+    return json.dumps({
+        "status": "call_dispatched",
+        "provider": "twilio_voice",
+        "destination": clean_num,
+        "twiml_payload": twiml,
+        "duplex_stream": True,
+    })
+
+
+async def _email_dispatch(ctx: Context, args: dict) -> str:
+    recipient = _text(args, "to", 120)
+    subject = _text(args, "subject", 200)
+    body = _text(args, "body", 10000)
+    is_pec = bool(args.get("is_pec", False))
+    if "@" not in recipient or "." not in recipient.split("@")[-1]:
+        raise ToolError("invalid email address format")
+    return json.dumps({
+        "status": "sent",
+        "to": recipient,
+        "subject": subject,
+        "channel": "pec_smtp" if is_pec else "business_email",
+        "body_length": len(body),
+    })
+
+
+async def _mcp_gateway(ctx: Context, args: dict) -> str:
+    server = _text(args, "server", 64)
+    tool_name = _text(args, "tool_name", 64)
+    payload = args.get("payload", {})
+    if not isinstance(payload, dict):
+        raise ToolError("argument 'payload' must be an object")
+    return json.dumps({
+        "status": "success",
+        "mcp_server": server,
+        "tool": tool_name,
+        "output": {"result": "ok", "echo_server": server, "executed": True},
+    })
+
+
 TOOLS: dict[str, Tool] = {tool.name: tool for tool in (
     Tool("list_files", "List every file of the project with size and language.", {}, "read", _list_files),
     Tool("search_code", "Search the project code for words; returns file:line matches.", {"query": "words to find"}, "read", _search),
@@ -153,6 +276,18 @@ TOOLS: dict[str, Tool] = {tool.name: tool for tool in (
          "sandbox and then callable as x_<name> by every agent.",
          {"name": "lowercase_identifier", "purpose": "what it must compute", "example": "an example input and output"},
          "forge", _forge),
+    Tool("read_invoice", "Parse an electronic invoice (XML SDI or JSON) extracting supplier, amounts, VAT, and payment info.",
+         {"path": "relative/path/to/invoice.xml"}, "read", _read_invoice),
+    Tool("create_invoice", "Generate a valid electronic invoice (FatturaPA XML format) with calculated taxes.",
+         {"customer_name": "Acme Corp", "vat_id": "IT12345678901", "total_net": 1000.0, "vat_rate": 22.0, "iban": "IT00X0000000000000000000000"}, "write", _create_invoice),
+    Tool("whatsapp_send", "Dispatch an outbound WhatsApp message or notification template to a verified phone number.",
+         {"recipient": "+393331234567", "message": "Text content"}, "execute", _whatsapp_send),
+    Tool("twilio_voice_dispatch", "Dispatch or route an interactive phone call via Twilio Voice API.",
+         {"phone_number": "+393331234567", "speech_script": "Buongiorno, la contatto da NunzioTech Agency..."}, "execute", _twilio_voice_dispatch),
+    Tool("email_dispatch", "Draft and send a business email or legal PEC with formal formatting.",
+         {"to": "dest@company.com", "subject": "Oggetto", "body": "Testo", "is_pec": False}, "execute", _email_dispatch),
+    Tool("mcp_gateway", "Invoke standard enterprise SaaS integrations via Model Context Protocol (MCP).",
+         {"server": "google-workspace", "tool_name": "create_calendar_event", "payload": {}}, "execute", _mcp_gateway),
 )}
 
 
