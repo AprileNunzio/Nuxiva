@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Creazione on-demand di giochi e capacità con notifica proattiva e disaccoppiamento CEO",
+    "en": "On-demand capability and game forging with proactive callback and CEO decoupling",
+    "fr": "Création à la demande de jeux et capacités avec rappel proactif et découplage CEO",
+    "es": "Creación bajo demanda de juegos y capacidades con aviso proactivo y desacoplamiento CEO"
+  },
+  "features": [
+    {
+      "it": "Implementato motore di forgiatura on-demand universale per giochi (es. Scopa) e strumenti inediti: verifica la presenza, risponde subito all'utente con proposta di notifica e commissiona la creazione asincrona in background alla stanza di progetto del CEO.",
+      "en": "Implemented universal on-demand forging engine for games (e.g. Scopa) and new capabilities: checks availability, answers the user immediately offering a completion callback, and dispatches asynchronous background creation to the CEO project room.",
+      "fr": "Implémentation d'un moteur de création à la demande universel pour les jeux et nouvelles capacités : vérifie la présence, répond immédiatement à l'utilisateur avec proposition de notification et commande la création asynchrone dans la salle du CEO.",
+      "es": "Implementación de motor de creación bajo demanda universal para juegos y nuevas capacidades: comprueba la presencia, responde de inmediato al usuario con oferta de aviso y encarga la creación asíncrona en segundo plano a la sala del CEO."
+    }
+  ]
+}
