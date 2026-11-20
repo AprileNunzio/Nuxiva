@@ -95,12 +95,18 @@ def is_online(voice: str) -> bool:
     return bool(_ONLINE_RE.match(voice))
 
 
+def is_elevenlabs(voice: str) -> bool:
+    return str(voice or "").startswith("eleven_")
+
+
 def is_studio(voice: str) -> bool:
     from agenti.voicestudio.client import VOICE_PREFIX
     return str(voice or "").startswith(VOICE_PREFIX)
 
 
 def engine(voice: str) -> str:
+    if is_elevenlabs(voice):
+        return "elevenlabs"
     if is_studio(voice):
         return "studio"
     return "piper" if is_piper(voice) else "online" if is_online(voice) else "kokoro"
@@ -257,6 +263,10 @@ def piper_voice_path(voice: str) -> str:
 
 def describe(voice: str, piper: dict | None = None, online: dict | None = None) -> dict:
     kind = engine(voice)
+    if kind == "elevenlabs":
+        clean_name = voice.removeprefix("eleven_").replace("_", " ").capitalize()
+        return {"id": voice, "name": clean_name, "gender": "", "lang": HOME_LANG, "locale": HOME_LANG,
+                "engine": "elevenlabs", "size_mb": None, "quality": "iper-realistica", "rank": 0, "multi": True}
     if kind == "studio":
         from agenti.voicestudio.client import client
         return {"id": voice, "name": client.name_of(voice), "gender": "", "lang": HOME_LANG, "locale": HOME_LANG,

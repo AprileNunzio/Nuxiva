@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-20",
+  "title": {
+    "it": "Configurazione vocale 8080 con ElevenLabs, Audio Vault e correzione ricerca NVR",
+    "en": "Voice config 8080 with ElevenLabs, Audio Vault, and NVR search fix",
+    "fr": "Configuration vocale 8080 avec ElevenLabs, Audio Vault et correctif NVR",
+    "es": "Configuración de voz 8080 con ElevenLabs, Audio Vault y corrección de NVR"
+  },
+  "features": [
+    {
+      "it": "Nuova interfaccia grafica della sezione :8080 per la gestione vocale: selezione intuitiva tra modelli locali (Kokoro/Piper), abbonamento ElevenLabs (anche piano gratuito con monitoraggio quota) o modalità ibrida con fallback automatico.",
+      "en": "New graphical interface in section :8080 for voice management: intuitive selection between local models (Kokoro/Piper), ElevenLabs subscription (including free tier with quota monitoring), or hybrid mode with automatic fallback.",
+      "fr": "Nouvelle interface graphique dans la section :8080 pour la gestion vocale: sélection entre modèles locaux, abonnement ElevenLabs (y compris gratuit avec suivi de quota) ou mode hybride avec basculement automatique.",
+      "es": "Nueva interfaz gráfica en la sección :8080 para gestión de voz: selección entre modelos locales, suscripción ElevenLabs (incluido nivel gratuito con monitoreo de cuota) o modo híbrido con respaldo automático."
+    },
+    {
+      "it": "Introdotto il sistema Audio Vault per memorizzare e riutilizzare clip audio frequenti e risposte standard, risparmiando crediti ElevenLabs e token LLM con metriche visive in tempo reale e pre-generazione rapida.",
+      "en": "Introduced Audio Vault system to cache and reuse frequent speech clips and standard responses, saving ElevenLabs credits and LLM tokens with real-time visual metrics and one-click pregeneration.",
+      "fr": "Introduction du système Audio Vault pour mettre en cache et réutiliser les clips fréquents, économisant crédits ElevenLabs et jetons LLM avec métriques en temps réel et pré-génération rapide.",
+      "es": "Introducción del sistema Audio Vault para almacenar y reutilizar audios frecuentes, ahorrando créditos de ElevenLabs y tokens de LLM con métricas en tiempo real y pre-generación con un clic."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Risolto il disallineamento temporale in find_api._events() inoltrando now_ms al parser per garantire il corretto recupero degli eventi nei test di ricerca NVR.",
+      "en": "Fixed temporal query alignment in find_api._events() by forwarding now_ms to the parser to ensure proper event retrieval in NVR search tests.",
+      "fr": "Correction de l'alignement temporel dans find_api._events() en transmettant now_ms au parseur pour assurer la récupération correcte des événements NVR.",
+      "es": "Corregida la alineación temporal en find_api._events() enviando now_ms al analizador para asegurar la correcta recuperación de eventos en búsquedas NVR."
+    }
+  ]
+}

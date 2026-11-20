@@ -35,8 +35,8 @@ def _snippets(hits: list[dict], transcripts) -> list[dict]:
     return out
 
 
-def _events(q: str, camera: str | None, since_ms: int, until_ms: int, limit: int) -> list[dict]:
-    query = parse(q)
+def _events(q: str, camera: str | None, since_ms: int, until_ms: int, limit: int, now_ms: int | None = None) -> list[dict]:
+    query = parse(q, (now_ms / 1000) if now_ms is not None else None)
     query = type(query)(max(query.since, since_ms / 1000), min(query.until, until_ms / 1000), query.labels, query.terms)
     if not query.labels and not query.terms:
         return []
@@ -63,7 +63,7 @@ def find(q: str, camera: str | None, limit: int, now_ms: int | None = None) -> d
     words = speech_terms(q)
     speech = _snippets(index.search(words, camera, since, until, limit), index.transcripts) if words else []
     return {"q": q, "from_ms": since, "to_ms": until, "speech": speech,
-            "events": _events(q, camera, since, until, limit), "cameras": camera_names()}
+            "events": _events(q, camera, since, until, limit, now_ms), "cameras": camera_names()}
 
 
 @routes.get("/api/nvr/find")

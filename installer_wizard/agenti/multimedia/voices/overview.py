@@ -18,7 +18,8 @@ async def overview() -> dict:
     for i in items:
         i["preferred"] = prefs.get(i["lang"]) == i["id"]
     items.sort(key=lambda x: (x["lang"] != HOME_LANG, languages.label(x["lang"]),
-                              {"kokoro": 0, "online": 1, "piper": 2}[x["engine"]], x["gender"] != "m", x["name"]))
+                              {"elevenlabs": 0, "kokoro": 1, "online": 2, "piper": 3, "studio": 4}.get(x["engine"], 5),
+                              x["gender"] != "m", x["name"]))
     known = {i["id"]: i for i in items}
     custom = custom_order()
 
@@ -28,8 +29,14 @@ async def overview() -> dict:
         return {**d, "safety": v not in custom and v == fallback_voice()}
 
     langs = sorted({i["lang"] for i in items}, key=lambda c: (c != HOME_LANG, languages.label(c)))
+    from agenti.voices.audio_vault import audio_vault
+    from config import env_get
+    engine_mode = env_get("NUXIVA_VOICE_ENGINE_MODE", "hybrid").lower()
+    eleven_configured = bool(env_get("NUXIVA_ELEVENLABS_API_KEY", "").strip())
     return {"order": [entry(v) for v in voice_order()], "custom": bool(custom), "voices": items,
             "kokoro_online": kv is not None, "online_enabled": online_enabled(), "auto_download": auto_download(),
+            "engine_mode": engine_mode, "elevenlabs_configured": eleven_configured,
+            "vault_stats": audio_vault.get_stats(),
             "langs": {c: languages.label(c) for c in langs}, "lang_prefs": prefs,
             "by_lang": {c: entry(v) for c, v in prefs.items()},
             "fallback": fallback_voice(), "pull": getattr(store, "voice_pull", None),

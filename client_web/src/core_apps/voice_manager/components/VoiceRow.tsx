@@ -16,7 +16,7 @@ interface Props {
   readonly onPrefer: (voice: VoiceItem) => void;
 }
 
-const TONE = { kokoro: 'purple', piper: 'cyan', online: 'amber', studio: 'emerald' } as const;
+const TONE = { kokoro: 'purple', piper: 'cyan', online: 'amber', studio: 'emerald', elevenlabs: 'purple' } as const;
 
 export const VoiceRow: React.FC<Props> = ({ voice, inOrder, busy, playing, t, onPlay, onDownload, onRemove, onAdd, onPrefer }) => {
   const ready = voice.installed || !voice.downloadable;

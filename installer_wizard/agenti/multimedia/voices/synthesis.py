@@ -8,7 +8,7 @@ import httpx
 
 from config import env_get
 from agenti.voices import languages, speech_rules
-from agenti.voices.catalog import (CACHE_DIR, CACHE_MAX_FILES, HOME_LANG, KOKORO_MODEL, KOKORO_URL, PIPER, VOICE_DIR,
+from agenti.voices.catalog import (CACHE_DIR, CACHE_MAX_FILES, DEFAULT_VOICE, HOME_LANG, KOKORO_MODEL, KOKORO_URL, PIPER, VOICE_DIR,
                                      auto_download, best_download, describe, engine, home_lang, is_online,
                                      online_enabled, piper_installed, voice_order, voices_for)
 from agenti.voices.downloads import start_download
@@ -143,8 +143,16 @@ async def _studio(text: str, voice: str, speed: float, lang: str | None = None) 
         raise RuntimeError(f"Studio delle voci: {exc}") from exc
 
 
+async def _elevenlabs(text: str, voice: str, speed: float) -> bytes:
+    from agenti.voices.elevenlabs_client import synthesize as eleven_synth
+    clean_voice_id = voice.removeprefix("eleven_")
+    return await asyncio.to_thread(eleven_synth, text, clean_voice_id)
+
+
 async def speak_with(text: str, voice: str, speed: float, lang: str | None = None) -> bytes:
     kind = engine(voice)
+    if kind == "elevenlabs":
+        return await _elevenlabs(text, voice, speed)
     if kind == "studio":
         return await _studio(text, voice, speed, lang)
     return await (_piper(text, voice, speed) if kind == "piper" else
@@ -153,6 +161,7 @@ async def speak_with(text: str, voice: str, speed: float, lang: str | None = Non
 
 async def synthesize(text: str, voice: str | None = None, speed: float | None = None,
                      lang: str | None = None, pitch: float | None = None, volume: float | None = None) -> bytes:
+    from agenti.voices.audio_vault import audio_vault
     home = home_lang()
     lang = languages.base(lang or "") or languages.detect(text, home)
     text = normalize(text, lang)[:1200]
@@ -161,8 +170,22 @@ async def synthesize(text: str, voice: str | None = None, speed: float | None = 
     speed = speed or _speed()
     pitch = _pitch() if pitch is None else max(-6.0, min(6.0, pitch))
     volume = _volume() if volume is None else max(0.4, min(2.0, volume))
+
+    engine_mode = (env_get("NUXIVA_VOICE_ENGINE_MODE", "hybrid") or "hybrid").lower()
+    eleven_voice = env_get("NUXIVA_ELEVENLABS_VOICE_ID", "").strip()
+    if not voice and eleven_voice and engine_mode in ("elevenlabs", "hybrid"):
+        voice = f"eleven_{eleven_voice}" if not eleven_voice.startswith("eleven_") else eleven_voice
+
     if voice and describe(voice)["lang"] != lang and "Multilingual" not in voice and not describe(voice).get("multi"):
         voice = None
+
+    # Controllo rapido Audio Vault per evitare chiamate ripetute a ElevenLabs e risparmiare token/crediti
+    fav_voice = voice or (voice_order()[0] if voice_order() else DEFAULT_VOICE)
+    fav_kind = engine(fav_voice)
+    vault_audio = audio_vault.lookup(text, fav_voice, fav_kind)
+    if vault_audio:
+        return vault_audio
+
     chain = [voice] if voice else []
     if lang != home:
         chain += await voices_for(lang)
@@ -185,14 +208,22 @@ async def synthesize(text: str, voice: str | None = None, speed: float | None = 
             continue
         try:
             data = await _retune(await speak_with(text, v, speed, lang), pitch, volume)
-        except (httpx.HTTPError, RuntimeError, OSError, asyncio.TimeoutError) as exc:
-            kokoro_down = kokoro_down or (kind == "kokoro" and isinstance(exc, httpx.TransportError))
+        except Exception as exc:
+            if kind == "elevenlabs":
+                errors.append(f"ElevenLabs: {exc}")
+                if engine_mode == "hybrid":
+                    store.event("WARN", f"ElevenLabs ({exc}): fallback su voce locale", "voice")
+                continue
+            kokoro_down = kokoro_down or (kind == "kokoro" and isinstance(exc, (httpx.TransportError, OSError)))
             online_down = online_down or kind == "online"
             studio_down = studio_down or kind == "studio"
             errors.append(f"{v}: {exc}")
             continue
         if i and errors:
             store.event("WARN", f"Voce {chain[0]} non disponibile, uso {v} ({errors[-1][:120]})", "voice")
+        
+        # Salva nella cassaforte audio per riutilizzi futuri a costo zero
+        audio_vault.store(text, v, kind, data)
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
         cached.write_bytes(data)
         _prune_cache()
