@@ -175,6 +175,49 @@ pub fn recruit_specialists(
         ));
     }
 
+    if let Some(dynamic_specialist) = synthesize_autonomous_specialist(&combined)
+        && !roster.iter().any(|s| s.id == dynamic_specialist.id)
+    {
+        roster.push(dynamic_specialist);
+    }
+
     roster.truncate(MAX_SPECIALISTS);
     Ok(roster)
+}
+
+#[must_use]
+pub fn synthesize_autonomous_specialist(combined_context: &str) -> Option<SpecialistProfile> {
+    let stopwords = [
+        "creami", "crea", "progetto", "sito", "sistema", "con", "per", "una", "uno", "del",
+        "della", "dello", "degli", "delle", "che", "come", "rust", "react", "python", "the", "and",
+        "for", "with", "build", "create",
+    ];
+    let domain_token = combined_context
+        .split(|c: char| !c.is_ascii_alphanumeric())
+        .map(str::trim)
+        .find(|w| w.len() >= 5 && !stopwords.contains(w))?;
+
+    let short_domain: String = domain_token.chars().take(18).collect();
+    let id = format!("auto_specialist_{short_domain}");
+    Some(SpecialistProfile {
+        id,
+        title: format!("Auto-Forged Specialist · {domain_token}"),
+        department: "Meta-Learning & Evoluzione Autonoma".to_owned(),
+        mission: format!(
+            "Studia autonomamente il dominio '{domain_token}', forgia nuovi strumenti verificati in sandbox, costruisce widget dedicati e distilla scorciatoie a zero token."
+        ),
+        skills: vec![
+            format!("domain-{domain_token}"),
+            "meta-curriculum-study".to_owned(),
+            "tool-forge-synthesis".to_owned(),
+            "widget-auto-scaffold".to_owned(),
+            "pareto-self-upgrade".to_owned(),
+        ],
+        permissions: vec![
+            "read".to_owned(),
+            "write".to_owned(),
+            "execute".to_owned(),
+            "forge".to_owned(),
+        ],
+    })
 }

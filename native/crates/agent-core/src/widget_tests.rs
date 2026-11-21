@@ -132,3 +132,54 @@ fn every_shipped_widget_passes() {
     }
     assert!(seen == 0 || seen > 50);
 }
+
+#[test]
+fn autonomous_meta_curriculum_and_widget_forge_work() {
+    use crate::evolution::{
+        StudyMethod, WidgetForgeSpec, forge_widget_bundle, synthesize_meta_curriculum,
+    };
+    use std::collections::BTreeMap;
+
+    let curriculum = synthesize_meta_curriculum("quantum_sim", "gap.quantum.circuit", 3);
+    assert!(curriculum.is_ok());
+    if let Ok(curr) = curriculum {
+        assert_eq!(curr.domain_id, "quantum_sim");
+        assert!(
+            curr.study_methods
+                .contains(&StudyMethod::CounterfactualSimulation)
+        );
+        assert!(
+            curr.study_methods
+                .contains(&StudyMethod::AdversarialEdgeTesting)
+        );
+    }
+
+    let mut titles = BTreeMap::new();
+    titles.insert("it".to_owned(), "Simulatore Quantistico".to_owned());
+    titles.insert("en".to_owned(), "Quantum Simulator".to_owned());
+    titles.insert("fr".to_owned(), "Simulateur Quantique".to_owned());
+    titles.insert("es".to_owned(), "Simulador Cuántico".to_owned());
+
+    let mut say_by_lang = BTreeMap::new();
+    for lang in ["it", "en", "fr", "es"] {
+        let mut say = BTreeMap::new();
+        say.insert("say_ready".to_owned(), format!("Ready ({lang})"));
+        say_by_lang.insert(lang.to_owned(), say);
+    }
+
+    let w_spec = WidgetForgeSpec {
+        widget_id: "quantum_widget".to_owned(),
+        category: "work".to_owned(),
+        icon: "cpu".to_owned(),
+        mode: "open".to_owned(),
+        title_by_lang: titles,
+        say_keys_by_lang: say_by_lang,
+    };
+
+    let bundle = forge_widget_bundle(&w_spec);
+    assert!(bundle.is_ok());
+    if let Ok(b) = bundle {
+        assert_eq!(b.widget_id, "quantum_widget");
+        assert_eq!(b.files.len(), 5);
+    }
+}

@@ -22,7 +22,7 @@ pub use socratic::{
     ProbeFinding, ResolutionSource, SocraticReport, classify_resolution, compute_voi_bps,
     interrogate_goal, synthesize_epistemic_plan,
 };
-pub use specialist::{SpecialistProfile, recruit_specialists};
+pub use specialist::{SpecialistProfile, recruit_specialists, synthesize_autonomous_specialist};
 pub use tree::{
     ArchitectureCandidate, EvaluationWeights, RankedBranch, ThoughtVerdict, evaluate_candidates,
 };

@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Evoluzione autonoma di agenti, strumenti e widget con meta-curriculum di studio",
+    "en": "Autonomous evolution of agents, tools, and widgets with meta-learning study curriculum",
+    "fr": "Évolution autonome des agents, outils et widgets avec programme d'étude de méta-apprentissage",
+    "es": "Evolución autónoma de agentes, herramientas y widgets con currículo de estudio de metaaprendizaje"
+  },
+  "features": [
+    {
+      "it": "Nuxiva genera da sola un programma di studio quando incontra un nuovo dominio, recluta specialisti forgiati al volo e costruisce il pacchetto completo di agente, strumenti e widget multilingua senza addestramento manuale caso per caso.",
+      "en": "Nuxiva autonomously generates a study curriculum when encountering a new domain, recruits on-the-fly forged specialists, and scaffolds the complete agent, tool, and multilingual widget package without manual one-by-one training.",
+      "fr": "Nuxiva génère d'elle-même un programme d'étude face à un nouveau domaine, recrute des spécialistes forgés à la volée et assemble le paquet complet d'agent, d'outils et de widget multilingue sans apprentissage manuel au cas par cas.",
+      "es": "Nuxiva genera por sí sola un programa de estudio ante un nuevo dominio, recluta especialistas forjados al vuelo y construye el paquete completo de agente, herramientas y widget multilingüe sin entrenamiento manual uno por uno."
+    }
+  ],
+  "fixes": []
+}
