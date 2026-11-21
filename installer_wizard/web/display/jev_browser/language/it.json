@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "web/display/jev_browser",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "jev_mode_active": "MONITORAGGIO TEMPO REALE",
+    "jev_url_label": "Indirizzo web attivo",
+    "jev_btn_google": "Cerca su Google",
+    "jev_phase_judge": "Valuta (Judge)",
+    "jev_phase_execute": "Esegui (Execute)",
+    "jev_phase_verify": "Verifica (Verify)"
+  }
+}

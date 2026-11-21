@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Navigazione web interattiva sul display con modalità JEV per ricerche e prenotazioni",
+    "en": "Interactive web browsing on the display with JEV mode for searches and reservations",
+    "fr": "Navigation web interactive sur l'écran avec mode JEV pour les recherches et réservations",
+    "es": "Navegación web interactiva en pantalla con modo JEV para búsquedas y reservas"
+  },
+  "features": [
+    {
+      "it": "Nuxiva apre pagine web in una finestra sul display principale, digita indirizzi, cerca su Google e gestisce prenotazioni passo dopo passo monitorando e verificando ogni azione in tempo reale con modalità JEV.",
+      "en": "Nuxiva opens web pages in a window on the main display, types addresses, searches Google, and handles reservations step by step while monitoring and verifying every action in real time with JEV mode.",
+      "fr": "Nuxiva ouvre des pages web dans une fenêtre sur l'écran principal, saisit des adresses, cherche sur Google et gère les réservations étape par étape en surveillant et vérifiant chaque action en temps réel avec le mode JEV.",
+      "es": "Nuxiva abre páginas web en una ventana de la pantalla principal, escribe direcciones, busca en Google y gestiona reservas paso a paso supervisando y verificando cada acción en tiempo real con el modo JEV."
+    }
+  ],
+  "fixes": []
+}

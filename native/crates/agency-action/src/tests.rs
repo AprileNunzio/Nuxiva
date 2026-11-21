@@ -294,3 +294,62 @@ fn test_preflight_invariants_allow_and_deny() {
         PreflightVerdict::Denied { .. }
     ));
 }
+
+#[test]
+fn jev_web_navigator_validates_urls_and_executes_booking_lifecycle() {
+    use crate::jev_web::{
+        build_google_search_jev_plan, build_restaurant_booking_jev_plan, sanitize_zero_trust_url,
+        verify_and_advance_jev_step,
+    };
+
+    assert!(sanitize_zero_trust_url("https://www.google.com/search?q=nuxiva").is_ok());
+    assert!(sanitize_zero_trust_url("http://127.0.0.1:8080/admin").is_err());
+    assert!(sanitize_zero_trust_url("http://192.168.1.1/router").is_err());
+    assert!(sanitize_zero_trust_url("javascript:alert(1)").is_err());
+
+    let search = build_google_search_jev_plan("sess-01", "miglior ristorante giapponese milano");
+    assert!(search.is_ok());
+    if let Ok(mut plan) = search {
+        assert_eq!(
+            plan.entry_url,
+            "https://www.google.com/search?q=miglior+ristorante+giapponese+milano"
+        );
+        assert_eq!(
+            verify_and_advance_jev_step(&mut plan, "dom.input.typed", false),
+            Ok(false)
+        );
+        assert_eq!(
+            verify_and_advance_jev_step(&mut plan, "dom.results.loaded", false),
+            Ok(true)
+        );
+        assert!(plan.completed);
+    }
+
+    let booking = build_restaurant_booking_jev_plan(
+        "sess-02",
+        "Osteria Francescana Modena",
+        2,
+        "2026-11-22T20:30",
+    );
+    assert!(booking.is_ok());
+    if let Ok(mut b_plan) = booking {
+        assert_eq!(
+            verify_and_advance_jev_step(&mut b_plan, "slot.2030.selected", false),
+            Ok(false)
+        );
+        assert_eq!(
+            verify_and_advance_jev_step(&mut b_plan, "submit.ready", false),
+            Ok(false)
+        );
+        assert_eq!(b_plan.current_step, 2);
+        assert_eq!(
+            verify_and_advance_jev_step(&mut b_plan, "submit.ready", true),
+            Ok(false)
+        );
+        assert_eq!(
+            verify_and_advance_jev_step(&mut b_plan, "booking.confirmed.id", true),
+            Ok(true)
+        );
+        assert!(b_plan.completed);
+    }
+}

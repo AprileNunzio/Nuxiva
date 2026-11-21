@@ -1,5 +1,6 @@
 pub mod batch;
 pub mod error;
+pub mod jev_web;
 pub mod patch;
 pub mod preflight;
 pub mod transaction;
@@ -11,6 +12,11 @@ mod tests;
 
 pub use batch::{ActionItem, ActionKind, BatchPlan, ExecutionWave, plan_parallel_batch};
 pub use error::ActionError;
+pub use jev_web::{
+    JevPhase, JevWebSessionPlan, JevWebStep, MAX_JEV_STEPS, MAX_URL_LEN, WebActionKind,
+    build_google_search_jev_plan, build_restaurant_booking_jev_plan, sanitize_zero_trust_url,
+    verify_and_advance_jev_step,
+};
 pub use patch::{
     LineRangeView, PatchOutcome, ReplacementChunk, apply_surgical_patches, view_line_range,
 };
