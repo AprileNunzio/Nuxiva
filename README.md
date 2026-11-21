@@ -153,13 +153,33 @@ flowchart LR
 
 A text or voice request is handled by the chat router in `installer_wizard/agenti/cognizione/chat/`. It passes through an ordered chain of stages (automations, direct commands, intent skills, connectors, home control, actions, conversation). The first stage that recognises the request answers it; the others are skipped. Requests that need current information are delegated to the agent, which searches before it answers. Generation walks the model priority list and skips any model that fails, so one unavailable model never blocks an answer.
 
-### 4.2 Core reasoning
+### 4.2 Core reasoning, Active Inference and Gödelian self-improvement
 
-The Core (`server/core/`) classifies requests, estimates their complexity and selects a reasoning engine accordingly. A decision engine scores candidate models and actions on several axes (quality, calibration, speed, cost, security) with calibrated probabilities and uncertainty estimates. Confirmed requests are stored in a native embedding index so that they can be answered on a fast path; a plasticity scheduler reinforces, weakens, decays and prunes those entries over time. Exact formulas and thresholds live in the code under `server/core/orchestrator/`, `server/core/decision/` and `server/core/plasticity/`.
+The Core (`server/core/`) and the native Rust cognitive crates (`native/crates/agency-thought/`, `native/crates/agency-forge/`, `native/crates/reflex-core/`) implement a dual-system neuro-symbolic architecture grounded in computational neuroscience:
 
-### 4.3 Native Rust layer
+```mermaid
+flowchart TD
+    In["Request / Sensory Event"] --> R1{"System 1: Reflex Core (Rust)\nFormal Oracle & Plasticity Memory"}
+    R1 -- "Guarantee >= 0.82 (0 Tokens, <1ms)" --> OutFast["Instant Response / Action"]
+    R1 -- "Cache Miss" --> Epistemic["Epistemic & Socratic Engine (VOI)\nLocal self-probing before asking the user"]
+    Epistemic --> EFE["Minimal Expected Free Energy (EFE) Policy\nBalances Pragmatic Value vs Epistemic Gain"]
+    EFE --> Exec["Multi-Agent / Parallel DAG Execution"]
+    Exec --> Check{"Outcome?"}
+    Check -- "Runtime Failure" --> Heal["Self-Healing Governor & Tool Forge\nAST Guard + Deterministic Sandbox Verification (fnv64)"]
+    Heal --> Exec
+    Check -- "Confirmed Success" --> Distill["Shortcut Compiler & Gödelian Upgrade\nZero-Token Reflex Promotion via Pareto Dominance"]
+    Distill --> OutFast
+```
 
-The Rust workspace in `native/` groups the crates that need speed, memory safety or strict isolation: message bus, packet analysis for the firewall, egress proxy, CRDT replication between nodes, audio DSP, gesture recognition, display and window arbitration, signed tokens, health-sensor parsing, satellite provisioning, the project agency engine (domain, planner, scheduler, HMAC-chained ledger, code index, daemon) and the PyO3 bridge. The full list of crates is in `native/Cargo.toml`.
+- **Active Epistemic Inquiry and VOI Scoring (`agency-thought/src/socratic/inquiry.rs`)**: before interrupting the user with clarification questions, Nuxiva computes the mathematical *Value of Information* (`VOI` in basis points) of open hypotheses and schedules local self-inspection probes (`Filesystem`, `CodeIndex`, `NetworkDiscovery`, `MemoryGraph`, `EnvironmentConfig`). Only high-impact, irreversible decisions are escalated to the user.
+- **Active Inference & Intrinsic Goal Generation (`agency-thought/src/agi/mod.rs`)**: on every state-action transition (`WorldTransition`), the kernel compares the predicted outcome against the observed state, measures Bayesian surprise (`surprise_bps`) and epistemic uncertainty, and autonomously spawns an `IntrinsicGoal` when surprise exceeds the threshold. Policies are selected by minimising *Expected Free Energy*, balancing pragmatic utility, information gain, latency and token cost.
+- **Pareto-Dominant Gödelian Self-Improvement (`AutonomousAgiKernel::evaluate_godel_upgrade`)**: a newly synthesised algorithmic strategy replaces the active incumbent only when backed by a deterministic sandbox verification digest (`fnv64`) and strict mathematical Pareto dominance (non-inferior accuracy, non-inferior latency and token cost, and strict improvement on at least one axis or Kolmogorov byte complexity).
+- **Sandboxed Tool Forge and Self-Healing Loop (`agency-forge/src/sandbox/`, `agency-forge/src/healing/`, `server/features/continuous_learning/learning_loop.py`)**: when an agent fails at runtime or a capability is missing, Nuxiva classifies the root cause (`MissingCapability`, `SchemaDrift`, `EndpointRelocated`, `AuthExpired`, `SandboxGuardViolation`), synthesises code, validates it through the AST Guard, and activates it only if all deterministic test cases pass within `4000 ms` inside the isolated sandbox.
+- **Zero-Token Shortcut Compiler (`reflex-core/src/shortcut_compiler.rs`)**: slow-path language-model resolutions that recur with confirmed outcomes are clustered using L2-normalised 1024-dimensional n-gram embeddings and automatically promoted to instant reflexes in plasticity memory, consuming zero tokens on future invocations.
+
+### 4.3 Native Rust layer (93 Crates with `unsafe_code = "forbid"`)
+
+The Rust workspace in `native/` comprises **93 native crates** compiled with workspace-wide `unsafe_code = "forbid"` and strict Clippy lints denying `unwrap`, `expect`, `panic`, `indexing_slicing` and `arithmetic_side_effects`: message bus, packet analysis for the firewall (`netguard`), egress proxy (`egress`), CRDT replication between nodes (`crdt-core`), audio DSP (`audio-dsp`), wake-word and full-duplex speech processing (`wakeword-core`, `ear-core`, `duplex-core`), face and gesture recognition (`face-core`, `gesture-core`), zero-hallucination formal oracle and reflex engine (`reflex-core`), interruption-cost initiative and reflection engines (`initiative-core`, `proactivity-core`, `reflect-core`), the project agency engine (`agency-domain`, `agency-planner`, `agency-scheduler`, `agency-thought`, `agency-forge`, `agency-foresight`, HMAC-chained `agency-ledger`, `agency-codeindex`, `agency-daemon`) and `core_brain`. The full list of crates is in `native/Cargo.toml`.
 
 ### 4.4 Installation pipeline
 

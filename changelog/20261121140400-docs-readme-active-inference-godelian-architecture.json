@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Documentazione tecnica dei motori di Active Inference, auto-potenziamento Gödeliano e fucina in sandbox",
+    "en": "Technical documentation of Active Inference, Gödelian self-improvement, and sandboxed tool forge",
+    "fr": "Documentation technique des moteurs d'Active Inference, d'auto-amélioration gödelienne et de forge en bac à sable",
+    "es": "Documentación técnica de los motores de Active Inference, automejora gödeliana y forja en sandbox"
+  },
+  "features": [
+    {
+      "it": "La guida principale in tutte le lingue descrive ora l'architettura neuro-simbolica reale, il calcolo del valore delle informazioni, il compilatore di scorciatoie a zero token e i 93 moduli nativi Rust.",
+      "en": "The main guide in all languages now documents the real neuro-symbolic architecture, value-of-information scoring, the zero-token shortcut compiler, and the 93 native Rust crates.",
+      "fr": "Le guide principal dans toutes les langues documente désormais l'architecture neuro-symbolique réelle, le calcul de la valeur de l'information, le compilateur de raccourcis sans jetons et les 93 modules natifs Rust.",
+      "es": "La guía principal en todos los idiomas documenta ahora la arquitectura neurosimbólica real, el cálculo del valor de la información, el compilador de atajos sin tokens y los 93 módulos nativos de Rust."
+    }
+  ],
+  "fixes": []
+}

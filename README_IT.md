@@ -153,13 +153,33 @@ flowchart LR
 
 Una richiesta di testo o voce viene gestita dal router della chat in `installer_wizard/agenti/cognizione/chat/`. Attraversa una catena ordinata di stadi (automazioni, comandi diretti, skill di intento, connettori, controllo della casa, azioni, conversazione). Il primo stadio che riconosce la richiesta risponde; gli altri vengono saltati. Le richieste che hanno bisogno di informazioni aggiornate vengono affidate all'agente, che cerca prima di rispondere. La generazione scorre la lista di priorità dei modelli e salta quelli che falliscono, così un modello non disponibile non blocca mai una risposta.
 
-### 4.2 Ragionamento del Core
+### 4.2 Ragionamento del Core, Active Inference e Auto-Evoluzione Gödeliana
 
-Il Core (`server/core/`) classifica le richieste, ne stima la complessità e sceglie di conseguenza un motore di ragionamento. Un motore decisionale valuta modelli e azioni candidati su più assi (qualità, calibrazione, velocità, costo, sicurezza) con probabilità calibrate e stime di incertezza. Le richieste confermate vengono salvate in un indice nativo di embedding per poter rispondere su un percorso rapido; uno scheduler di plasticità rafforza, indebolisce, fa decadere ed elimina queste voci nel tempo. Formule e soglie esatte sono nel codice in `server/core/orchestrator/`, `server/core/decision/` e `server/core/plasticity/`.
+Il Core (`server/core/`) e i motori cognitivi nativi in Rust (`native/crates/agency-thought/`, `native/crates/agency-forge/`, `native/crates/reflex-core/`) implementano un'architettura neuro-simbolica a doppio sistema ispirata alle neuroscienze computazionali:
 
-### 4.3 Livello nativo Rust
+```mermaid
+flowchart TD
+    In["Richiesta / Evento Sensoriale"] --> R1{"System 1: Reflex Core (Rust)\nOracolo Formale & Memoria Plastica"}
+    R1 -- "Guarantee >= 0.82 (0 Token, <1ms)" --> OutFast["Risposta / Azione Istantanea"]
+    R1 -- "Cache Miss" --> Epistemic["Motore Epistemico & Socratico (VOI)\nAuto-ispezione locale prima di chiedere all'utente"]
+    Epistemic --> EFE["Selezione Strategia a Minima Energia Libera Attesa (EFE)\nBilanciamento Valore Pragmatico vs Valore Epistemico"]
+    EFE --> Exec["Esecuzione Multi-Agente / DAG Parallelo"]
+    Exec --> Check{"Esito?"}
+    Check -- "Errore Runtime" --> Heal["Self-Healing Governor & Tool Forge\nAnalisi AST + Verifica deterministica in Sandbox (fnv64)"]
+    Heal --> Exec
+    Check -- "Successo Confermato" --> Distill["Shortcut Compiler & Upgrade Gödeliano\nPromozione a Riflesso Zero-Token per Dominanza di Pareto"]
+    Distill --> OutFast
+```
 
-Il workspace Rust in `native/` raccoglie i crate che richiedono velocità, sicurezza della memoria o isolamento rigoroso: bus dei messaggi, analisi dei pacchetti per il firewall, proxy di uscita, replica CRDT tra nodi, DSP audio, riconoscimento dei gesti, arbitraggio di display e finestre, token firmati, lettura dei sensori di salute, provisioning dei satelliti, motore dell'agenzia di progetto (dominio, pianificatore, scheduler, registro con catena HMAC, indice del codice, demone) e il bridge PyO3. L'elenco completo dei crate è in `native/Cargo.toml`.
+- **Indagine Epistemica Attiva e Calcolo del VOI (`agency-thought/src/socratic/inquiry.rs`)**: prima di interrompere l'utente con domande, Nuxiva calcola il *Value of Information* (`VOI` in basis points) di ogni ipotesi aperta e programma sonde di auto-ispezione locale (`Filesystem`, `CodeIndex`, `NetworkDiscovery`, `MemoryGraph`, `EnvironmentConfig`). Chiede all'utente solo le decisioni ad alto impatto irreversibile.
+- **Active Inference & Generazione Autonoma di Obiettivi (`agency-thought/src/agi/mod.rs`)**: a ogni transizione stato-azione (`WorldTransition`), il kernel confronta lo stato predetto con quello reale osservato, misura la sorpresa bayesiana (`surprise_bps`) e l'incertezza epistemica e, oltre la soglia critica, genera da solo un obiettivo di studio (`IntrinsicGoal`). Le politiche vengono scelte minimizzando l'Energia Libera Attesa (*Expected Free Energy*), bilanciando utilità pragmatica, guadagno informativo, latenza e costo in token.
+- **Auto-Potenziamento Gödeliano a Dominanza di Pareto (`AutonomousAgiKernel::evaluate_godel_upgrade`)**: una nuova strategia algoritmica sostituisce quella attiva solo se accompagnata da un digest di verifica deterministica (`fnv64`) e se dimostra dominanza matematica di Pareto (accuratezza non inferiore, latenza e token non superiori, e miglioramento stretto su almeno un asse o sulla complessità di Kolmogorov in byte).
+- **Fucina degli Strumenti e Auto-Riparazione in Sandbox (`agency-forge/src/sandbox/`, `agency-forge/src/healing/`, `server/features/continuous_learning/learning_loop.py`)**: quando un agente fallisce o manca uno strumento, Nuxiva classifica la causa (`MissingCapability`, `SchemaDrift`, `EndpointRelocated`, `AuthExpired`, `SandboxGuardViolation`), sintetizza il codice, lo valida tramite AST Guard (zero import o costrutti pericolosi) e lo attiva solo se supera i test deterministici entro `4000 ms` in sandbox isolata.
+- **Compilatore di Scorciatoie a Zero Token (`reflex-core/src/shortcut_compiler.rs`)**: le risoluzioni lente del modello linguistico che si ripetono con esito confermato vengono raggruppate tramite embedding n-gram L2-normalizzati a 1024 dimensioni e promosse automaticamente a riflessi istantanei nella memoria plastica, azzerando il consumo di token nelle chiamate successive.
+
+### 4.3 Livello nativo Rust (93 Crate con `unsafe_code = "forbid"`)
+
+Il workspace Rust in `native/` comprende **93 crate nativi** compilati con `unsafe_code = "forbid"` e regole Clippy che vietano a livello di compilazione `unwrap`, `expect`, `panic`, `indexing_slicing` e `arithmetic_side_effects`: bus dei messaggi, analisi dei pacchetti per il firewall (`netguard`), proxy di uscita (`egress`), replica CRDT tra nodi (`crdt-core`), DSP audio (`audio-dsp`), riconoscimento della parola di attivazione e della voce (`wakeword-core`, `ear-core`, `duplex-core`), riconoscimento facciale e dei gesti (`face-core`, `gesture-core`), motore di riflessi e oracolo formale a zero allucinazioni (`reflex-core`), motore di iniziativa e costo di interruzione (`initiative-core`, `proactivity-core`, `reflect-core`), motore dell'agenzia di progetto (`agency-domain`, `agency-planner`, `agency-scheduler`, `agency-thought`, `agency-forge`, `agency-foresight`, `agency-ledger` con catena HMAC, `agency-codeindex`, `agency-daemon`) e il motore centrale `core_brain`. L'elenco completo dei crate è in `native/Cargo.toml`.
 
 ### 4.4 Pipeline di installazione
 
