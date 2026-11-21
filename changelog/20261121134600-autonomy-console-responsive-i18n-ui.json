@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Console web responsiva per l'autonomia cognitiva, le domande aperte e le scorciatoie",
+    "en": "Responsive web console for cognitive autonomy, open questions, and shortcuts",
+    "fr": "Console web réactive pour l'autonomie cognitive, les questions ouvertes et les raccourcis",
+    "es": "Consola web adaptable para la autonomía cognitiva, preguntas abiertas y atajos"
+  },
+  "features": [
+    {
+      "it": "Una nuova vista dedicata mostra su desktop e mobile le domande ad alto impatto poste da Nuxiva, gli strumenti verificati nella fucina e le scorciatoie istantanee a zero token.",
+      "en": "A dedicated responsive view on desktop and mobile displays high-impact questions asked by Nuxiva, sandbox-verified forged tools, and instant zero-token shortcuts.",
+      "fr": "Une nouvelle vue dédiée affiche sur bureau et mobile les questions à fort impact posées par Nuxiva, les outils forgés vérifiés et les raccourcis instantanés sans jetons.",
+      "es": "Una nueva vista dedicada muestra en escritorio y móvil las preguntas de alto impacto formuladas por Nuxiva, las herramientas verificadas y los atajos instantáneos sin tokens."
+    }
+  ],
+  "fixes": []
+}
