@@ -1,6 +1,7 @@
 pub mod ast_guard;
 pub mod catalog;
 pub mod error;
+pub mod healing;
 pub mod manifest;
 pub mod pipeline;
 pub mod sandbox;
@@ -14,6 +15,10 @@ pub use ast_guard::{
 };
 pub use catalog::{AUTO_QUARANTINE_FAILURES, ForgeCatalog, MAX_CATALOG_TOOLS};
 pub use error::ForgeError;
+pub use healing::{
+    FailureCause, FailureContext, MAX_REPAIR_ATTEMPTS, RepairStrategy, SelfHealingPlan,
+    formulate_healing_plan,
+};
 pub use manifest::{
     ForgedToolRecord, ForgedToolSpec, MAX_TESTS, MIN_TESTS, ToolStatus, ToolTestCase,
 };

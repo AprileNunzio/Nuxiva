@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Auto-riparazione immediata e sintesi reale di strumenti in caso di errore degli agenti",
+    "en": "Immediate self-healing and real tool synthesis upon agent execution failure",
+    "fr": "Auto-réparation immédiate et synthèse réelle d'outils en cas d'échec d'un agent",
+    "es": "Autorreparación inmediata y síntesis real de herramientas ante fallos de agentes"
+  },
+  "features": [
+    {
+      "it": "Se un agente fallisce durante un compito, Nuxiva diagnostica la causa dell'errore, forgia o ripara lo strumento mancante in sandbox e completa la richiesta senza interrompere il lavoro.",
+      "en": "When an agent fails during a task, Nuxiva diagnoses the root cause, forges or repairs the missing tool in the sandbox, and completes the request without interrupting the workflow.",
+      "fr": "Si un agent échoue pendant une tâche, Nuxiva diagnostique la cause de l'erreur, forge ou répare l'outil manquant dans le bac à sable et termine la demande sans interrompre le travail.",
+      "es": "Si un agente falla durante una tarea, Nuxiva diagnostica la causa del error, crea o repara la herramienta faltante en el entorno aislado y completa la solicitud sin interrumpir el flujo."
+    }
+  ],
+  "fixes": []
+}

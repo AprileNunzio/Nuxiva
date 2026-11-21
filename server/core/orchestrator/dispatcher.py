@@ -449,6 +449,23 @@ class OrchestratorDispatcher:
             else:
                 agent_span.fail(f"{response.status}: {response.speech_output[:400]}")
 
+        if response.status not in ("SUCCESS", "AWAITING_CONFIRMATION", "CLARIFICATION_REQUIRED"):
+            from server.features.continuous_learning.learning_loop import learning_engine
+            with journey.span("skill", "Auto-riparazione e sintesi skill", f"recupero intento: {extracted_intent}") as heal_span:
+                healed = await learning_engine.handle_failure(
+                    task_query=sanitized_query,
+                    failure_reason=response.speech_output,
+                    orchestrator_ref=self,
+                    task_id=task_id,
+                    intent=extracted_intent,
+                    device_id=device_id,
+                )
+                if healed.status == "SUCCESS":
+                    heal_span.ok(healed.speech_output[:400])
+                    response = healed
+                else:
+                    heal_span.fail(healed.speech_output[:400])
+
         graph_client.upsert_node(
             node_id=task_id,
             node_type=NodeType.CONCEPT,

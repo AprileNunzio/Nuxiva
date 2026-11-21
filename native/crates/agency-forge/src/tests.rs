@@ -150,3 +150,26 @@ fn sandbox_verifier_activates_tool_only_on_deterministic_proof() {
         assert!(proof.digest.starts_with("fnv64:"));
     }
 }
+
+#[test]
+fn self_healing_planner_diagnoses_and_caps_attempts() {
+    use crate::{FailureCause, FailureContext, RepairStrategy, formulate_healing_plan};
+
+    let ctx = FailureContext {
+        task_id: "t-101".to_owned(),
+        intent: "convert.currency.eur_usd".to_owned(),
+        tool_or_agent: "currency_agent".to_owned(),
+        error_message: "KeyError: unexpected schema field in JSON payload".to_owned(),
+        attempt: 1,
+    };
+
+    let res = formulate_healing_plan(&ctx);
+    assert!(res.is_ok());
+    if let Ok(plan) = res {
+        assert_eq!(plan.cause, FailureCause::SchemaDrift);
+        assert_eq!(plan.strategy, RepairStrategy::NormalizePayloadSchema);
+        assert!(plan.can_auto_repair);
+        assert_eq!(plan.remaining_attempts, 2);
+        assert_eq!(plan.target_tool_name, "convert_currency_eur_usd");
+    }
+}
