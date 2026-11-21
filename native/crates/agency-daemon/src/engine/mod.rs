@@ -285,6 +285,12 @@ impl Engine {
                 goal,
                 known_decisions,
             } => Self::socratic_interrogate(&goal, &known_decisions),
+            Request::EpistemicSynthesize {
+                goal,
+                hypotheses,
+                findings,
+                shared_contracts,
+            } => Self::epistemic_synthesize(&goal, &hypotheses, &findings, &shared_contracts),
             Request::SpecialistRecruit { goal, architecture } => {
                 Self::specialist_recruit(&goal, &architecture)
             }

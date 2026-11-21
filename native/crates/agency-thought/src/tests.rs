@@ -213,3 +213,64 @@ fn contract_registry_versions_and_filters_by_role() {
     assert_eq!(reg.for_role("backend").len(), 1);
     assert_eq!(reg.for_role("devops").len(), 0);
 }
+
+#[test]
+fn epistemic_inquiry_schedules_self_probes_and_resolves_via_findings() {
+    use crate::{EpistemicHypothesis, ProbeChannel, ProbeFinding, synthesize_epistemic_plan};
+
+    let hypotheses = vec![
+        EpistemicHypothesis {
+            id: "hyp.db.engine".to_owned(),
+            scope: InquiryScope::DataModel,
+            question_key: "i18n.inquiry.db_engine".to_owned(),
+            default_answer_key: "i18n.inquiry.db_default_sqlite".to_owned(),
+            impact_on_schema: 80,
+            reversibility: 40,
+            probe_channel: Some(ProbeChannel::EnvironmentConfig),
+            probe_query: Some("DATABASE_URL".to_owned()),
+            options_keys: vec![
+                "i18n.option.postgres".to_owned(),
+                "i18n.option.sqlite".to_owned(),
+            ],
+        },
+        EpistemicHypothesis {
+            id: "hyp.payment.provider".to_owned(),
+            scope: InquiryScope::PaymentAndCompliance,
+            question_key: "i18n.inquiry.payment_gateway".to_owned(),
+            default_answer_key: "i18n.inquiry.payment_stripe".to_owned(),
+            impact_on_schema: 95,
+            reversibility: 20,
+            probe_channel: None,
+            probe_query: None,
+            options_keys: vec![
+                "i18n.option.stripe".to_owned(),
+                "i18n.option.paypal".to_owned(),
+            ],
+        },
+    ];
+
+    let plan_before = synthesize_epistemic_plan("Build platform", &hypotheses, &[], &[]);
+    assert!(plan_before.is_ok());
+    if let Ok(p1) = plan_before {
+        assert_eq!(p1.self_probes.len(), 1);
+        assert_eq!(p1.report.user_escalations.len(), 1);
+        assert_eq!(p1.report.autonomous_decisions.len(), 1);
+    }
+
+    let findings = vec![ProbeFinding {
+        hypothesis_id: "hyp.db.engine".to_owned(),
+        resolved: true,
+        resolved_answer_key: "i18n.inquiry.db_resolved_postgres".to_owned(),
+        confidence_boost_bps: 350,
+    }];
+
+    let plan_after = synthesize_epistemic_plan("Build platform", &hypotheses, &findings, &[]);
+    assert!(plan_after.is_ok());
+    if let Ok(p2) = plan_after {
+        assert!(p2.self_probes.is_empty());
+        assert_eq!(p2.report.autonomous_decisions.len(), 1);
+        if let Some(dec) = p2.report.autonomous_decisions.first() {
+            assert_eq!(dec.answer, "i18n.inquiry.db_resolved_postgres");
+        }
+    }
+}

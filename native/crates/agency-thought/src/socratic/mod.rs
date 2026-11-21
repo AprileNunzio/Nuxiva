@@ -1,6 +1,12 @@
+pub mod inquiry;
+
 use serde::{Deserialize, Serialize};
 
 use crate::error::ThoughtError;
+
+pub use inquiry::{
+    EpistemicHypothesis, EpistemicPlan, ProbeChannel, ProbeFinding, synthesize_epistemic_plan,
+};
 
 const MAX_QUESTION_LEN: usize = 600;
 const MAX_ANSWER_LEN: usize = 1_200;

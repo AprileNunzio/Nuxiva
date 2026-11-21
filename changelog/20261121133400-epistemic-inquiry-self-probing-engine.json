@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Motore epistemico attivo per chiarimenti e auto-ispezione prima della pianificazione",
+    "en": "Active epistemic engine for clarification and self-probing before project planning",
+    "fr": "Moteur épistémique actif pour la clarification et l'auto-inspection avant la planification",
+    "es": "Motor epistémico activo para aclaración y autoinspección antes de la planificación"
+  },
+  "features": [
+    {
+      "it": "Nuxiva analizza le ipotesi aperte su un nuovo obiettivo, interroga da sola la configurazione e il codice locale prima di disturbare l'utente e pone solo le domande ad alto impatto decisionale.",
+      "en": "Nuxiva analyzes open hypotheses on a new goal, probes local configuration and code on its own before interrupting the user, and asks only high-impact decision questions.",
+      "fr": "Nuxiva analyse les hypothèses ouvertes sur un nouvel objectif, sonde d'elle-même la configuration et le code local avant d'interrompre l'utilisateur et ne pose que les questions à fort impact.",
+      "es": "Nuxiva analiza las hipótesis abiertas sobre un nuevo objetivo, sondea por sí sola la configuración y el código local antes de interrumpir al usuario y formula solo preguntas de alto impacto."
+    }
+  ],
+  "fixes": []
+}

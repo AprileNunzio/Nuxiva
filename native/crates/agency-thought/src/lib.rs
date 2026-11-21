@@ -12,8 +12,9 @@ pub use contracts::{ContractKind, ContractRegistry, InterfaceContract};
 pub use decomposition::{ExpansionResult, SubTaskBlueprint, expand_task_node};
 pub use error::ThoughtError;
 pub use socratic::{
-    DialecticExchange, InquiryScope, ResolutionSource, SocraticReport, classify_resolution,
-    compute_voi_bps, interrogate_goal,
+    DialecticExchange, EpistemicHypothesis, EpistemicPlan, InquiryScope, ProbeChannel,
+    ProbeFinding, ResolutionSource, SocraticReport, classify_resolution, compute_voi_bps,
+    interrogate_goal, synthesize_epistemic_plan,
 };
 pub use specialist::{SpecialistProfile, recruit_specialists};
 pub use tree::{

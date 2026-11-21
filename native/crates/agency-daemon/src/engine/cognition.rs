@@ -1,8 +1,9 @@
 use agency_domain::TaskId;
 use agency_forge::{diagnose_failure, inspect_tool_source, validate_tool_name};
 use agency_thought::{
-    ArchitectureCandidate, EvaluationWeights, SubTaskBlueprint, evaluate_candidates,
-    expand_task_node, interrogate_goal, recruit_specialists,
+    ArchitectureCandidate, EpistemicHypothesis, EvaluationWeights, ProbeFinding, SubTaskBlueprint,
+    evaluate_candidates, expand_task_node, interrogate_goal, recruit_specialists,
+    synthesize_epistemic_plan,
 };
 use serde_json::{Value, json};
 
@@ -25,6 +26,17 @@ impl Engine {
         let report = interrogate_goal(goal, known_decisions)
             .map_err(|e| AgencyError::BadRequest(e.to_string()))?;
         Ok(serde_json::to_value(report)?)
+    }
+
+    pub(crate) fn epistemic_synthesize(
+        goal: &str,
+        hypotheses: &[EpistemicHypothesis],
+        findings: &[ProbeFinding],
+        shared_contracts: &[String],
+    ) -> Result<Value, AgencyError> {
+        let plan = synthesize_epistemic_plan(goal, hypotheses, findings, shared_contracts)
+            .map_err(|e| AgencyError::BadRequest(e.to_string()))?;
+        Ok(serde_json::to_value(plan)?)
     }
 
     pub(crate) fn specialist_recruit(goal: &str, architecture: &str) -> Result<Value, AgencyError> {

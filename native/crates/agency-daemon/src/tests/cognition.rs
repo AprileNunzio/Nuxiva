@@ -61,6 +61,28 @@ fn thought_socratic_and_specialist_endpoints_work() -> Result<(), AgencyError> {
             .is_some_and(|arr| arr.len() >= 5)
     );
 
+    let epistemic = call(
+        &mut engine,
+        json!({
+            "op": "epistemic_synthesize",
+            "goal": "Sistema distribuito zero-trust",
+            "hypotheses": [
+                {
+                    "id": "hyp.storage",
+                    "scope": "data_model",
+                    "question_key": "i18n.q.storage",
+                    "default_answer_key": "i18n.a.sqlite",
+                    "impact_on_schema": 80,
+                    "reversibility": 50,
+                    "probe_channel": "environment_config",
+                    "probe_query": "DB_ENGINE",
+                    "options_keys": ["i18n.opt.sqlite", "i18n.opt.postgres"]
+                }
+            ]
+        }),
+    )?;
+    assert_eq!(at(&epistemic, "/self_probes/0/id"), json!("hyp.storage"));
+
     Ok(())
 }
 

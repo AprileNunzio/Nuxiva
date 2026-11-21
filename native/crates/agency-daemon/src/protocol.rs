@@ -2,7 +2,7 @@ use agency_action::ReplacementChunk;
 use agency_domain::TaskSpec;
 use agency_foresight::{EventSpec, ScenarioSpec};
 use agency_scheduler::{ModelProfile, Settings};
-use agency_thought::{ArchitectureCandidate, SubTaskBlueprint};
+use agency_thought::{ArchitectureCandidate, EpistemicHypothesis, ProbeFinding, SubTaskBlueprint};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -227,6 +227,14 @@ pub enum Request {
         goal: String,
         #[serde(default)]
         known_decisions: Vec<String>,
+    },
+    EpistemicSynthesize {
+        goal: String,
+        hypotheses: Vec<EpistemicHypothesis>,
+        #[serde(default)]
+        findings: Vec<ProbeFinding>,
+        #[serde(default)]
+        shared_contracts: Vec<String>,
     },
     SpecialistRecruit {
         goal: String,
