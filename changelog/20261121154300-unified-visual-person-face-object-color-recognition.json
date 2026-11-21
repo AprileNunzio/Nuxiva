@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Motore visivo unificato per riconoscimento di persone, volti, oggetti e palette cromatiche",
+    "en": "Unified visual engine for people, face, object, and color palette recognition",
+    "fr": "Moteur visuel unifié pour la reconnaissance des personnes, visages, objets et palettes de couleurs",
+    "es": "Motor visual unificado para el reconocimiento de personas, rostros, objetos y paletas de colores"
+  },
+  "features": [
+    {
+      "it": "Nuxiva analizza lo spettro cromatico percettivo di oggetti e indumenti, apprende nuovi oggetti al volo tramite prototipi vettoriali e mantiene il riconoscimento continuo delle persone anche di spalle o con volto parzialmente coperto.",
+      "en": "Nuxiva analyzes the perceptual color spectrum of objects and garments, learns new objects on the fly via vector prototypes, and maintains continuous person recognition even from behind or when the face is partially occluded.",
+      "fr": "Nuxiva analyse le spectre chromatique perceptif des objets et des vêtements, apprend de nouveaux objets à la volée via des prototypes vectoriels et maintient la reconnaissance continue des personnes même de dos ou avec un visage partiellement masqué.",
+      "es": "Nuxiva analiza el espectro cromático perceptivo de objetos y prendas, aprende nuevos objetos al vuelo mediante prototipos vectoriales y mantiene el reconocimiento continuo de personas incluso de espaldas o con el rostro parcialmente cubierto."
+    }
+  ],
+  "fixes": []
+}
