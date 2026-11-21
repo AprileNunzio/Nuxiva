@@ -6,6 +6,8 @@
   },
   "dictionary": {
     "jev_mode_active": "SURVEILLANCE EN TEMPS RÉEL",
+    "jev_fw_active": "PARE-FEU & BAC À SABLE ISOLÉ",
+    "jev_fw_blocked": "Adresse bloquée par le pare-feu Zéro-Confiance de Nuxiva",
     "jev_url_label": "Adresse web active",
     "jev_btn_google": "Recherche Google",
     "jev_phase_judge": "Juger (Judge)",

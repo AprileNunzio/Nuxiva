@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Isolamento sandbox opaco e firewall di sicurezza per la navigazione web JEV",
+    "en": "Opaque sandbox isolation and security firewall for JEV web browsing",
+    "fr": "Isolation sandbox opaque et pare-feu de sécurité pour la navigation web JEV",
+    "es": "Aislamiento sandbox opaco y cortafuegos de seguridad para la navegación web JEV"
+  },
+  "features": [
+    {
+      "it": "La finestra web sul display opera in una sandbox isolata con firewall dedicato che blocca script malevoli e tentativi di accesso alla rete locale.",
+      "en": "The web window on the display runs in an isolated sandbox with a dedicated firewall blocking malicious scripts and local network access attempts.",
+      "fr": "La fenêtre web sur l'écran fonctionne dans une sandbox isolée avec un pare-feu dédié bloquant les scripts malveillants et les accès au réseau local.",
+      "es": "La ventana web en pantalla funciona en un entorno aislado con un cortafuegos dedicado que bloquea scripts maliciosos e intentos de acceso a la red local."
+    }
+  ],
+  "fixes": []
+}

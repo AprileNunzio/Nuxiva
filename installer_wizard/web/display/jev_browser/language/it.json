@@ -6,6 +6,8 @@
   },
   "dictionary": {
     "jev_mode_active": "MONITORAGGIO TEMPO REALE",
+    "jev_fw_active": "FIREWALL & SANDBOX ISOLATA",
+    "jev_fw_blocked": "Indirizzo bloccato dal Firewall Zero-Trust di Nuxiva",
     "jev_url_label": "Indirizzo web attivo",
     "jev_btn_google": "Cerca su Google",
     "jev_phase_judge": "Valuta (Judge)",

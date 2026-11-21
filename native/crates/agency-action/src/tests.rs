@@ -298,14 +298,26 @@ fn test_preflight_invariants_allow_and_deny() {
 #[test]
 fn jev_web_navigator_validates_urls_and_executes_booking_lifecycle() {
     use crate::jev_web::{
-        build_google_search_jev_plan, build_restaurant_booking_jev_plan, sanitize_zero_trust_url,
-        verify_and_advance_jev_step,
+        JEV_IFRAME_SANDBOX_FLAGS, build_google_search_jev_plan, build_restaurant_booking_jev_plan,
+        evaluate_jev_firewall, sanitize_zero_trust_url, verify_and_advance_jev_step,
     };
 
     assert!(sanitize_zero_trust_url("https://www.google.com/search?q=nuxiva").is_ok());
     assert!(sanitize_zero_trust_url("http://127.0.0.1:8080/admin").is_err());
     assert!(sanitize_zero_trust_url("http://192.168.1.1/router").is_err());
     assert!(sanitize_zero_trust_url("javascript:alert(1)").is_err());
+
+    let fw_ok = evaluate_jev_firewall("https://www.google.com/search?q=milano");
+    assert!(fw_ok.allowed);
+    assert_eq!(fw_ok.sandbox_flags, JEV_IFRAME_SANDBOX_FLAGS);
+    assert!(!fw_ok.sandbox_flags.contains("allow-same-origin"));
+
+    let fw_xss = evaluate_jev_firewall("https://evil.example/page?<script>alert(1)</script>");
+    assert!(!fw_xss.allowed);
+    assert_eq!(
+        fw_xss.blocked_reason_key,
+        Some("i18n.jev.firewall.xss_payload_blocked")
+    );
 
     let search = build_google_search_jev_plan("sess-01", "miglior ristorante giapponese milano");
     assert!(search.is_ok());

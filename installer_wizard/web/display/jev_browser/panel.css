@@ -101,3 +101,15 @@
   text-transform: uppercase;
   color: #29e0ff;
 }
+
+.jev-blocked {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 260px;
+  padding: 20px;
+  color: #ff4d6a;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}

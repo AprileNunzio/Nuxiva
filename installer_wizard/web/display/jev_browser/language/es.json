@@ -6,6 +6,8 @@
   },
   "dictionary": {
     "jev_mode_active": "MONITOREO EN TIEMPO REAL",
+    "jev_fw_active": "CORTAFUEGOS Y SANDBOX AISLADO",
+    "jev_fw_blocked": "Dirección bloqueada por el cortafuegos Zero-Trust de Nuxiva",
     "jev_url_label": "Dirección web activa",
     "jev_btn_google": "Buscar en Google",
     "jev_phase_judge": "Juzgar (Judge)",

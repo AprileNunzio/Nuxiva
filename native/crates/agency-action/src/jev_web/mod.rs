@@ -4,6 +4,18 @@ use crate::error::ActionError;
 
 pub const MAX_URL_LEN: usize = 512;
 pub const MAX_JEV_STEPS: usize = 32;
+pub const JEV_IFRAME_SANDBOX_FLAGS: &str = "allow-scripts allow-forms";
+pub const JEV_CSP_POLICY: &str = "default-src 'none'; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:; img-src https: data:; connect-src https:; frame-ancestors 'self'; form-action https:";
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct JevFirewallVerdict {
+    pub allowed: bool,
+    pub sanitized_url: String,
+    pub host: String,
+    pub sandbox_flags: &'static str,
+    pub csp_header: &'static str,
+    pub blocked_reason_key: Option<&'static str>,
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -37,7 +49,7 @@ pub struct JevWebStep {
     pub verified: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct JevWebSessionPlan {
     pub session_id: String,
     pub entry_url: String,
@@ -45,6 +57,7 @@ pub struct JevWebSessionPlan {
     pub current_step: usize,
     pub steps: Vec<JevWebStep>,
     pub completed: bool,
+    pub firewall: JevFirewallVerdict,
 }
 
 fn sanitize_text(raw: &str, max_len: usize) -> Result<String, ActionError> {
@@ -61,36 +74,97 @@ fn sanitize_text(raw: &str, max_len: usize) -> Result<String, ActionError> {
     Ok(trimmed.to_owned())
 }
 
-pub fn sanitize_zero_trust_url(raw_url: &str) -> Result<String, ActionError> {
-    let clean = sanitize_text(raw_url, MAX_URL_LEN)?;
+#[must_use]
+pub fn evaluate_jev_firewall(raw_url: &str) -> JevFirewallVerdict {
+    let Ok(clean) = sanitize_text(raw_url, MAX_URL_LEN) else {
+        return JevFirewallVerdict {
+            allowed: false,
+            sanitized_url: String::new(),
+            host: String::new(),
+            sandbox_flags: JEV_IFRAME_SANDBOX_FLAGS,
+            csp_header: JEV_CSP_POLICY,
+            blocked_reason_key: Some("i18n.jev.firewall.malformed_url"),
+        };
+    };
+
     let lower = clean.to_lowercase();
     if !(lower.starts_with("https://") || lower.starts_with("http://")) {
-        return Err(ActionError::InvalidPath(clean));
+        return JevFirewallVerdict {
+            allowed: false,
+            sanitized_url: String::new(),
+            host: String::new(),
+            sandbox_flags: JEV_IFRAME_SANDBOX_FLAGS,
+            csp_header: JEV_CSP_POLICY,
+            blocked_reason_key: Some("i18n.jev.firewall.forbidden_scheme"),
+        };
     }
+
     let after_scheme = lower
         .strip_prefix("https://")
         .or_else(|| lower.strip_prefix("http://"))
         .unwrap_or("");
-    let host = after_scheme.split('/').next().unwrap_or("");
-    let host_only = host.split(':').next().unwrap_or("");
+    let host_port = after_scheme.split('/').next().unwrap_or("");
+    let host_only = host_port.split(':').next().unwrap_or("");
 
     let is_local_domain = std::path::Path::new(host_only)
         .extension()
         .is_some_and(|ext| ext.eq_ignore_ascii_case("local"));
 
-    if host_only.is_empty()
+    let is_private_or_loopback = host_only.is_empty()
         || host_only == "localhost"
         || is_local_domain
         || host_only.starts_with("127.")
         || host_only.starts_with("10.")
         || host_only.starts_with("192.168.")
         || host_only.starts_with("169.254.")
+        || host_only.starts_with("172.16.")
+        || host_only.starts_with("172.17.")
         || host_only == "0.0.0.0"
-        || host_only == "[::1]"
-    {
-        return Err(ActionError::InvalidPath(clean));
+        || host_only == "[::1]";
+
+    if is_private_or_loopback {
+        return JevFirewallVerdict {
+            allowed: false,
+            sanitized_url: String::new(),
+            host: host_only.to_owned(),
+            sandbox_flags: JEV_IFRAME_SANDBOX_FLAGS,
+            csp_header: JEV_CSP_POLICY,
+            blocked_reason_key: Some("i18n.jev.firewall.private_network_blocked"),
+        };
     }
-    Ok(clean)
+
+    let suspicious_payload = lower.contains("<script")
+        || lower.contains("javascript:")
+        || lower.contains("data:text/html")
+        || lower.contains("vbscript:");
+
+    if suspicious_payload {
+        return JevFirewallVerdict {
+            allowed: false,
+            sanitized_url: String::new(),
+            host: host_only.to_owned(),
+            sandbox_flags: JEV_IFRAME_SANDBOX_FLAGS,
+            csp_header: JEV_CSP_POLICY,
+            blocked_reason_key: Some("i18n.jev.firewall.xss_payload_blocked"),
+        };
+    }
+
+    JevFirewallVerdict {
+        allowed: true,
+        sanitized_url: clean,
+        host: host_only.to_owned(),
+        sandbox_flags: JEV_IFRAME_SANDBOX_FLAGS,
+        csp_header: JEV_CSP_POLICY,
+        blocked_reason_key: None,
+    }
+}
+
+pub fn sanitize_zero_trust_url(raw_url: &str) -> Result<String, ActionError> {
+    let verdict = evaluate_jev_firewall(raw_url);
+    if !verdict.allowed {
+        return Err(ActionError::InvalidPath(raw_url.to_owned()));
+    }
+    Ok(verdict.sanitized_url)
 }
 
 fn encode_query_component(q: &str) -> String {
@@ -113,7 +187,10 @@ pub fn build_google_search_jev_plan(
     let clean_q = sanitize_text(query, 240)?;
     let encoded = encode_query_component(&clean_q);
     let entry_url = format!("https://www.google.com/search?q={encoded}");
-    let _ = sanitize_zero_trust_url(&entry_url)?;
+    let firewall = evaluate_jev_firewall(&entry_url);
+    if !firewall.allowed {
+        return Err(ActionError::InvalidPath(entry_url));
+    }
 
     let steps = vec![
         JevWebStep {
@@ -155,6 +232,7 @@ pub fn build_google_search_jev_plan(
         current_step: 1,
         steps,
         completed: false,
+        firewall,
     })
 }
 
@@ -170,7 +248,10 @@ pub fn build_restaurant_booking_jev_plan(
     let safe_guests = guests.clamp(1, 20);
     let encoded = encode_query_component(&format!("prenota ristorante {clean_rest}"));
     let entry_url = format!("https://www.google.com/search?q={encoded}");
-    let _ = sanitize_zero_trust_url(&entry_url)?;
+    let firewall = evaluate_jev_firewall(&entry_url);
+    if !firewall.allowed {
+        return Err(ActionError::InvalidPath(entry_url));
+    }
 
     let steps = vec![
         JevWebStep {
@@ -222,6 +303,7 @@ pub fn build_restaurant_booking_jev_plan(
         current_step: 1,
         steps,
         completed: false,
+        firewall,
     })
 }
 
