@@ -6,7 +6,7 @@ from agenti.capabilities import manifest
 from agenti.desktop.desk import desk
 from agenti.team import roster
 
-READ_ONLY = ("list_", "find_", "file_info", "read_file", "music_search", "music_now", "music_outputs", "agent_info", "agent_valuta", "team_roster", "now", "avatar_catalog")
+READ_ONLY = ("list_", "find_", "file_info", "read_file", "music_search", "music_now", "music_outputs", "agent_info", "agent_valuta", "team_roster", "now", "avatar_catalog", "spatial_hud_status")
 AGENT_URI = "nuxiva://agent/"
 
 
@@ -25,7 +25,8 @@ def widgets() -> str:
 def resources(visible_agents: set[str] | None) -> list[dict]:
     rows = [{"uri": "nuxiva://capabilities", "name": "Cosa sa fare Nuxiva", "mimeType": "text/plain"},
             {"uri": "nuxiva://team", "name": "Squadra di agenti, priorità e lavagna", "mimeType": "application/json"},
-            {"uri": "nuxiva://widgets", "name": "Widget disponibili sul display", "mimeType": "application/json"}]
+            {"uri": "nuxiva://widgets", "name": "Widget disponibili sul display", "mimeType": "application/json"},
+            {"uri": "nuxiva://spatial_hud", "name": "Stato scena 3D e intenti gestuali Spatial Gesture HUD", "mimeType": "application/json"}]
     rows += [{"uri": AGENT_URI + a, "name": f"Agente {a}", "mimeType": "text/plain"} for a in roster.ids() if visible_agents is None or a in visible_agents]
     return rows
 
@@ -41,6 +42,9 @@ def read(uri: str) -> tuple[str, str]:
         return "application/json", json.dumps(roster.document(), ensure_ascii=False)
     if uri == "nuxiva://widgets":
         return "application/json", widgets()
+    if uri == "nuxiva://spatial_hud":
+        from agenti.hands import spatial_hud
+        return "application/json", json.dumps(spatial_hud.snapshot(), ensure_ascii=False)
     if uri.startswith(AGENT_URI):
         return "text/plain", card(roster.find(uri[len(AGENT_URI):]))
     raise KeyError(uri)

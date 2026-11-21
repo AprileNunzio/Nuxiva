@@ -13,7 +13,7 @@ from agenti.team import roster, runner
 
 SUPPORTED = ("2025-06-18", "2025-03-26", "2024-11-05")
 INFO = {"name": "nuxiva-os", "version": "5.8.14"}
-SAFE_AGENTS = {"music", "cameras", "desktop", "agent", "whiteboard"}
+SAFE_AGENTS = {"music", "cameras", "desktop", "agent", "whiteboard", "hands"}
 SCOPED_READ = frozenset({"firewall_status", "firewall_incidents", "firewall_trusted"})
 INSTRUCTIONS = ("Nuxiva OS: ogni strumento appartiene a un agente con una priorità. Leggi il prompt «panoramica» e le risorse nuxiva://capabilities e "
                 "nuxiva://team per sapere cosa fa la squadra. Le azioni delicate richiedono _confirm=true dopo la conferma dell'utente.")

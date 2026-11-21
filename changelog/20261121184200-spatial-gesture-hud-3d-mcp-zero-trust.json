@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Spatial Gesture HUD 3D sul display con tracciamento mani offline e controllo MCP Zero-Trust",
+    "en": "3D Spatial Gesture HUD on the display with offline hand tracking and Zero-Trust MCP control",
+    "fr": "Spatial Gesture HUD 3D sur l'écran avec suivi des mains hors-ligne et contrôle MCP Zero-Trust",
+    "es": "Spatial Gesture HUD 3D en pantalla con seguimiento de manos sin conexión y control MCP Zero-Trust"
+  },
+  "features": [
+    {
+      "it": "Nuova modalità olografica 3D sul display comandata dai gesti delle mani in tempo reale 100% in locale con spegnimento automatico della telecamera e strumenti MCP con conferma di sicurezza.",
+      "en": "New 3D holographic mode on the display controlled by real-time hand gestures 100% locally with automatic camera shutdown and MCP tools with security confirmation.",
+      "fr": "Nouveau mode holographique 3D sur l'écran contrôlé par les gestes des mains en temps réel 100% en local avec extinction automatique de la caméra et outils MCP avec confirmation de sécurité.",
+      "es": "Nuevo modo holográfico 3D en pantalla controlado por gestos de las manos en tiempo real 100% en local con apagado automático de la cámara y herramientas MCP con confirmación de seguridad."
+    }
+  ],
+  "fixes": []
+}

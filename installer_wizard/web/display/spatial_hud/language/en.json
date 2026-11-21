@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "language": "English",
+    "code": "en"
+  },
+  "dictionary": {
+    "shud_title": "SPATIAL GESTURE HUD · 3D HOLOGRAM",
+    "shud_cam_enable": "Enable Local Camera",
+    "shud_cam_disable": "Turn Off Camera",
+    "shud_close": "Close HUD",
+    "shud_lbl_shape": "Active Geometry",
+    "shud_lbl_gesture": "Detected Gesture",
+    "shud_lbl_privacy": "Privacy & Camera Status",
+    "shud_lbl_engine": "Engine & Hands",
+    "shud_shape_dispersed": "Dispersed Particles",
+    "shud_shape_sphere": "Holographic Sphere",
+    "shud_shape_torus": "Torus / Ring",
+    "shud_shape_cube": "Quantum Cube",
+    "shud_shape_helix": "Spiral / Helix",
+    "shud_gesture_idle": "Awaiting gesture",
+    "shud_gesture_open_palm_disperse": "Open Palm · Dispersion",
+    "shud_gesture_single_hand_focus_morph": "Focused Hand · Morphing",
+    "shud_gesture_wrist_rotation_tilt": "Wrist Rotation · 3D",
+    "shud_gesture_two_hand_pinch_stretch": "Two Hands · Spatial Scale",
+    "shud_privacy_off": "Camera Off · 100% Local",
+    "shud_privacy_live": "Live · 100% Offline Edge",
+    "shud_privacy_autoclose": "Auto-Reset Person Exit"
+  }
+}

@@ -211,3 +211,56 @@ fn lost_hands_hide_pointer() -> Result<(), GestureError> {
     ));
     Ok(())
 }
+
+#[test]
+fn spatial_hud_respects_privacy_auto_close_morph_and_zero_trust() -> Result<(), GestureError> {
+    use crate::spatial_hud::{HologramShape, SpatialGestureKind, SpatialHudState};
+
+    let mut hud = SpatialHudState::new(2_000);
+    assert!(!hud.camera_active);
+    assert!(hud.is_local_only());
+    assert!(hud.step_frame(&[], false, 100).is_none());
+
+    hud.activate_camera(100);
+    assert!(hud.camera_active);
+
+    let palm = shaped([true; 5], Point::new(0.5, 0.5), Handedness::Right)?;
+    for t in [120_u64, 140, 160] {
+        let _ = hud.step_frame(std::slice::from_ref(&palm), true, t);
+    }
+    assert_eq!(hud.active_gesture, SpatialGestureKind::OpenPalmDisperse);
+    assert_eq!(hud.shape, HologramShape::Dispersed);
+
+    let fist = shaped([false; 5], Point::new(0.5, 0.5), Handedness::Right)?;
+    for t in [200_u64, 220, 240] {
+        let _ = hud.step_frame(std::slice::from_ref(&fist), true, t);
+    }
+    assert_eq!(hud.active_gesture, SpatialGestureKind::SingleHandFocusMorph);
+    assert_eq!(hud.shape, HologramShape::Sphere);
+
+    for t in [300_u64, 320, 340] {
+        let _ = hud.step_frame(std::slice::from_ref(&palm), true, t);
+    }
+    assert_eq!(hud.shape, HologramShape::Dispersed);
+
+    let safe_bind = hud.bind_action(SpatialGestureKind::OpenPalmDisperse, "view.rotate")?;
+    assert!(!safe_bind.requires_confirmation);
+    let risky_bind = hud.bind_action(
+        SpatialGestureKind::SingleHandFocusMorph,
+        "home.light.toggle",
+    )?;
+    assert!(risky_bind.requires_confirmation);
+
+    let left_fist = shaped([false; 5], Point::new(0.3, 0.5), Handedness::Left)?;
+    let right_fist = shaped([false; 5], Point::new(0.7, 0.5), Handedness::Right)?;
+    let two = vec![left_fist, right_fist];
+    for t in [400_u64, 420, 440] {
+        let _ = hud.step_frame(&two, true, t);
+    }
+    assert_eq!(hud.active_gesture, SpatialGestureKind::TwoHandPinchStretch);
+
+    assert!(hud.step_frame(&[], false, 3_000).is_none());
+    assert!(!hud.camera_active);
+    assert!(!hud.person_present);
+    Ok(())
+}

@@ -9,6 +9,7 @@ MODULE_OWNER = {
     "agenti.agent.tools_rpa": "rpa", "agenti.agent.tools_system": "actions", "agenti.autonomy.tools": "autonomy",
     "agenti.automations.tools": "automations", "agenti.documents.tools": "documents", "agenti.agent.tools_media": "music",
     "agenti.team.tools": "agent", "agenti.home_assistant.tools": "home_assistant",
+    "agenti.hands.tools": "hands", "agenti.hands.spatial_hud": "hands",
 }
 
 

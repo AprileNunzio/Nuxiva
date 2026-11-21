@@ -58,6 +58,8 @@ TOOLS: dict[str, Risk] = {
     "system_file_read": Risk.PERSONAL, "system_file_write": Risk.CRITICAL, "apt_install": Risk.CRITICAL, "apt_remove": Risk.CRITICAL,
     "apt_maintain": Risk.CRITICAL, "service_control": Risk.CRITICAL, "power_control": Risk.CRITICAL, "ssh_exec": Risk.CRITICAL,
     "debian_shell": Risk.CRITICAL, "process_kill": Risk.CRITICAL, "collaudo_describe": Risk.INFO,
+    "spatial_hud_status": Risk.INFO, "spatial_hud_set_mode": Risk.HOME, "spatial_hud_set_shape": Risk.HOME,
+    "spatial_hud_bind_gesture_action": Risk.HOME,
 }
 
 CONNECTORS: dict[str, Risk] = {

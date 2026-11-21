@@ -201,6 +201,7 @@
     judge(spent);
     if (st.stopped) return;
     const hands = res.landmarks || [];
+    window.__nuxivaLastHands = hands;
     if (st.bridge && st.bridge.ready) {
       if (hands.length) st.seen = performance.now();
       if (st.bridge.send(now, res)) return;
