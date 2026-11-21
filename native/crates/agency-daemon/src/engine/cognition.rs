@@ -4,8 +4,9 @@ use agency_forge::{
     validate_tool_name, verify_sandbox_outcomes,
 };
 use agency_thought::{
-    ArchitectureCandidate, EpistemicHypothesis, EvaluationWeights, ProbeFinding, SubTaskBlueprint,
-    evaluate_candidates, expand_task_node, interrogate_goal, recruit_specialists,
+    AlgorithmicStrategy, ArchitectureCandidate, EpistemicHypothesis, EvaluationWeights,
+    PolicyCandidate, ProbeFinding, SubTaskBlueprint, WorldTransition, evaluate_candidates,
+    expand_task_node, interrogate_goal, recruit_specialists, select_minimal_free_energy_policy,
     synthesize_epistemic_plan,
 };
 use serde_json::{Value, json};
@@ -40,6 +41,47 @@ impl Engine {
         let plan = synthesize_epistemic_plan(goal, hypotheses, findings, shared_contracts)
             .map_err(|e| AgencyError::BadRequest(e.to_string()))?;
         Ok(serde_json::to_value(plan)?)
+    }
+
+    pub(crate) fn agi_observe_transition(
+        &mut self,
+        transition: &WorldTransition,
+    ) -> Result<Value, AgencyError> {
+        let (belief, goal) = self
+            .agi_kernel
+            .observe_transition(transition)
+            .map_err(|e| AgencyError::BadRequest(e.to_string()))?;
+        Ok(json!({
+            "belief": belief,
+            "intrinsic_goal": goal,
+        }))
+    }
+
+    pub(crate) fn agi_select_policy(candidates: &[PolicyCandidate]) -> Result<Value, AgencyError> {
+        let policies = select_minimal_free_energy_policy(candidates)
+            .map_err(|e| AgencyError::BadRequest(e.to_string()))?;
+        Ok(json!({ "policies": policies }))
+    }
+
+    pub(crate) fn agi_godel_upgrade(
+        &mut self,
+        candidate: AlgorithmicStrategy,
+    ) -> Result<Value, AgencyError> {
+        let verdict = self
+            .agi_kernel
+            .evaluate_godel_upgrade(candidate)
+            .map_err(|e| AgencyError::BadRequest(e.to_string()))?;
+        if verdict.upgraded {
+            self.event(
+                "agi.strategy.upgraded",
+                json!({
+                    "domain": verdict.domain_key,
+                    "strategy": verdict.active_strategy_id,
+                    "generation": verdict.active_generation,
+                }),
+            )?;
+        }
+        Ok(serde_json::to_value(verdict)?)
     }
 
     pub(crate) fn specialist_recruit(goal: &str, architecture: &str) -> Result<Value, AgencyError> {

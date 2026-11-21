@@ -3,7 +3,10 @@ use agency_domain::TaskSpec;
 use agency_foresight::{EventSpec, ScenarioSpec};
 use agency_forge::{SandboxExecutionOutcome, ToolTestCase};
 use agency_scheduler::{ModelProfile, Settings};
-use agency_thought::{ArchitectureCandidate, EpistemicHypothesis, ProbeFinding, SubTaskBlueprint};
+use agency_thought::{
+    AlgorithmicStrategy, ArchitectureCandidate, EpistemicHypothesis, PolicyCandidate, ProbeFinding,
+    SubTaskBlueprint, WorldTransition,
+};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -258,6 +261,15 @@ pub enum Request {
         code: String,
         expected_cases: Vec<ToolTestCase>,
         outcomes: Vec<SandboxExecutionOutcome>,
+    },
+    AgiObserveTransition {
+        transition: WorldTransition,
+    },
+    AgiSelectPolicy {
+        candidates: Vec<PolicyCandidate>,
+    },
+    AgiGodelUpgrade {
+        candidate: AlgorithmicStrategy,
     },
     ForesightCreate {
         id: String,

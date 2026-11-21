@@ -10,6 +10,7 @@ use agency_domain::{ProjectId, TaskId, TaskStatus};
 use agency_ledger::{LedgerKey, LedgerStore};
 use agency_scheduler::capacity;
 use agency_scheduler::{HostProfile, ModelProfile, Settings};
+use agency_thought::AutonomousAgiKernel;
 use serde_json::{Value, json};
 
 use crate::config::Config;
@@ -32,6 +33,7 @@ pub struct Engine {
     pub(crate) projects: BTreeMap<ProjectId, ProjectState>,
     pub(crate) ledger: LedgerStore,
     pub(crate) foresight: Foresight,
+    pub(crate) agi_kernel: AutonomousAgiKernel,
 }
 
 pub(crate) fn now_ms() -> u64 {
@@ -63,6 +65,7 @@ impl Engine {
             projects: BTreeMap::new(),
             ledger,
             foresight,
+            agi_kernel: AutonomousAgiKernel::new(),
         };
         engine.load_projects()?;
         Ok(engine)
@@ -313,6 +316,11 @@ impl Engine {
                 &expected_cases,
                 &outcomes,
             )),
+            Request::AgiObserveTransition { transition } => {
+                self.agi_observe_transition(&transition)
+            }
+            Request::AgiSelectPolicy { candidates } => Self::agi_select_policy(&candidates),
+            Request::AgiGodelUpgrade { candidate } => self.agi_godel_upgrade(candidate),
             request @ (Request::ForesightList {}
             | Request::ForesightReport { .. }
             | Request::ForesightAgent { .. }

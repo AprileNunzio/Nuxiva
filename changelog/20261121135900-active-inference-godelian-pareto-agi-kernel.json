@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Kernel autonomo di Active Inference e auto-potenziamento Gödeliano a dominanza di Pareto",
+    "en": "Autonomous Active Inference and Pareto-dominant Gödelian self-improvement kernel",
+    "fr": "Noyau autonome d'Active Inference et d'auto-amélioration gödelienne à dominance de Pareto",
+    "es": "Núcleo autónomo de Active Inference y automejora gödeliana con dominancia de Pareto"
+  },
+  "features": [
+    {
+      "it": "Nuxiva misura la sorpresa rispetto al proprio modello predittivo del mondo, genera da sola obiettivi di studio quando rileva anomalie e sostituisce i propri algoritmi solo quando una nuova variante dimostra superiorità matematica di Pareto.",
+      "en": "Nuxiva measures surprise against its predictive world model, autonomously generates study goals when anomalies occur, and upgrades its own algorithms only when a new variant proves mathematical Pareto dominance.",
+      "fr": "Nuxiva mesure la surprise par rapport à son modèle prédictif du monde, génère d'elle-même des objectifs d'étude face aux anomalies et remplace ses algorithmes uniquement lorsqu'une variante prouve une dominance mathématique de Pareto.",
+      "es": "Nuxiva mide la sorpresa frente a su modelo predictivo del mundo, genera por sí sola objetivos de estudio ante anomalías y actualiza sus algoritmos solo cuando una nueva variante demuestra dominancia matemática de Pareto."
+    }
+  ],
+  "fixes": []
+}

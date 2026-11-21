@@ -1,3 +1,4 @@
+pub mod agi;
 pub mod contracts;
 pub mod decomposition;
 pub mod error;
@@ -8,6 +9,11 @@ pub mod tree;
 #[cfg(test)]
 mod tests;
 
+pub use agi::{
+    AlgorithmicStrategy, AutonomousAgiKernel, EvaluatedPolicy, GodelUpgradeVerdict, IntrinsicGoal,
+    PolicyCandidate, SURPRISE_GOAL_THRESHOLD_BPS, TransitionBelief, WorldTransition,
+    select_minimal_free_energy_policy,
+};
 pub use contracts::{ContractKind, ContractRegistry, InterfaceContract};
 pub use decomposition::{ExpansionResult, SubTaskBlueprint, expand_task_node};
 pub use error::ThoughtError;

@@ -83,6 +83,14 @@ fn thought_socratic_and_specialist_endpoints_work() -> Result<(), AgencyError> {
     )?;
     assert_eq!(at(&epistemic, "/self_probes/0/id"), json!("hyp.storage"));
 
+    Ok(())
+}
+
+#[test]
+fn agi_active_inference_and_forge_sandbox_endpoints_work() -> Result<(), AgencyError> {
+    let sb = Sandbox::new("agi-cognition")?;
+    let mut engine = Engine::open(sb.config(), HOST)?;
+
     let forge_verify = call(
         &mut engine,
         json!({
@@ -106,6 +114,43 @@ fn thought_socratic_and_specialist_endpoints_work() -> Result<(), AgencyError> {
     )?;
     assert_eq!(at(&forge_verify, "/ok"), json!(true));
     assert_eq!(at(&forge_verify, "/proof/passed_cases"), json!(1));
+
+    let agi_obs = call(
+        &mut engine,
+        json!({
+            "op": "agi_observe_transition",
+            "transition": {
+                "state_key": "system.io.read",
+                "action_key": "cache.fetch",
+                "predicted_next_key": "cache.hit",
+                "observed_next_key": "cache.miss_stall",
+                "latency_ms": 380,
+                "token_cost": 500
+            }
+        }),
+    )?;
+    assert_eq!(
+        at(&agi_obs, "/intrinsic_goal/goal_id"),
+        json!("agi.goal.system.io.read.cache.fetch")
+    );
+
+    let agi_upgrade = call(
+        &mut engine,
+        json!({
+            "op": "agi_godel_upgrade",
+            "candidate": {
+                "domain_key": "cache.prefetcher",
+                "strategy_id": "strat.predictive_btree",
+                "generation": 1,
+                "success_rate_bps": 9850,
+                "mean_latency_ms": 2,
+                "mean_token_cost": 0,
+                "code_complexity_bytes": 512,
+                "proof_digest": "fnv64:abcdef0123456789"
+            }
+        }),
+    )?;
+    assert_eq!(at(&agi_upgrade, "/upgraded"), json!(true));
 
     Ok(())
 }

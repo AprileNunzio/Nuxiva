@@ -274,3 +274,112 @@ fn epistemic_inquiry_schedules_self_probes_and_resolves_via_findings() {
         }
     }
 }
+
+#[test]
+fn active_inference_generates_intrinsic_goals_and_applies_godel_pareto_upgrades() {
+    use crate::{
+        AlgorithmicStrategy, AutonomousAgiKernel, PolicyCandidate, WorldTransition,
+        select_minimal_free_energy_policy,
+    };
+
+    let mut kernel = AutonomousAgiKernel::new();
+    let transition = WorldTransition {
+        state_key: "env.network.latency_high".to_owned(),
+        action_key: "route.default_gateway".to_owned(),
+        predicted_next_key: "env.network.nominal".to_owned(),
+        observed_next_key: "env.network.packet_loss".to_owned(),
+        latency_ms: 420,
+        token_cost: 900,
+    };
+
+    let obs = kernel.observe_transition(&transition);
+    assert!(obs.is_ok());
+    if let Ok((belief, goal)) = obs {
+        assert!(belief.surprise_bps >= 4_000);
+        assert!(goal.is_some());
+        if let Some(g) = goal {
+            assert_eq!(
+                g.goal_id,
+                "agi.goal.env.network.latency_high.route.default_gateway"
+            );
+        }
+    }
+
+    let policies = vec![
+        PolicyCandidate {
+            policy_id: "pol.brute_llm".to_owned(),
+            action_key: "llm.full_replan".to_owned(),
+            pragmatic_value_bps: 7_000,
+            epistemic_value_bps: 3_000,
+            token_cost: 12_000,
+            latency_ms: 3_500,
+        },
+        PolicyCandidate {
+            policy_id: "pol.active_probe_shortcut".to_owned(),
+            action_key: "probe.mtu_and_compile_reflex".to_owned(),
+            pragmatic_value_bps: 8_500,
+            epistemic_value_bps: 9_000,
+            token_cost: 400,
+            latency_ms: 45,
+        },
+    ];
+    let ranked = select_minimal_free_energy_policy(&policies);
+    assert!(ranked.is_ok());
+    if let Ok(list) = ranked {
+        assert_eq!(
+            list.first().map(|p| p.policy_id.as_str()),
+            Some("pol.active_probe_shortcut")
+        );
+    }
+
+    let v1 = AlgorithmicStrategy {
+        domain_key: "routing.optimizer".to_owned(),
+        strategy_id: "strat.llm_slow".to_owned(),
+        generation: 1,
+        success_rate_bps: 9_200,
+        mean_latency_ms: 850,
+        mean_token_cost: 1_500,
+        code_complexity_bytes: 1_200,
+        proof_digest: "fnv64:1111222233334444".to_owned(),
+    };
+    assert!(
+        kernel
+            .evaluate_godel_upgrade(v1)
+            .is_ok_and(|verdict| verdict.upgraded)
+    );
+
+    let v2_worse = AlgorithmicStrategy {
+        domain_key: "routing.optimizer".to_owned(),
+        strategy_id: "strat.regression".to_owned(),
+        generation: 2,
+        success_rate_bps: 8_500,
+        mean_latency_ms: 900,
+        mean_token_cost: 1_800,
+        code_complexity_bytes: 1_400,
+        proof_digest: "fnv64:2222333344445555".to_owned(),
+    };
+    assert!(
+        kernel
+            .evaluate_godel_upgrade(v2_worse)
+            .is_ok_and(|verdict| !verdict.upgraded)
+    );
+
+    let v3_pareto = AlgorithmicStrategy {
+        domain_key: "routing.optimizer".to_owned(),
+        strategy_id: "strat.zero_token_reflex".to_owned(),
+        generation: 2,
+        success_rate_bps: 9_800,
+        mean_latency_ms: 4,
+        mean_token_cost: 0,
+        code_complexity_bytes: 480,
+        proof_digest: "fnv64:9999aaaabbbbcccc".to_owned(),
+    };
+    let up = kernel.evaluate_godel_upgrade(v3_pareto);
+    assert!(up.is_ok());
+    if let Ok(verdict) = up {
+        assert!(verdict.upgraded);
+        assert_eq!(verdict.active_generation, 2);
+        assert_eq!(verdict.token_savings_bps, 10_000);
+        assert!(verdict.latency_gain_bps > 9_900);
+    }
+}
