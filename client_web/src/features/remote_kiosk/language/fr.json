@@ -1,0 +1,10 @@
+{
+  "advisory_title": "Mode Kiosque Distant",
+  "advisory_subtitle": "Contrôle d'Accès à l'Écran et Confidentialité des Périphériques",
+  "advisory_security_badge": "Désactivé par Défaut pour des Raisons de Sécurité",
+  "advisory_desc": "Le mode kiosque distant permet aux ordinateurs du réseau local d'afficher en plein écran le display sur le port standard 80. Afin de garantir des normes de sécurité et de conformité Zero-Trust strictes, cette option est désactivée par défaut. Choisissez si vous souhaitez l'activer ou la maintenir désactivée.",
+  "advisory_media_notice": "En l'activant, les appareils autorisés ouvrant le port 80 (en HTTP et HTTPS) pourront utiliser la caméra et le microphone de cet appareil pour les fonctionnalités interactives.",
+  "advisory_disable_btn": "Garder Désactivé (Recommandé)",
+  "advisory_enable_btn": "Activer le Mode Kiosque Distant",
+  "advisory_close": "Fermer"
+}

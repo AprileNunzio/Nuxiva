@@ -1,0 +1,10 @@
+{
+  "advisory_title": "Remote Kiosk Mode",
+  "advisory_subtitle": "Display Access Control & Peripheral Privacy",
+  "advisory_security_badge": "Disabled by Default for Security",
+  "advisory_desc": "Remote kiosk mode allows local network devices to access the system display in full screen over standard port 80. To ensure the strictest privacy and Zero-Trust standards, this feature is disabled by default. Choose whether to enable or keep it disabled.",
+  "advisory_media_notice": "When enabled, authorized devices opening port 80 (over HTTP or HTTPS) will be permitted to access that device's webcam and microphone for interactive display features.",
+  "advisory_disable_btn": "Keep Disabled (Recommended)",
+  "advisory_enable_btn": "Enable Remote Kiosk Mode",
+  "advisory_close": "Close"
+}

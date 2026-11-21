@@ -1,0 +1,10 @@
+{
+  "advisory_title": "Modalità Chiosco Remoto",
+  "advisory_subtitle": "Controllo Accesso Display & Riservatezza Periferiche",
+  "advisory_security_badge": "Disabilitato di Default per Motivi di Sicurezza",
+  "advisory_desc": "La modalità chiosco remoto consente ai computer collegati alla rete locale di aprire a schermo intero il display di sistema sulla porta standard 80. Per garantire i più rigorosi standard di riservatezza e conformità Zero-Trust, questa funzionalità è inizialmente disattivata. Scegli se abilitarla o mantenerla disattivata.",
+  "advisory_media_notice": "Abilitando la modalità, i dispositivi autorizzati sulla porta 80 (in HTTP e HTTPS) potranno accedere alla webcam e al microfono di quel dispositivo per le funzioni interattive del display.",
+  "advisory_disable_btn": "Mantieni Disabilitato (Consigliato)",
+  "advisory_enable_btn": "Abilita Modalità Chiosco Remoto",
+  "advisory_close": "Chiudi"
+}

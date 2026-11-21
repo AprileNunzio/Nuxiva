@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Modalità Chiosco Remoto con sicurezza Zero-Trust e supporto multimediale",
+    "en": "Remote Kiosk Mode with Zero-Trust security and remote media support",
+    "fr": "Mode Kiosque Distant avec sécurité Zero-Trust et support multimédia",
+    "es": "Modo Quiosco Remoto con seguridad Zero-Trust y soporte multimedia"
+  },
+  "features": [
+    {
+      "it": "Aggiunta opzione per abilitare o disabilitare la modalità chiosco remoto da PC LAN con avviso obbligatorio di sicurezza alla prima installazione e dopo ogni aggiornamento.",
+      "en": "Added toggle for enabling or disabling remote kiosk mode from LAN computers with mandatory security advisory on first installation and after each update.",
+      "fr": "Ajout d'une option pour activer ou désactiver le mode kiosque distant depuis le réseau local avec avis de sécurité obligatoire lors de la première installation et des mises à jour.",
+      "es": "Añadida opción para activar o desactivar el modo quiosco remoto desde ordenadores locales con aviso obligatorio de seguridad en primera instalación y tras actualizaciones."
+    },
+    {
+      "it": "Abilitazione dell'acquisizione di webcam e microfono per i dispositivi che aprono la pagina del display sulla porta standard 80 sia in HTTP che in HTTPS.",
+      "en": "Enabled webcam and microphone capture for devices opening the display page on standard port 80 across both HTTP and HTTPS.",
+      "fr": "Activation de l'accès à la webcam et au microphone pour les appareils ouvrant la page d'écran sur le port 80 en HTTP et HTTPS.",
+      "es": "Habilitación de acceso a cámara y micrófono para dispositivos que abren la pantalla en el puerto estándar 80 en HTTP y HTTPS."
+    }
+  ]
+}

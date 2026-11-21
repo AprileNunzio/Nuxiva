@@ -1,0 +1,10 @@
+{
+  "advisory_title": "Modo Quiosco Remoto",
+  "advisory_subtitle": "Control de Acceso al Display y Privacidad de Periféricos",
+  "advisory_security_badge": "Desactivado por Defecto por Seguridad",
+  "advisory_desc": "El modo quiosco remoto permite a dispositivos de la red local abrir a pantalla completa el display en el puerto 80. Para cumplir con los máximos estándares de privacidad y Zero-Trust, esta función viene desactivada de fábrica. Selecciona si deseas habilitarla o mantenerla desactivada.",
+  "advisory_media_notice": "Al habilitar este modo, los dispositivos autorizados en el puerto 80 (HTTP y HTTPS) podrán usar la cámara y el micrófono de ese dispositivo para las funciones interactivas del display.",
+  "advisory_disable_btn": "Mantener Desactivado (Recomendado)",
+  "advisory_enable_btn": "Habilitar Modo Quiosco Remoto",
+  "advisory_close": "Cerrar"
+}

@@ -1,3 +1,4 @@
+import os
 from typing import Literal
 
 from access import is_private, session_user
@@ -28,7 +29,7 @@ def is_host_display(request) -> bool:
 
 
 def is_remote_kiosk_active() -> bool:
-    if env_get("NUXIVA_REMOTE_KIOSK", "0") in ("1", "true", "yes", "on"):
+    if os.environ.get("NUXIVA_REMOTE_KIOSK", "0") in ("1", "true", "yes", "on"):
         return True
     try:
         from system_settings_api import get_display_settings

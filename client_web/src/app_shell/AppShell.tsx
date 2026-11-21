@@ -18,6 +18,7 @@ import { useAssistantIdentity } from '../shared/identity/IdentityContext';
 import { useDesktopShortcuts } from './desktopShortcuts';
 import { useWorkbenchAutoLaunch } from '../apps/repair_workbench/hooks/useWorkbenchAutoLaunch';
 import { LiveCaptionsOverlay } from '../features/live_captions';
+import { RemoteKioskGlobalPrompt } from '../features/remote_kiosk';
 import { NetworkFlyout } from './tray/network/NetworkFlyout';
 import { BluetoothFlyout } from './tray/bluetooth/BluetoothFlyout';
 import { FullscreenToggle } from './fullscreen/FullscreenToggle';
@@ -218,6 +219,7 @@ export function WebOSDesktop({ user, onSignOut }: { user: string; onSignOut: () 
       <TaskTray />
       <NotificationCenter visible={notifications} onClose={() => setNotifications(false)} onCountChange={setNotificationCount} />
       <LiveCaptionsOverlay />
+      <RemoteKioskGlobalPrompt />
     </div>
   );
 }

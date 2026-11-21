@@ -14,17 +14,17 @@ import type { EngineFamily } from '../../engines/types';
 import { SwitchesTab } from './components/SwitchesTab';
 import { EnginesTab } from './components/EnginesTab';
 import { EcosystemTab } from './components/EcosystemTab';
-import { RemoteKioskAdvisoryModal } from './components/RemoteKioskAdvisoryModal';
 import {
+  RemoteKioskAdvisoryModal,
   saveRemoteKioskAdvisoryAck,
   shouldShowRemoteKioskAdvisory,
-} from './components/remoteKioskStorage';
+} from '../../features/remote_kiosk';
 import { FleetPanel } from '../updater/components/FleetPanel';
 
 export function View() {
   const { t } = useScopedI18n('core_apps/options');
   const [activeMainTab, setActiveMainTab] = useState<'switches' | 'engines' | 'ecosystem' | 'updates'>('switches');
-  const [showAdvisoryModal, setShowAdvisoryModal] = useState(shouldShowRemoteKioskAdvisory);
+  const [showAdvisoryModal, setShowAdvisoryModal] = useState(false);
 
   const [options, setOptions] = useState(loadStoredOptions);
   const [search, setSearch] = useState('');

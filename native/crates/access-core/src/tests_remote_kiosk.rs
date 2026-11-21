@@ -1,5 +1,6 @@
 use crate::remote_kiosk::{
-    ClientContext, KioskAdvisory, KioskScheme, MediaCapabilities, RemoteKioskConfig, evaluate_remote_kiosk,
+    ClientContext, KioskAdvisory, KioskScheme, MediaCapabilities, RemoteKioskConfig,
+    evaluate_remote_kiosk,
 };
 
 #[test]

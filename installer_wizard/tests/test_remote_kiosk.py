@@ -5,7 +5,6 @@ from pathlib import Path
 from unittest.mock import patch
 from starlette.requests import Request
 
-from access import auth
 from agenti.desktop.camera_sessions import camera_owner, require_camera_enabled
 from agenti.desktop.display_scope import is_remote_kiosk_active, remote_display_scope
 from system_settings_api import DEFAULT_DISPLAY_SETTINGS, get_display_settings, save_display_settings
@@ -84,3 +83,9 @@ class TestRemoteKioskBackend(unittest.TestCase):
 
         with patch.dict(os.environ, {"NUXIVA_REMOTE_CAMERA_PREVIEW": "0", "NUXIVA_REMOTE_KIOSK": "1"}):
             require_camera_enabled()
+
+    def test_is_remote_kiosk_active(self):
+        with patch.dict(os.environ, {"NUXIVA_REMOTE_KIOSK": "0"}):
+            self.assertFalse(is_remote_kiosk_active())
+        with patch.dict(os.environ, {"NUXIVA_REMOTE_KIOSK": "1"}):
+            self.assertTrue(is_remote_kiosk_active())

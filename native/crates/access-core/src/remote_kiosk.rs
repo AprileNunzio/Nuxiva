@@ -1,6 +1,6 @@
-use std::net::IpAddr;
-use serde::{Deserialize, Serialize};
 use crate::origin::parse_address;
+use serde::{Deserialize, Serialize};
+use std::net::IpAddr;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -103,7 +103,10 @@ fn valid_host(header: &str) -> bool {
 }
 
 #[must_use]
-pub fn evaluate_remote_kiosk(config: &RemoteKioskConfig, ctx: &ClientContext) -> RemoteKioskVerdict {
+pub fn evaluate_remote_kiosk(
+    config: &RemoteKioskConfig,
+    ctx: &ClientContext,
+) -> RemoteKioskVerdict {
     let Some(scheme) = KioskScheme::parse(ctx.scheme) else {
         return RemoteKioskVerdict {
             allowed: false,
