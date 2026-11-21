@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Sintesi 3D generativa universale e rendering fotorealistico PBR progressivo sullo Spatial HUD",
+    "en": "Universal generative 3D synthesis and progressive photorealistic PBR rendering on the Spatial HUD",
+    "fr": "Synthèse 3D générative universelle et rendu photoréaliste PBR progressif sur le Spatial HUD",
+    "es": "Síntesis 3D generativa universal y renderizado fotorrealista PBR progresivo en el Spatial HUD"
+  },
+  "features": [
+    {
+      "it": "Nuxiva genera qualsiasi oggetto 3D richiesto come ologramma particellare e lo trasforma su richiesta in geometria 3D solida o in rendering fotorealistico PBR con sfumature, riflessi clearcoat e luci.",
+      "en": "Nuxiva generates any requested 3D object as a particle hologram and transforms it on demand into solid 3D geometry or photorealistic PBR rendering with gradients, clearcoat reflections, and lighting.",
+      "fr": "Nuxiva génère n'importe quel objet 3D demandé sous forme d'hologramme de particules et le transforme à la demande en géométrie 3D solide ou en rendu photoréaliste PBR avec dégradés, reflets vernis et éclairage.",
+      "es": "Nuxiva genera cualquier objeto 3D solicitado como holograma de partículas y lo transforma bajo demanda en geometría 3D sólida o en renderizado fotorrealista PBR con degradados, reflejos clearcoat e iluminación."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Corretto l'export di spatial_hud nel pacchetto tools di hands per l'analisi statica CI.",
+      "en": "Fixed spatial_hud export in the hands tools package for CI static analysis.",
+      "fr": "Correction de l'exportation de spatial_hud dans le paquet tools de hands pour l'analyse statique CI.",
+      "es": "Corregida la exportación de spatial_hud en el paquete tools de hands para el análisis estático CI."
+    }
+  ]
+}

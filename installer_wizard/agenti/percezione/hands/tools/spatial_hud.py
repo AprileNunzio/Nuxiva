@@ -1,5 +1,7 @@
 from agenti.hands.spatial_hud import (
     spatial_hud_bind_gesture_action,
+    spatial_hud_generate_object,
+    spatial_hud_set_fidelity,
     spatial_hud_set_mode,
     spatial_hud_set_shape,
     spatial_hud_status,
@@ -7,6 +9,8 @@ from agenti.hands.spatial_hud import (
 
 __all__ = [
     "spatial_hud_bind_gesture_action",
+    "spatial_hud_generate_object",
+    "spatial_hud_set_fidelity",
     "spatial_hud_set_mode",
     "spatial_hud_set_shape",
     "spatial_hud_status",

@@ -76,6 +76,25 @@ class SpatialHudTest(unittest.TestCase):
         self.assertEqual(state["active_gesture"], "two_hand_pinch_stretch")
         self.assertEqual(state["hands_count"], 2)
 
+    def test_generative_3d_hologram_and_progressive_pbr_upgrade(self):
+        raw1 = asyncio.run(
+            spatial_hud.spatial_hud_generate_object("macchina sportiva", "particles")
+        )
+        snap1 = json.loads(raw1)
+        self.assertEqual(snap1["shape"], "procedural")
+        self.assertEqual(snap1["subject"], "macchina sportiva")
+        self.assertEqual(snap1["fidelity"], "particles")
+        self.assertTrue(len(snap1["csg_nodes"]) >= 10)
+
+        snap2 = json.loads(asyncio.run(spatial_hud.spatial_hud_set_fidelity("3d")))
+        self.assertEqual(snap2["fidelity"], "mesh_3d")
+
+        snap3 = json.loads(
+            asyncio.run(spatial_hud.spatial_hud_set_fidelity("realistica"))
+        )
+        self.assertEqual(snap3["fidelity"], "photoreal_pbr")
+
 
 if __name__ == "__main__":
     unittest.main()
+

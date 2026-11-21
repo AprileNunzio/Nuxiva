@@ -6,7 +6,8 @@
     [9, 13], [13, 14], [14, 15], [15, 16],
     [13, 17], [0, 17], [17, 18], [18, 19], [19, 20],
   ];
-  const FOCUS_ORDER = ["sphere", "torus", "cube", "helix"];
+  const FOCUS_ORDER = ["sphere", "torus", "cube", "helix", "procedural"];
+  const FIDELITY_ORDER = ["particles", "mesh_3d", "photoreal_pbr"];
   const DEBOUNCE_FRAMES = 3;
 
   const st = {
@@ -15,6 +16,8 @@
     autoCloseMs: 4000,
     lastPresenceAt: 0,
     shape: "sphere",
+    subject: "",
+    fidelity: "particles",
     gesture: "idle",
     candidate: "idle",
     streak: 0,
@@ -91,7 +94,7 @@
 
   function sendSemanticIntent(gesture, shape, handsCount) {
     const now = performance.now();
-    const key = `${gesture}:${shape}:${handsCount}`;
+    const key = `${gesture}:${shape}:${st.fidelity}:${handsCount}`;
     if (key === st.lastIntentSent && now - st.lastSentAt < 1200) return;
     st.lastIntentSent = key;
     st.lastSentAt = now;
@@ -102,6 +105,8 @@
         camera_active: st.cameraActive,
         person_present: handsCount > 0,
         shape,
+        subject: st.subject,
+        fidelity: st.fidelity,
         active_gesture: gesture,
         hands_count: handsCount,
         confidence: handsCount > 0 ? 0.94 : 0.0,
@@ -139,6 +144,8 @@
       st.gesture = detected;
       if (detected === "open_palm_disperse") {
         st.shape = "dispersed";
+        st.fidelity = "particles";
+        if (st.holo) st.holo.setFidelity("particles");
         st.focusLatched = false;
         st.baseSpan = 0;
       } else if (detected === "single_hand_focus_morph") {
@@ -196,12 +203,34 @@
 
   function updateHudBar(autoClosed = false) {
     if (!st.els) return;
-    st.els.valShape.textContent = t(`shud_shape_${st.shape}`);
+    const shapeLabel = st.shape === "procedural" && st.subject
+      ? `${st.subject.toUpperCase()}`
+      : t(`shud_shape_${st.shape}`);
+    st.els.valShape.textContent = shapeLabel;
     st.els.valGesture.textContent = t(`shud_gesture_${st.gesture}`);
     if (autoClosed) st.els.valPrivacy.textContent = t("shud_privacy_autoclose");
     else st.els.valPrivacy.textContent = st.cameraActive ? t("shud_privacy_live") : t("shud_privacy_off");
-    const tier = st.holo ? st.holo.getTier() : "webgl";
-    st.els.valEngine.textContent = `${tier.toUpperCase()} · ${st.handsCount}H`;
+    const fidLabel = t(`shud_fidelity_${st.fidelity}`);
+    st.els.valEngine.textContent = `${fidLabel} · ${st.handsCount}H`;
+    if (st.els.pbrBtn) {
+      st.els.pbrBtn.textContent = fidLabel;
+    }
+  }
+
+  async function requestGenerateSubject(subjectText, fidelityTier) {
+    try {
+      const res = await fetch("/api/hands/display/spatial_hud", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          camera_active: st.cameraActive,
+          shape: "procedural",
+          subject: subjectText,
+          fidelity: fidelityTier,
+        }),
+      });
+      if (res.ok) await pollMcpState();
+    } catch (err) {}
   }
 
   function mountDom() {
@@ -218,6 +247,7 @@
         <div class="shud-actions">
           <button type="button" class="shud-btn" id="shud-cam-btn"></button>
           <button type="button" class="shud-btn" id="shud-morph-btn">3D</button>
+          <button type="button" class="shud-btn" id="shud-pbr-btn"></button>
           <button type="button" class="shud-btn" id="shud-close-btn"></button>
         </div>
       </div>
@@ -238,6 +268,7 @@
       title: root.querySelector("#shud-title"),
       camBtn: root.querySelector("#shud-cam-btn"),
       morphBtn: root.querySelector("#shud-morph-btn"),
+      pbrBtn: root.querySelector("#shud-pbr-btn"),
       closeBtn: root.querySelector("#shud-close-btn"),
       valShape: root.querySelector("#shud-v-shape"),
       valGesture: root.querySelector("#shud-v-gesture"),
@@ -258,6 +289,13 @@
       st.shape = FOCUS_ORDER[(idx + 1) % FOCUS_ORDER.length];
       if (st.holo) st.holo.setShape(st.shape);
       updateHudBar();
+    });
+    st.els.pbrBtn.addEventListener("click", () => {
+      const idx = FIDELITY_ORDER.indexOf(st.fidelity);
+      st.fidelity = FIDELITY_ORDER[(idx + 1) % FIDELITY_ORDER.length];
+      if (st.holo) st.holo.setFidelity(st.fidelity);
+      updateHudBar();
+      sendSemanticIntent(st.gesture, st.shape, st.handsCount);
     });
     st.els.closeBtn.addEventListener("click", () => toggleHud(false));
     st.holo = window.NuxivaSpatialHologram.createEngine(st.els.holoCanvas);
@@ -289,15 +327,23 @@
       const res = await fetch("/api/hands/display/spatial_hud", { cache: "no-store" });
       if (!res.ok) return;
       const remote = await res.json();
+      if (Array.isArray(remote.csg_nodes) && remote.csg_nodes.length && st.holo) {
+        st.holo.setProceduralNodes(remote.csg_nodes);
+      }
+      if (remote.subject) st.subject = remote.subject;
       if (remote.shape && remote.shape !== st.shape) {
         st.shape = remote.shape;
         if (st.holo) st.holo.setShape(st.shape);
-        updateHudBar();
+      }
+      if (remote.fidelity && remote.fidelity !== st.fidelity) {
+        st.fidelity = remote.fidelity;
+        if (st.holo) st.holo.setFidelity(st.fidelity);
       }
       if (typeof remote.auto_close_timeout_s === "number") {
         st.autoCloseMs = Math.max(1000, remote.auto_close_timeout_s * 1000);
       }
       if (remote.enabled && !st.open) toggleHud(true);
+      updateHudBar();
     } catch (err) {}
   }
 
@@ -317,10 +363,16 @@
       dock.appendChild(btn);
     }
     requestAnimationFrame(renderLoop);
-    setInterval(pollMcpState, 3500);
+    setInterval(pollMcpState, 3000);
   }
 
-  window.NuxivaSpatialHud = { toggle: toggleHud, setCameraActive, feedHands: (h) => { window.__nuxivaLastHands = h; } };
+  window.NuxivaSpatialHud = {
+    toggle: toggleHud,
+    setCameraActive,
+    generateObject: requestGenerateSubject,
+    setFidelity: (f) => { st.fidelity = f; if (st.holo) st.holo.setFidelity(f); updateHudBar(); },
+    feedHands: (h) => { window.__nuxivaLastHands = h; },
+  };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
 })();

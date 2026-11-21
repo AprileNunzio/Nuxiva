@@ -264,3 +264,28 @@ fn spatial_hud_respects_privacy_auto_close_morph_and_zero_trust() -> Result<(), 
     assert!(!hud.person_present);
     Ok(())
 }
+
+#[test]
+fn generative_3d_synthesizes_any_subject_and_upgrades_to_photoreal_pbr() {
+    use crate::generative_3d::{RenderFidelityTier, synthesize_procedural_3d};
+
+    let holo_car = synthesize_procedural_3d("macchina sportiva", RenderFidelityTier::Particles);
+    assert_eq!(holo_car.fidelity, RenderFidelityTier::Particles);
+    assert!(holo_car.nodes.len() >= 10);
+
+    let mesh_tier = holo_car.fidelity.upgrade();
+    assert_eq!(mesh_tier, RenderFidelityTier::Mesh3d);
+
+    let pbr_tier = mesh_tier.upgrade();
+    assert_eq!(pbr_tier, RenderFidelityTier::PhotorealPbr);
+
+    let photoreal_car = synthesize_procedural_3d("macchina sportiva", pbr_tier);
+    assert!(photoreal_car.ambient_occlusion);
+    assert!(photoreal_car.bloom_strength > 0.7);
+    assert!(
+        photoreal_car
+            .nodes
+            .iter()
+            .any(|n| n.material.clearcoat > 0.9 && n.material.metallic > 0.8)
+    );
+}

@@ -59,6 +59,7 @@ TOOLS: dict[str, Risk] = {
     "apt_maintain": Risk.CRITICAL, "service_control": Risk.CRITICAL, "power_control": Risk.CRITICAL, "ssh_exec": Risk.CRITICAL,
     "debian_shell": Risk.CRITICAL, "process_kill": Risk.CRITICAL, "collaudo_describe": Risk.INFO,
     "spatial_hud_status": Risk.INFO, "spatial_hud_set_mode": Risk.HOME, "spatial_hud_set_shape": Risk.HOME,
+    "spatial_hud_generate_object": Risk.HOME, "spatial_hud_set_fidelity": Risk.HOME,
     "spatial_hud_bind_gesture_action": Risk.HOME,
 }
 

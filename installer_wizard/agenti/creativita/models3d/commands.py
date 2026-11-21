@@ -17,6 +17,9 @@ SHOW = re.compile(r"\b(mostra|mostrami|apri|aprimi|fammi vedere|visualizza|riapr
                   r"(modello|file|oggetto)?\s*(3d\s+)?(?P<what>.*)$", re.I)
 CLOSE = re.compile(r"\b(chiudi|nascondi|togli)\b.*\b(modello|visualizzatore|3d|oggetto)\b", re.I)
 LIST = re.compile(r"\b(quali|che)\s+modelli\s+(3d\s+)?(hai|ci sono|abbiamo)\b|\belenca\b.*\bmodelli\b", re.I)
+HOLOGRAM = re.compile(r"\b(?:mostr\w*|cre\w*|gener\w*|proiett\w*)\s+(?:mi\s+)?(?:l\s*['’]?\s*|un\s+)?ologramma\s+(?:3d\s+)?(?:di|del|della|dello)\s+(?:(?:una|uno|un)\s+|un['’]?)?(?P<what>.+?)[.?!]*$", re.I)
+UPGRADE_PBR = re.compile(r"\b(?:ora\s+)?(?:rendil[oa]|fall[oa]|trasformal[oa]|passa\s+a)\s+.*\b(?:realistic[oa]|fotorealistic[oa]|pbr|sfumatur\w*|gta)\b", re.I)
+UPGRADE_3D = re.compile(r"\b(?:ora\s+)?(?:rendil[oa]|fall[oa]|trasformal[oa])\s+(?:in\s+)?(?:3\s*d|tridimensional[ei]|solid[oa])\b", re.I)
 
 
 async def _build(subject: str) -> None:
@@ -31,6 +34,19 @@ async def _build(subject: str) -> None:
 
 
 async def answer(text: str) -> tuple[str, dict]:
+    if h := HOLOGRAM.search(text):
+        from agenti.hands import spatial_hud
+        subject = h.group("what").strip()
+        await spatial_hud.spatial_hud_generate_object(subject, "particles")
+        return f"Ecco l'ologramma particellare di {subject} sullo Spatial HUD.", {"mode": "face"}
+    if UPGRADE_PBR.search(text):
+        from agenti.hands import spatial_hud
+        await spatial_hud.spatial_hud_set_fidelity("photoreal_pbr")
+        return "Rendering evoluto a fotorealismo PBR con sfumature, riflessi clearcoat e illuminazione fisica.", {"mode": "face"}
+    if UPGRADE_3D.search(text):
+        from agenti.hands import spatial_hud
+        await spatial_hud.spatial_hud_set_fidelity("mesh_3d")
+        return "Ologramma convertito in geometria 3D solida.", {"mode": "face"}
     try:
         return voice.answer(text)
     except LookupError:
@@ -56,3 +72,4 @@ async def answer(text: str) -> tuple[str, dict]:
             library.show(meta)
             return f"Ecco {meta['title']}.", {"mode": "face"}
     raise LookupError
+

@@ -12,7 +12,7 @@ TOOL_CAPS: dict[str, str] = {
     **dict.fromkeys(("music_play", "music_control"), "media.music.play"),
     **dict.fromkeys(("tv_play_channel",), "media.tv.watch"),
     **dict.fromkeys(("tv_add_tuner", "tv_set_vpn_policy", "tv_scan_tuner"), "media.tv.manage"),
-    **dict.fromkeys(("show_widget", "hide_widget", "move_widget", "spatial_hud_set_mode", "spatial_hud_set_shape", "spatial_hud_bind_gesture_action"), "display.widget.show"),
+    **dict.fromkeys(("show_widget", "hide_widget", "move_widget", "spatial_hud_set_mode", "spatial_hud_set_shape", "spatial_hud_generate_object", "spatial_hud_set_fidelity", "spatial_hud_bind_gesture_action"), "display.widget.show"),
     **dict.fromkeys(("ha_list_entities", "ha_ask_assist"), "home.private.read"),
     **dict.fromkeys(("ha_devices_by_room", "ha_energy_consumption"), "home.state.read"),
     **dict.fromkeys(("run_automation", "toggle_automation", "emit_event"), "home.automation.run"),

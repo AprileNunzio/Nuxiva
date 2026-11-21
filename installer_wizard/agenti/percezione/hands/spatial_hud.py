@@ -6,7 +6,8 @@ import time
 from agenti.agent import registry
 from agenti.hands import events as hand_events
 
-SHAPES = ("dispersed", "sphere", "torus", "cube", "helix")
+SHAPES = ("dispersed", "sphere", "torus", "cube", "helix", "procedural")
+FIDELITIES = ("particles", "mesh_3d", "photoreal_pbr")
 GESTURES = (
     "idle",
     "open_palm_disperse",
@@ -33,6 +34,9 @@ _state = {
     "person_present": False,
     "auto_close_timeout_s": 4,
     "shape": "sphere",
+    "subject": "",
+    "fidelity": "particles",
+    "csg_nodes": [],
     "active_gesture": "idle",
     "hands_count": 0,
     "confidence": 0.0,
@@ -51,6 +55,58 @@ def _needs_confirm_binding(args: dict) -> bool:
     return is_real_world_action(str((args or {}).get("action", "")))
 
 
+def _normalize_fidelity(raw: str) -> str:
+    clean = str(raw or "").strip().lower()
+    aliases = {
+        "particle": "particles",
+        "ologramma": "particles",
+        "hologram": "particles",
+        "3d": "mesh_3d",
+        "mesh": "mesh_3d",
+        "solid": "mesh_3d",
+        "realistic": "photoreal_pbr",
+        "realistica": "photoreal_pbr",
+        "realistico": "photoreal_pbr",
+        "pbr": "photoreal_pbr",
+        "gta6": "photoreal_pbr",
+    }
+    mapped = aliases.get(clean, clean)
+    return mapped if mapped in FIDELITIES else "particles"
+
+
+def _procedural_csg_nodes(subject: str) -> list[dict]:
+    low = subject.strip().lower()
+    if any(k in low for k in ("macchina", "auto", "car", "supercar", "veicol", "ferrari", "lamborghini")):
+        return [
+            {"name": "chassis", "shape": "box", "size": [1.92, 0.36, 4.35], "position": [0.0, -0.12, 0.0], "color": "#e11d48", "metal": 0.88, "roughness": 0.14, "clearcoat": 0.96, "emissive": 0.0},
+            {"name": "hood", "shape": "wedge", "size": [1.86, 0.32, 1.45], "position": [0.0, 0.08, 1.35], "color": "#e11d48", "metal": 0.88, "roughness": 0.14, "clearcoat": 0.96, "emissive": 0.0},
+            {"name": "cabin", "shape": "capsule", "size": [1.52, 0.48, 1.95], "position": [0.0, 0.24, -0.15], "color": "#0f172a", "metal": 0.18, "roughness": 0.05, "clearcoat": 1.0, "emissive": 0.0},
+            {"name": "rear_deck", "shape": "box", "size": [1.90, 0.34, 1.25], "position": [0.0, 0.08, -1.42], "color": "#e11d48", "metal": 0.88, "roughness": 0.14, "clearcoat": 0.96, "emissive": 0.0},
+            {"name": "spoiler", "shape": "box", "size": [1.84, 0.06, 0.32], "position": [0.0, 0.38, -1.96], "color": "#1e293b", "metal": 0.5, "roughness": 0.3, "clearcoat": 0.4, "emissive": 0.0},
+            {"name": "wheel_fl", "shape": "cylinder", "size": [0.36, 0.26, 0.36], "position": [-0.96, -0.24, 1.32], "color": "#111827", "metal": 0.1, "roughness": 0.82, "clearcoat": 0.0, "emissive": 0.0},
+            {"name": "wheel_fr", "shape": "cylinder", "size": [0.36, 0.26, 0.36], "position": [0.96, -0.24, 1.32], "color": "#111827", "metal": 0.1, "roughness": 0.82, "clearcoat": 0.0, "emissive": 0.0},
+            {"name": "wheel_rl", "shape": "cylinder", "size": [0.38, 0.28, 0.38], "position": [-0.98, -0.22, -1.32], "color": "#111827", "metal": 0.1, "roughness": 0.82, "clearcoat": 0.0, "emissive": 0.0},
+            {"name": "wheel_rr", "shape": "cylinder", "size": [0.38, 0.28, 0.38], "position": [0.98, -0.22, -1.32], "color": "#111827", "metal": 0.1, "roughness": 0.82, "clearcoat": 0.0, "emissive": 0.0},
+            {"name": "headlight_l", "shape": "box", "size": [0.36, 0.08, 0.12], "position": [-0.68, 0.02, 2.14], "color": "#e0f2fe", "metal": 0.1, "roughness": 0.1, "clearcoat": 0.6, "emissive": 2.8},
+            {"name": "headlight_r", "shape": "box", "size": [0.36, 0.08, 0.12], "position": [0.68, 0.02, 2.14], "color": "#e0f2fe", "metal": 0.1, "roughness": 0.1, "clearcoat": 0.6, "emissive": 2.8},
+            {"name": "taillight", "shape": "box", "size": [1.68, 0.07, 0.10], "position": [0.0, 0.12, -2.14], "color": "#ff1e42", "metal": 0.1, "roughness": 0.1, "clearcoat": 0.6, "emissive": 2.5},
+        ]
+    if any(k in low for k in ("aereo", "jet", "drone", "astronave", "razzo")):
+        return [
+            {"name": "fuselage", "shape": "capsule", "size": [0.65, 0.55, 3.6], "position": [0.0, 0.0, 0.0], "color": "#94a3b8", "metal": 0.92, "roughness": 0.18, "clearcoat": 0.85, "emissive": 0.0},
+            {"name": "wings", "shape": "box", "size": [3.8, 0.09, 0.95], "position": [0.0, 0.0, -0.2], "color": "#cbd5e1", "metal": 0.9, "roughness": 0.2, "clearcoat": 0.8, "emissive": 0.0},
+            {"name": "tail", "shape": "wedge", "size": [0.12, 0.75, 0.85], "position": [0.0, 0.42, -1.35], "color": "#64748b", "metal": 0.88, "roughness": 0.22, "clearcoat": 0.75, "emissive": 0.0},
+            {"name": "thruster", "shape": "cylinder", "size": [0.35, 0.35, 0.35], "position": [0.0, 0.0, -1.85], "color": "#38bdf8", "metal": 0.2, "roughness": 0.1, "clearcoat": 0.5, "emissive": 2.6},
+        ]
+    seed = sum((i + 1) * ord(ch) for i, ch in enumerate(low or "nuxiva"))
+    c1 = f"#{(40 + seed % 190):02x}{(80 + (seed * 3) % 160):02x}{(140 + (seed * 7) % 110):02x}"
+    return [
+        {"name": "core", "shape": "sphere", "size": [1.15, 1.15, 1.15], "position": [0.0, 0.0, 0.0], "color": c1, "metal": 0.86, "roughness": 0.15, "clearcoat": 0.94, "emissive": 0.25},
+        {"name": "ring_outer", "shape": "torus", "size": [1.65, 0.16, 1.65], "position": [0.0, 0.0, 0.0], "color": "#38bdf8", "metal": 0.92, "roughness": 0.12, "clearcoat": 0.96, "emissive": 0.85},
+        {"name": "pedestal", "shape": "cylinder", "size": [1.1, 0.25, 1.1], "position": [0.0, -0.95, 0.0], "color": "#1e293b", "metal": 0.75, "roughness": 0.25, "clearcoat": 0.6, "emissive": 0.0},
+    ]
+
+
 def snapshot() -> dict:
     with _lock:
         return {
@@ -60,6 +116,9 @@ def snapshot() -> dict:
             "person_present": _state["person_present"],
             "auto_close_timeout_s": _state["auto_close_timeout_s"],
             "shape": _state["shape"],
+            "subject": _state["subject"],
+            "fidelity": _state["fidelity"],
+            "csg_nodes": list(_state["csg_nodes"]),
             "active_gesture": _state["active_gesture"],
             "hands_count": _state["hands_count"],
             "confidence": _state["confidence"],
@@ -82,6 +141,10 @@ def update_from_display(payload: dict) -> dict:
         shape = str(payload.get("shape", "")).strip().lower()
         if shape in SHAPES:
             _state["shape"] = shape
+        if "fidelity" in payload:
+            _state["fidelity"] = _normalize_fidelity(str(payload["fidelity"]))
+        if "subject" in payload and isinstance(payload["subject"], str):
+            _state["subject"] = payload["subject"].strip()[:64]
         gesture = str(payload.get("active_gesture", "")).strip().lower()
         if gesture in GESTURES:
             _state["active_gesture"] = gesture
@@ -101,7 +164,7 @@ def update_from_display(payload: dict) -> dict:
 
 @registry.tool(
     "spatial_hud_status",
-    "Legge lo stato corrente dello Spatial Gesture HUD 3D (forma attiva, gesto, privacy camera, intenti semantici)",
+    "Legge lo stato corrente dello Spatial Gesture HUD 3D (forma attiva, soggetto generato, fedeltà PBR, gesto, privacy camera)",
     {},
     agent="hands",
 )
@@ -136,8 +199,8 @@ async def spatial_hud_set_mode(enabled: bool = True, auto_close_s: int = 4) -> s
 
 @registry.tool(
     "spatial_hud_set_shape",
-    "Imposta la geometria olografica 3D dello Spatial Gesture HUD (dispersed, sphere, torus, cube, helix)",
-    {"shape": "geometria 3D: dispersed, sphere, torus, cube oppure helix"},
+    "Imposta la geometria olografica 3D dello Spatial Gesture HUD (dispersed, sphere, torus, cube, helix, procedural)",
+    {"shape": "geometria 3D: dispersed, sphere, torus, cube, helix oppure procedural"},
     agent="hands",
 )
 async def spatial_hud_set_shape(shape: str = "sphere") -> str:
@@ -150,6 +213,70 @@ async def spatial_hud_set_shape(shape: str = "sphere") -> str:
         _state["shape"] = clean
         _state["updated_at"] = round(time.time(), 3)
     hand_events.record([{"type": "gesture", "gesture": "spatial_hud.shape", "action": clean}])
+    return json.dumps(snapshot(), ensure_ascii=False)
+
+
+@registry.tool(
+    "spatial_hud_generate_object",
+    "Genera in tempo reale qualsiasi oggetto 3D richiesto (es. macchina, jet, edificio) e imposta il livello di rendering (particles, mesh_3d, photoreal_pbr stile GTA 6)",
+    {
+        "subject": "descrizione di qualsiasi oggetto da sintetizzare in 3D (es. macchina sportiva, drone, cuore, città)",
+        "fidelity": "livello di rendering: particles (ologramma particellare), mesh_3d (solido 3D), photoreal_pbr (realistico PBR con clearcoat, riflessi e bloom)",
+    },
+    agent="hands",
+)
+async def spatial_hud_generate_object(subject: str, fidelity: str = "particles") -> str:
+    clean_subj = str(subject or "").strip()[:64]
+    if not clean_subj:
+        raise ValueError("specifica il soggetto 3D da generare")
+    tier = _normalize_fidelity(fidelity)
+    nodes = _procedural_csg_nodes(clean_subj)
+    try:
+        from agenti.models3d import generator
+        _, ai_parts, _ = await generator.design(clean_subj)
+        if ai_parts:
+            nodes = [
+                {
+                    "name": str(p.get("name", "part"))[:32],
+                    "shape": str(p.get("shape", "box")),
+                    "size": list(p.get("size") or [1.0, 1.0, 1.0])[:3],
+                    "position": list(p.get("position") or [0.0, 0.0, 0.0])[:3],
+                    "color": str(p.get("color") or "#38bdf8"),
+                    "metal": 0.9 if p.get("metal") else 0.35,
+                    "roughness": 0.14 if p.get("metal") else 0.4,
+                    "clearcoat": 0.95 if tier == "photoreal_pbr" else 0.3,
+                    "emissive": 0.0,
+                }
+                for p in ai_parts[:40]
+            ]
+    except Exception:
+        pass
+    with _lock:
+        _state["enabled"] = True
+        _state["shape"] = "procedural"
+        _state["subject"] = clean_subj
+        _state["fidelity"] = tier
+        _state["csg_nodes"] = nodes
+        _state["updated_at"] = round(time.time(), 3)
+    hand_events.record([{"type": "gesture", "gesture": "spatial_hud.generate", "action": tier}])
+    return json.dumps(snapshot(), ensure_ascii=False)
+
+
+@registry.tool(
+    "spatial_hud_set_fidelity",
+    "Evolve il rendering dell'oggetto 3D corrente tra particelle olografiche (particles), solido 3D (mesh_3d) e fotorealismo PBR con sfumature, clearcoat e luci (photoreal_pbr)",
+    {"fidelity": "particles, mesh_3d oppure photoreal_pbr"},
+    agent="hands",
+)
+async def spatial_hud_set_fidelity(fidelity: str = "photoreal_pbr") -> str:
+    tier = _normalize_fidelity(fidelity)
+    with _lock:
+        _state["fidelity"] = tier
+        if _state["subject"] and not _state["csg_nodes"]:
+            _state["csg_nodes"] = _procedural_csg_nodes(_state["subject"])
+            _state["shape"] = "procedural"
+        _state["updated_at"] = round(time.time(), 3)
+    hand_events.record([{"type": "gesture", "gesture": "spatial_hud.fidelity", "action": tier}])
     return json.dumps(snapshot(), ensure_ascii=False)
 
 
