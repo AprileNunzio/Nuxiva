@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Correzione clippy per test PKI nativi e costanti IP",
+    "en": "Clippy fixes for native PKI tests and IP constants",
+    "fr": "Corrections clippy pour tests PKI natifs et constantes IP",
+    "es": "Correcciones clippy para pruebas PKI nativas y constantes IP"
+  },
+  "fixes": [
+    {
+      "it": "Eliminazione delle chiamate unwrap nei test di classificazione di rete PKI e sostituzione con costanti infallibili Ipv4Addr e Ipv6Addr.",
+      "en": "Eliminated unwrap calls in PKI network classification tests replacing them with infallible Ipv4Addr and Ipv6Addr constants.",
+      "fr": "Élimination des appels unwrap dans les tests de classification réseau PKI et remplacement par des constantes Ipv4Addr et Ipv6Addr.",
+      "es": "Eliminación de llamadas unwrap en pruebas de clasificación de red PKI y sustitución por constantes Ipv4Addr e Ipv6Addr."
+    }
+  ]
+}
