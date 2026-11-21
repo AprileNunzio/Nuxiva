@@ -126,7 +126,6 @@ dependencies = [
  "agency-domain",
  "agency-planner",
  "serde",
- "serde_json",
  "thiserror 2.0.21",
 ]
 
@@ -2372,7 +2371,6 @@ version = "5.8.14"
 dependencies = [
  "nuxiva-langid",
  "serde",
- "serde_json",
 ]
 
 [[package]]

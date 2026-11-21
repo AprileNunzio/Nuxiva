@@ -52,7 +52,7 @@ export const AutonomyConsoleView: React.FC<AutonomyConsoleViewProps> = ({
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 cq-lg:grid-cols-3">
         <div className="flex flex-col gap-3 rounded-xl border border-outline-variant/40 bg-surface-container p-4">
           <div className="flex items-center gap-2 text-sm font-semibold text-on-surface">
             <HelpCircle className="h-4 w-4 text-primary" />

@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 from server.core.agent_registry.interfaces import AgentTaskResponse
 from server.core.orchestrator.skill_acquisition import acquire_missing_skill

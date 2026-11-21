@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Allineamento griglia container-query e blocco dipendenze native per la console di autonomia",
+    "en": "Container-query grid alignment and native dependency lock for the autonomy console",
+    "fr": "Alignement de la grille container-query et verrouillage des dépendances natives pour la console d'autonomie",
+    "es": "Alineación de cuadrícula container-query y bloqueo de dependencias nativas para la consola de autonomía"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "La console di autonomia usa ora il layout a contenitore adattivo (cq-lg) ed è sincronizzata con il file di blocco dei pacchetti nativi e con l'analisi statica Python.",
+      "en": "The autonomy console now uses the container-adaptive layout (cq-lg) and is synchronized with the native package lockfile and Python static analysis.",
+      "fr": "La console d'autonomie utilise désormais la mise en page adaptative au conteneur (cq-lg) et est synchronisée avec le fichier de verrouillage natif et l'analyse statique Python.",
+      "es": "La consola de autonomía utiliza ahora el diseño adaptable al contenedor (cq-lg) y está sincronizada con el archivo de bloqueo nativo y el análisis estático de Python."
+    }
+  ]
+}
