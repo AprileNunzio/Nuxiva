@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Sistema Enterprise PKI per certificati HTTPS, Tailscale, VPN e mTLS",
+    "en": "Enterprise PKI system for HTTPS, Tailscale, VPN and mTLS certificates",
+    "fr": "Système PKI Entreprise pour certificats HTTPS, Tailscale, VPN et mTLS",
+    "es": "Sistema PKI Enterprise para certificados HTTPS, Tailscale, VPN y mTLS"
+  },
+  "features": [
+    {
+      "it": "Motore PKI Enterprise nativo con generazione automatica di Root CA, certificati server TLS completi di SAN per LAN, Tailscale MagicDNS e VPN, e bundle client mTLS.",
+      "en": "Native Enterprise PKI engine with automated Root CA generation, SAN-complete TLS server certificates for LAN, Tailscale MagicDNS and VPN, and client mTLS bundles.",
+      "fr": "Moteur PKI d'entreprise avec génération de CA racine, certificats TLS avec SAN complètes pour LAN, Tailscale MagicDNS et VPN, et bundles client mTLS.",
+      "es": "Motor PKI empresarial con generación de CA raíz, certificados TLS con SAN completas para LAN, Tailscale MagicDNS y VPN, y paquetes cliente mTLS."
+    },
+    {
+      "it": "Interfaccia di gestione certificati nelle opzioni con stato di validità, impronta crittografica SHA-256 e download istantaneo del certificato CA e dei profili mTLS.",
+      "en": "Certificate management interface in options with validity status, SHA-256 fingerprint verification, and instant download of CA certificates and mTLS profiles.",
+      "fr": "Interface de gestion des certificats dans les options avec état de validité, empreinte SHA-256 et téléchargement immédiat du certificat CA et des profils mTLS.",
+      "es": "Interfaz de gestión de certificados en opciones con estado de validez, huella SHA-256 y descarga instantánea de certificados CA y perfiles mTLS."
+    }
+  ]
+}

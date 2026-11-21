@@ -19,11 +19,12 @@ import {
   saveRemoteKioskAdvisoryAck,
   shouldShowRemoteKioskAdvisory,
 } from '../../features/remote_kiosk';
+import { PkiManagerView } from '../../features/pki';
 import { FleetPanel } from '../updater/components/FleetPanel';
 
 export function View() {
   const { t } = useScopedI18n('core_apps/options');
-  const [activeMainTab, setActiveMainTab] = useState<'switches' | 'engines' | 'ecosystem' | 'updates'>('switches');
+  const [activeMainTab, setActiveMainTab] = useState<'switches' | 'certificates' | 'engines' | 'ecosystem' | 'updates'>('switches');
   const [showAdvisoryModal, setShowAdvisoryModal] = useState(false);
 
   const [options, setOptions] = useState(loadStoredOptions);
@@ -123,6 +124,17 @@ export function View() {
             </button>
             <button
               type="button"
+              onClick={() => setActiveMainTab('certificates')}
+              className={`rounded-xl px-3 py-1.5 text-xs font-bold transition-all ${
+                activeMainTab === 'certificates'
+                  ? 'bg-primary text-on-primary shadow-xs'
+                  : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'
+              }`}
+            >
+              {t('tab_certificates')}
+            </button>
+            <button
+              type="button"
               onClick={() => setActiveMainTab('engines')}
               className={`rounded-xl px-3 py-1.5 text-xs font-bold transition-all ${
                 activeMainTab === 'engines'
@@ -171,6 +183,8 @@ export function View() {
           onOpenAdvisory={() => setShowAdvisoryModal(true)}
           t={t}
         />
+      ) : activeMainTab === 'certificates' ? (
+        <PkiManagerView />
       ) : activeMainTab === 'engines' ? (
         <EnginesTab
           activeEngines={activeEngines}

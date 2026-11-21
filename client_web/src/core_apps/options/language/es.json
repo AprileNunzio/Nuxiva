@@ -62,6 +62,7 @@
     "ecosystem_plugins": "Plugins e Integraciones de Hardware",
     "ecosystem_brains": "Cerebros y Módulos de Memoria",
     "capabilities_badge": "Permisos Zero-Trust",
+    "tab_certificates": "Certificados y TLS",
     "tab_updates": "Actualizaciones"
   }
 }
