@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Coordinatore senso-motorio unificato per vista, udito direzionale, voce duplex e attuatori",
+    "en": "Unified sensorimotor coordinator for vision, directional hearing, duplex voice, and actuators",
+    "fr": "Coordinateur sensori-moteur unifié pour la vision, l'audition directionnelle, la voix duplex et les actionneurs",
+    "es": "Coordinador sensoriomotor unificado para visión, audición direccional, voz dúplex y actuadores"
+  },
+  "features": [
+    {
+      "it": "Nuxiva fonde in tempo reale sguardo, gesti delle mani, direzione della voce, interruzioni vocali e stato degli attuatori in un unico ciclo senso-motorio con risposta riflessa e messa in sicurezza immediata.",
+      "en": "Nuxiva fuses gaze, hand gestures, voice direction, speech barge-in, and actuator state in real time into a single sensorimotor cycle with reflexive response and immediate safety lockdown.",
+      "fr": "Nuxiva fusionne en temps réel le regard, les gestes de la main, la direction de la voix, les interruptions vocales et l'état des actionneurs dans un cycle sensori-moteur unique avec réponse réflexe et mise en sécurité immédiate.",
+      "es": "Nuxiva fusiona en tiempo real la mirada, los gestos de las manos, la dirección de la voz, las interrupciones vocales y el estado de los actuadores en un único ciclo sensoriomotor con respuesta refleja y bloqueo inmediato de seguridad."
+    }
+  ],
+  "fixes": []
+}

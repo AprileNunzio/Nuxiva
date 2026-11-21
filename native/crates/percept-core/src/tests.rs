@@ -313,3 +313,67 @@ fn test_sensory_drift_detection() {
         Some(SensoryDriftAlert::SensorFrozenOrLoss { .. })
     ));
 }
+
+#[test]
+fn test_embodied_sensorimotor_coordination() {
+    use crate::embodied::{
+        ArmActuatorCapability, EmbodiedOrgan, HearingEarSnapshot, SpeechVoiceState,
+        VisionEyeSnapshot, coordinate_sensorimotor_cycle,
+    };
+
+    let eyes = VisionEyeSnapshot {
+        camera_node_id: "cam.studio.front".to_owned(),
+        face_recognized_id: Some("nunzio".to_owned()),
+        gaze_confidence_bps: 9_100,
+        active_gesture_key: Some("pinch_confirm".to_owned()),
+        gesture_confidence_bps: 8_800,
+        scene_anomaly_bps: 100,
+    };
+    let ears = HearingEarSnapshot {
+        mic_array_node_id: "mic.array.desk".to_owned(),
+        azimuth_deg: -15,
+        speaker_id: Some("nunzio".to_owned()),
+        transcript_key: Some("cmd.deploy_production".to_owned()),
+        vocal_energy_bps: 6_200,
+        danger_acoustic_bps: 0,
+        barge_in_detected: true,
+    };
+    let voice = SpeechVoiceState {
+        output_node_id: "spk.studio.main".to_owned(),
+        currently_speaking: true,
+        active_utterance_key: Some("i18n.status.reading".to_owned()),
+        volume_bps: 7_500,
+    };
+    let arms = vec![ArmActuatorCapability {
+        actuator_id: "arm.workstation.01".to_owned(),
+        domain_key: "desktop_and_domotics".to_owned(),
+        online: true,
+        zero_trust_sealed: true,
+    }];
+
+    let outcome = coordinate_sensorimotor_cycle(&eyes, &ears, &voice, &arms).expect("embodied");
+    assert_eq!(outcome.attention_target_person, Some("nunzio".to_owned()));
+    assert!(outcome.reflexive_barge_cut);
+    assert!(!outcome.emergency_triggered);
+    assert!(
+        outcome
+            .commands
+            .iter()
+            .any(|c| c.organ == EmbodiedOrgan::VoiceSpeech
+                && c.command_key == "duplex.voice.immediate_duck_and_listen")
+    );
+    assert!(
+        outcome
+            .commands
+            .iter()
+            .any(|c| c.organ == EmbodiedOrgan::ArmsActuation
+                && c.command_key == "actuation.gesture.pinch_confirm")
+    );
+    assert!(
+        outcome
+            .commands
+            .iter()
+            .any(|c| c.organ == EmbodiedOrgan::ArmsActuation
+                && c.command_key == "actuation.intent.execute_gaze_confirmed")
+    );
+}
