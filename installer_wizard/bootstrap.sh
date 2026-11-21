@@ -793,6 +793,7 @@ do_config() {
     chmod 600 /etc/nuxiva/nuxiva.env
     grep -q '^NUXIVA_UPDATE_BRANCH=' /etc/nuxiva/nuxiva.env || echo "NUXIVA_UPDATE_BRANCH=$BRANCH" >> /etc/nuxiva/nuxiva.env
     grep -q '^NUXIVA_AUTO_UPDATE=' /etc/nuxiva/nuxiva.env || echo "NUXIVA_AUTO_UPDATE=1" >> /etc/nuxiva/nuxiva.env
+    grep -q '^NUXIVA_REMOTE_KIOSK=' /etc/nuxiva/nuxiva.env || echo "NUXIVA_REMOTE_KIOSK=0" >> /etc/nuxiva/nuxiva.env
     source "$WIZ/first_boot.sh" || return 1
     KIOSK=$(first_boot_kiosk_choice)
     first_boot_set_env NUXIVA_KIOSK "$KIOSK" "$WIZ/backend/env_format.py" >>"$LOG" 2>&1 || return 1

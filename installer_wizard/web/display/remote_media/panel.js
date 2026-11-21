@@ -1,6 +1,6 @@
 (() => {
   const D = window.NuxivaDisplay;
-  if (D.local || !window.isSecureContext || !navigator.mediaDevices?.getUserMedia) return;
+  if (D.local || !navigator.mediaDevices?.getUserMedia) return;
 
   const panel = document.getElementById("remote-media");
   const camera = document.getElementById("remote-media-camera");

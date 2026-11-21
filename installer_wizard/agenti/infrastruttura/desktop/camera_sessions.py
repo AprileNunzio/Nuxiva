@@ -80,20 +80,44 @@ class CameraSessions:
         self._leases[key] = replace(lease, next_frame_at=now + 1.0)
 
 
+def is_remote_kiosk_camera_enabled() -> bool:
+    if env_get("NUXIVA_REMOTE_KIOSK", "0") in ("1", "true", "yes", "on"):
+        return True
+    try:
+        from system_settings_api import get_display_settings
+        return bool(get_display_settings().get("remote_kiosk_enabled", False))
+    except Exception:
+        return False
+
+
 def camera_owner(request: Request) -> str:
     host = request.headers.get("host")
-    if (request.url.scheme != "https" or not host or request.headers.get("origin") != f"https://{host}"
-            or request.headers.get("x-nuxiva-request") != "1"):
+    if not host or request.headers.get("x-nuxiva-request") != "1":
         raise HTTPException(403, "camera.session.origin")
+    scheme = request.url.scheme
+    origin = request.headers.get("origin")
+    remote_kiosk_ok = is_remote_kiosk_camera_enabled()
+    if not remote_kiosk_ok:
+        if scheme != "https" or origin != f"https://{host}":
+            raise HTTPException(403, "camera.session.origin")
+    else:
+        if origin and origin not in (f"https://{host}", f"http://{host}"):
+            raise HTTPException(403, "camera.session.origin")
     if session_user(request):
         return _digest("user:" + request.cookies[auth.SESSION_COOKIE])
     if display_node(request):
         return _digest("node:" + request.cookies[COOKIE])
+    if remote_kiosk_ok:
+        from access import is_private, display_session
+        if is_private(request) or display_session(request):
+            peer = request.client.host if request.client else "unknown"
+            display_cookie = request.cookies.get(auth.DISPLAY_COOKIE, "")
+            return _digest(f"kiosk_client:{peer}:{display_cookie}")
     raise HTTPException(401, "camera.session.identity")
 
 
 def require_camera_enabled() -> None:
-    if env_get("NUXIVA_REMOTE_CAMERA_PREVIEW", "0") != "1":
+    if env_get("NUXIVA_REMOTE_CAMERA_PREVIEW", "0") != "1" and not is_remote_kiosk_camera_enabled():
         raise HTTPException(403, "camera.session.disabled")
 
 

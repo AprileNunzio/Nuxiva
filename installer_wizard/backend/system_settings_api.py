@@ -46,6 +46,7 @@ DEFAULT_DISPLAY_SETTINGS = {
     "session_mode": "shared",
     "surfaces": {},
     "screen_roles": {},
+    "remote_kiosk_enabled": False,
 }
 
 SURFACE_DEFAULTS = {
@@ -149,6 +150,11 @@ def save_display_settings(data: dict) -> dict:
     except OSError as exc:
         log.error("Impostazioni del display non salvate: %s", exc)
     store.display_settings = current
+    if "remote_kiosk_enabled" in data:
+        try:
+            _write_env({"NUXIVA_REMOTE_KIOSK": "1" if current["remote_kiosk_enabled"] else "0"})
+        except Exception as exc:
+            log.warning("Variabile NUXIVA_REMOTE_KIOSK non aggiornata: %s", exc)
     try:
         from agenti.desktop.desk import desk
         desk.publish()

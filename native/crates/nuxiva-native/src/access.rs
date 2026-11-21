@@ -84,3 +84,35 @@ impl RustAccessMatrix {
 pub fn access_is_host_origin(peer: &str, host: &str, locals: Vec<String>) -> bool {
     is_host_origin(peer, host, &normalized_locals(&locals))
 }
+
+#[pyfunction]
+#[pyo3(signature = (peer, scheme, host, is_admin, enabled = false, allow_http = true))]
+pub fn access_evaluate_remote_kiosk(
+    peer: &str,
+    scheme: &str,
+    host: &str,
+    is_admin: bool,
+    enabled: bool,
+    allow_http: bool,
+) -> (bool, String, bool, bool, bool) {
+    let cfg = nuxiva_access_core::RemoteKioskConfig {
+        enabled,
+        allow_http,
+        require_private_network: true,
+    };
+    let ctx = nuxiva_access_core::ClientContext {
+        peer,
+        scheme,
+        host,
+        is_admin,
+    };
+    let v = nuxiva_access_core::evaluate_remote_kiosk(&cfg, &ctx);
+    (
+        v.allowed,
+        v.reason,
+        v.media.camera_preview,
+        v.media.camera_probe,
+        v.media.microphone,
+    )
+}
+

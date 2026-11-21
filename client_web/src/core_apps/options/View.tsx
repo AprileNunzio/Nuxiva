@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Sliders } from 'lucide-react';
 import { useScopedI18n } from '../../shared/i18n/useScopedI18n';
 import { OptionCategory } from './types';
-import { loadStoredOptions, saveStoredOption } from './optionsState';
+import { loadStoredOptions, saveStoredOption, syncRemoteKioskBackend } from './optionsState';
 import { engineRegistry } from '../../engines/registry';
 import {
   loadActiveEngines,
@@ -14,11 +14,17 @@ import type { EngineFamily } from '../../engines/types';
 import { SwitchesTab } from './components/SwitchesTab';
 import { EnginesTab } from './components/EnginesTab';
 import { EcosystemTab } from './components/EcosystemTab';
+import { RemoteKioskAdvisoryModal } from './components/RemoteKioskAdvisoryModal';
+import {
+  saveRemoteKioskAdvisoryAck,
+  shouldShowRemoteKioskAdvisory,
+} from './components/remoteKioskStorage';
 import { FleetPanel } from '../updater/components/FleetPanel';
 
 export function View() {
   const { t } = useScopedI18n('core_apps/options');
   const [activeMainTab, setActiveMainTab] = useState<'switches' | 'engines' | 'ecosystem' | 'updates'>('switches');
+  const [showAdvisoryModal, setShowAdvisoryModal] = useState(shouldShowRemoteKioskAdvisory);
 
   const [options, setOptions] = useState(loadStoredOptions);
   const [search, setSearch] = useState('');
@@ -55,11 +61,25 @@ export function View() {
         if (opt.id === id) {
           const nextVal = !opt.enabled;
           saveStoredOption(id, nextVal);
+          if (id === 'display_remote_kiosk') {
+            saveRemoteKioskAdvisoryAck(nextVal);
+            void syncRemoteKioskBackend(nextVal);
+          }
           return { ...opt, enabled: nextVal };
         }
         return opt;
       })
     );
+  };
+
+  const handleAdvisoryDecision = (enable: boolean) => {
+    saveRemoteKioskAdvisoryAck(enable);
+    saveStoredOption('display_remote_kiosk', enable);
+    void syncRemoteKioskBackend(enable);
+    setOptions((current) =>
+      current.map((opt) => (opt.id === 'display_remote_kiosk' ? { ...opt, enabled: enable } : opt))
+    );
+    setShowAdvisoryModal(false);
   };
 
   const handleSelectActiveEngine = (family: EngineFamily, engineId: string) => {
@@ -148,6 +168,7 @@ export function View() {
           setSelectedCategory={setSelectedCategory}
           categories={categories}
           onToggle={handleToggle}
+          onOpenAdvisory={() => setShowAdvisoryModal(true)}
           t={t}
         />
       ) : activeMainTab === 'engines' ? (
@@ -163,6 +184,13 @@ export function View() {
       ) : (
         <FleetPanel />
       )}
+
+      <RemoteKioskAdvisoryModal
+        isOpen={showAdvisoryModal}
+        onClose={() => setShowAdvisoryModal(false)}
+        onDecision={handleAdvisoryDecision}
+        t={t}
+      />
     </div>
   );
 }

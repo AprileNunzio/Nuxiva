@@ -85,6 +85,15 @@ export const DEFAULT_OPTIONS: SystemSwitchOption[] = [
     tags: ['hud', 'kiosk', 'desktop', 'widget', 'indicatori'],
   },
   {
+    id: 'display_remote_kiosk',
+    category: 'display',
+    enabled: false,
+    defaultEnabled: false,
+    titleKey: 'opt_remote_kiosk_title',
+    descriptionKey: 'opt_remote_kiosk_desc',
+    tags: ['kiosk', 'chiosco', 'remoto', 'remote', 'display', 'schermo', 'webcam', 'microphone', 'sicurezza', 'security'],
+  },
+  {
     id: 'display_song_lyrics_overlay',
     category: 'display',
     enabled: true,
@@ -103,6 +112,23 @@ export const DEFAULT_OPTIONS: SystemSwitchOption[] = [
     tags: ['vitali', 'presenza', 'salute', 'vitals', 'sensors', 'privacy'],
   },
 ];
+
+export async function syncRemoteKioskBackend(enabled: boolean): Promise<void> {
+  if (typeof fetch === 'undefined') return;
+  try {
+    await fetch('/api/system/display-settings', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Nuxiva-Request': '1',
+      },
+      body: JSON.stringify({ remote_kiosk_enabled: enabled }),
+    });
+  } catch (error) {
+    console.error('syncRemoteKioskBackend error', error);
+  }
+}
 
 export function loadStoredOptions(): SystemSwitchOption[] {
   if (typeof window === 'undefined') return DEFAULT_OPTIONS;

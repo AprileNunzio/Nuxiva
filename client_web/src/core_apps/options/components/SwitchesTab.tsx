@@ -10,6 +10,7 @@ interface SwitchesTabProps {
   setSelectedCategory: (cat: OptionCategory | 'all') => void;
   categories: Array<{ id: OptionCategory | 'all'; label: string }>;
   onToggle: (id: string) => void;
+  onOpenAdvisory?: () => void;
   t: (k: string) => string;
 }
 
@@ -21,6 +22,7 @@ export function SwitchesTab({
   setSelectedCategory,
   categories,
   onToggle,
+  onOpenAdvisory,
   t,
 }: SwitchesTabProps) {
   const q = search.trim().toLowerCase();
@@ -99,6 +101,20 @@ export function SwitchesTab({
                 <p className="mt-1 text-xs text-on-surface-variant leading-relaxed">
                   {t(opt.descriptionKey)}
                 </p>
+                {opt.id === 'display_remote_kiosk' && onOpenAdvisory && (
+                  <div className="mt-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenAdvisory();
+                      }}
+                      className="rounded-lg border border-outline-variant/60 bg-surface-container-high px-2.5 py-1 text-[11px] font-semibold text-primary transition hover:bg-surface-container-highest focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      {t('advisory_review_btn')}
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="shrink-0">

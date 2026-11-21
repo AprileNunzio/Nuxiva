@@ -3,7 +3,7 @@ import time
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse
 
-from access import NO_CACHE, is_local, require_admin, require_display, require_internal, session_user
+from access import NO_CACHE, is_local, is_private, require_admin, require_display, require_internal, session_user
 from config import env_get
 from agenti.authz.access_control import account, allows
 from agenti.desktop.camera_probe import probe_camera
@@ -24,13 +24,17 @@ public_routes.add_api_route("/api/display/remote-media/camera/probe", probe_came
 @public_routes.get("/api/display/remote-media")
 async def remote_media(request: Request):
     user = session_user(request) if request.url.scheme == "https" else None
-    authorized = request.url.scheme == "https" and bool(user or display_node(request))
-    camera = authorized and env_get("NUXIVA_REMOTE_CAMERA_PREVIEW", "0") == "1"
+    from agenti.desktop.display_scope import is_remote_kiosk_active
+    kiosk_active = is_remote_kiosk_active() and is_private(request)
+    authorized = (request.url.scheme == "https" and bool(user or display_node(request))) or kiosk_active
+    camera = (authorized and (kiosk_active or env_get("NUXIVA_REMOTE_CAMERA_PREVIEW", "0") == "1"))
+    probe = bool(camera and user and env_get("NUXIVA_REMOTE_CAMERA_PROBE", "0") == "1"
+                 and allows(account(user)["role"], "api.admin"))
+    microphone = (authorized and (kiosk_active or env_get("NUXIVA_REMOTE_MIC_INPUT", "0") == "1"))
     return JSONResponse({
         "camera_preview": camera,
-        "camera_probe": bool(camera and user and env_get("NUXIVA_REMOTE_CAMERA_PROBE", "0") == "1"
-                             and allows(account(user)["role"], "api.admin")),
-        "microphone": authorized and env_get("NUXIVA_REMOTE_MIC_INPUT", "0") == "1",
+        "camera_probe": probe,
+        "microphone": microphone,
     }, headers=NO_CACHE)
 
 

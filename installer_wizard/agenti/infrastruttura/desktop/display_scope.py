@@ -27,8 +27,20 @@ def is_host_display(request) -> bool:
     return is_host_origin(request.client.host, request.headers.get("host", ""))
 
 
+def is_remote_kiosk_active() -> bool:
+    if env_get("NUXIVA_REMOTE_KIOSK", "0") in ("1", "true", "yes", "on"):
+        return True
+    try:
+        from system_settings_api import get_display_settings
+        return bool(get_display_settings().get("remote_kiosk_enabled", False))
+    except Exception:
+        return False
+
+
 def remote_display_scope(request) -> RemoteScope:
     if is_host_display(request):
+        return False
+    if is_remote_kiosk_active() and is_private(request) and not any(name in request.headers for name in PROXY_HEADERS):
         return False
     if (env_get("NUXIVA_KIOSK", "1") == "0" and not gate_enabled() and is_private(request)
             and not any(name in request.headers for name in PROXY_HEADERS)):

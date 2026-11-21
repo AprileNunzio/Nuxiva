@@ -108,6 +108,7 @@ EDITABLE_KEYS = {
     "NUXIVA_UPDATE_INTERVAL_MIN": "Controllo aggiornamenti ogni N minuti (default 5)",
     "NUXIVA_UPDATE_BRANCH": "Ramo GitHub",
     "NUXIVA_KIOSK": "Display kiosk (1/0)",
+    "NUXIVA_REMOTE_KIOSK": "Modalità kiosk da PC remoto (1/0, default 0)",
     "GEMINI_API_KEY": "API key Google Gemini (fallback)",
     "ANTHROPIC_API_KEY": "API key Anthropic Claude (fallback)",
     "NUXIVA_TELEGRAM_TOKEN": "Token del bot Telegram (da @BotFather)",

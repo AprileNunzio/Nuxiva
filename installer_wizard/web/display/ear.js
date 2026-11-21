@@ -8,7 +8,7 @@
   let autoLevel = false, agcOn = false, autoCal = true;
   const agcLearned = () => { try { return localStorage.getItem(AUTO_AGC) === "1"; } catch (e) { return false; } };
   let remoteEnabled = false, remoteGeneration = 0;
-  const secure = () => window.isSecureContext && !!navigator.mediaDevices;
+  const secure = () => (window.isSecureContext || Boolean(navigator.mediaDevices?.getUserMedia)) && !!navigator.mediaDevices;
   let hostMicActive = false;
   const micAllowed = () => D.local ? !hostMicActive : secure() && remoteEnabled && D.remoteMedia?.microphone === true;
   const socketUrl = () => `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/ear`;
