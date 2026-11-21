@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Verifica crittografica deterministica in sandbox per la fucina degli strumenti",
+    "en": "Deterministic sandbox cryptographic verification for the tool forge",
+    "fr": "Vérification cryptographique déterministe en bac à sable pour la forge d'outils",
+    "es": "Verificación criptográfica determinista en sandbox para la forja de herramientas"
+  },
+  "features": [
+    {
+      "it": "Gli strumenti creati autonomamente da Nuxiva vengono attivati solo dopo aver superato la verifica deterministica dei casi di test in sandbox isolata con digest di prova.",
+      "en": "Tools forged autonomously by Nuxiva are activated only after passing deterministic test-case verification in an isolated sandbox with a proof digest.",
+      "fr": "Les outils forgés de manière autonome par Nuxiva ne sont activés qu'après avoir réussi la vérification déterministe des cas de test dans un bac à sable isolé avec empreinte de preuve.",
+      "es": "Las herramientas creadas de forma autónoma por Nuxiva solo se activan tras superar la verificación determinista de los casos de prueba en un entorno aislado con resumen de prueba."
+    }
+  ],
+  "fixes": []
+}

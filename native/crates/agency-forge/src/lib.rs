@@ -3,6 +3,7 @@ pub mod catalog;
 pub mod error;
 pub mod manifest;
 pub mod pipeline;
+pub mod sandbox;
 
 #[cfg(test)]
 mod tests;
@@ -17,3 +18,7 @@ pub use manifest::{
     ForgedToolRecord, ForgedToolSpec, MAX_TESTS, MIN_TESTS, ToolStatus, ToolTestCase,
 };
 pub use pipeline::{SynthesisDiagnosis, diagnose_failure, values_equivalent};
+pub use sandbox::{
+    MAX_STDOUT_BYTES, MAX_WALL_MS, SandboxExecutionOutcome, VerificationProof,
+    verify_sandbox_outcomes,
+};

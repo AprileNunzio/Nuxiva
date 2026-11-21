@@ -83,6 +83,30 @@ fn thought_socratic_and_specialist_endpoints_work() -> Result<(), AgencyError> {
     )?;
     assert_eq!(at(&epistemic, "/self_probes/0/id"), json!("hyp.storage"));
 
+    let forge_verify = call(
+        &mut engine,
+        json!({
+            "op": "forge_verify_sandbox",
+            "name": "calc_vat",
+            "version": 1,
+            "code": "def run(args):\n    return int(args['price'] * 1.22)\n",
+            "expected_cases": [
+                { "args": { "price": 100 }, "expect": 122 }
+            ],
+            "outcomes": [
+                {
+                    "case_index": 0,
+                    "exit_code": 0,
+                    "duration_ms": 9,
+                    "stdout_json": 122,
+                    "stderr_excerpt": null
+                }
+            ]
+        }),
+    )?;
+    assert_eq!(at(&forge_verify, "/ok"), json!(true));
+    assert_eq!(at(&forge_verify, "/proof/passed_cases"), json!(1));
+
     Ok(())
 }
 

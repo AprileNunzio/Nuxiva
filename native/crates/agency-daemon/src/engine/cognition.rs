@@ -1,5 +1,8 @@
 use agency_domain::TaskId;
-use agency_forge::{diagnose_failure, inspect_tool_source, validate_tool_name};
+use agency_forge::{
+    SandboxExecutionOutcome, ToolTestCase, diagnose_failure, inspect_tool_source,
+    validate_tool_name, verify_sandbox_outcomes,
+};
 use agency_thought::{
     ArchitectureCandidate, EpistemicHypothesis, EvaluationWeights, ProbeFinding, SubTaskBlueprint,
     evaluate_candidates, expand_task_node, interrogate_goal, recruit_specialists,
@@ -93,6 +96,50 @@ impl Engine {
                 "name": clean_name,
                 "call_name": format!("x_{clean_name}"),
                 "verdict": verdict,
+            }),
+            Err(err) => {
+                let diag = diagnose_failure(&err);
+                json!({
+                    "ok": false,
+                    "error": err.to_string(),
+                    "diagnosis": diag,
+                })
+            }
+        }
+    }
+
+    pub(crate) fn forge_verify_sandbox(
+        name: &str,
+        version: u32,
+        code: &str,
+        expected_cases: &[ToolTestCase],
+        outcomes: &[SandboxExecutionOutcome],
+    ) -> Value {
+        let clean_name = match validate_tool_name(name) {
+            Ok(n) => n,
+            Err(err) => {
+                let diag = diagnose_failure(&err);
+                return json!({
+                    "ok": false,
+                    "error": err.to_string(),
+                    "diagnosis": diag,
+                });
+            }
+        };
+        if let Err(err) = inspect_tool_source(code) {
+            let diag = diagnose_failure(&err);
+            return json!({
+                "ok": false,
+                "error": err.to_string(),
+                "diagnosis": diag,
+            });
+        }
+        match verify_sandbox_outcomes(&clean_name, version.max(1), code, expected_cases, outcomes) {
+            Ok(proof) => json!({
+                "ok": true,
+                "name": clean_name,
+                "call_name": format!("x_{clean_name}"),
+                "proof": proof,
             }),
             Err(err) => {
                 let diag = diagnose_failure(&err);

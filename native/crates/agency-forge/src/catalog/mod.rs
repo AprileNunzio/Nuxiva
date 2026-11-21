@@ -55,6 +55,29 @@ impl ForgeCatalog {
         Ok(tool.clone())
     }
 
+    pub fn verify_and_activate(
+        &mut self,
+        name: &str,
+        outcomes: &[crate::sandbox::SandboxExecutionOutcome],
+    ) -> Result<(ForgedToolRecord, crate::sandbox::VerificationProof), ForgeError> {
+        let key = name.trim().trim_start_matches("x_");
+        let tool = self
+            .tools
+            .get_mut(key)
+            .ok_or_else(|| ForgeError::NotFound(key.to_owned()))?;
+        let proof = crate::sandbox::verify_sandbox_outcomes(
+            &tool.name,
+            tool.version,
+            &tool.code,
+            &tool.tests,
+            outcomes,
+        )?;
+        tool.approved = true;
+        tool.status = ToolStatus::Active;
+        tool.last_error = None;
+        Ok((tool.clone(), proof))
+    }
+
     pub fn revoke(&mut self, name: &str, reason: &str) -> Result<ForgedToolRecord, ForgeError> {
         let key = name.trim().trim_start_matches("x_");
         let tool = self

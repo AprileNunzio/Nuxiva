@@ -1,6 +1,7 @@
 use agency_action::ReplacementChunk;
 use agency_domain::TaskSpec;
 use agency_foresight::{EventSpec, ScenarioSpec};
+use agency_forge::{SandboxExecutionOutcome, ToolTestCase};
 use agency_scheduler::{ModelProfile, Settings};
 use agency_thought::{ArchitectureCandidate, EpistemicHypothesis, ProbeFinding, SubTaskBlueprint};
 use serde::{Deserialize, Serialize};
@@ -249,6 +250,14 @@ pub enum Request {
     ForgeInspect {
         name: String,
         code: String,
+    },
+    ForgeVerifySandbox {
+        name: String,
+        #[serde(default)]
+        version: u32,
+        code: String,
+        expected_cases: Vec<ToolTestCase>,
+        outcomes: Vec<SandboxExecutionOutcome>,
     },
     ForesightCreate {
         id: String,

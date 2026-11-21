@@ -300,6 +300,19 @@ impl Engine {
                 subtasks,
             } => self.task_expand(&project, &task, &subtasks),
             Request::ForgeInspect { name, code } => Ok(Self::forge_inspect(&name, &code)),
+            Request::ForgeVerifySandbox {
+                name,
+                version,
+                code,
+                expected_cases,
+                outcomes,
+            } => Ok(Self::forge_verify_sandbox(
+                &name,
+                version,
+                &code,
+                &expected_cases,
+                &outcomes,
+            )),
             request @ (Request::ForesightList {}
             | Request::ForesightReport { .. }
             | Request::ForesightAgent { .. }

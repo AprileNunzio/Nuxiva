@@ -93,3 +93,60 @@ fn values_equivalent_handles_float_tolerance_and_nested_objects() {
     let b = json!({"total": 122.0_f64, "items": [1, 2]});
     assert!(values_equivalent(&a, &b));
 }
+
+#[test]
+fn sandbox_verifier_activates_tool_only_on_deterministic_proof() {
+    use crate::SandboxExecutionOutcome;
+
+    let mut catalog = ForgeCatalog::new();
+    let code = "def run(args):\n    return int(args['price'] * 1.22)\n";
+    let proposed = catalog.propose(sample_spec("calc_vat", code));
+    assert!(proposed.is_ok());
+
+    let bad_outcomes = vec![
+        SandboxExecutionOutcome {
+            case_index: 0,
+            exit_code: 0,
+            duration_ms: 12,
+            stdout_json: Some(json!(122)),
+            stderr_excerpt: None,
+        },
+        SandboxExecutionOutcome {
+            case_index: 1,
+            exit_code: 0,
+            duration_ms: 15,
+            stdout_json: Some(json!(999)),
+            stderr_excerpt: None,
+        },
+    ];
+    assert!(
+        catalog
+            .verify_and_activate("calc_vat", &bad_outcomes)
+            .is_err()
+    );
+
+    let good_outcomes = vec![
+        SandboxExecutionOutcome {
+            case_index: 0,
+            exit_code: 0,
+            duration_ms: 12,
+            stdout_json: Some(json!(122)),
+            stderr_excerpt: None,
+        },
+        SandboxExecutionOutcome {
+            case_index: 1,
+            exit_code: 0,
+            duration_ms: 15,
+            stdout_json: Some(json!(244)),
+            stderr_excerpt: None,
+        },
+    ];
+    let verified = catalog.verify_and_activate("calc_vat", &good_outcomes);
+    assert!(verified.is_ok());
+    if let Ok((tool, proof)) = verified {
+        assert!(tool.is_callable());
+        assert_eq!(proof.passed_cases, 2);
+        assert_eq!(proof.total_duration_ms, 27);
+        assert!(proof.digest.starts_with("fnv64:"));
+    }
+}
