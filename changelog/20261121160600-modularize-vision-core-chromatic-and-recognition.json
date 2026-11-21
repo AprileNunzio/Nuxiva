@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Separazione modulare dell'analisi cromatica percettiva nel motore di visione",
+    "en": "Modular separation of perceptual chromatic analysis in the vision engine",
+    "fr": "Séparation modulaire de l'analyse chromatique perceptive dans le moteur de vision",
+    "es": "Separación modular del análisis cromático perceptivo en el motor de visión"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Il motore di riconoscimento visivo separa ora lo spettro cromatico e la ri-identificazione delle persone in moduli dedicati e compatti.",
+      "en": "The visual recognition engine now separates chromatic spectrum analysis and person re-identification into dedicated compact modules.",
+      "fr": "Le moteur de reconnaissance visuelle sépare désormais l'analyse du spectre chromatique et la ré-identification des personnes en modules dédiés et compacts.",
+      "es": "El motor de reconocimiento visual separa ahora el análisis del espectro cromático y la reidentificación de personas en módulos dedicados y compactos."
+    }
+  ]
+}

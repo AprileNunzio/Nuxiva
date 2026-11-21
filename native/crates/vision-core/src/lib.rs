@@ -2,6 +2,7 @@
 
 mod buffer;
 mod cadence;
+pub mod chromatic;
 mod policy;
 pub mod recognition;
 
