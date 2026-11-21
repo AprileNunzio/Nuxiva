@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-21",
+  "title": {
+    "it": "Compilatore di scorciatoie a zero token per le richieste ricorrenti",
+    "en": "Zero-token shortcut compiler for recurring requests",
+    "fr": "Compilateur de raccourcis sans jetons pour les requêtes récurrentes",
+    "es": "Compilador de atajos sin tokens para solicitudes recurrentes"
+  },
+  "features": [
+    {
+      "it": "Quando una richiesta risolta dal modello linguistico si ripete con esito confermato, Nuxiva la promuove automaticamente a riflesso istantaneo senza consumare token.",
+      "en": "When a request resolved by the language model recurs with a confirmed outcome, Nuxiva automatically promotes it to an instant reflex without consuming tokens.",
+      "fr": "Lorsqu'une requête résolue par le modèle linguistique se répète avec un résultat confirmé, Nuxiva la promeut automatiquement en réflexe instantané sans consommer de jetons.",
+      "es": "Cuando una solicitud resuelta por el modelo lingüístico se repite con un resultado confirmado, Nuxiva la promueve automáticamente a un reflejo instantáneo sin consumir tokens."
+    }
+  ],
+  "fixes": []
+}

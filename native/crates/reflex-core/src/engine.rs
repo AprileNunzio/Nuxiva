@@ -11,6 +11,7 @@ use crate::gaze_gate::{GazeAcousticGate, GazeGateDecision, GazeInput};
 use crate::language::LanguageIdentifier;
 use crate::plasticity::{PlasticityMemory, PredictionResult};
 use crate::proactive_sentinel::{ProactiveAdvice, ProactiveSentinel, SentinelSensorySnapshot};
+use crate::shortcut_compiler::{CompiledShortcut, ShortcutCompiler};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ReflexEvaluation {
@@ -29,6 +30,7 @@ pub struct ReflexEngine {
     duplex: Arc<RwLock<DuplexBargeRouter>>,
     sentinel: Arc<ProactiveSentinel>,
     fillers: Arc<FillerEngine>,
+    compiler: Arc<ShortcutCompiler>,
 }
 
 impl Default for ReflexEngine {
@@ -45,6 +47,7 @@ impl ReflexEngine {
             duplex: Arc::new(RwLock::new(DuplexBargeRouter::new())),
             sentinel: Arc::new(ProactiveSentinel::default()),
             fillers: Arc::new(FillerEngine::new()),
+            compiler: Arc::new(ShortcutCompiler::new()),
         }
     }
 
@@ -97,7 +100,6 @@ impl ReflexEngine {
             }
         };
 
-        // 5. Immediate Zero-Silence Reflex Utterance
         let immediate_utterance = if let Some(ref oracle) = formal_oracle {
             ReflexUtterance {
                 text: oracle.formatted_value.clone(),
@@ -105,6 +107,17 @@ impl ReflexEngine {
                 delivery_style: acoustic.delivery_style,
                 volume_scale: acoustic.volume_scale,
                 semantic_token: format!("oracle_{}", oracle.domain),
+            }
+        } else if let Some(pred) = &fast_prediction
+            && should_fast
+            && let Some(compiled_text) = self.compiler.resolve_compiled_output(&pred.action)
+        {
+            ReflexUtterance {
+                text: compiled_text,
+                language: lang.to_owned(),
+                delivery_style: acoustic.delivery_style,
+                volume_scale: acoustic.volume_scale,
+                semantic_token: format!("shortcut_{}", pred.action),
             }
         } else {
             self.fillers
@@ -124,7 +137,6 @@ impl ReflexEngine {
         }
     }
 
-    // Fase 1: Duplex Barge-in and Conversational Steering
     pub fn start_speaking(&self, text: &str, phase: VocalStreamPhase, now_ms: u64) {
         if let Ok(mut guard) = self.duplex.write() {
             guard.start_speaking(text, phase, now_ms);
@@ -146,19 +158,16 @@ impl ReflexEngine {
         }
     }
 
-    // Fase 2: Gaze-to-speech Natural Activation Gate
     #[must_use]
     pub fn gaze_gate(&self, input: GazeInput) -> GazeGateDecision {
         GazeAcousticGate::evaluate(input)
     }
 
-    // Fase 3: Formal Oracle direct query
     #[must_use]
     pub fn formal_resolve(&self, query: &str) -> Option<FormalOracleResult> {
         FormalOracle::try_resolve(query)
     }
 
-    // Fase 4: Proactive Sentinel Autonomous Inspection
     #[must_use]
     pub fn proactive_inspect(
         &self,
@@ -174,7 +183,34 @@ impl ReflexEngine {
     }
 
     #[must_use]
+    pub fn distill_slow_path(
+        &self,
+        query: &str,
+        intent: &str,
+        action_target: &str,
+        deterministic_output: Option<&str>,
+    ) -> Option<CompiledShortcut> {
+        let shortcut = self.compiler.record_slow_resolution(
+            query,
+            intent,
+            action_target,
+            deterministic_output,
+        )?;
+        for ex in &shortcut.exemplars {
+            let _ = self
+                .memory
+                .reinforce(ex, &shortcut.intent, &shortcut.action_target);
+        }
+        Some(shortcut)
+    }
+
+    #[must_use]
     pub fn memory(&self) -> &PlasticityMemory {
         &self.memory
+    }
+
+    #[must_use]
+    pub fn compiler(&self) -> &ShortcutCompiler {
+        &self.compiler
     }
 }

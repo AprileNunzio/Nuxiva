@@ -9,6 +9,7 @@ pub mod gaze_gate;
 pub mod language;
 pub mod plasticity;
 pub mod proactive_sentinel;
+pub mod shortcut_compiler;
 
 pub use acoustic::{AcousticAnalyzer, AcousticContext, DeliveryStyle};
 pub use duplex_barge::{BargeResolution, DuplexBargeRouter, VocalStreamPhase, VocalStreamState};
@@ -21,6 +22,7 @@ pub use plasticity::{PlasticityMemory, PredictionResult};
 pub use proactive_sentinel::{
     ProactiveAdvice, ProactiveSentinel, ProactiveUrgency, SentinelSensorySnapshot,
 };
+pub use shortcut_compiler::{CompiledShortcut, ShortcutCompiler, SlowPathTrace};
 
 #[cfg(test)]
 #[allow(clippy::expect_used, clippy::panic)]
@@ -192,5 +194,49 @@ mod tests {
         assert!(advice_sec.should_intervene);
         assert_eq!(advice_sec.urgency, ProactiveUrgency::Medium);
         assert_eq!(advice_sec.semantic_reason, "network_threats_mitigated");
+    }
+
+    #[test]
+    fn test_zero_token_shortcut_distillation() {
+        let engine = ReflexEngine::new();
+        let q1 = "avvia backup cassaforte crittografata";
+        let q2 = "avvia il backup della cassaforte crittografata";
+        let q3 = "esegui backup cassaforte crittografata adesso";
+
+        assert!(
+            engine
+                .distill_slow_path(
+                    q1,
+                    "action_direct",
+                    "vault.backup_encrypted",
+                    Some("i18n.vault.backup_done")
+                )
+                .is_none()
+        );
+        assert!(
+            engine
+                .distill_slow_path(
+                    q2,
+                    "action_direct",
+                    "vault.backup_encrypted",
+                    Some("i18n.vault.backup_done")
+                )
+                .is_none()
+        );
+        let compiled = engine.distill_slow_path(
+            q3,
+            "action_direct",
+            "vault.backup_encrypted",
+            Some("i18n.vault.backup_done"),
+        );
+        assert!(compiled.is_some());
+        if let Some(sc) = compiled {
+            assert!(sc.promoted_to_fast_path);
+            assert_eq!(sc.consolidated_hits, 3);
+        }
+
+        let eval = engine.evaluate(q1, 0.15, 140.0, 14);
+        assert!(eval.should_execute_fast);
+        assert_eq!(eval.immediate_utterance.text, "i18n.vault.backup_done");
     }
 }
