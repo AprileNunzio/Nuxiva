@@ -2,16 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useStudioI18n } from '../scope';
 import type { Artifact } from '../types';
 import { saveSmbFile, executeCode, type ExecutionResult } from '../api';
+import { MonacoCodeEditor } from './MonacoCodeEditor';
 import { Markdown } from './Markdown';
 
-/** Rimuove script, handler inline e riferimenti esterni pericolosi dall'SVG prima dell'anteprima. */
-export function sanitizeSvg(svg: string): string {
-  return svg
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi, '')
-    .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
-    .replace(/(href|xlink:href)\s*=\s*("\s*javascript:[^"]*"|'\s*javascript:[^']*')/gi, '');
-}
+import { sanitizeSvg } from '../sanitizeSvg';
 
 interface ArtifactCanvasProps {
   artifact: Artifact | null;
@@ -398,12 +392,10 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
             </div>
           )
         ) : isEditing ? (
-          <textarea
+          <MonacoCodeEditor
             value={content}
-            onChange={(e) => applyEdit(e.target.value)}
-            spellCheck={false}
-            aria-label={artifact.title}
-            className="w-full h-full min-h-[400px] resize-none bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-xs text-slate-100 leading-relaxed focus:outline-none focus:border-cyan-500/60"
+            language={artifact.language || (artifact.kind === 'code' ? 'python' : 'plaintext')}
+            onChange={applyEdit}
           />
         ) : (
           <div className="flex font-mono text-xs text-slate-200 leading-relaxed overflow-x-auto whitespace-pre">

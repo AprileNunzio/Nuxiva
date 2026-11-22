@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sanitizeSvg } from './ArtifactCanvas';
+import { sanitizeSvg } from '../sanitizeSvg';
 
 describe('sanitizeSvg', () => {
   it('strips scripts, inline handlers, foreignObject and javascript: links', () => {

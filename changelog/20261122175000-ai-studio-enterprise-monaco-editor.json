@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-22",
+  "title": {
+    "it": "AI Studio Enterprise: editor Monaco integrato nel canvas con syntax highlighting e layout automatico",
+    "en": "AI Studio Enterprise: embedded Monaco Editor inside artifact canvas with dynamic syntax highlighting",
+    "fr": "AI Studio Enterprise : éditeur Monaco intégré au canevas avec coloration syntaxique dynamique",
+    "es": "AI Studio Enterprise: editor Monaco integrado en el lienzo con resaltado de sintaxis dinámico"
+  },
+  "features": [
+    {
+      "it": "Integrazione di Monaco Editor professionale direttamente nel canvas per la visualizzazione e modifica del codice sorgente.",
+      "en": "Integration of professional Monaco Editor directly within the artifact canvas for code inspection and editing.",
+      "fr": "Intégration de l'éditeur Monaco professionnel directement dans le canevas d'artefacts pour l'inspection et l'édition de code.",
+      "es": "Integración del editor profesional Monaco directamente en el lienzo de artefactos para inspección y edición de código."
+    },
+    {
+      "it": "Evidenziazione della sintassi dinamica in base al linguaggio con layout automatico, numerazione delle righe e folding.",
+      "en": "Dynamic syntax highlighting tailored to file languages with automatic layout resizing, line numbering, and folding.",
+      "fr": "Coloration syntaxique dynamique selon le langage avec redimensionnement automatique, numérotation et repliage.",
+      "es": "Resaltado de sintaxis dinámico según el lenguaje con ajuste automático de diseño, numeración de líneas y plegado."
+    }
+  ]
+}
