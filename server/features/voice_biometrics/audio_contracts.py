@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 class AudioStreamFrame(BaseModel):
@@ -16,3 +17,7 @@ class TTSRequest(BaseModel):
     text: str
     voice_profile: str = "it_IT-alan-medium"
     speed: float = 1.0
+    user_id: Optional[str] = None
+    volume_db: Optional[float] = None
+    pitch_shift: Optional[float] = None
+    whisper_mode: Optional[bool] = None

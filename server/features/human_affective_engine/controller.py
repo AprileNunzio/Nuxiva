@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from typing import Dict, Any, Optional
 from server.features.human_affective_engine.interfaces import (
     PhysiologicalMultimodalPayload,
+    VoiceAudioAnalysisPayload,
     AffectiveInferenceResult,
 )
 from server.features.human_affective_engine.affective_service import human_affective_service
@@ -11,6 +12,10 @@ affective_router = APIRouter(prefix="/affective", tags=["human_affective_engine"
 @affective_router.post("/evaluate", response_model=AffectiveInferenceResult)
 async def evaluate_affective_state(payload: PhysiologicalMultimodalPayload) -> AffectiveInferenceResult:
     return await human_affective_service.process_multimodal_assessment(payload)
+
+@affective_router.post("/analyze-voice", response_model=AffectiveInferenceResult)
+async def analyze_voice_paralinguistics(payload: VoiceAudioAnalysisPayload) -> AffectiveInferenceResult:
+    return await human_affective_service.process_voice_payload(payload)
 
 @affective_router.get("/user/{user_id}/status", response_model=Optional[AffectiveInferenceResult])
 async def get_user_mood_status(user_id: str) -> Optional[AffectiveInferenceResult]:

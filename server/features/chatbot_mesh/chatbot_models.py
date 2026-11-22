@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import time
 from pydantic import BaseModel, Field
 
@@ -26,6 +26,9 @@ class ChatMessagePayload(BaseModel):
     channel: ChannelType = ChannelType.WEB_CONSOLE
     text: str
     attachments: List[str] = Field(default_factory=list)
+    voice_biomarkers: Optional[Dict[str, Any]] = None
+    audio_pcm16_b64: Optional[str] = None
+    audio_sample_rate: int = 16000
     timestamp: float = Field(default_factory=time.time)
 
 class ChatbotWidgetSpec(BaseModel):
@@ -42,6 +45,7 @@ class ChatbotResponsePayload(BaseModel):
     tools_invoked: List[Dict[str, Any]] = Field(default_factory=list)
     active_widgets: List[ChatbotWidgetSpec] = Field(default_factory=list)
     reactions: List[Dict[str, Any]] = Field(default_factory=list)
+    voice_modulation: Dict[str, Any] = Field(default_factory=dict)
     confidence: float = 1.0
     latency_ms: float = 0.0
     timestamp: float = Field(default_factory=time.time)

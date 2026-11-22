@@ -1,3 +1,4 @@
+import base64
 import time
 import logging
 import httpx
@@ -17,6 +18,10 @@ from server.features.agent_tools.social_tools import instagram_generate_copy
 from server.features.agent_tools.google_suite_tools import google_calendar_schedule
 from server.features.voice_engine.vocal_profiles.registry import vocal_profile_registry
 from server.features.voice_engine.reactions.reaction_service import emoticon_reaction_service
+from server.features.human_affective_engine.interfaces import VoiceAcousticBiomarkers
+from server.features.human_affective_engine.vocal_biomarker_extractor import VocalBiomarkerAnalyzer
+from server.features.human_affective_engine.affective_fusion_engine import affective_fusion_engine
+from server.features.human_affective_engine.adaptive_response_orchestrator import adaptive_response_orchestrator
 
 logger = logging.getLogger("nuxiva.conversational_engine")
 
@@ -80,7 +85,35 @@ class ConversationalBotEngine:
             f"{vocal_instructions}\n"
             f"{reaction_instructions}"
         )
-        return prompt
+        return adaptive_response_orchestrator.modulate_system_prompt(
+            user_id,
+            prompt,
+            tts_engine=tts_engine,
+        )
+
+    def _ingest_voice_context(self, payload: ChatMessagePayload) -> None:
+        if payload.audio_pcm16_b64:
+            try:
+                raw_bytes = base64.b64decode(payload.audio_pcm16_b64)
+                analyzer = VocalBiomarkerAnalyzer(sample_rate=payload.audio_sample_rate)
+                vox = analyzer.extract_from_pcm16_bytes(raw_bytes)
+                inference = affective_fusion_engine.infer_from_voice_only(
+                    payload.user_id, vox, timestamp=payload.timestamp
+                )
+                adaptive_response_orchestrator.register_inference(inference)
+                return
+            except Exception as exc:
+                logger.warning("Failed to analyze attached PCM16 voice audio: %s", exc)
+
+        if payload.voice_biomarkers:
+            try:
+                vox = VoiceAcousticBiomarkers(**payload.voice_biomarkers)
+                inference = affective_fusion_engine.infer_from_voice_only(
+                    payload.user_id, vox, timestamp=payload.timestamp
+                )
+                adaptive_response_orchestrator.register_inference(inference)
+            except Exception as exc:
+                logger.warning("Failed to parse attached voice_biomarkers: %s", exc)
 
     async def handle_message(self, payload: ChatMessagePayload) -> ChatbotResponsePayload:
         start_time = time.time()
@@ -88,6 +121,7 @@ class ConversationalBotEngine:
         agent_id = payload.agent_id
         text = payload.text.strip()
 
+        self._ingest_voice_context(payload)
         custom = user_agent_customization_service.get_personalization(user_id, agent_id)
 
         user_record = ChatHistoryRecord(sender=f"user:{user_id}", text=text)
@@ -189,6 +223,7 @@ class ConversationalBotEngine:
             if active_model and ollama_endpoint:
                 try:
                     sys_prompt = self.build_personalized_system_prompt(user_id, agent_id)
+                    llm_temp = adaptive_response_orchestrator.get_recommended_temperature(user_id, default=0.55)
                     async with httpx.AsyncClient(timeout=40) as client:
                         resp = await client.post(
                             f"{ollama_endpoint.rstrip('/')}/api/chat",
@@ -200,7 +235,7 @@ class ConversationalBotEngine:
                                 ],
                                 "stream": False,
                                 "options": {
-                                    "temperature": 0.3,
+                                    "temperature": llm_temp,
                                 },
                             },
                         )
@@ -243,6 +278,7 @@ class ConversationalBotEngine:
                 data={"reactions": extracted_reactions},
             ))
 
+        voice_modulation = adaptive_response_orchestrator.get_voice_modulation_params(user_id)
         latency = round((time.time() - start_time) * 1000, 2)
         response = ChatbotResponsePayload(
             agent_id=agent_id,
@@ -251,6 +287,7 @@ class ConversationalBotEngine:
             tools_invoked=tools_invoked,
             active_widgets=active_widgets,
             reactions=extracted_reactions,
+            voice_modulation=voice_modulation,
             latency_ms=latency,
         )
 

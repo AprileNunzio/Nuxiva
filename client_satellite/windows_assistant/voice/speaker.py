@@ -20,13 +20,27 @@ class Speaker:
         self._stop = threading.Event()
         self.level = 0.0
 
-    def play_wav(self, data: bytes, cancelled: threading.Event | None = None) -> None:
+    def play_wav(
+        self,
+        data: bytes,
+        cancelled: threading.Event | None = None,
+        volume_db: float = 0.0,
+        whisper_mode: bool = False,
+    ) -> None:
         with wave.open(io.BytesIO(data)) as w:
             rate, channels, width = w.getframerate(), w.getnchannels(), w.getsampwidth()
             frames = w.readframes(w.getnframes())
         dtype = SAMPLE_TYPES[width]
         audio = np.frombuffer(frames, dtype=dtype).astype(np.float32)
         audio = (audio - 128) / 128 if width == 1 else audio / float(np.iinfo(dtype).max)
+        if whisper_mode and len(audio) > 64:
+            spec = np.fft.rfft(audio)
+            freqs = np.fft.rfftfreq(len(audio), d=1.0 / max(rate, 1))
+            spec[freqs < 450.0] *= 0.35
+            audio = np.fft.irfft(spec, n=len(audio)).astype(np.float32) * 0.85
+        if abs(volume_db) > 1e-3:
+            audio = audio * float(10.0 ** (volume_db / 20.0))
+        audio = np.clip(audio, -0.98, 0.98)
         self.play(audio.reshape(-1, channels), rate, cancelled)
 
     def play(self, audio: np.ndarray, rate: int, cancelled: threading.Event | None = None) -> None:

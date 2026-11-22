@@ -133,6 +133,11 @@ class Conversation:
             self._post(self.ui.say, "user", text)
             self._post(self.ui.set_state, "thinking")
             body = self._body(text, lang)
+            if spoken and hasattr(self.voice, "recent_audio_pcm16_b64"):
+                audio_b64 = self.voice.recent_audio_pcm16_b64()
+                if audio_b64:
+                    body["audio_pcm16_b64"] = audio_b64
+                    body["audio_sample_rate"] = 16000
             try:
                 if WEBCAM_HINT.search(text):
                     self._capture("webcam", body)
@@ -160,5 +165,5 @@ class Conversation:
             reply, show = result.get("reply") or "", result.get("show") or ""
             if reply or show:
                 self._post(self.ui.say, "nuxiva", reply, show)
-            self.voice.answer(reply, result.get("lang") or lang, spoken)
+            self.voice.answer(reply, result.get("lang") or lang, spoken, result.get("voice_modulation"))
             self._post(self.ui.set_state, "idle")

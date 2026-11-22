@@ -1,8 +1,10 @@
 import { triggerEmoticonReaction, formatRichMessageText } from "./emoticon_manager.js";
+import { AudioControlsManager } from "../audio_controls/audio.js";
 
 export let activeChatbotUserId = "user_primary";
 export let activeChatbotAgentId = "chief_supervisor";
 export let chatbotAvailableWidgetsList = [];
+let chatbotAudioControls = null;
 
 export async function initChatbotMeshDeck() {
   const userSelector = document.getElementById("chatbot-user-selector");
@@ -20,7 +22,7 @@ export async function initChatbotMeshDeck() {
   }
 
   document.getElementById("btn-save-chatbot-persona")?.addEventListener("click", saveUserAgentPersonalization);
-  document.getElementById("btn-chatbot-send")?.addEventListener("click", sendChatbotMessage);
+  document.getElementById("btn-chatbot-send")?.addEventListener("click", () => sendChatbotMessage());
   document.getElementById("chatbot-message-input")?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") sendChatbotMessage();
   });
@@ -30,6 +32,18 @@ export async function initChatbotMeshDeck() {
     const wBox = document.getElementById("chatbot-rendered-widgets");
     if (wBox) wBox.innerHTML = "";
   });
+
+  if (document.getElementById("btn-chatbot-mic")) {
+    chatbotAudioControls = new AudioControlsManager(
+      "btn-chatbot-mic",
+      "btn-chatbot-speaker",
+      "chatbot-message-input",
+      {
+        submitBtnId: "btn-chatbot-send",
+        onSpeechComplete: (_text, pcm16B64) => sendChatbotMessage(pcm16B64),
+      }
+    );
+  }
 
   await loadChatbotWidgetsCatalog();
   await loadChatbotAgentsList();
@@ -301,23 +315,31 @@ function appendChatMessageBubble(sender, text, toolsUsed = []) {
   stream.scrollTop = stream.scrollHeight;
 }
 
-async function sendChatbotMessage() {
+async function sendChatbotMessage(capturedAudioPcm16B64 = null) {
   const input = document.getElementById("chatbot-message-input");
   const text = input?.value.trim();
   if (!text) return;
+
+  const pcm16B64 = capturedAudioPcm16B64 || chatbotAudioControls?.consumeCapturedPcm16B64() || null;
 
   input.value = "";
   appendChatMessageBubble(`user:${activeChatbotUserId}`, text);
 
   try {
+    const payload = {
+      user_id: activeChatbotUserId,
+      agent_id: activeChatbotAgentId,
+      text: text,
+    };
+    if (pcm16B64) {
+      payload.audio_pcm16_b64 = pcm16B64;
+      payload.audio_sample_rate = 16000;
+    }
+
     const res = await fetch("/api/v1/chatbot/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user_id: activeChatbotUserId,
-        agent_id: activeChatbotAgentId,
-        text: text,
-      }),
+      body: JSON.stringify(payload),
     });
     const data = await res.json();
     const resp = data.response;
@@ -325,6 +347,20 @@ async function sendChatbotMessage() {
 
     appendChatMessageBubble(`agent:${activeChatbotAgentId}`, resp.reply_text, resp.tools_invoked?.map(t => t.tool));
     renderChatbotWidgets(resp.active_widgets || []);
+
+    const voiceBadge = document.getElementById("chatbot-voice-state-badge");
+    const mod = resp.voice_modulation || {};
+    if (voiceBadge) {
+      if (mod.whisper_mode) {
+        voiceBadge.style.display = "block";
+        voiceBadge.textContent = `🤫 Modalità Sussurro attiva · Volume ${mod.volume_db} dB · Ritmo ${mod.speed}x`;
+      } else if (mod.tts_style_hint && mod.tts_style_hint !== "friendly") {
+        voiceBadge.style.display = "block";
+        voiceBadge.textContent = `🎙 Adattamento vocale: ${mod.tts_style_hint} · Ritmo ${mod.speed ?? 1.0}x`;
+      } else {
+        voiceBadge.style.display = "none";
+      }
+    }
 
     // Attivazione reazioni ed emoticons a scomparsa per la Pagina 80
     if (resp.reactions && resp.reactions.length > 0) {
@@ -334,6 +370,10 @@ async function sendChatbotMessage() {
       if (match) {
         triggerEmoticonReaction(match[1]);
       }
+    }
+
+    if (chatbotAudioControls && (pcm16B64 || mod.whisper_mode)) {
+      chatbotAudioControls.speak(resp.reply_text, mod, activeChatbotUserId);
     }
   } catch (e) {
     appendChatMessageBubble(`system:error`, "Errore durante la comunicazione con il chatbot.");

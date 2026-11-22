@@ -108,7 +108,10 @@
             <div id="chatbot-rendered-widgets" style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:0.75rem;">
             </div>
 
+            <div id="chatbot-voice-state-badge" style="display:none; font-size:0.72rem; color:var(--cyan-glow); margin-bottom:0.35rem; font-family:var(--font-mono);"></div>
             <div style="display:flex; gap:0.5rem; align-items:center;">
+              <button id="btn-chatbot-mic" class="tactical-btn secondary" type="button" title="Parla o sussurra al microfono" style="padding:0.6rem 0.85rem; display:flex; align-items:center; gap:0.3rem;"><span>&#127908;</span><span>Voce</span></button>
+              <button id="btn-chatbot-speaker" class="tactical-btn secondary" type="button" title="Attiva/Disattiva risposta vocale" style="padding:0.6rem 0.75rem;"><span>&#128266;</span></button>
               <input type="text" id="chatbot-message-input" data-i18n-placeholder="chat_input_placeholder" placeholder="Parla con il chatbot o richiedi un'azione..." style="flex:1; background:rgba(0,0,0,0.5); border:1px solid var(--border-glow); color:#fff; padding:0.6rem 0.8rem; border-radius:6px; font-family:var(--font-sans); font-size:0.85rem;">
               <button id="btn-chatbot-send" class="tactical-btn" style="padding:0.6rem 1.2rem;" data-i18n="btn_chat_send">Invia</button>
             </div>

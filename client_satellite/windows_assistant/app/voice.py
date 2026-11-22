@@ -1,3 +1,5 @@
+import base64
+from collections import deque
 import logging
 import threading
 import time
@@ -21,6 +23,7 @@ log = logging.getLogger("nuxiva.voice")
 def i18n_language() -> str:
     return t.language
 FOLLOWUP_SECONDS = 8
+PARALINGUISTIC_BUFFER_BYTES = 16000 * 2 * 2  # ~2 seconds of 16kHz PCM16 mono
 
 
 class Voice:
@@ -41,6 +44,9 @@ class Voice:
         self.on_transcript = None
         self._reply_lock = threading.Lock()
         self._reply_cancel: threading.Event | None = None
+        self._pcm_ring: deque[bytes] = deque()
+        self._pcm_ring_bytes = 0
+        self._pcm_lock = threading.Lock()
 
     def continuous(self) -> bool:
         return self.policy.level("senses.microphone") is not Level.DENY
@@ -60,9 +66,23 @@ class Voice:
         return None
 
     def _audio(self, pcm: bytes) -> None:
+        if pcm and not self.speaking:
+            with self._pcm_lock:
+                self._pcm_ring.append(pcm)
+                self._pcm_ring_bytes += len(pcm)
+                while self._pcm_ring_bytes > PARALINGUISTIC_BUFFER_BYTES and self._pcm_ring:
+                    dropped = self._pcm_ring.popleft()
+                    self._pcm_ring_bytes -= len(dropped)
         ear = self._active_ear()
         if ear is not None:
             ear.send_audio(pcm)
+
+    def recent_audio_pcm16_b64(self) -> str | None:
+        with self._pcm_lock:
+            if not self._pcm_ring:
+                return None
+            raw = b"".join(self._pcm_ring)
+        return base64.b64encode(raw).decode("ascii") if raw else None
 
     def _send(self, **message) -> None:
         if self.has_server and self.ear:
@@ -142,18 +162,24 @@ class Voice:
         self.mic.muted = muted
         self.ui.note("🔇 Microfono in pausa" if muted else "🎙 Microfono attivo")
 
-    def answer(self, reply: str, lang: str | None, spoken: bool) -> None:
+    def answer(
+        self,
+        reply: str,
+        lang: str | None,
+        spoken: bool,
+        voice_modulation: dict | None = None,
+    ) -> None:
         if reply and self.cfg.get("voice"):
-            self._speak(reply, lang)
+            self._speak(reply, lang, voice_modulation)
         elif spoken:
             self._send(type="followup", seconds=FOLLOWUP_SECONDS, conversation=True)
 
-    def _speak(self, text: str, lang: str | None) -> None:
+    def _speak(self, text: str, lang: str | None, voice_modulation: dict | None = None) -> None:
         cancelled = threading.Event()
         with self._reply_lock:
             self._reply_cancel = cancelled
         try:
-            self._play_reply(text, lang, cancelled)
+            self._play_reply(text, lang, cancelled, voice_modulation)
         finally:
             with self._reply_lock:
                 if self._reply_cancel is cancelled:
@@ -172,10 +198,19 @@ class Voice:
             raise ServerError("voce del server non disponibile")
         return self.local_tts.synthesize(chunk, lang)
 
-    def _play_reply(self, text: str, lang: str | None, cancelled: threading.Event) -> None:
+    def _play_reply(
+        self,
+        text: str,
+        lang: str | None,
+        cancelled: threading.Event,
+        voice_modulation: dict | None = None,
+    ) -> None:
         chunks = split_reply(text)
         if not chunks:
             return
+        mod = voice_modulation or {}
+        volume_db = float(mod.get("volume_db", 0.0) or 0.0)
+        whisper_mode = bool(mod.get("whisper_mode", False))
         was_muted = self.mic.muted
         started = False
 
@@ -192,9 +227,17 @@ class Voice:
             log.info("Voce non disponibile: %s", exc)
 
         try:
-            speak_stream(chunks, lambda chunk: self._synthesize(chunk, lang),
-                         lambda wav: self.speaker.play_wav(wav, cancelled), cancelled, begin, failed,
-                         (ServerError, LocalSpeechError))
+            speak_stream(
+                chunks,
+                lambda chunk: self._synthesize(chunk, lang),
+                lambda wav: self.speaker.play_wav(
+                    wav, cancelled, volume_db=volume_db, whisper_mode=whisper_mode
+                ),
+                cancelled,
+                begin,
+                failed,
+                (ServerError, LocalSpeechError),
+            )
         finally:
             if started:
                 self.mic.muted = was_muted
