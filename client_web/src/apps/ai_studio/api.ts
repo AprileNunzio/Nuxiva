@@ -150,3 +150,34 @@ export async function uploadFile(file: File): Promise<Attachment> {
     path: data.path,
   };
 }
+
+export interface KnowledgeDoc {
+  id: string;
+  project_id: string;
+  name: string;
+  chars: number;
+  chunks: number;
+  created_at: number;
+}
+
+export async function fetchKnowledge(projectId: string): Promise<KnowledgeDoc[]> {
+  const res = await fetch(`${BASE_URL}/projects/${encodeURIComponent(projectId)}/knowledge`);
+  return handleResponse<KnowledgeDoc[]>(res);
+}
+
+export async function addKnowledge(projectId: string, name: string, content: string): Promise<KnowledgeDoc> {
+  const res = await fetch(`${BASE_URL}/projects/${encodeURIComponent(projectId)}/knowledge`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, content }),
+  });
+  return handleResponse<KnowledgeDoc>(res);
+}
+
+export async function deleteKnowledge(projectId: string, docId: string): Promise<void> {
+  const res = await fetch(
+    `${BASE_URL}/projects/${encodeURIComponent(projectId)}/knowledge/${encodeURIComponent(docId)}`,
+    { method: 'DELETE' },
+  );
+  await handleResponse<{ status: string }>(res);
+}

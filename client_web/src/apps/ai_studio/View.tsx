@@ -12,6 +12,11 @@ import { MemoryInspectorModal } from './components/MemoryInspectorModal';
 import { NewProjectModal } from './components/NewProjectModal';
 import { Workpiece3DModal } from './components/Workpiece3DModal';
 import { FileDiffModal } from './components/FileDiffModal';
+import { ResizeHandle, useResizableWidth } from './components/ResizeHandle';
+import { AuroraBackground, ACCENTS } from './components/AuroraBackground';
+import { toggleReaction, votePoll } from './messageMutations';
+import { KnowledgeModal } from './components/KnowledgeModal';
+import { messagesToMarkdown } from './components/Markdown';
 import { CommandPalette, type PaletteItem } from './components/CommandPalette';
 
 export const View: React.FC = () => {
@@ -31,6 +36,10 @@ export const View: React.FC = () => {
   const [isThinking, setIsThinking] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
+  const [isKnowledgeOpen, setIsKnowledgeOpen] = useState(false);
+  const [accent, setAccent] = useState<string>(() => localStorage.getItem('ai_studio.accent') || 'cyan');
+  const sidebarW = useResizableWidth('sidebar', 288, 220, 480);
+  const canvasW = useResizableWidth('canvas', 580, 360, 900);
 
   const [is3DModalOpen, setIs3DModalOpen] = useState(false);
   const [selectedWorkpiece3D, setSelectedWorkpiece3D] = useState<Workpiece3DData | null>(null);
@@ -128,61 +137,11 @@ export const View: React.FC = () => {
     }
   };
 
-  const handleToggleReaction = (msgId: string, emoji: string) => {
-    setMessages((prev) =>
-      prev.map((m) => {
-        if (m.id !== msgId) return m;
-        const currentReactions = m.reactions || [];
-        const existingIdx = currentReactions.findIndex((r) => r.emoji === emoji);
-        if (existingIdx >= 0) {
-          const existing = currentReactions[existingIdx];
-          const hasUser = existing.authors.includes('user');
-          const newAuthors = hasUser ? existing.authors.filter((a) => a !== 'user') : [...existing.authors, 'user'];
-          const newCount = hasUser ? existing.count - 1 : existing.count + 1;
-          if (newCount <= 0) {
-            return { ...m, reactions: currentReactions.filter((_, i) => i !== existingIdx) };
-          }
-          const updated = [...currentReactions];
-          updated[existingIdx] = { ...existing, count: newCount, authors: newAuthors };
-          return { ...m, reactions: updated };
-        } else {
-          return {
-            ...m,
-            reactions: [...currentReactions, { emoji, count: 1, authors: ['user'] }],
-          };
-        }
-      })
-    );
-  };
+  const handleToggleReaction = (msgId: string, emoji: string) =>
+    setMessages((prev) => toggleReaction(prev, msgId, emoji));
 
-  const handleVotePoll = (msgId: string, pollId: string, optionId: string, stepIndex?: number) => {
-    setMessages((prev) =>
-      prev.map((m) => {
-        if (m.id !== msgId || !m.poll || m.poll.id !== pollId) return m;
-        const p = m.poll;
-        if (stepIndex !== undefined && p.steps && p.steps[stepIndex]) {
-          const newSteps = [...p.steps];
-          const targetStep = newSteps[stepIndex];
-          newSteps[stepIndex] = {
-            ...targetStep,
-            userVotedId: optionId,
-            options: targetStep.options.map((opt) =>
-              opt.id === optionId ? { ...opt, votes: opt.votes + 1 } : opt
-            ),
-          };
-          return { ...m, poll: { ...p, steps: newSteps } };
-        }
-        return {
-          ...m,
-          poll: {
-            ...p,
-            userVotedId: optionId,
-            options: p.options.map((opt) => (opt.id === optionId ? { ...opt, votes: opt.votes + 1 } : opt)),
-          },
-        };
-      })
-    );
-  };
+  const handleVotePoll = (msgId: string, pollId: string, optionId: string, stepIndex?: number) =>
+    setMessages((prev) => votePoll(prev, msgId, pollId, optionId, stepIndex));
 
   const handleSubmitSurvey = (msgId: string, pollId: string, answers: Record<string, string>) => {
     handleSendMessage(`[Sondaggio Requisiti Completato]: ${JSON.stringify(answers)}`, []);
@@ -278,8 +237,69 @@ export const View: React.FC = () => {
   const currentThread = threads.find((th) => th.id === selectedThreadId) || null;
   const currentProject = projects.find((p) => p.id === (currentThread?.project_id || selectedProjectId)) || null;
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsPaletteOpen((o) => !o);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const handleRegenerate = () => {
+    const lastUser = [...messages].reverse().find((m) => m.role === 'user');
+    if (lastUser && !isThinking) void handleSendMessage(lastUser.content, lastUser.attachments || []);
+  };
+
+  const handleExport = () => {
+    if (!currentThread) return;
+    const md = messagesToMarkdown(currentThread.title, messages);
+    const url = URL.createObjectURL(new Blob([md], { type: 'text/markdown;charset=utf-8' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentThread.title.replace(/[^\w-]+/g, '_') || 'chat'}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const cycleAccent = () => {
+    const keys = Object.keys(ACCENTS);
+    const next = keys[(keys.indexOf(accent) + 1) % keys.length];
+    localStorage.setItem('ai_studio.accent', next);
+    setAccent(next);
+  };
+
+  const paletteItems: PaletteItem[] = [
+    { id: 'a_new', group: 'actions', label: t('new_chat'), run: handleNewChat },
+    { id: 'a_proj', group: 'actions', label: t('new_project'), run: () => { setEditingProject(null); setIsProjectModalOpen(true); } },
+    { id: 'a_mem', group: 'actions', label: t('cmd_memory'), run: () => setIsMemoryHudOpen(true) },
+    { id: 'a_3d', group: 'actions', label: t('cmd_3d'), run: () => handleOpen3DViewer() },
+    { id: 'a_kb', group: 'actions', label: t('cmd_knowledge'), run: () => setIsKnowledgeOpen(true) },
+    { id: 'a_regen', group: 'actions', label: t('cmd_regenerate'), run: handleRegenerate },
+    { id: 'a_export', group: 'actions', label: t('cmd_export'), run: handleExport },
+    { id: 'a_accent', group: 'actions', label: t('cmd_accent'), run: cycleAccent },
+    ...messages
+      .filter((m) => m.content.trim())
+      .map((m): PaletteItem => ({
+        id: `m_${m.id}`,
+        group: 'chats',
+        label: `${t('cmd_msg_prefix')}${m.content.replace(/\s+/g, ' ').slice(0, 80)}`,
+        run: () => document.getElementById(`studio-msg-${m.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+      })),
+    ...threads.map((th): PaletteItem => ({
+      id: `t_${th.id}`,
+      group: 'chats',
+      label: th.title,
+      run: () => setSelectedThreadId(th.id),
+    })),
+  ];
+
   return (
-    <div className="@container w-full h-full flex flex-col bg-slate-950 text-slate-100 overflow-hidden font-sans">
+    <div className="@container relative w-full h-full flex flex-col bg-slate-950 text-slate-100 overflow-hidden font-sans">
+      <AuroraBackground accent={accent} />
+      <CommandPalette isOpen={isPaletteOpen} onClose={() => setIsPaletteOpen(false)} items={paletteItems} />
       <div className="flex md:hidden items-center justify-between px-3 py-2 bg-slate-900 border-b border-slate-800">
         <button
           type="button"
@@ -303,7 +323,8 @@ export const View: React.FC = () => {
         <div
           className={`${
             isMobileSidebarOpen ? 'flex absolute inset-0 z-30' : 'hidden'
-          } md:flex md:static md:z-0`}
+          } md:flex md:static md:z-0 md:w-[var(--sw)] md:shrink-0`}
+          style={{ ['--sw' as string]: `${sidebarW.width}px` }}
         >
           <ProjectSidebar
             projects={projects}
@@ -334,6 +355,8 @@ export const View: React.FC = () => {
           />
         </div>
 
+        <ResizeHandle width={sidebarW.width} onChange={sidebarW.setWidth} side="right" label={t('title')} />
+
         <main className="flex-1 flex flex-col h-full min-w-0">
           <ConversationView
             thread={currentThread}
@@ -344,6 +367,7 @@ export const View: React.FC = () => {
             onOpen3DViewer={handleOpen3DViewer}
             onOpenDiff={handleOpenDiff}
             onQuickPrompt={(prompt) => handleSendMessage(prompt, [])}
+            onRegenerate={handleRegenerate}
             onToggleReaction={handleToggleReaction}
             onVotePoll={handleVotePoll}
             onSubmitSurvey={handleSubmitSurvey}
@@ -361,7 +385,13 @@ export const View: React.FC = () => {
         </main>
 
         {activeArtifact && (
-          <div className="absolute inset-y-0 right-0 z-20 md:static flex">
+          <ResizeHandle width={canvasW.width} onChange={canvasW.setWidth} side="left" label={t('canvas_title')} />
+        )}
+        {activeArtifact && (
+          <div
+            className="absolute inset-y-0 right-0 z-20 w-full md:static md:w-[var(--cw)] md:shrink-0 flex"
+            style={{ ['--cw' as string]: `${canvasW.width}px` }}
+          >
             <ArtifactCanvas
               artifact={activeArtifact}
               onClose={() => setActiveArtifact(null)}
@@ -388,6 +418,13 @@ export const View: React.FC = () => {
         onSelectFile={(att) => {
           handleSendMessage(`[Allegato SMB: ${att.name}]`, [att]);
         }}
+      />
+
+      <KnowledgeModal
+        isOpen={isKnowledgeOpen}
+        onClose={() => setIsKnowledgeOpen(false)}
+        projectId={currentProject?.id || null}
+        projectName={currentProject?.name}
       />
 
       <MemoryInspectorModal

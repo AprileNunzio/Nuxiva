@@ -5,6 +5,7 @@ import uuid
 from typing import List, Optional, Tuple
 from .artifact_extractor import ArtifactExtractor
 from .memory_service import CrossMemoryService
+from .knowledge_service import KnowledgeService
 from .models import Artifact, Attachment, Message, Project, Thread
 from .smb_service import SmbStudioService
 from .store import StudioStore
@@ -39,6 +40,7 @@ class StudioService:
         self.store = store or StudioStore()
         self.smb = smb or SmbStudioService()
         self.memory = memory or CrossMemoryService(self.store)
+        self.knowledge = KnowledgeService(self.store)
 
     def create_project(self, name: str, description: str = "", instructions: str = "", smb_folder: str = "") -> Project:
         now = int(time.time())
@@ -193,6 +195,10 @@ class StudioService:
             system_parts.append(f"\n[Progetto Attivo: {project.name}]\n{project.instructions}")
         if memory_context:
             system_parts.append(f"\n{memory_context}")
+        if project:
+            knowledge_context = self.knowledge.build_context(project.id, content)
+            if knowledge_context:
+                system_parts.append(f"\n{knowledge_context}")
 
         full_system = "\n\n".join(system_parts)
 

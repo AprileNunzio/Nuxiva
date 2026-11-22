@@ -6,6 +6,7 @@ import { ThoughtActionBlock } from './ThoughtActionBlock';
 import { MessageReactions } from './MessageReactions';
 import { InteractivePollCard } from './InteractivePollCard';
 import { DomainWidgetsPanel } from './DomainWidgetsPanel';
+import { Markdown } from './Markdown';
 
 interface ConversationViewProps {
   thread: Thread | null;
@@ -20,6 +21,7 @@ interface ConversationViewProps {
   onVotePoll?: (messageId: string, pollId: string, optionId: string, stepIndex?: number) => void;
   onSubmitSurvey?: (messageId: string, pollId: string, answers: Record<string, string>) => void;
   onQuickPrompt?: (prompt: string) => void;
+  onRegenerate?: () => void;
 }
 
 export const ConversationView: React.FC<ConversationViewProps> = ({
@@ -35,8 +37,10 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
   onVotePoll,
   onSubmitSurvey,
   onQuickPrompt,
+  onRegenerate,
 }) => {
   const { t } = useStudioI18n();
+  const lastAssistantId = [...messages].reverse().find((m) => m.role !== 'user')?.id;
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
   const [feedbackState, setFeedbackState] = useState<Record<string, 'positive' | 'negative'>>({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -144,6 +148,7 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
             return (
               <div
                 key={msg.id}
+                id={`studio-msg-${msg.id}`}
                 className={`flex flex-col gap-1.5 ${isUser ? 'items-end' : 'items-start'} print:items-start`}
               >
                 <div className="flex items-center gap-2 px-1">
@@ -176,7 +181,11 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
                       : 'bg-slate-900/90 border border-slate-800 text-slate-100 rounded-tl-xs'
                   }`}
                 >
-                  <div className="whitespace-pre-wrap">{msg.content}</div>
+                  {isUser ? (
+                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                  ) : (
+                    <Markdown source={msg.content} />
+                  )}
 
                   {msg.attachments && msg.attachments.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-white/10">
@@ -227,6 +236,17 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
                     <span>{isPlaying ? '⏸️' : '🔊'}</span>
                     <span>{isPlaying ? 'In Riproduzione...' : 'Ascolta'}</span>
                   </button>
+
+                  {!isUser && onRegenerate && msg.id === lastAssistantId && !isThinking && (
+                    <button
+                      type="button"
+                      onClick={onRegenerate}
+                      className="p-1 rounded-md text-slate-500 hover:text-cyan-300 text-xs transition-colors"
+                      title={t('cmd_regenerate')}
+                    >
+                      ↻
+                    </button>
+                  )}
 
                   <button
                     type="button"

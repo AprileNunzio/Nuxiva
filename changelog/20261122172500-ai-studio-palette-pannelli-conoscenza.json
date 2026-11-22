@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "date": "2026-11-22",
+  "title": {
+    "it": "AI Studio: tavolozza comandi, pannelli ridimensionabili, risposte formattate, editor del canvas e conoscenza di progetto",
+    "en": "AI Studio: command palette, resizable panels, formatted replies, canvas editor and project knowledge",
+    "fr": "AI Studio : palette de commandes, panneaux redimensionnables, réponses formatées, éditeur de canevas et connaissances du projet",
+    "es": "AI Studio: paleta de comandos, paneles redimensionables, respuestas con formato, editor del lienzo y conocimiento del proyecto"
+  },
+  "features": [
+    {
+      "it": "Tavolozza comandi (Ctrl+K) per creare chat, aprire memoria e 3D, cambiare colore d'accento, rigenerare, esportare e cercare nei messaggi.",
+      "en": "Command palette (Ctrl+K) to create chats, open memory and 3D, change the accent color, regenerate, export and search messages.",
+      "fr": "Palette de commandes (Ctrl+K) pour créer des discussions, ouvrir la mémoire et la 3D, changer la couleur d'accent, régénérer, exporter et chercher.",
+      "es": "Paleta de comandos (Ctrl+K) para crear chats, abrir memoria y 3D, cambiar el color de acento, regenerar, exportar y buscar mensajes."
+    },
+    {
+      "it": "Barra laterale e canvas ridimensionabili con larghezza ricordata, campo messaggio con incolla e trascina file e comandi rapidi con la barra.",
+      "en": "Resizable sidebar and canvas with remembered widths, plus a message box with paste and drag-and-drop files and slash quick commands.",
+      "fr": "Barre latérale et canevas redimensionnables avec largeur mémorisée, zone de message avec coller, glisser-déposer et commandes rapides.",
+      "es": "Barra lateral y lienzo redimensionables con ancho recordado, y cuadro de mensaje con pegar, arrastrar archivos y comandos rápidos."
+    },
+    {
+      "it": "Risposte con titoli, elenchi, tabelle e codice con pulsante copia, più pulsante per rigenerare l'ultima risposta.",
+      "en": "Replies with headings, lists, tables and code blocks with a copy button, plus a button to regenerate the last reply.",
+      "fr": "Réponses avec titres, listes, tableaux et code avec bouton de copie, et bouton pour régénérer la dernière réponse.",
+      "es": "Respuestas con títulos, listas, tablas y código con botón de copiar, y botón para regenerar la última respuesta."
+    },
+    {
+      "it": "Il canvas permette di modificare il contenuto con anteprima in tempo reale, annulla, ripeti e ripristino dell'originale.",
+      "en": "The canvas lets you edit content with a live preview, undo, redo and revert to the original.",
+      "fr": "Le canevas permet de modifier le contenu avec aperçu en direct, annuler, rétablir et revenir à l'original.",
+      "es": "El lienzo permite editar el contenido con vista previa en vivo, deshacer, rehacer y volver al original."
+    },
+    {
+      "it": "Conoscenza di progetto: carica documenti di testo e l'assistente li consulta citando la fonte; tutto resta sul tuo server.",
+      "en": "Project knowledge: upload text documents and the assistant consults them and cites the source; everything stays on your server.",
+      "fr": "Connaissances du projet : importez des documents texte, l'assistant les consulte et cite la source ; tout reste sur votre serveur.",
+      "es": "Conocimiento del proyecto: sube documentos de texto y el asistente los consulta citando la fuente; todo queda en tu servidor."
+    }
+  ]
+}

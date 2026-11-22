@@ -1,7 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStudioI18n } from '../scope';
 import type { Artifact } from '../types';
 import { saveSmbFile } from '../api';
+import { Markdown } from './Markdown';
+
+/** Rimuove script, handler inline e riferimenti esterni pericolosi dall'SVG prima dell'anteprima. */
+export function sanitizeSvg(svg: string): string {
+  return svg
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi, '')
+    .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+    .replace(/(href|xlink:href)\s*=\s*("\s*javascript:[^"]*"|'\s*javascript:[^']*')/gi, '');
+}
 
 interface ArtifactCanvasProps {
   artifact: Artifact | null;
@@ -27,15 +37,55 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
   const [endLine, setEndLine] = useState<number>(10);
   const [partialInstructions, setPartialInstructions] = useState<string>('');
 
+  const [draft, setDraft] = useState<string>(artifact?.content ?? '');
+  const [past, setPast] = useState<string[]>([]);
+  const [future, setFuture] = useState<string[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    setDraft(artifact?.content ?? '');
+    setPast([]);
+    setFuture([]);
+    setIsEditing(false);
+  }, [artifact?.id, artifact?.content]);
+
   if (!artifact) return null;
 
-  const lines = artifact.content.split('\n');
+  const content = draft;
+  const isDirty = content !== artifact.content;
+
+  const applyEdit = (next: string) => {
+    if (next === draft) return;
+    setPast((p) => [...p.slice(-49), draft]);
+    setFuture([]);
+    setDraft(next);
+  };
+  const undo = () => {
+    if (past.length === 0) return;
+    setFuture((f) => [draft, ...f]);
+    setDraft(past[past.length - 1]);
+    setPast((p) => p.slice(0, -1));
+  };
+  const redo = () => {
+    if (future.length === 0) return;
+    setPast((p) => [...p, draft]);
+    setDraft(future[0]);
+    setFuture((f) => f.slice(1));
+  };
+  const revert = () => {
+    if (!isDirty) return;
+    setPast((p) => [...p.slice(-49), draft]);
+    setFuture([]);
+    setDraft(artifact.content);
+  };
+
+  const lines = content.split('\n');
   const lineCount = lines.length;
   const canPreview = artifact.kind === 'html' || artifact.kind === 'svg' || artifact.kind === 'markdown' || artifact.kind === '3d';
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(artifact.content);
+      await navigator.clipboard.writeText(content);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {}
@@ -48,7 +98,7 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
       const res = await saveSmbFile({
         folder: defaultSmbFolder,
         filename: artifact.title,
-        content: artifact.content,
+        content,
       });
       setSavedUnc(res.unc_path);
       setTimeout(() => setSavedUnc(null), 4000);
@@ -67,7 +117,7 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
   };
 
   return (
-    <aside className="w-full md:w-[480px] lg:w-[580px] h-full flex flex-col bg-slate-950 border-l border-slate-800/80 backdrop-blur-md shadow-2xl z-20">
+    <aside className="w-full h-full flex flex-col bg-slate-950 border-l border-slate-800/80 backdrop-blur-md shadow-2xl z-20">
       <div className="px-4 py-3 border-b border-slate-800/80 bg-slate-900/80 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
           <span className="text-cyan-400 font-bold">📄</span>
@@ -151,6 +201,33 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
         </div>
       </div>
 
+      <div className="px-3 py-1.5 border-b border-slate-800/80 bg-slate-900/60 flex items-center gap-1.5 text-xs">
+        <button
+          type="button"
+          onClick={() => {
+            setIsEditing((v) => !v);
+            setActiveTab('code');
+          }}
+          className={`px-2 py-1 rounded-lg border transition-colors ${
+            isEditing ? 'bg-cyan-600 text-white border-cyan-500' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+          }`}
+        >
+          ✎ {t('canvas_edit')}
+        </button>
+        <button type="button" onClick={undo} disabled={past.length === 0} className="px-2 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 disabled:opacity-30" title={t('canvas_undo')}>
+          ↶
+        </button>
+        <button type="button" onClick={redo} disabled={future.length === 0} className="px-2 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 disabled:opacity-30" title={t('canvas_redo')}>
+          ↷
+        </button>
+        <button type="button" onClick={revert} disabled={!isDirty} className="px-2 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 disabled:opacity-30">
+          {t('canvas_revert')}
+        </button>
+        <span className="ml-auto text-[10px] font-mono text-slate-500">
+          {isDirty ? `● ${t('canvas_modified')} · ` : ''}v{past.length + 1} · {lineCount} {t('canvas_lines')}
+        </span>
+      </div>
+
       {isPartialEditOpen && (
         <div className="p-3 bg-slate-900 border-b border-slate-800 flex flex-col gap-2 text-xs">
           <div className="flex items-center justify-between text-slate-300 font-semibold">
@@ -218,13 +295,13 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
             <iframe
               title={artifact.title}
               sandbox="allow-scripts"
-              srcDoc={artifact.content}
+              srcDoc={content}
               className="w-full h-full min-h-[400px] rounded-xl border border-slate-800 bg-white"
             />
           ) : artifact.kind === 'svg' ? (
             <div
               className="w-full h-full min-h-[400px] flex items-center justify-center p-4 bg-slate-900 rounded-xl border border-slate-800"
-              dangerouslySetInnerHTML={{ __html: artifact.content }}
+              dangerouslySetInnerHTML={{ __html: sanitizeSvg(content) }}
             />
           ) : artifact.kind === '3d' ? (
             <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center p-6 bg-slate-900 rounded-xl border border-slate-800 text-center gap-3">
@@ -234,14 +311,22 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
                 Modello 3D CAD parametrico ({artifact.language}). Visualizzabile in viewport 3D WebGL con assi e rotazione.
               </p>
               <pre className="w-full max-h-48 overflow-y-auto text-left font-mono text-[11px] p-2 bg-slate-950 rounded border border-slate-800 text-cyan-300">
-                <code>{artifact.content}</code>
+                <code>{content}</code>
               </pre>
             </div>
           ) : (
-            <div className="whitespace-pre-wrap font-sans text-xs text-slate-200 leading-relaxed">
-              {artifact.content}
+            <div className="font-sans text-xs text-slate-200 leading-relaxed">
+              {artifact.kind === 'markdown' ? <Markdown source={content} /> : <div className="whitespace-pre-wrap">{content}</div>}
             </div>
           )
+        ) : isEditing ? (
+          <textarea
+            value={content}
+            onChange={(e) => applyEdit(e.target.value)}
+            spellCheck={false}
+            aria-label={artifact.title}
+            className="w-full h-full min-h-[400px] resize-none bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-xs text-slate-100 leading-relaxed focus:outline-none focus:border-cyan-500/60"
+          />
         ) : (
           <div className="flex font-mono text-xs text-slate-200 leading-relaxed overflow-x-auto whitespace-pre">
             <div className="select-none text-slate-600 pr-3 border-r border-slate-800 mr-3 text-right">

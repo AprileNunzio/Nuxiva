@@ -22,6 +22,7 @@ export const InputOmnibar: React.FC<InputOmnibarProps> = ({
   const [text, setText] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isListening, setIsListening] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -43,17 +44,23 @@ export const InputOmnibar: React.FC<InputOmnibarProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Tab' && slashMatches.length > 0) {
+      e.preventDefault();
+      setText(slashMatches[0].text);
+      return;
+    }
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      if (slashMatches.length > 0) {
+        setText(slashMatches[0].text);
+        return;
+      }
       handleSend();
     }
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+  const uploadFiles = async (files: File[]) => {
+    for (const file of files) {
       try {
         const att = await uploadFile(file);
         setAttachments((prev) => [...prev, att]);
@@ -61,10 +68,42 @@ export const InputOmnibar: React.FC<InputOmnibarProps> = ({
         console.error(err);
       }
     }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    await uploadFiles(files);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const files = Array.from(e.clipboardData.files || []);
+    if (files.length > 0) {
+      e.preventDefault();
+      void uploadFiles(files);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files || []);
+    if (files.length > 0) void uploadFiles(files);
+  };
+
+  const slashCommands = [
+    { cmd: '/summarize', text: t('slash_summarize') },
+    { cmd: '/explain', text: t('slash_explain') },
+    { cmd: '/code', text: t('slash_code') },
+    { cmd: '/translate', text: t('slash_translate') },
+  ];
+  const slashMatches =
+    text.startsWith('/') && !text.includes(' ') && !text.includes('\n')
+      ? slashCommands.filter((c) => c.cmd.startsWith(text.toLowerCase()))
+      : [];
 
   const toggleVoice = () => {
     const SpeechRecognition =
@@ -105,7 +144,37 @@ export const InputOmnibar: React.FC<InputOmnibarProps> = ({
   };
 
   return (
-    <div className="w-full p-3 bg-slate-950/90 border-t border-slate-800/80 backdrop-blur-md flex flex-col gap-2">
+    <div
+      className={`relative w-full p-3 bg-slate-950/70 border-t border-white/10 backdrop-blur-xl flex flex-col gap-2 transition-shadow ${
+        isDragging ? 'ring-2 ring-cyan-400/60 shadow-[0_0_40px_-10px_rgba(0,240,255,0.5)]' : ''
+      }`}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setIsDragging(true);
+      }}
+      onDragLeave={() => setIsDragging(false)}
+      onDrop={handleDrop}
+    >
+      {isDragging && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-slate-950/80 text-sm text-cyan-300 pointer-events-none">
+          {t('drop_hint')}
+        </div>
+      )}
+      {slashMatches.length > 0 && (
+        <ul className="absolute bottom-full left-3 mb-1 w-64 rounded-xl border border-white/10 bg-slate-900/90 backdrop-blur-xl p-1 text-xs shadow-xl" role="listbox">
+          {slashMatches.map((c) => (
+            <li key={c.cmd} role="option" aria-selected="false">
+              <button
+                type="button"
+                onClick={() => setText(c.text)}
+                className="w-full text-left px-2.5 py-1.5 rounded-lg text-slate-300 hover:bg-cyan-500/15 hover:text-cyan-200"
+              >
+                {c.cmd}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
       {attachments.length > 0 && (
         <div className="flex flex-wrap gap-2 pb-1">
           {attachments.map((att) => (
@@ -208,6 +277,7 @@ export const InputOmnibar: React.FC<InputOmnibarProps> = ({
           disabled={disabled}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           placeholder={t('input_placeholder')}
           className="flex-1 bg-transparent border-0 text-sm text-slate-100 placeholder-slate-500 focus:outline-none resize-none max-h-40 py-2"
         />

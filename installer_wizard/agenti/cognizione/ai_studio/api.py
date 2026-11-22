@@ -29,6 +29,11 @@ class ProjectUpdateRequest(BaseModel):
     smb_folder: str = Field("", max_length=255)
 
 
+class KnowledgeAddRequest(BaseModel):
+    name: str = Field(..., min_length=1, max_length=160)
+    content: str = Field(..., min_length=1, max_length=400000)
+
+
 class ThreadCreateRequest(BaseModel):
     title: str = Field("Nuova conversazione", max_length=120)
     project_id: Optional[str] = None
@@ -101,6 +106,7 @@ async def update_project(project_id: str, body: ProjectUpdateRequest, _=Depends(
 @admin_routes.delete("/projects/{project_id}")
 async def delete_project(project_id: str, _=Depends(require_admin)) -> Dict[str, str]:
     service.store.delete_project(project_id)
+    service.knowledge.delete_project(project_id)
     return {"status": "ok"}
 
 
@@ -136,6 +142,37 @@ async def update_thread(thread_id: str, body: ThreadUpdateRequest, _=Depends(req
 async def delete_thread(thread_id: str, _=Depends(require_admin)) -> Dict[str, str]:
     service.store.delete_thread(thread_id)
     return {"status": "ok"}
+
+
+def _require_project(project_id: str) -> None:
+    if not service.store.get_project(project_id):
+        raise HTTPException(status_code=404, detail="Project not found")
+
+
+@public_routes.get("/projects/{project_id}/knowledge")
+async def list_knowledge(project_id: str) -> List[Dict[str, Any]]:
+    _require_project(project_id)
+    return service.knowledge.list_documents(project_id)
+
+
+@admin_routes.post("/projects/{project_id}/knowledge")
+async def add_knowledge(project_id: str, body: KnowledgeAddRequest, _=Depends(require_admin)) -> Dict[str, Any]:
+    _require_project(project_id)
+    return service.knowledge.add_document(project_id, body.name.strip(), body.content)
+
+
+@admin_routes.delete("/projects/{project_id}/knowledge/{doc_id}")
+async def delete_knowledge(project_id: str, doc_id: str, _=Depends(require_admin)) -> Dict[str, str]:
+    _require_project(project_id)
+    if not service.knowledge.delete_document(project_id, doc_id):
+        raise HTTPException(status_code=404, detail="Document not found")
+    return {"status": "deleted"}
+
+
+@public_routes.get("/projects/{project_id}/knowledge/search")
+async def search_knowledge(project_id: str, q: str = Query("", max_length=300)) -> List[Dict[str, Any]]:
+    _require_project(project_id)
+    return service.knowledge.search(project_id, q)
 
 
 @public_routes.get("/threads/{thread_id}/messages")

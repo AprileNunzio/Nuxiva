@@ -50,7 +50,7 @@ export const ProjectSidebar: React.FC<ProjectSidebarProps> = ({
   });
 
   return (
-    <aside className="w-full md:w-72 md:min-w-72 h-full flex flex-col bg-slate-950/80 border-r border-slate-800/80 backdrop-blur-md">
+    <aside className="w-full h-full flex flex-col bg-slate-950/80 border-r border-slate-800/80 backdrop-blur-md">
       <div className="p-3 flex flex-col gap-2 border-b border-slate-800/60">
         <button
           type="button"
