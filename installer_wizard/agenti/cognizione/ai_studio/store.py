@@ -230,6 +230,43 @@ class StudioStore:
                 ),
             )
 
+    def fork_thread(self, thread_id: str, new_title: Optional[str] = None) -> Optional[Thread]:
+        parent = self.get_thread(thread_id)
+        if not parent:
+            return None
+        now = int(time.time())
+        import uuid
+        new_id = f"th_{now}_{uuid.uuid4().hex[:6]}"
+        title = new_title or f"{parent.title} (Ramo)"
+        new_thread = Thread(
+            id=new_id,
+            project_id=parent.project_id,
+            title=title,
+            pinned=False,
+            model_mode=parent.model_mode,
+            created_at=now,
+            updated_at=now,
+        )
+        self.save_thread(new_thread)
+
+        messages = self.list_messages(thread_id)
+        for m in messages:
+            forked_msg = Message(
+                id=f"msg_f_{now}_{uuid.uuid4().hex[:6]}",
+                thread_id=new_id,
+                role=m.role,
+                content=m.content,
+                thought=m.thought,
+                artifacts=m.artifacts,
+                attachments=m.attachments,
+                memory_recalls=m.memory_recalls,
+                created_at=m.created_at,
+                cached=m.cached,
+            )
+            self.add_message(forked_msg)
+
+        return self.get_thread(new_id)
+
     def delete_thread(self, thread_id: str) -> None:
         with self._lock, self._get_connection() as conn:
             conn.execute("DELETE FROM messages WHERE thread_id = ?", (thread_id,))

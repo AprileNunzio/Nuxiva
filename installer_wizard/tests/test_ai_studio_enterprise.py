@@ -127,3 +127,17 @@ class EnterpriseApiTests(unittest.TestCase):
 
         audit = self.client.get("/api/ai_studio/audit").json()
         self.assertTrue(any(a["action"] == "models.compare" for a in audit))
+
+    def test_fork_thread_endpoint(self):
+        th = self.client.post("/api/ai_studio/threads", json={"title": "Originale"}).json()
+        self.client.post(f"/api/ai_studio/threads/{th['id']}/messages", json={"content": "Messaggio base"})
+        forked = self.client.post(f"/api/ai_studio/threads/{th['id']}/fork").json()
+        self.assertNotEqual(forked["id"], th["id"])
+        self.assertIn("Ramo", forked["title"])
+
+        msgs = self.client.get(f"/api/ai_studio/threads/{forked['id']}/messages").json()
+        self.assertEqual(len(msgs), 2)
+        self.assertEqual(msgs[0]["content"], "Messaggio base")
+
+        audit = self.client.get("/api/ai_studio/audit").json()
+        self.assertTrue(any(a["action"] == "thread.fork" for a in audit))

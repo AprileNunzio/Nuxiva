@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-22",
+  "title": {
+    "it": "AI Studio Enterprise: ramificazione chat con fork delle conversazioni e cronologia ereditata",
+    "en": "AI Studio Enterprise: chat branching with conversation fork and inherited message history",
+    "fr": "AI Studio Enterprise : branchement de discussion avec fork de conversation et historique hérité",
+    "es": "AI Studio Enterprise: ramificación de chat con bifurcación de conversación e historial heredado"
+  },
+  "features": [
+    {
+      "it": "Funzionalità di ramificazione chat per biforcare una conversazione attiva in un nuovo ramo indipendente ereditando l'intera cronologia.",
+      "en": "Chat branching feature to fork an active thread into an independent child conversation inheriting complete message history.",
+      "fr": "Fonctionnalité de branchement de chat pour bifurquer une discussion active en une nouvelle conversation indépendante avec historique hérité.",
+      "es": "Función de ramificación de chat para bifurcar una conversación activa en un nuevo hilo independiente heredando todo el historial."
+    },
+    {
+      "it": "Attivazione istantanea del fork dalla Command Palette (Ctrl+K) con selezione automatica del nuovo ramo e tracciamento audit.",
+      "en": "Instant fork activation from the Command Palette (Ctrl+K) with automatic navigation to the new branch and audit logging.",
+      "fr": "Activation instantanée du fork depuis la palette (Ctrl+K) avec navigation automatique vers la nouvelle branche et journalisation.",
+      "es": "Activación instantánea de bifurcación desde la paleta (Ctrl+K) con navegación automática a la nueva rama y registro de auditoría."
+    }
+  ]
+}

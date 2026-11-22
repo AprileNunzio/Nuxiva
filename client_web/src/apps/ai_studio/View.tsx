@@ -174,9 +174,16 @@ export const View: React.FC = () => {
     try {
       const updated = await api.updateThread(th.id, { pinned: !th.pinned });
       setThreads((prev) => prev.map((tItem) => (tItem.id === th.id ? updated : tItem)));
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
+  };
+
+  const handleForkThread = async () => {
+    if (!selectedThreadId || selectedThreadId === 'th_live_voice_port80') return;
+    try {
+      const forked = await api.forkThread(selectedThreadId);
+      setThreads((prev) => [prev[0], forked, ...prev.slice(1)]);
+      setSelectedThreadId(forked.id);
+    } catch (err) { console.error(err); }
   };
 
   const handleDeleteThread = async (thId: string) => {
@@ -184,12 +191,8 @@ export const View: React.FC = () => {
     try {
       await api.deleteThread(thId);
       setThreads((prev) => prev.filter((tItem) => tItem.id !== thId));
-      if (selectedThreadId === thId) {
-        setSelectedThreadId('th_live_voice_port80');
-      }
-    } catch (err) {
-      console.error(err);
-    }
+      if (selectedThreadId === thId) setSelectedThreadId('th_live_voice_port80');
+    } catch (err) { console.error(err); }
   };
 
   const handleSendMessage = async (content: string, attachments: Attachment[]) => {
@@ -328,6 +331,7 @@ export const View: React.FC = () => {
     { id: 'a_proj', group: 'actions', label: t('new_project'), run: () => { setEditingProject(null); setIsProjectModalOpen(true); } },
     { id: 'a_mem', group: 'actions', label: t('cmd_memory'), run: () => setIsMemoryHudOpen(true) },
     { id: 'a_3d', group: 'actions', label: t('cmd_3d'), run: () => handleOpen3DViewer() },
+        { id: 'a_fork', group: 'actions', label: t('cmd_fork'), run: handleForkThread },
     { id: 'a_compare', group: 'actions', label: t('cmd_compare'), run: () => setIsCompareOpen(true) },
     { id: 'a_presets', group: 'actions', label: t('cmd_presets'), run: () => setIsPresetsOpen(true) },
     ...presets.map((p): PaletteItem => ({

@@ -307,3 +307,10 @@ export async function compareModels(
   });
   return handleResponse<ModelComparisonResult[]>(res);
 }
+
+export async function forkThread(threadId: string): Promise<Thread> {
+  const res = await fetch(`${BASE_URL}/threads/${encodeURIComponent(threadId)}/fork`, {
+    method: 'POST',
+  });
+  return handleResponse<Thread>(res);
+}

@@ -107,5 +107,8 @@
   "compare_btn": "Confronta",
   "compare_running": "Confronto in corso sui modelli...",
   "cmd_compare": "Confronta Modelli",
-  "compare_time": "Tempo:"
+  "compare_time": "Tempo:",
+  "branch_fork": "Crea Ramo (Fork)",
+  "cmd_fork": "Ramifica Conversazione",
+  "branch_desc": "Crea una nuova conversazione figlia ereditando tutti i messaggi correnti."
 }

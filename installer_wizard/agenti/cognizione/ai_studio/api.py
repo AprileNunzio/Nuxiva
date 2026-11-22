@@ -163,6 +163,19 @@ async def update_thread(thread_id: str, body: ThreadUpdateRequest, _=Depends(req
     return updated.to_dict()
 
 
+@admin_routes.post("/threads/{thread_id}/fork")
+async def fork_thread_endpoint(thread_id: str, _=Depends(require_admin)) -> Dict[str, Any]:
+    forked = service.store.fork_thread(thread_id)
+    if not forked:
+        raise HTTPException(status_code=404, detail="Conversazione non trovata")
+    service.audit.append(
+        str(_ or "admin"),
+        "thread.fork",
+        f"parent={thread_id} forked={forked.id}",
+    )
+    return forked.to_dict()
+
+
 @admin_routes.delete("/threads/{thread_id}")
 async def delete_thread(thread_id: str, _=Depends(require_admin)) -> Dict[str, str]:
     service.store.delete_thread(thread_id)

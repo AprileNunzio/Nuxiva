@@ -107,5 +107,8 @@
   "compare_btn": "Compare",
   "compare_running": "Running comparison across models...",
   "cmd_compare": "Compare Models",
-  "compare_time": "Time:"
+  "compare_time": "Time:",
+  "branch_fork": "Create Branch (Fork)",
+  "cmd_fork": "Fork Conversation",
+  "branch_desc": "Create a new child conversation inheriting all current messages."
 }
