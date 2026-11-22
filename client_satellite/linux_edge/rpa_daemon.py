@@ -17,7 +17,7 @@ import urllib.request
 import zlib
 from pathlib import Path
 
-VERSION = "5.8.14"
+VERSION = "5.8.15"
 CONFIG = Path(os.environ.get("NUXIVA_NODE_CONFIG", "/etc/nuxiva-node.json"))
 log = logging.getLogger("nuxiva-rpa")
 
