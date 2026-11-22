@@ -176,6 +176,7 @@
     "error_people_look_feedback_failed": "Corrección del detalle no guardada.",
     "error_node_trust_failed": "Modo de acceso no modificado.",
     "error_node_audit_unavailable": "Registro de seguridad no disponible.",
-    "error_updater_overview_unreachable": "Estado de las actualizaciones inaccesible."
+    "error_updater_overview_unreachable": "Estado de las actualizaciones inaccesible.",
+    "error_workbench_core_unavailable": "El motor del banco de reparaciones no está disponible actualmente."
   }
 }

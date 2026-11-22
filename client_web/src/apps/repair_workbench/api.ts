@@ -20,13 +20,21 @@ export function sanitizeField(raw: string, maxLen = 160): string {
 }
 
 export async function fetchCamerasList(): Promise<CameraSourceItem[]> {
-  const res = await getJson<{ sources?: CameraSourceItem[] }>(adminPath('/api/cameras/sources'));
-  return Array.isArray(res.sources) ? res.sources : [];
+  try {
+    const res = await getJson<{ sources?: CameraSourceItem[] }>(adminPath('/api/cameras/sources'));
+    return Array.isArray(res.sources) ? res.sources : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function fetchProjectsList(): Promise<ProjectSummaryItem[]> {
-  const res = await getJson<{ projects?: ProjectSummaryItem[] }>('/api/v1/repair-workbench/projects');
-  return Array.isArray(res.projects) ? res.projects : [];
+  try {
+    const res = await getJson<{ projects?: ProjectSummaryItem[] }>('/api/v1/repair-workbench/projects');
+    return Array.isArray(res.projects) ? res.projects : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function createRepairProject(name: string, goal: string): Promise<ProjectSummaryItem> {
@@ -135,10 +143,14 @@ export async function escalateWorkbenchSpecialist(
 export async function fetchPendingWorkbenchLaunches(
   since: number
 ): Promise<WorkbenchLaunchItem[]> {
-  const res = await getJson<{ requests?: WorkbenchLaunchItem[] }>(
-    `/api/v1/repair-workbench/launch-requests?since=${encodeURIComponent(String(since))}`
-  );
-  return Array.isArray(res.requests) ? res.requests : [];
+  try {
+    const res = await getJson<{ requests?: WorkbenchLaunchItem[] }>(
+      `/api/v1/repair-workbench/launch-requests?since=${encodeURIComponent(String(since))}`
+    );
+    return Array.isArray(res.requests) ? res.requests : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function fetchRepairTeam(sessionId: string): Promise<RepairTeamState> {
@@ -160,8 +172,12 @@ export async function runRepairTeam(sessionId: string): Promise<void> {
 }
 
 export async function fetchRepairProjectFolders(includeClosed = false): Promise<RepairProjectFolder[]> {
-  const res = await getJson<{ projects: RepairProjectFolder[] }>(`/api/v1/repair-workbench/projects/archive${includeClosed ? '?include_closed=true' : ''}`);
-  return res.projects;
+  try {
+    const res = await getJson<{ projects: RepairProjectFolder[] }>(`/api/v1/repair-workbench/projects/archive${includeClosed ? '?include_closed=true' : ''}`);
+    return Array.isArray(res.projects) ? res.projects : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function resumeRepairProject(projectId: string): Promise<WorkbenchSession> {

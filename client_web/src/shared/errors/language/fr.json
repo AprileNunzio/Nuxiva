@@ -176,6 +176,7 @@
     "error_people_look_feedback_failed": "Correction du détail non enregistrée.",
     "error_node_trust_failed": "Mode d'accès non modifié.",
     "error_node_audit_unavailable": "Journal de sécurité indisponible.",
-    "error_updater_overview_unreachable": "État des mises à jour injoignable."
+    "error_updater_overview_unreachable": "État des mises à jour injoignable.",
+    "error_workbench_core_unavailable": "Le moteur de l’établi de réparation n’est pas disponible actuellement."
   }
 }

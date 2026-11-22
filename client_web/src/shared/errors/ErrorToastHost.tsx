@@ -161,6 +161,7 @@ const KNOWN_CODES = new Set([
   'people_wellbeing_failed',
   'people_associate_failed',
   'fullscreen_toggle_failed',
+  'workbench_core_unavailable',
 ]);
 
 const getCauseDetail = (cause: unknown): string | null => {

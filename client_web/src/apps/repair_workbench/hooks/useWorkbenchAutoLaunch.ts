@@ -26,7 +26,7 @@ export function useWorkbenchAutoLaunch(enabled: boolean): void {
           });
         }
       } catch (cause: unknown) {
-        reportError('repair_workbench_autolaunch_poll', cause);
+        console.warn('repair_workbench_autolaunch_poll', cause);
       }
     };
     const timer = window.setInterval(() => void poll(), 4000);

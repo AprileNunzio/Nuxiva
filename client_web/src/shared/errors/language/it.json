@@ -176,6 +176,7 @@
     "error_people_look_feedback_failed": "Correzione del dettaglio non salvata.",
     "error_node_trust_failed": "Modalità di accesso non modificata.",
     "error_node_audit_unavailable": "Registro di sicurezza non disponibile.",
-    "error_updater_overview_unreachable": "Stato degli aggiornamenti non raggiungibile."
+    "error_updater_overview_unreachable": "Stato degli aggiornamenti non raggiungibile.",
+    "error_workbench_core_unavailable": "Il motore del banco riparazioni non è attualmente disponibile."
   }
 }

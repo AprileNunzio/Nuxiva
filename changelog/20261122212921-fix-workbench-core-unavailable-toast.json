@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-22",
+  "title": {
+    "it": "Repair Workbench: gestione silenziosa del polling in background ed eliminazione toast anomalia core",
+    "en": "Repair Workbench: silent background polling and elimination of core unavailable toast",
+    "fr": "Repair Workbench : scrutation discrète en arrière-plan et suppression du toast d'anomalie core",
+    "es": "Repair Workbench: sondeo silencioso en segundo plano y eliminación del toast de anomalía del core"
+  },
+  "fixes": [
+    {
+      "it": "Risolto l'errore 'Si è verificata un'anomalia imprevista. workbench_core_unavailable' rendendo difensive le chiamate API del banco riparazioni ed evitando la propagazione di toast d'errore all'utente durante il polling di avvio automatico.",
+      "en": "Resolved 'An unexpected anomaly occurred. workbench_core_unavailable' error by wrapping repair workbench API calls defensively and preventing global error toasts during background auto-launch polling.",
+      "fr": "Résolution de l'erreur 'Une anomalie imprévue s'est produite. workbench_core_unavailable' en sécurisant les appels API et en évitant les toasts intempestifs en arrière-plan.",
+      "es": "Resuelto el error 'Se produjo una anomalía imprevista. workbench_core_unavailable' protegiendo las llamadas a la API y evitando notificaciones globales durante el sondeo en segundo plano."
+    }
+  ]
+}
