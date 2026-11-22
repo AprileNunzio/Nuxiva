@@ -51,5 +51,11 @@
   "folder_empty": "Dossier vide",
   "role_user": "Vous",
   "role_nuxiva": "Nuxiva",
-  "cached_reply": "Réponse en Cache (0ms)"
+  "cached_reply": "Réponse en Cache (0ms)",
+  "cmd_placeholder": "Rechercher une action ou un chat...",
+  "cmd_actions": "Actions",
+  "cmd_chats": "Discussions",
+  "cmd_empty": "Aucun résultat",
+  "cmd_memory": "Ouvrir la mémoire",
+  "cmd_3d": "Visionneuse 3D"
 }

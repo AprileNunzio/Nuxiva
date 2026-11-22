@@ -12,6 +12,7 @@ import { MemoryInspectorModal } from './components/MemoryInspectorModal';
 import { NewProjectModal } from './components/NewProjectModal';
 import { Workpiece3DModal } from './components/Workpiece3DModal';
 import { FileDiffModal } from './components/FileDiffModal';
+import { CommandPalette, type PaletteItem } from './components/CommandPalette';
 
 export const View: React.FC = () => {
   const { t } = useStudioI18n();
@@ -29,6 +30,7 @@ export const View: React.FC = () => {
   const [isMemoryHudOpen, setIsMemoryHudOpen] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isPaletteOpen, setIsPaletteOpen] = useState(false);
 
   const [is3DModalOpen, setIs3DModalOpen] = useState(false);
   const [selectedWorkpiece3D, setSelectedWorkpiece3D] = useState<Workpiece3DData | null>(null);

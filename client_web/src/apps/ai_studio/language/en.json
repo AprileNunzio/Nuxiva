@@ -51,5 +51,11 @@
   "folder_empty": "Empty folder",
   "role_user": "You",
   "role_nuxiva": "Nuxiva",
-  "cached_reply": "Cached Reply (0ms)"
+  "cached_reply": "Cached Reply (0ms)",
+  "cmd_placeholder": "Search an action or chat...",
+  "cmd_actions": "Actions",
+  "cmd_chats": "Chats",
+  "cmd_empty": "No results",
+  "cmd_memory": "Open memory",
+  "cmd_3d": "3D viewer"
 }

@@ -51,5 +51,11 @@
   "folder_empty": "Carpeta vacía",
   "role_user": "Tú",
   "role_nuxiva": "Nuxiva",
-  "cached_reply": "Respuesta en Caché (0ms)"
+  "cached_reply": "Respuesta en Caché (0ms)",
+  "cmd_placeholder": "Buscar una acción o chat...",
+  "cmd_actions": "Acciones",
+  "cmd_chats": "Chats",
+  "cmd_empty": "Sin resultados",
+  "cmd_memory": "Abrir memoria",
+  "cmd_3d": "Visor 3D"
 }

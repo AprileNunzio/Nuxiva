@@ -51,5 +51,11 @@
   "folder_empty": "Cartella vuota",
   "role_user": "Tu",
   "role_nuxiva": "Nuxiva",
-  "cached_reply": "Risposta in Cache (0ms)"
+  "cached_reply": "Risposta in Cache (0ms)",
+  "cmd_placeholder": "Cerca un'azione o una chat...",
+  "cmd_actions": "Azioni",
+  "cmd_chats": "Chat",
+  "cmd_empty": "Nessun risultato",
+  "cmd_memory": "Apri memoria",
+  "cmd_3d": "Visualizzatore 3D"
 }
