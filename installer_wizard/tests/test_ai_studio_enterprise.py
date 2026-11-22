@@ -107,7 +107,7 @@ class EnterpriseApiTests(unittest.TestCase):
     def test_dlp_masks_sensitive_api_keys_and_tokens(self):
         th = self.client.post("/api/ai_studio/threads", json={"title": "dlp_test"}).json()
         sensitive_prompt = "Ecco la mia chiave sk-1234567890abcdef1234567890abcdef123456 per il test"
-        msg = self.client.post(f"/api/ai_studio/threads/{th['id']}/messages", json={"content": sensitive_prompt}).json()
+        self.client.post(f"/api/ai_studio/threads/{th['id']}/messages", json={"content": sensitive_prompt}).json()
         msgs = self.client.get(f"/api/ai_studio/threads/{th['id']}/messages").json()
         user_msg = [m for m in msgs if m["role"] == "user"][-1]
         self.assertNotIn("sk-1234567890", user_msg["content"])

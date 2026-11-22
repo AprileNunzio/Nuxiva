@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-22",
+  "title": {
+    "it": "AI Studio Enterprise: rimozione variabile locale inutilizzata nei test enterprise",
+    "en": "AI Studio Enterprise: remove unused local variable in enterprise tests",
+    "fr": "AI Studio Enterprise : suppression de la variable locale inutilisée dans les tests d'entreprise",
+    "es": "AI Studio Enterprise: eliminación de variable local no utilizada en las pruebas enterprise"
+  },
+  "fixes": [
+    {
+      "it": "Eliminata la variabile locale non referenziata 'msg' nel test DLP per garantire il superamento completo dell'analisi statica pyflakes.",
+      "en": "Eliminated unreferenced local variable 'msg' in the DLP test to ensure clean pyflakes static analysis.",
+      "fr": "Suppression de la variable locale non référencée 'msg' dans le test DLP pour valider l'analyse statique pyflakes.",
+      "es": "Eliminada la variable local no utilizada 'msg' en la prueba DLP para asegurar el análisis estático limpio con pyflakes."
+    }
+  ]
+}
