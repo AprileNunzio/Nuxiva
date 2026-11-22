@@ -159,11 +159,20 @@ class Conversation:
                 self._post(self.ui.say, "nuxiva", f"Non ci sono riuscita: {exc}")
                 self._post(self.ui.set_state, "error")
                 return
-            if self._cancelled or result.get("cancelled") or result.get("ignored"):
+            except Exception as exc:
+                log.exception("Errore imprevisto durante l'assistenza: %s", exc)
+                self._post(self.ui.say, "nuxiva", f"Non sono riuscita a completare la richiesta: {exc}")
+                self._post(self.ui.set_state, "error")
+                return
+            if not isinstance(result, dict) or self._cancelled or result.get("cancelled") or result.get("ignored"):
                 self._post(self.ui.set_state, "idle")
                 return
-            reply, show = result.get("reply") or "", result.get("show") or ""
-            if reply or show:
-                self._post(self.ui.say, "nuxiva", reply, show)
-            self.voice.answer(reply, result.get("lang") or lang, spoken, result.get("voice_modulation"))
+            reply, show = str(result.get("reply") or "").strip(), str(result.get("show") or "").strip()
+            if not reply and not show:
+                reply = "Ho elaborato la tua richiesta, ma non ho alcuna informazione aggiuntiva da comunicarti."
+            self._post(self.ui.say, "nuxiva", reply, show if show else None)
+            try:
+                self.voice.answer(reply, result.get("lang") or lang, spoken, result.get("voice_modulation"))
+            except Exception as exc:
+                log.warning("Riproduzione vocale non riuscita: %s", exc)
             self._post(self.ui.set_state, "idle")

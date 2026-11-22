@@ -30,6 +30,7 @@
     els: null,
     lastIntentSent: "",
     lastSentAt: 0,
+    lastManualCloseAt: 0,
   };
 
   async function loadI18n() {
@@ -303,10 +304,26 @@
   }
 
   function toggleHud(show) {
-    st.open = typeof show === "boolean" ? show : !st.open;
+    const next = typeof show === "boolean" ? show : !st.open;
+    st.open = next;
     if (!st.els) return;
     st.els.root.hidden = !st.open;
-    if (!st.open && st.cameraActive) setCameraActive(false);
+    if (!st.open) {
+      st.lastManualCloseAt = Date.now();
+      if (st.cameraActive) setCameraActive(false);
+      fetch("/api/hands/display/spatial_hud", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          enabled: false,
+          camera_active: false,
+          person_present: false,
+          active_gesture: "idle",
+          hands_count: 0,
+          confidence: 0.0,
+        }),
+      }).catch(() => {});
+    }
   }
 
   function renderLoop() {
@@ -342,7 +359,18 @@
       if (typeof remote.auto_close_timeout_s === "number") {
         st.autoCloseMs = Math.max(1000, remote.auto_close_timeout_s * 1000);
       }
-      if (remote.enabled && !st.open) toggleHud(true);
+      if (typeof remote.enabled === "boolean") {
+        if (!remote.enabled && st.open) {
+          st.open = false;
+          if (st.els) st.els.root.hidden = true;
+          if (st.cameraActive) setCameraActive(false);
+        } else if (remote.enabled && !st.open) {
+          const remoteUpdatedMs = (remote.updated_at || 0) * 1000;
+          if (remoteUpdatedMs > st.lastManualCloseAt) {
+            toggleHud(true);
+          }
+        }
+      }
       updateHudBar();
     } catch (err) {}
   }

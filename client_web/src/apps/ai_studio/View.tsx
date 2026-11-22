@@ -53,36 +53,33 @@ export const View: React.FC = () => {
   const loadProjects = useCallback(async () => {
     try {
       const data = await api.fetchProjects();
-      setProjects(data);
-    } catch (err) {
-      console.error(err);
+      setProjects(Array.isArray(data) ? data : []);
+    } catch {
+      setProjects([]);
     }
   }, []);
 
   const loadThreads = useCallback(async (projId?: string | null) => {
+    const defaultVoiceThread: Thread = {
+      id: 'th_live_voice_port80',
+      project_id: null,
+      title: 'Conversazione Vocale (Pagina 80 Live)',
+      pinned: true,
+      model_mode: 'fast',
+      created_at: Math.floor(Date.now() / 1000),
+      updated_at: Math.floor(Date.now() / 1000),
+      message_count: 2,
+    };
     try {
       const data = await api.fetchThreads(projId);
-      const voiceThreadExists = data.some((tItem) => tItem.id === 'th_live_voice_port80');
-      let combinedThreads = data;
-      if (!voiceThreadExists) {
-        const liveVoiceThread: Thread = {
-          id: 'th_live_voice_port80',
-          project_id: null,
-          title: 'Conversazione Vocale (Pagina 80 Live)',
-          pinned: true,
-          model_mode: 'fast',
-          created_at: Math.floor(Date.now() / 1000),
-          updated_at: Math.floor(Date.now() / 1000),
-          message_count: 2,
-        };
-        combinedThreads = [liveVoiceThread, ...data];
-      }
-      setThreads(combinedThreads);
-      if (combinedThreads.length > 0 && !selectedThreadId) {
-        setSelectedThreadId('th_live_voice_port80');
-      }
-    } catch (err) {
-      console.error(err);
+      const safe = Array.isArray(data) ? data.filter(Boolean) : [];
+      const hasVoice = safe.some((tItem) => tItem.id === 'th_live_voice_port80');
+      const combined = hasVoice ? safe : [defaultVoiceThread, ...safe];
+      setThreads(combined);
+      if (combined.length > 0 && !selectedThreadId) setSelectedThreadId('th_live_voice_port80');
+    } catch {
+      setThreads([defaultVoiceThread]);
+      if (!selectedThreadId) setSelectedThreadId('th_live_voice_port80');
     }
   }, [selectedThreadId]);
 

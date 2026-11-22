@@ -49,7 +49,6 @@
     camera.hidden = !policy.camera_preview;
     probe.hidden = !policy.camera_probe || !stream;
     microphone.hidden = !policy.microphone;
-    if ((!previous?.camera_preview && !previous?.microphone) && !panel.hidden) panel.open = true;
   }
 
   async function refresh() {

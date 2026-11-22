@@ -11,8 +11,13 @@ async function handleResponse<T>(res: Response): Promise<T> {
 }
 
 export async function fetchProjects(): Promise<Project[]> {
-  const res = await fetch(`${BASE_URL}/projects`);
-  return handleResponse<Project[]>(res);
+  try {
+    const res = await fetch(`${BASE_URL}/projects`);
+    const data = await handleResponse<Project[]>(res);
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function createProject(data: {
@@ -40,8 +45,13 @@ export async function fetchThreads(projectId?: string | null): Promise<Thread[]>
   const url = projectId
     ? `${BASE_URL}/threads?project_id=${encodeURIComponent(projectId)}`
     : `${BASE_URL}/threads`;
-  const res = await fetch(url);
-  return handleResponse<Thread[]>(res);
+  try {
+    const res = await fetch(url);
+    const data = await handleResponse<Thread[]>(res);
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function createThread(data: {
@@ -77,8 +87,13 @@ export async function deleteThread(threadId: string): Promise<void> {
 }
 
 export async function fetchMessages(threadId: string): Promise<Message[]> {
-  const res = await fetch(`${BASE_URL}/threads/${encodeURIComponent(threadId)}/messages`);
-  return handleResponse<Message[]>(res);
+  try {
+    const res = await fetch(`${BASE_URL}/threads/${encodeURIComponent(threadId)}/messages`);
+    const data = await handleResponse<Message[]>(res);
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function sendMessage(
@@ -97,8 +112,13 @@ export async function sendMessage(
 
 export async function fetchMemoryFacts(query?: string): Promise<MemoryFact[]> {
   const url = query ? `${BASE_URL}/memory/facts?q=${encodeURIComponent(query)}` : `${BASE_URL}/memory/facts`;
-  const res = await fetch(url);
-  return handleResponse<MemoryFact[]>(res);
+  try {
+    const res = await fetch(url);
+    const data = await handleResponse<MemoryFact[]>(res);
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function learnMemory(data: {
@@ -162,8 +182,13 @@ export interface KnowledgeDoc {
 }
 
 export async function fetchKnowledge(projectId: string): Promise<KnowledgeDoc[]> {
-  const res = await fetch(`${BASE_URL}/projects/${encodeURIComponent(projectId)}/knowledge`);
-  return handleResponse<KnowledgeDoc[]>(res);
+  try {
+    const res = await fetch(`${BASE_URL}/projects/${encodeURIComponent(projectId)}/knowledge`);
+    const data = await handleResponse<KnowledgeDoc[]>(res);
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function addKnowledge(projectId: string, name: string, content: string): Promise<KnowledgeDoc> {
@@ -194,7 +219,13 @@ export interface Preset {
 
 export async function fetchPresets(projectId?: string | null): Promise<Preset[]> {
   const url = projectId ? `${BASE_URL}/presets?project_id=${encodeURIComponent(projectId)}` : `${BASE_URL}/presets`;
-  return handleResponse<Preset[]>(await fetch(url));
+  try {
+    const res = await fetch(url);
+    const data = await handleResponse<Preset[]>(res);
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function createPreset(data: {

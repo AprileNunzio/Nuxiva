@@ -36,15 +36,19 @@ export const ProjectSidebar: React.FC<ProjectSidebarProps> = ({
   const { t } = useStudioI18n();
   const [search, setSearch] = useState('');
 
-  const currentProject = projects.find((p) => p.id === selectedProjectId);
+  const safeProjects = Array.isArray(projects) ? projects.filter(Boolean) : [];
+  const safeThreads = Array.isArray(threads) ? threads.filter(Boolean) : [];
+
+  const currentProject = safeProjects.find((p) => p && p.id === selectedProjectId);
 
   const isLiveVoiceSelected = selectedThreadId === 'th_live_voice_port80';
 
-  const manualThreads = threads.filter((th) => {
+  const manualThreads = safeThreads.filter((th) => {
+    if (!th) return false;
     if (th.id === 'th_live_voice_port80') return false;
     if (selectedProjectId && th.project_id !== selectedProjectId) return false;
     if (search.trim()) {
-      return th.title.toLowerCase().includes(search.toLowerCase());
+      return (th.title || '').toLowerCase().includes(search.toLowerCase());
     }
     return true;
   });
@@ -69,7 +73,7 @@ export const ProjectSidebar: React.FC<ProjectSidebarProps> = ({
               className="w-full appearance-none bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 font-medium focus:outline-none focus:border-cyan-500 truncate pr-6"
             >
               <option value="">{t('all_chats')}</option>
-              {projects.map((p) => (
+              {safeProjects.map((p) => (
                 <option key={p.id} value={p.id}>
                   📁 {p.name}
                 </option>

@@ -17,10 +17,13 @@ export const InteractivePollCard: React.FC<InteractivePollCardProps> = ({
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
 
-  const isComplex = Boolean(poll.isComplex && poll.steps && poll.steps.length > 0);
+  if (!poll) return null;
 
-  if (isComplex && poll.steps) {
-    const currentStep = poll.steps[currentStepIdx];
+  const isComplex = Boolean(poll.isComplex && Array.isArray(poll.steps) && poll.steps.length > 0);
+
+  if (isComplex && poll.steps && poll.steps.length > 0) {
+    const currentStep = poll.steps[currentStepIdx] || poll.steps[0];
+    if (!currentStep) return null;
     const totalSteps = poll.steps.length;
     const progressPercent = Math.round(((currentStepIdx + 1) / totalSteps) * 100);
 
@@ -146,7 +149,8 @@ export const InteractivePollCard: React.FC<InteractivePollCardProps> = ({
     );
   }
 
-  const totalVotes = poll.options.reduce((acc, opt) => acc + opt.votes, 0);
+  const options = Array.isArray(poll.options) ? poll.options.filter(Boolean) : [];
+  const totalVotes = options.reduce((acc, opt) => acc + (opt?.votes || 0), 0);
 
   const handleVoteQuick = (optId: string) => {
     setSelectedOptionId(optId);
@@ -168,7 +172,7 @@ export const InteractivePollCard: React.FC<InteractivePollCardProps> = ({
       <p className="text-xs font-medium text-slate-100">{poll.question}</p>
 
       <div className="flex flex-col gap-2">
-        {poll.options.map((opt) => {
+        {options.map((opt) => {
           const isSelected = selectedOptionId === opt.id;
           const percent = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
 

@@ -12,10 +12,20 @@ class StudioStore:
     _lock = threading.Lock()
 
     def __init__(self, db_path: Optional[Path] = None) -> None:
-        if db_path is None:
-            db_path = Path(STATE_DIR) / "ai_studio.db"
-        self.db_path = db_path
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        if db_path is not None:
+            self.db_path = db_path
+        else:
+            try:
+                Path(STATE_DIR).mkdir(parents=True, exist_ok=True)
+                self.db_path = Path(STATE_DIR) / "ai_studio.db"
+            except OSError:
+                fallback_dir = Path.home() / ".local/share/nuxiva"
+                fallback_dir.mkdir(parents=True, exist_ok=True)
+                self.db_path = fallback_dir / "ai_studio.db"
+        try:
+            self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            pass
         self._init_schema()
 
     def _get_connection(self) -> sqlite3.Connection:

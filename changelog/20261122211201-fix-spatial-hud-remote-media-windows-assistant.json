@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "date": "2026-11-22",
+  "title": {
+    "it": "Chiusura affidabile Spatial Gesture HUD, restyle moderno Media Web e gestione robusta assistant Windows",
+    "en": "Reliable Spatial Gesture HUD dismissal, modern Web Media styling and hardened Windows assistant handling",
+    "fr": "Fermeture fiable du Spatial Gesture HUD, style moderne Médias Web et assistant Windows renforcé",
+    "es": "Cierre fiable de Spatial Gesture HUD, diseño moderno de Medios Web y asistente de Windows reforzado"
+  },
+  "fixes": [
+    {
+      "it": "Risolto il problema dello Spatial Gesture HUD che si riapriva subito dopo la chiusura sincronizzando lo stato enabled sul server ed evitando auto-riaperture cicliche.",
+      "en": "Fixed Spatial Gesture HUD reopening immediately after being closed by syncing enabled state with backend and preventing unwanted poll reopenings.",
+      "fr": "Correction du Spatial Gesture HUD qui se rouvrait immédiatement après fermeture en synchronisant l'état sur le serveur.",
+      "es": "Corregido el problema de Spatial Gesture HUD que se volvía a abrir inmediatamente al sincronizar el estado en el servidor."
+    },
+    {
+      "it": "Rinnovato il pannello periferiche web con design glassmorphism moderno non invasivo posizionato in basso a destra ed etichette raffinate.",
+      "en": "Redesigned web media panel with non-intrusive bottom-right glassmorphism floating pill and refined labels.",
+      "fr": "Refonte du panneau des périphériques web avec design moderne en verre dépoli non invasif et libellés élégants.",
+      "es": "Rediseñado el panel de dispositivos web con estilo glassmorphism moderno y flotante no invasivo y etiquetas elegantes."
+    },
+    {
+      "it": "Risolto il bug di 'errore interno (ask)' sul client Windows catturando tutte le eccezioni del cervello locale e audio e proteggendo i controlli UI.",
+      "en": "Fixed Windows client 'internal error (ask)' by properly handling local brain and audio exceptions and adding safe fallbacks.",
+      "fr": "Correction de l'erreur interne (ask) sur client Windows avec capture des exceptions du modèle local et de la synthèse vocale.",
+      "es": "Solucionado el error interno (ask) en cliente Windows manejando excepciones del cerebro local y audio con respuestas seguras."
+    },
+    {
+      "it": "Aggiunte guardie difensive in AI Studio per prevenire crash da riferimenti indefiniti su sondaggi e liste progetti.",
+      "en": "Added defensive checks in AI Studio to prevent undefined reading errors on interactive polls and project threads.",
+      "fr": "Ajout de protections défensives dans AI Studio pour éviter les erreurs d'objets indéfinis sur les sondages et projets.",
+      "es": "Añadidas comprobaciones defensivas en AI Studio para evitar errores de referencias indefinidas en encuestas y proyectos."
+    }
+  ]
+}

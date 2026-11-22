@@ -18,9 +18,20 @@ SAFE_PATH_RE = re.compile(r"^[A-Za-z0-9._ /-]+$")
 
 class SmbStudioService:
     def __init__(self, root_path: Optional[Path] = None) -> None:
-        self.root_path = root_path or DEFAULT_ROOT
-        self.root_path.mkdir(parents=True, exist_ok=True)
-        self._ensure_standard_folders()
+        if root_path is not None:
+            self.root_path = root_path
+        else:
+            try:
+                DEFAULT_ROOT.mkdir(parents=True, exist_ok=True)
+                self.root_path = DEFAULT_ROOT
+            except OSError:
+                fallback_share = Path.home() / ".local/share/nuxiva/condivisa"
+                self.root_path = fallback_share
+        try:
+            self.root_path.mkdir(parents=True, exist_ok=True)
+            self._ensure_standard_folders()
+        except OSError:
+            pass
 
     def _ensure_standard_folders(self) -> None:
         standard = [

@@ -133,11 +133,19 @@ def update_from_display(payload: dict) -> dict:
     if not isinstance(payload, dict):
         return snapshot()
     with _lock:
-        if "camera_active" in payload:
+        if "enabled" in payload:
+            _state["enabled"] = bool(payload["enabled"])
+            if not _state["enabled"]:
+                _state["camera_active"] = False
+                _state["person_present"] = False
+                _state["active_gesture"] = "idle"
+                _state["hands_count"] = 0
+                _state["confidence"] = 0.0
+        elif "camera_active" in payload:
             _state["camera_active"] = bool(payload["camera_active"])
             _state["enabled"] = bool(payload["camera_active"])
         if "person_present" in payload:
-            _state["person_present"] = bool(payload["person_present"])
+            _state["person_present"] = bool(payload["person_present"]) and _state["enabled"]
         shape = str(payload.get("shape", "")).strip().lower()
         if shape in SHAPES:
             _state["shape"] = shape

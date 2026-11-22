@@ -76,6 +76,12 @@ class SpatialHudTest(unittest.TestCase):
         self.assertEqual(state["active_gesture"], "two_hand_pinch_stretch")
         self.assertEqual(state["hands_count"], 2)
 
+        closed = spatial_hud.update_from_display({"enabled": False})
+        self.assertFalse(closed["enabled"])
+        self.assertFalse(closed["camera_active"])
+        self.assertEqual(closed["active_gesture"], "idle")
+        self.assertEqual(closed["hands_count"], 0)
+
     def test_generative_3d_hologram_and_progressive_pbr_upgrade(self):
         raw1 = asyncio.run(
             spatial_hud.spatial_hud_generate_object("macchina sportiva", "particles")
