@@ -95,3 +95,11 @@ class EnterpriseApiTests(unittest.TestCase):
         self.client.post("/api/ai_studio/sandbox/run", json={"code": "1+1", "language": "python"})
         audit = self.client.get("/api/ai_studio/audit").json()
         self.assertEqual(audit[0]["action"], "code.execute")
+
+    def test_stream_message_endpoint_sse(self):
+        th = self.client.post("/api/ai_studio/threads", json={"title": "stream_test"}).json()
+        res = self.client.post(f"/api/ai_studio/threads/{th['id']}/stream", json={"content": "ping"})
+        self.assertEqual(res.status_code, 200)
+        self.assertIn("text/event-stream", res.headers.get("content-type", ""))
+        self.assertIn("data:", res.text)
+        self.assertIn("done", res.text)

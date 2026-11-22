@@ -7,11 +7,8 @@ import { ProjectSidebar } from './components/ProjectSidebar';
 import { ConversationView } from './components/ConversationView';
 import { InputOmnibar } from './components/InputOmnibar';
 import { ArtifactCanvas } from './components/ArtifactCanvas';
-import { SmbFilePickerModal } from './components/SmbFilePickerModal';
 import { MemoryInspectorModal } from './components/MemoryInspectorModal';
-import { NewProjectModal } from './components/NewProjectModal';
-import { Workpiece3DModal } from './components/Workpiece3DModal';
-import { FileDiffModal } from './components/FileDiffModal';
+import { StudioAuxiliaryModals } from './components/StudioAuxiliaryModals';
 import { ResizeHandle, useResizableWidth } from './components/ResizeHandle';
 import { AuroraBackground, ACCENTS } from './components/AuroraBackground';
 import { toggleReaction, votePoll } from './messageMutations';
@@ -225,14 +222,45 @@ export const View: React.FC = () => {
     setMessages((prev) => [...prev, tempUserMsg]);
     setIsThinking(true);
 
+    const streamingId = `stream_${Date.now()}`;
+    const initialAssistant: Message = {
+      id: streamingId,
+      thread_id: currentThId,
+      role: 'assistant',
+      content: '',
+      thought: '',
+      artifacts: [],
+      attachments: [],
+      memory_recalls: [],
+      created_at: Math.floor(Date.now() / 1000),
+    };
+
+    setMessages((prev) => [...prev, initialAssistant]);
+
     try {
-      const assistantMsg = await api.sendMessage(currentThId, content, attachments, activePresetId);
-      setMessages((prev) => [...prev.filter((m) => m.id !== tempUserMsg.id), tempUserMsg, assistantMsg]);
+      const assistantMsg = await api.streamMessage(
+        currentThId,
+        content,
+        attachments,
+        activePresetId,
+        (token) => {
+          setMessages((prev) =>
+            prev.map((m) => (m.id === streamingId ? { ...m, content: m.content + token } : m))
+          );
+        },
+        (delta) => {
+          setMessages((prev) =>
+            prev.map((m) => (m.id === streamingId ? { ...m, thought: (m.thought || '') + delta } : m))
+          );
+        }
+      );
+      setMessages((prev) => prev.map((m) => (m.id === streamingId ? assistantMsg : m)));
       if (assistantMsg.artifacts && assistantMsg.artifacts.length > 0) {
         setActiveArtifact(assistantMsg.artifacts[0]);
       }
     } catch (err) {
       console.error(err);
+      setMessages((prev) => prev.filter((m) => m.id !== streamingId));
     } finally {
       setIsThinking(false);
     }
@@ -397,12 +425,8 @@ export const View: React.FC = () => {
             onOpenDiff={handleOpenDiff}
             onQuickPrompt={(prompt) => handleSendMessage(prompt, [])}
             onRegenerate={handleRegenerate}
-            onToggleReaction={handleToggleReaction}
-            onVotePoll={handleVotePoll}
-            onSubmitSurvey={handleSubmitSurvey}
-            onFeedback={(msgId, type) => {
-              setMessages((prev) => prev.map((m) => (m.id === msgId ? { ...m, feedback: type } : m)));
-            }}
+            onToggleReaction={handleToggleReaction} onVotePoll={handleVotePoll} onSubmitSurvey={handleSubmitSurvey}
+            onFeedback={(msgId, type) => setMessages((prev) => prev.map((m) => (m.id === msgId ? { ...m, feedback: type } : m)))}
           />
           <InputOmnibar
             onSendMessage={handleSendMessage}
@@ -431,24 +455,6 @@ export const View: React.FC = () => {
         )}
       </div>
 
-      <NewProjectModal
-        isOpen={isProjectModalOpen}
-        onClose={() => setIsProjectModalOpen(false)}
-        initialProject={editingProject}
-        onSave={async (data) => {
-          await api.createProject(data);
-          await loadProjects();
-        }}
-      />
-
-      <SmbFilePickerModal
-        isOpen={isSmbPickerOpen}
-        onClose={() => setIsSmbPickerOpen(false)}
-        onSelectFile={(att) => {
-          handleSendMessage(`[Allegato SMB: ${att.name}]`, [att]);
-        }}
-      />
-
       <PresetsModal
         isOpen={isPresetsOpen}
         onClose={() => setIsPresetsOpen(false)}
@@ -470,17 +476,21 @@ export const View: React.FC = () => {
         onClose={() => setIsMemoryHudOpen(false)}
       />
 
-      <Workpiece3DModal
-        isOpen={is3DModalOpen}
-        onClose={() => setIs3DModalOpen(false)}
-        workpiece={selectedWorkpiece3D}
-      />
-
-      <FileDiffModal
-        isOpen={isDiffModalOpen}
-        onClose={() => setIsDiffModalOpen(false)}
-        diffs={currentDiffs}
-        initialDiffId={selectedDiffId}
+      <StudioAuxiliaryModals
+        isProjectModalOpen={isProjectModalOpen}
+        setIsProjectModalOpen={setIsProjectModalOpen}
+        editingProject={editingProject}
+        loadProjects={loadProjects}
+        isSmbPickerOpen={isSmbPickerOpen}
+        setIsSmbPickerOpen={setIsSmbPickerOpen}
+        onSendAttachment={(att) => handleSendMessage(`[Allegato SMB: ${att.name}]`, [att])}
+        is3DModalOpen={is3DModalOpen}
+        setIs3DModalOpen={setIs3DModalOpen}
+        selectedWorkpiece3D={selectedWorkpiece3D}
+        isDiffModalOpen={isDiffModalOpen}
+        setIsDiffModalOpen={setIsDiffModalOpen}
+        currentDiffs={currentDiffs}
+        selectedDiffId={selectedDiffId}
       />
     </div>
   );

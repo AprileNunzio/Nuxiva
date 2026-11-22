@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-22",
+  "title": {
+    "it": "AI Studio Enterprise: streaming in tempo reale SSE di token e pensieri e modularizzazione modali ausiliari",
+    "en": "AI Studio Enterprise: real-time SSE token and thought streaming with modular auxiliary modals",
+    "fr": "AI Studio Enterprise : streaming en temps réel SSE de tokens et pensées avec modularisation des modales",
+    "es": "AI Studio Enterprise: streaming en tiempo real SSE de tokens y pensamientos con modularización de modales"
+  },
+  "features": [
+    {
+      "it": "Pipeline di streaming SSE in tempo reale per la generazione parola per parola delle risposte e del processo di pensiero con cursore animato.",
+      "en": "Real-time SSE streaming pipeline for word-by-word token generation and thought reasoning process with live animated indicators.",
+      "fr": "Pipeline de streaming SSE en temps réel pour la génération mot à mot des réponses et du processus de pensée.",
+      "es": "Pipeline de streaming SSE en tiempo real para la generación palabra por palabra de respuestas y proceso de pensamiento."
+    },
+    {
+      "it": "Modularizzazione dell'interfaccia con StudioAuxiliaryModals per alleggerire la vista principale e garantire performance fluide.",
+      "en": "Interface modularization with StudioAuxiliaryModals to streamline the main view and guarantee smooth rendering performance.",
+      "fr": "Modularisation de l'interface avec StudioAuxiliaryModals pour alléger la vue principale et garantir des performances fluides.",
+      "es": "Modularización de la interfaz con StudioAuxiliaryModals para aligerar la vista principal y garantizar un rendimiento fluido."
+    }
+  ]
+}

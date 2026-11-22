@@ -1,12 +1,14 @@
 import re
 import time
 from typing import Any, Dict, List, Optional
+from fastapi.responses import StreamingResponse
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from pydantic import BaseModel, Field
 from access import require_admin
 from .models import Attachment
 from .preset_service import VALID_MODES
 from .service import StudioService
+from .streaming_service import StreamingService
 
 public_routes = APIRouter(prefix="/api/ai_studio", tags=["ai_studio"])
 admin_routes = APIRouter(prefix="/api/ai_studio", tags=["ai_studio"])
@@ -276,6 +278,34 @@ async def send_message(thread_id: str, body: MessageSendRequest, _=Depends(requi
         actor=str(_ or "admin"),
     )
     return msg.to_dict()
+
+
+@admin_routes.post("/threads/{thread_id}/stream")
+async def stream_message_endpoint(thread_id: str, body: MessageSendRequest, _=Depends(require_admin)):
+    attachments: List[Attachment] = []
+    if body.attachments:
+        for a in body.attachments:
+            attachments.append(
+                Attachment(
+                    id=f"att_{int(time.time())}",
+                    name=a.name,
+                    size=a.size,
+                    mime_type=a.mime_type,
+                    kind=a.kind,
+                    path=a.path,
+                    data_url=a.data_url,
+                )
+            )
+
+    gen = StreamingService.stream_message(
+        service_ref=service,
+        thread_id=thread_id,
+        content=body.content,
+        attachments=attachments,
+        preset_id=body.preset_id,
+        actor=str(_ or "admin"),
+    )
+    return StreamingResponse(gen, media_type="text/event-stream")
 
 
 @public_routes.get("/memory/facts")

@@ -232,3 +232,58 @@ export async function executeCode(code: string, language: string = 'python'): Pr
   });
   return handleResponse<ExecutionResult>(res);
 }
+
+export async function streamMessage(
+  threadId: string,
+  content: string,
+  attachments?: Attachment[],
+  presetId?: string | null,
+  onToken?: (token: string) => void,
+  onThoughtDelta?: (delta: string) => void,
+): Promise<Message> {
+  const res = await fetch(`${BASE_URL}/threads/${encodeURIComponent(threadId)}/stream`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content, attachments, preset_id: presetId || undefined }),
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(errorBody.detail || `Stream failed with status ${res.status}`);
+  }
+
+  const reader = res.body?.getReader();
+  if (!reader) throw new Error('No readable stream available');
+
+  const decoder = new TextDecoder('utf-8');
+  let buffer = '';
+  let finalMessage: Message | null = null;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n\n');
+    buffer = lines.pop() || '';
+
+    for (const chunk of lines) {
+      const trimmed = chunk.trim();
+      if (!trimmed.startsWith('data:')) continue;
+      try {
+        const payload = JSON.parse(trimmed.slice(5).trim());
+        if (payload.type === 'token') {
+          onToken?.(payload.token);
+        } else if (payload.type === 'thought_delta') {
+          onThoughtDelta?.(payload.token);
+        } else if (payload.type === 'done') {
+          finalMessage = payload.message as Message;
+        }
+      } catch {}
+    }
+  }
+
+  if (!finalMessage) {
+    throw new Error('Incomplete stream response from AI Studio');
+  }
+  return finalMessage;
+}
