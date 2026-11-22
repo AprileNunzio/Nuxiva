@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-11-22",
+  "title": {
+    "it": "Motore autonomo cross-OS con self-healing, Vault Password cifrato, Provisioner ESP32/Debian e voce empatica",
+    "en": "Cross-OS autonomous self-healing solver, encrypted Password Vault, ESP32/Debian Provisioner, and empathic voice",
+    "fr": "Moteur autonome cross-OS auto-réparateur, coffre-fort de mots de passe, provisionneur ESP32/Debian et voix empathique",
+    "es": "Motor autónomo cross-OS con autorreparación, bóveda de contraseñas, aprovisionador ESP32/Debian y voz empática"
+  },
+  "features": [
+    {
+      "it": "Aggiunto UniversalAutonomousSolver cross-OS (Linux, Windows, macOS, Embedded) che sintetizza più script, esegue comandi, analizza i log (stdout/stderr), auto-ripara gli errori e riesegue fino alla verifica dell'obiettivo.",
+      "en": "Added cross-OS UniversalAutonomousSolver (Linux, Windows, macOS, Embedded) that synthesizes multiple scripts, runs commands, analyzes stdout/stderr logs, self-heals failures, and re-runs until goal verification succeeds.",
+      "fr": "Ajout de UniversalAutonomousSolver cross-OS (Linux, Windows, macOS, Embedded) qui génère plusieurs scripts, exécute les commandes, analyse les journaux, s'auto-répare et réexécute jusqu'à vérification.",
+      "es": "Añadido UniversalAutonomousSolver cross-OS (Linux, Windows, macOS, Embedded) que genera múltiples scripts, ejecuta comandos, analiza logs, se autorrepara y reejecuta hasta verificar el objetivo."
+    },
+    {
+      "it": "Integrato Gestore Password cifrato per utente (PBKDF2-HMAC-SHA256 + Fernet) e Auto-Installer autonomo ESP32 USB/COM e Debian SSH collegati alla Pagina 80.",
+      "en": "Integrated per-user encrypted Password Vault (PBKDF2-HMAC-SHA256 + Fernet) and autonomous ESP32 USB/COM and Debian SSH Provisioner wired into Page 80.",
+      "fr": "Intégration d'un coffre-fort de mots de passe chiffré par utilisateur (PBKDF2-HMAC-SHA256 + Fernet) et d'un provisionneur autonome ESP32 USB/COM et Debian SSH dans la Page 80.",
+      "es": "Integrada bóveda cifrada de contraseñas por usuario (PBKDF2-HMAC-SHA256 + Fernet) y aprovisionador autónomo ESP32 USB/COM y Debian SSH en la Página 80."
+    },
+    {
+      "it": "Esteso il motore affettivo vocale con rilevamento acustico del sussurro (HNR, spectral tilt, ZCR) e modulazione adattiva TTS end-to-end su Pagina 80 e satellite Windows.",
+      "en": "Extended vocal affective engine with acoustic whisper detection (HNR, spectral tilt, ZCR) and end-to-end adaptive TTS modulation on Page 80 and Windows satellite.",
+      "fr": "Extension du moteur affectif vocal avec détection acoustique du chuchotement (HNR, inclinaison spectrale, ZCR) et modulation TTS adaptative de bout en bout.",
+      "es": "Extendido el motor afectivo vocal con detección acústica de susurro (HNR, inclinación espectral, ZCR) y modulación TTS adaptativa de extremo a extremo."
+    }
+  ]
+}
