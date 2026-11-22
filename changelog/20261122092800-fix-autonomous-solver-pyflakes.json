@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-22",
+  "title": {
+    "it": "Fix analisi statica pyflakes in UniversalAutonomousSolver",
+    "en": "Fix pyflakes static analysis in UniversalAutonomousSolver",
+    "fr": "Correction analyse statique pyflakes dans UniversalAutonomousSolver",
+    "es": "Corrección de análisis estático pyflakes en UniversalAutonomousSolver"
+  },
+  "fixes": [
+    {
+      "it": "Rimossi gli import inutilizzati shutil e Any in server/features/autonomous_solver/solver_engine.py per superare validate-python in CI.",
+      "en": "Removed unused shutil and Any imports in server/features/autonomous_solver/solver_engine.py to pass validate-python in CI.",
+      "fr": "Suppression des imports inutilisés shutil et Any dans server/features/autonomous_solver/solver_engine.py pour valider CI.",
+      "es": "Eliminadas importaciones no usadas shutil y Any en server/features/autonomous_solver/solver_engine.py para pasar validate-python en CI."
+    }
+  ]
+}
