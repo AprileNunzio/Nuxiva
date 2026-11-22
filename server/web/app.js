@@ -7,6 +7,7 @@ import { initHumanAffectiveEngine } from "./features/human_affective_engine/scri
 import { initWearableVitalsHub } from "./features/wearable_vitals_hub/script.js";
 import { initUserPresenceVitals } from "./features/user_presence_vitals/script.js";
 import { initCognitiveTriageAgents } from "./features/cognitive_triage_agents/script.js";
+import { initPasswordVaultDeck } from "./features/password_vault/script.js";
 import { applyDomTranslations } from "./shared/i18n/dom_translator.js";
 
 let currentSelectedAgentId = "windows_system_agent";
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initWearableVitalsHub();
   initUserPresenceVitals();
   initCognitiveTriageAgents();
+  initPasswordVaultDeck();
   initAdminWizard();
   initGlobalCommandBar();
 

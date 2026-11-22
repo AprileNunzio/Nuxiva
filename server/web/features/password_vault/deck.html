@@ -1,0 +1,108 @@
+    <section id="deck-password-vault" class="plancia-section">
+      <div style="display:grid; grid-template-columns: 1.15fr 1fr; gap:1rem; height:100%;">
+        <!-- COLONNA SINISTRA: PASSWORD VAULT CIFRATO UTENTE COLLEGATO -->
+        <div class="tactical-card" style="display:flex; flex-direction:column; gap:0.85rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-glow); padding-bottom:0.5rem;">
+            <div>
+              <h3 style="margin:0; color:var(--cyan-glow); font-size:1rem;">🔐 Gestore Password Cifrato (Utente Collegato)</h3>
+              <p style="margin:2px 0 0 0; font-size:0.75rem; color:var(--text-muted);">Archivio cifrato AES/Fernet + PBKDF2 per credenziali Web, SSH, Wi-Fi e Dispositivi.</p>
+            </div>
+            <span id="vault-status-badge" class="badge-tag" style="background:rgba(244,63,94,0.2); color:#fda4af;">BLOCCATO</span>
+          </div>
+
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+            <input type="text" id="vault-user-id" value="user_primary" placeholder="Utente collegato (es. user_primary)" style="width:160px; background:rgba(0,0,0,0.5); border:1px solid var(--border-glow); color:#fff; padding:0.45rem 0.65rem; border-radius:6px; font-size:0.8rem;">
+            <input type="password" id="vault-master-password" placeholder="Master password del vault..." style="flex:1; min-width:170px; background:rgba(0,0,0,0.5); border:1px solid var(--border-glow); color:#fff; padding:0.45rem 0.65rem; border-radius:6px; font-size:0.8rem;">
+            <button id="btn-vault-unlock" class="tactical-btn" type="button" style="padding:0.45rem 0.9rem;">Sblocca</button>
+            <button id="btn-vault-lock" class="tactical-btn secondary" type="button" style="padding:0.45rem 0.8rem;">Blocca</button>
+          </div>
+
+          <!-- FORM NUOVA CREDENZIALE -->
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:0.75rem; display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+            <input type="text" id="vault-entry-label" placeholder="Nome voce (es. Debian Casa / Wi-Fi Casa)" style="background:rgba(0,0,0,0.45); border:1px solid var(--border-glow); color:#fff; padding:0.45rem 0.6rem; border-radius:6px; font-size:0.8rem;">
+            <select id="vault-entry-category" style="background:rgba(0,0,0,0.65); border:1px solid var(--border-glow); color:#fff; padding:0.45rem 0.6rem; border-radius:6px; font-size:0.8rem;">
+              <option value="ssh">🖥️ SSH / Server Debian</option>
+              <option value="wifi">📶 Rete Wi-Fi (ESP32)</option>
+              <option value="web">🌐 Sito Web / App</option>
+              <option value="device">🔌 Dispositivo / IoT</option>
+              <option value="api_key">🔑 API Key</option>
+              <option value="database">🗄️ Database</option>
+              <option value="other">📦 Altro</option>
+            </select>
+            <input type="text" id="vault-entry-host" placeholder="Host / URL / SSID" style="background:rgba(0,0,0,0.45); border:1px solid var(--border-glow); color:#fff; padding:0.45rem 0.6rem; border-radius:6px; font-size:0.8rem;">
+            <input type="text" id="vault-entry-username" placeholder="Username / Email / SSID" style="background:rgba(0,0,0,0.45); border:1px solid var(--border-glow); color:#fff; padding:0.45rem 0.6rem; border-radius:6px; font-size:0.8rem;">
+            <div style="grid-column:span 2; display:flex; gap:0.4rem;">
+              <input type="password" id="vault-entry-secret" placeholder="Password o Chiave segreta" style="flex:1; background:rgba(0,0,0,0.45); border:1px solid var(--border-glow); color:#fff; padding:0.45rem 0.6rem; border-radius:6px; font-size:0.8rem;">
+              <button id="btn-vault-gen-pwd" class="tactical-btn secondary" type="button" title="Genera password sicura" style="padding:0.45rem 0.7rem; font-size:0.78rem;">🎲 Genera</button>
+              <button id="btn-vault-save-entry" class="tactical-btn" type="button" style="padding:0.45rem 0.9rem; font-size:0.8rem;">+ Salva</button>
+            </div>
+          </div>
+
+          <div id="vault-feedback" style="font-size:0.75rem; color:var(--cyan-glow); min-height:1rem; font-family:var(--font-mono);"></div>
+
+          <!-- LISTA CREDENZIALI -->
+          <div id="vault-entries-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:0.45rem; max-height:360px;">
+            <div style="text-align:center; color:var(--text-muted); font-size:0.78rem; padding:1rem;">Sblocca il vault per gestire le credenziali dell'utente collegato.</div>
+          </div>
+        </div>
+
+        <!-- COLONNA DESTRA: AUTO-INSTALLER AUTONOMO ESP32 + DEBIAN SSH -->
+        <div class="tactical-card" style="display:flex; flex-direction:column; gap:0.85rem;">
+          <div style="border-bottom:1px solid var(--border-glow); padding-bottom:0.5rem;">
+            <h3 style="margin:0; color:#34d399; font-size:1rem;">🤖 Auto-Installer Dispositivi (ESP32 USB &amp; Debian SSH)</h3>
+            <p style="margin:2px 0 0 0; font-size:0.75rem; color:var(--text-muted);">Rilevamento automatico porte COM/USB, probe SSH multi-metodo e deploy Nuxiva usando le credenziali del Vault.</p>
+          </div>
+
+          <!-- SEZIONE ESP32 -->
+          <div style="background:rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.28); border-radius:8px; padding:0.75rem; display:flex; flex-direction:column; gap:0.45rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="color:#34d399; font-size:0.85rem;">🔌 ESP32 Satellite (USB/COM)</strong>
+              <button id="btn-esp32-scan" class="tactical-btn secondary" type="button" style="padding:0.3rem 0.65rem; font-size:0.75rem;">🔍 Scansiona Porte</button>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.4rem;">
+              <select id="esp32-port-select" style="background:rgba(0,0,0,0.6); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; font-size:0.78rem;">
+                <option value="">Auto-rileva ESP32</option>
+              </select>
+              <select id="esp32-wifi-vault-select" style="background:rgba(0,0,0,0.6); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; font-size:0.78rem;">
+                <option value="">Wi-Fi dal Vault (opzionale)</option>
+              </select>
+            </div>
+            <div style="display:flex; gap:0.4rem; align-items:center;">
+              <input type="text" id="esp32-server-url" value="http://nuxiva.local:80" placeholder="URL Server Nuxiva" style="flex:1; background:rgba(0,0,0,0.45); border:1px solid var(--border-glow); color:#fff; padding:0.4rem 0.6rem; border-radius:6px; font-size:0.78rem;">
+              <button id="btn-esp32-dryrun" class="tactical-btn secondary" type="button" style="padding:0.4rem 0.7rem; font-size:0.76rem;">Test Dry-Run</button>
+              <button id="btn-esp32-flash" class="tactical-btn" type="button" style="padding:0.4rem 0.85rem; font-size:0.76rem;">⚡ Auto-Installa</button>
+            </div>
+          </div>
+
+          <!-- SEZIONE DEBIAN SSH -->
+          <div style="background:rgba(0,240,255,0.05); border:1px solid rgba(0,240,255,0.28); border-radius:8px; padding:0.75rem; display:flex; flex-direction:column; gap:0.45rem;">
+            <strong style="color:var(--cyan-glow); font-size:0.85rem;">🖥️ Debian / Linux Server (SSH Autonomo)</strong>
+            <div style="display:grid; grid-template-columns:1.2fr 0.6fr 0.9fr; gap:0.4rem;">
+              <input type="text" id="debian-host" placeholder="IP o Hostname (es. 192.168.1.50)" style="background:rgba(0,0,0,0.45); border:1px solid var(--border-glow); color:#fff; padding:0.4rem 0.6rem; border-radius:6px; font-size:0.78rem;">
+              <input type="number" id="debian-port" value="22" min="1" max="65535" style="background:rgba(0,0,0,0.45); border:1px solid var(--border-glow); color:#fff; padding:0.4rem 0.6rem; border-radius:6px; font-size:0.78rem;">
+              <input type="text" id="debian-user" value="root" placeholder="Utente SSH" style="background:rgba(0,0,0,0.45); border:1px solid var(--border-glow); color:#fff; padding:0.4rem 0.6rem; border-radius:6px; font-size:0.78rem;">
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.4rem;">
+              <select id="debian-ssh-vault-select" style="background:rgba(0,0,0,0.6); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; font-size:0.78rem;">
+                <option value="">Credenziale SSH dal Vault (opzionale)</option>
+              </select>
+              <select id="debian-install-mode" style="background:rgba(0,0,0,0.6); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; font-size:0.78rem;">
+                <option value="satellite">Modalità Nodo Satellite</option>
+                <option value="full_server">Modalità Server Completo</option>
+              </select>
+            </div>
+            <div style="display:flex; gap:0.4rem; justify-content:flex-end;">
+              <button id="btn-debian-probe" class="tactical-btn secondary" type="button" style="padding:0.4rem 0.7rem; font-size:0.76rem;">🔎 Test SSH</button>
+              <button id="btn-debian-dryrun" class="tactical-btn secondary" type="button" style="padding:0.4rem 0.7rem; font-size:0.76rem;">Test Dry-Run</button>
+              <button id="btn-debian-install" class="tactical-btn" type="button" style="padding:0.4rem 0.85rem; font-size:0.76rem;">🚀 Auto-Installa</button>
+            </div>
+          </div>
+
+          <!-- LOG ESECUZIONE AUTONOMA -->
+          <div style="flex:1; display:flex; flex-direction:column; min-height:140px;">
+            <div style="font-size:0.72rem; color:var(--text-muted); margin-bottom:0.25rem; font-family:var(--font-mono);">LOG ESECUZIONE PROVISIONER AUTONOMO:</div>
+            <pre id="provisioner-log-output" style="flex:1; margin:0; background:rgba(0,0,0,0.55); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:0.6rem; font-size:0.72rem; color:#e2e8f0; overflow-y:auto; white-space:pre-wrap; font-family:var(--font-mono);">Pronto. Scansiona una porta ESP32 o testa una connessione SSH Debian.</pre>
+          </div>
+        </div>
+      </div>
+    </section>
