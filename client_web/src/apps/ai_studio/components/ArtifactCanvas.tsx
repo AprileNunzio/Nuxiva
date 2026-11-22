@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useStudioI18n } from '../scope';
 import type { Artifact } from '../types';
-import { saveSmbFile } from '../api';
+import { saveSmbFile, executeCode, type ExecutionResult } from '../api';
 import { Markdown } from './Markdown';
 
 /** Rimuove script, handler inline e riferimenti esterni pericolosi dall'SVG prima dell'anteprima. */
@@ -41,18 +41,44 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
   const [past, setPast] = useState<string[]>([]);
   const [future, setFuture] = useState<string[]>([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
+  const [executionResult, setExecutionResult] = useState<ExecutionResult | null>(null);
+  const [showApproveModal, setShowApproveModal] = useState(false);
 
   useEffect(() => {
     setDraft(artifact?.content ?? '');
     setPast([]);
     setFuture([]);
     setIsEditing(false);
+    setExecutionResult(null);
+    setShowApproveModal(false);
   }, [artifact?.id, artifact?.content]);
 
   if (!artifact) return null;
 
   const content = draft;
   const isDirty = content !== artifact.content;
+  const isExecutable = artifact.kind === 'code' || ['python', 'py', 'sh', 'bash', 'js', 'javascript'].includes((artifact.language || '').toLowerCase());
+
+  const handleExecute = async () => {
+    setShowApproveModal(false);
+    setIsRunning(true);
+    setExecutionResult(null);
+    try {
+      const res = await executeCode(content, artifact.language || 'python');
+      setExecutionResult(res);
+    } catch (err) {
+      setExecutionResult({
+        ok: false,
+        exit_code: -1,
+        output: String((err as Error).message || err),
+        duration_ms: 0,
+      });
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
 
   const applyEdit = (next: string) => {
     if (next === draft) return;
@@ -173,6 +199,19 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
             ✂️ Modifica parte
           </button>
 
+          {isExecutable && (
+            <button
+              type="button"
+              disabled={isRunning}
+              onClick={() => setShowApproveModal(true)}
+              className="px-2.5 py-1 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-xs text-emerald-300 font-medium transition-colors flex items-center gap-1.5"
+              title={t('sandbox_run')}
+            >
+              <span>{isRunning ? '⏳' : '▶'}</span>
+              <span>{isRunning ? t('sandbox_running') : t('sandbox_btn')}</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={handleCopy}
@@ -227,6 +266,45 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
           {isDirty ? `● ${t('canvas_modified')} · ` : ''}v{past.length + 1} · {lineCount} {t('canvas_lines')}
         </span>
       </div>
+
+      {executionResult && (
+        <div className="p-3 bg-slate-950 border-b border-slate-800 flex flex-col gap-1.5 text-xs font-mono">
+          <div className="flex items-center justify-between text-slate-400">
+            <span className="flex items-center gap-1.5">
+              <span>🖥️ {t('sandbox_console')}</span>
+              <span className={executionResult.ok ? 'text-emerald-400 font-semibold' : 'text-red-400 font-semibold'}>
+                {executionResult.ok ? `(${t('sandbox_ok')})` : `(${t('sandbox_fail')} code ${executionResult.exit_code})`}
+              </span>
+            </span>
+            <span className="text-[10px] text-slate-500">{executionResult.duration_ms}ms</span>
+          </div>
+          <pre className="max-h-40 overflow-y-auto p-2 bg-slate-900 rounded-lg border border-slate-800 text-slate-200 whitespace-pre-wrap select-text">
+            {executionResult.output}
+          </pre>
+        </div>
+      )}
+
+      {showApproveModal && (
+        <div className="p-3 bg-cyan-950/40 border-b border-cyan-800/60 flex items-center justify-between text-xs gap-2">
+          <span className="text-cyan-200">🛡️ {t('sandbox_confirm')}</span>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => setShowApproveModal(false)}
+              className="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700"
+            >
+              {t('close')}
+            </button>
+            <button
+              type="button"
+              onClick={handleExecute}
+              className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium shadow-sm"
+            >
+              {t('sandbox_approve')}
+            </button>
+          </div>
+        </div>
+      )}
 
       {isPartialEditOpen && (
         <div className="p-3 bg-slate-900 border-b border-slate-800 flex flex-col gap-2 text-xs">

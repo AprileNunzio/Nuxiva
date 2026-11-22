@@ -84,12 +84,13 @@ export async function fetchMessages(threadId: string): Promise<Message[]> {
 export async function sendMessage(
   threadId: string,
   content: string,
-  attachments?: Attachment[]
+  attachments?: Attachment[],
+  presetId?: string | null
 ): Promise<Message> {
   const res = await fetch(`${BASE_URL}/threads/${encodeURIComponent(threadId)}/messages`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content, attachments }),
+    body: JSON.stringify({ content, attachments, preset_id: presetId || undefined }),
   });
   return handleResponse<Message>(res);
 }
@@ -180,4 +181,54 @@ export async function deleteKnowledge(projectId: string, docId: string): Promise
     { method: 'DELETE' },
   );
   await handleResponse<{ status: string }>(res);
+}
+
+export interface Preset {
+  id: string;
+  project_id: string | null;
+  name: string;
+  description: string;
+  system_prompt: string;
+  model_mode: ModelMode;
+}
+
+export async function fetchPresets(projectId?: string | null): Promise<Preset[]> {
+  const url = projectId ? `${BASE_URL}/presets?project_id=${encodeURIComponent(projectId)}` : `${BASE_URL}/presets`;
+  return handleResponse<Preset[]>(await fetch(url));
+}
+
+export async function createPreset(data: {
+  name: string;
+  description: string;
+  system_prompt: string;
+  model_mode: ModelMode;
+  project_id?: string | null;
+}): Promise<Preset> {
+  const res = await fetch(`${BASE_URL}/presets`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  return handleResponse<Preset>(res);
+}
+
+export async function deletePreset(presetId: string): Promise<void> {
+  const res = await fetch(`${BASE_URL}/presets/${encodeURIComponent(presetId)}`, { method: 'DELETE' });
+  await handleResponse<{ status: string }>(res);
+}
+
+export interface ExecutionResult {
+  ok: boolean;
+  exit_code: number;
+  output: string;
+  duration_ms: number;
+}
+
+export async function executeCode(code: string, language: string = 'python'): Promise<ExecutionResult> {
+  const res = await fetch(`${BASE_URL}/sandbox/run`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code, language }),
+  });
+  return handleResponse<ExecutionResult>(res);
 }

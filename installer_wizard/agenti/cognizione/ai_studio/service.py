@@ -5,7 +5,10 @@ import uuid
 from typing import List, Optional, Tuple
 from .artifact_extractor import ArtifactExtractor
 from .memory_service import CrossMemoryService
+from .audit_service import AuditService
+from .execution_service import ExecutionService
 from .knowledge_service import KnowledgeService
+from .preset_service import PresetService
 from .models import Artifact, Attachment, Message, Project, Thread
 from .smb_service import SmbStudioService
 from .store import StudioStore
@@ -41,6 +44,9 @@ class StudioService:
         self.smb = smb or SmbStudioService()
         self.memory = memory or CrossMemoryService(self.store)
         self.knowledge = KnowledgeService(self.store)
+        self.audit = AuditService(self.store)
+        self.execution = ExecutionService()
+        self.presets = PresetService(self.store)
 
     def create_project(self, name: str, description: str = "", instructions: str = "", smb_folder: str = "") -> Project:
         now = int(time.time())
@@ -124,6 +130,8 @@ class StudioService:
         thread_id: str,
         content: str,
         attachments: Optional[List[Attachment]] = None,
+        preset_id: Optional[str] = None,
+        actor: str = "admin",
     ) -> Message:
         now = int(time.time())
         thread = self.store.get_thread(thread_id)
@@ -142,6 +150,7 @@ class StudioService:
             created_at=now,
         )
         self.store.add_message(user_msg)
+        self.audit.append(actor, "message.send", f"thread={thread.id} preset={preset_id or '-'} chars={len(content)}")
         self.memory.learn(content=content, source="written_chat", speaker="user")
 
         project = self.store.get_project(thread.project_id) if thread.project_id else None
@@ -199,6 +208,10 @@ class StudioService:
             knowledge_context = self.knowledge.build_context(project.id, content)
             if knowledge_context:
                 system_parts.append(f"\n{knowledge_context}")
+
+        preset = self.presets.get(preset_id) if preset_id else None
+        if preset and preset["system_prompt"].strip():
+            system_parts.append(f"\n[Preset: {preset['name']}]\n{preset['system_prompt']}")
 
         full_system = "\n\n".join(system_parts)
 

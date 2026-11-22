@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from pydantic import BaseModel, Field
 from access import require_admin
 from .models import Attachment
+from .preset_service import VALID_MODES
 from .service import StudioService
 
 public_routes = APIRouter(prefix="/api/ai_studio", tags=["ai_studio"])
@@ -34,6 +35,20 @@ class KnowledgeAddRequest(BaseModel):
     content: str = Field(..., min_length=1, max_length=400000)
 
 
+class CodeExecuteRequest(BaseModel):
+    code: str = Field(..., min_length=1, max_length=100000)
+    language: str = Field("python", max_length=32)
+    artifact_id: Optional[str] = None
+
+
+class PresetCreateRequest(BaseModel):
+    name: str = Field(..., min_length=1, max_length=80)
+    description: str = Field("", max_length=300)
+    system_prompt: str = Field("", max_length=6000)
+    model_mode: str = Field("reasoning", max_length=32)
+    project_id: Optional[str] = Field(None, max_length=120)
+
+
 class ThreadCreateRequest(BaseModel):
     title: str = Field("Nuova conversazione", max_length=120)
     project_id: Optional[str] = None
@@ -57,6 +72,7 @@ class AttachmentPayload(BaseModel):
 
 class MessageSendRequest(BaseModel):
     content: str = Field(..., min_length=1)
+    preset_id: Optional[str] = Field(None, max_length=64)
     attachments: Optional[List[AttachmentPayload]] = None
 
 
@@ -107,6 +123,7 @@ async def update_project(project_id: str, body: ProjectUpdateRequest, _=Depends(
 async def delete_project(project_id: str, _=Depends(require_admin)) -> Dict[str, str]:
     service.store.delete_project(project_id)
     service.knowledge.delete_project(project_id)
+    service.audit.append(str(_ or "admin"), "project.delete", f"project={project_id}")
     return {"status": "ok"}
 
 
@@ -158,7 +175,9 @@ async def list_knowledge(project_id: str) -> List[Dict[str, Any]]:
 @admin_routes.post("/projects/{project_id}/knowledge")
 async def add_knowledge(project_id: str, body: KnowledgeAddRequest, _=Depends(require_admin)) -> Dict[str, Any]:
     _require_project(project_id)
-    return service.knowledge.add_document(project_id, body.name.strip(), body.content)
+    doc = service.knowledge.add_document(project_id, body.name.strip(), body.content)
+    service.audit.append(str(_ or "admin"), "knowledge.add", f"project={project_id} doc={doc['id']} name={doc['name']}")
+    return doc
 
 
 @admin_routes.delete("/projects/{project_id}/knowledge/{doc_id}")
@@ -166,6 +185,7 @@ async def delete_knowledge(project_id: str, doc_id: str, _=Depends(require_admin
     _require_project(project_id)
     if not service.knowledge.delete_document(project_id, doc_id):
         raise HTTPException(status_code=404, detail="Document not found")
+    service.audit.append(str(_ or "admin"), "knowledge.delete", f"project={project_id} doc={doc_id}")
     return {"status": "deleted"}
 
 
@@ -173,6 +193,57 @@ async def delete_knowledge(project_id: str, doc_id: str, _=Depends(require_admin
 async def search_knowledge(project_id: str, q: str = Query("", max_length=300)) -> List[Dict[str, Any]]:
     _require_project(project_id)
     return service.knowledge.search(project_id, q)
+
+
+@admin_routes.post("/sandbox/run")
+async def execute_code(body: CodeExecuteRequest, _=Depends(require_admin)) -> Dict[str, Any]:
+    res = await service.execution.execute_code(body.code, body.language)
+    service.audit.append(
+        str(_ or "admin"),
+        "code.execute",
+        f"lang={body.language} ok={res['ok']} exit={res['exit_code']} dur_ms={res['duration_ms']}",
+    )
+    return res
+
+
+@public_routes.get("/presets")
+async def list_presets(project_id: Optional[str] = Query(None)) -> List[Dict[str, Any]]:
+    return service.presets.list(project_id)
+
+
+@admin_routes.post("/presets")
+async def create_preset(body: PresetCreateRequest, _=Depends(require_admin)) -> Dict[str, Any]:
+    if body.model_mode not in VALID_MODES:
+        raise HTTPException(status_code=422, detail="Invalid model_mode")
+    if body.project_id:
+        _require_project(body.project_id)
+    preset = service.presets.create(
+        body.name.strip(), body.system_prompt, body.description, body.model_mode, body.project_id
+    )
+    service.audit.append(str(_ or "admin"), "preset.create", f"preset={preset['id']} name={preset['name']}")
+    return preset
+
+
+@admin_routes.delete("/presets/{preset_id}")
+async def delete_preset(preset_id: str, _=Depends(require_admin)) -> Dict[str, str]:
+    if not service.presets.delete(preset_id):
+        raise HTTPException(status_code=404, detail="Preset not found")
+    service.audit.append(str(_ or "admin"), "preset.delete", f"preset={preset_id}")
+    return {"status": "deleted"}
+
+
+@admin_routes.get("/audit")
+async def list_audit(
+    limit: int = Query(100, ge=1, le=500),
+    action: str = Query("", max_length=40),
+    _=Depends(require_admin),
+) -> List[Dict[str, Any]]:
+    return service.audit.list(limit, action)
+
+
+@admin_routes.get("/audit/verify")
+async def verify_audit(_=Depends(require_admin)) -> Dict[str, Any]:
+    return service.audit.verify()
 
 
 @public_routes.get("/threads/{thread_id}/messages")
@@ -201,6 +272,8 @@ async def send_message(thread_id: str, body: MessageSendRequest, _=Depends(requi
         thread_id=thread_id,
         content=body.content,
         attachments=attachments,
+        preset_id=body.preset_id,
+        actor=str(_ or "admin"),
     )
     return msg.to_dict()
 

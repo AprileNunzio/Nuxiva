@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-11-22",
+  "title": {
+    "it": "AI Studio Enterprise: registro di controllo crittografico, libreria preset e prompt, esecuzione sandbox e gate di approvazione",
+    "en": "AI Studio Enterprise: cryptographic audit log, preset prompt library, sandboxed execution, and approval gate",
+    "fr": "AI Studio Enterprise : journal d'audit cryptographique, préréglages, exécution en bac à sable et porte d'approbation",
+    "es": "AI Studio Enterprise: registro criptográfico de auditoría, biblioteca de preajustes, ejecución sandbox y compuerta de aprobación"
+  },
+  "features": [
+    {
+      "it": "Libreria di preset e persone riutilizzabili con prompt di sistema dedicati e modelli per conversazioni veloci o di ragionamento.",
+      "en": "Reusable preset persona and prompt library with dedicated system prompts and model modes for fast or reasoning chats.",
+      "fr": "Bibliothèque de préréglages et personas réutilisables avec instructions système dédiées pour discussions rapides ou de raisonnement.",
+      "es": "Biblioteca de preajustes y personas reutilizables con indicaciones de sistema dedicadas para chats rápidos o de razonamiento."
+    },
+    {
+      "it": "Registro di audit immutabile su catena hash SHA-256 per tracciare messaggi, preset, conoscenza ed esecuzioni con verifica crittografica.",
+      "en": "Immutable SHA-256 hash-chain audit log tracking messages, presets, knowledge documents, and executions with cryptographic integrity endpoint.",
+      "fr": "Journal d'audit immuable sur chaîne de hachage SHA-256 pour tracer messages, préréglages, documents et exécutions avec vérification.",
+      "es": "Registro de auditoría inmutable en cadena hash SHA-256 para rastrear mensajes, preajustes, documentos y ejecuciones con verificación."
+    },
+    {
+      "it": "Esecuzione sicura in sandbox di codice Python, Bash e Node.js con approval gate obbligatorio e console integrata nel canvas con log e codici di uscita.",
+      "en": "Secure sandboxed execution of Python, Bash, and Node.js code with mandatory approval gate and embedded canvas console with logs and exit codes.",
+      "fr": "Exécution sécurisée en bac à sable de code Python, Bash et Node.js avec porte d'approbation et console intégrée au canevas.",
+      "es": "Ejecución segura en sandbox de código Python, Bash y Node.js con compuerta de aprobación obligatoria y consola integrada con registros."
+    }
+  ]
+}

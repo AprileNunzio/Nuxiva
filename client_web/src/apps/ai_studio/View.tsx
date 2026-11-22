@@ -15,6 +15,7 @@ import { FileDiffModal } from './components/FileDiffModal';
 import { ResizeHandle, useResizableWidth } from './components/ResizeHandle';
 import { AuroraBackground, ACCENTS } from './components/AuroraBackground';
 import { toggleReaction, votePoll } from './messageMutations';
+import { PresetsModal } from './components/PresetsModal';
 import { KnowledgeModal } from './components/KnowledgeModal';
 import { messagesToMarkdown } from './components/Markdown';
 import { CommandPalette, type PaletteItem } from './components/CommandPalette';
@@ -37,6 +38,9 @@ export const View: React.FC = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
   const [isKnowledgeOpen, setIsKnowledgeOpen] = useState(false);
+  const [isPresetsOpen, setIsPresetsOpen] = useState(false);
+  const [presets, setPresets] = useState<api.Preset[]>([]);
+  const [activePresetId, setActivePresetId] = useState<string | null>(() => localStorage.getItem('ai_studio.preset'));
   const [accent, setAccent] = useState<string>(() => localStorage.getItem('ai_studio.accent') || 'cyan');
   const sidebarW = useResizableWidth('sidebar', 288, 220, 480);
   const canvasW = useResizableWidth('canvas', 580, 360, 900);
@@ -222,7 +226,7 @@ export const View: React.FC = () => {
     setIsThinking(true);
 
     try {
-      const assistantMsg = await api.sendMessage(currentThId, content, attachments);
+      const assistantMsg = await api.sendMessage(currentThId, content, attachments, activePresetId);
       setMessages((prev) => [...prev.filter((m) => m.id !== tempUserMsg.id), tempUserMsg, assistantMsg]);
       if (assistantMsg.artifacts && assistantMsg.artifacts.length > 0) {
         setActiveArtifact(assistantMsg.artifacts[0]);
@@ -247,6 +251,24 @@ export const View: React.FC = () => {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
+
+  const selectPreset = (id: string | null) => {
+    setActivePresetId(id);
+    if (id) localStorage.setItem('ai_studio.preset', id);
+    else localStorage.removeItem('ai_studio.preset');
+  };
+
+  const loadPresets = useCallback(async () => {
+    try {
+      setPresets(await api.fetchPresets(selectedProjectId));
+    } catch (err) {
+      console.error(err);
+    }
+  }, [selectedProjectId]);
+
+  useEffect(() => {
+    void loadPresets();
+  }, [loadPresets]);
 
   const handleRegenerate = () => {
     const lastUser = [...messages].reverse().find((m) => m.role === 'user');
@@ -276,6 +298,13 @@ export const View: React.FC = () => {
     { id: 'a_proj', group: 'actions', label: t('new_project'), run: () => { setEditingProject(null); setIsProjectModalOpen(true); } },
     { id: 'a_mem', group: 'actions', label: t('cmd_memory'), run: () => setIsMemoryHudOpen(true) },
     { id: 'a_3d', group: 'actions', label: t('cmd_3d'), run: () => handleOpen3DViewer() },
+    { id: 'a_presets', group: 'actions', label: t('cmd_presets'), run: () => setIsPresetsOpen(true) },
+    ...presets.map((p): PaletteItem => ({
+      id: `p_${p.id}`,
+      group: 'actions',
+      label: `${t('cmd_preset_active')}${p.name}`,
+      run: () => selectPreset(p.id),
+    })),
     { id: 'a_kb', group: 'actions', label: t('cmd_knowledge'), run: () => setIsKnowledgeOpen(true) },
     { id: 'a_regen', group: 'actions', label: t('cmd_regenerate'), run: handleRegenerate },
     { id: 'a_export', group: 'actions', label: t('cmd_export'), run: handleExport },
@@ -418,6 +447,15 @@ export const View: React.FC = () => {
         onSelectFile={(att) => {
           handleSendMessage(`[Allegato SMB: ${att.name}]`, [att]);
         }}
+      />
+
+      <PresetsModal
+        isOpen={isPresetsOpen}
+        onClose={() => setIsPresetsOpen(false)}
+        projectId={currentProject?.id || null}
+        activePresetId={activePresetId}
+        onSelect={selectPreset}
+        onChanged={loadPresets}
       />
 
       <KnowledgeModal
