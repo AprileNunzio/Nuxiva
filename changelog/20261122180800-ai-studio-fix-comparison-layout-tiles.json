@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-22",
+  "title": {
+    "it": "AI Studio Enterprise: correzione layout container-driven os-tiles per la modale di confronto modelli",
+    "en": "AI Studio Enterprise: container-driven os-tiles layout fix for model comparison modal",
+    "fr": "AI Studio Enterprise : correction de disposition os-tiles pour la modale de comparaison",
+    "es": "AI Studio Enterprise: corrección de diseño os-tiles para el modal de comparación de modelos"
+  },
+  "fixes": [
+    {
+      "it": "Risolta violazione architetturale di layout sostituendo grid viewport-driven con classi container-driven os-tiles nel confronto modelli.",
+      "en": "Resolved architectural layout violation by replacing viewport-driven grids with container-driven os-tiles classes in model comparison.",
+      "fr": "Correction de la violation de disposition en remplaçant la grille viewport par les classes os-tiles dans la comparaison de modèles.",
+      "es": "Corregida violación de diseño al reemplazar la cuadrícula responsive con clases container-driven os-tiles en la comparación de modelos."
+    }
+  ]
+}

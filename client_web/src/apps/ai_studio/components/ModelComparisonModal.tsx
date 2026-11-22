@@ -102,7 +102,7 @@ export const ModelComparisonModal: React.FC<Props> = ({ isOpen, onClose, project
           {error && <p className="text-xs text-red-400">{error}</p>}
 
           {results.length > 0 && (
-            <div className={`grid gap-3 pt-2 grid-cols-1 ${results.length === 2 ? 'md:grid-cols-2' : results.length >= 3 ? 'md:grid-cols-3' : ''}`}>
+            <div className="os-tiles [--tile-min:18rem] [--tile-gap:0.75rem] pt-2">
               {results.map((res) => (
                 <div key={res.mode} className="flex flex-col rounded-xl border border-slate-800 bg-slate-950/80 p-3 text-xs gap-2">
                   <div className="flex items-center justify-between border-b border-slate-800 pb-1.5 font-mono text-[11px]">
