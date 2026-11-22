@@ -100,5 +100,12 @@
   "sandbox_ok": "Exécution réussie",
   "sandbox_fail": "Échec d'exécution",
   "sandbox_approve": "Approuver et exécuter",
-  "sandbox_confirm": "Voulez-vous exécuter ce code dans le bac à sable Nuxiva ?"
+  "sandbox_confirm": "Voulez-vous exécuter ce code dans le bac à sable Nuxiva ?",
+  "compare_title": "Comparaison de modèles côte à côte",
+  "compare_desc": "Comparez les réponses générées en parallèle avec différents modes.",
+  "compare_placeholder": "Prompt à comparer...",
+  "compare_btn": "Comparer",
+  "compare_running": "Comparaison en cours sur les modèles...",
+  "cmd_compare": "Comparer les modèles",
+  "compare_time": "Temps :"
 }

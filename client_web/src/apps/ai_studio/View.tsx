@@ -13,6 +13,7 @@ import { ResizeHandle, useResizableWidth } from './components/ResizeHandle';
 import { AuroraBackground, ACCENTS } from './components/AuroraBackground';
 import { toggleReaction, votePoll } from './messageMutations';
 import { PresetsModal } from './components/PresetsModal';
+import { ModelComparisonModal } from './components/ModelComparisonModal';
 import { KnowledgeModal } from './components/KnowledgeModal';
 import { messagesToMarkdown } from './components/Markdown';
 import { CommandPalette, type PaletteItem } from './components/CommandPalette';
@@ -35,6 +36,7 @@ export const View: React.FC = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
   const [isKnowledgeOpen, setIsKnowledgeOpen] = useState(false);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [isPresetsOpen, setIsPresetsOpen] = useState(false);
   const [presets, setPresets] = useState<api.Preset[]>([]);
   const [activePresetId, setActivePresetId] = useState<string | null>(() => localStorage.getItem('ai_studio.preset'));
@@ -326,6 +328,7 @@ export const View: React.FC = () => {
     { id: 'a_proj', group: 'actions', label: t('new_project'), run: () => { setEditingProject(null); setIsProjectModalOpen(true); } },
     { id: 'a_mem', group: 'actions', label: t('cmd_memory'), run: () => setIsMemoryHudOpen(true) },
     { id: 'a_3d', group: 'actions', label: t('cmd_3d'), run: () => handleOpen3DViewer() },
+    { id: 'a_compare', group: 'actions', label: t('cmd_compare'), run: () => setIsCompareOpen(true) },
     { id: 'a_presets', group: 'actions', label: t('cmd_presets'), run: () => setIsPresetsOpen(true) },
     ...presets.map((p): PaletteItem => ({
       id: `p_${p.id}`,
@@ -455,13 +458,15 @@ export const View: React.FC = () => {
         )}
       </div>
 
-      <PresetsModal
-        isOpen={isPresetsOpen}
-        onClose={() => setIsPresetsOpen(false)}
+      <ModelComparisonModal
+        isOpen={isCompareOpen}
+        onClose={() => setIsCompareOpen(false)}
         projectId={currentProject?.id || null}
-        activePresetId={activePresetId}
-        onSelect={selectPreset}
-        onChanged={loadPresets}
+      />
+
+      <PresetsModal
+        isOpen={isPresetsOpen} onClose={() => setIsPresetsOpen(false)} projectId={currentProject?.id || null}
+        activePresetId={activePresetId} onSelect={selectPreset} onChanged={loadPresets}
       />
 
       <KnowledgeModal
@@ -477,20 +482,10 @@ export const View: React.FC = () => {
       />
 
       <StudioAuxiliaryModals
-        isProjectModalOpen={isProjectModalOpen}
-        setIsProjectModalOpen={setIsProjectModalOpen}
-        editingProject={editingProject}
-        loadProjects={loadProjects}
-        isSmbPickerOpen={isSmbPickerOpen}
-        setIsSmbPickerOpen={setIsSmbPickerOpen}
-        onSendAttachment={(att) => handleSendMessage(`[Allegato SMB: ${att.name}]`, [att])}
-        is3DModalOpen={is3DModalOpen}
-        setIs3DModalOpen={setIs3DModalOpen}
-        selectedWorkpiece3D={selectedWorkpiece3D}
-        isDiffModalOpen={isDiffModalOpen}
-        setIsDiffModalOpen={setIsDiffModalOpen}
-        currentDiffs={currentDiffs}
-        selectedDiffId={selectedDiffId}
+        isProjectModalOpen={isProjectModalOpen} setIsProjectModalOpen={setIsProjectModalOpen} editingProject={editingProject} loadProjects={loadProjects}
+        isSmbPickerOpen={isSmbPickerOpen} setIsSmbPickerOpen={setIsSmbPickerOpen} onSendAttachment={(att) => handleSendMessage(`[Allegato SMB: ${att.name}]`, [att])}
+        is3DModalOpen={is3DModalOpen} setIs3DModalOpen={setIs3DModalOpen} selectedWorkpiece3D={selectedWorkpiece3D}
+        isDiffModalOpen={isDiffModalOpen} setIsDiffModalOpen={setIsDiffModalOpen} currentDiffs={currentDiffs} selectedDiffId={selectedDiffId}
       />
     </div>
   );

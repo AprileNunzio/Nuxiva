@@ -100,5 +100,12 @@
   "sandbox_ok": "Ejecución exitosa",
   "sandbox_fail": "Error de ejecución",
   "sandbox_approve": "Aprobar y ejecutar",
-  "sandbox_confirm": "¿Quieres ejecutar este código en la sandbox Nuxiva?"
+  "sandbox_confirm": "¿Quieres ejecutar este código en la sandbox Nuxiva?",
+  "compare_title": "Comparación de modelos lado a lado",
+  "compare_desc": "Compara respuestas generadas en paralelo con diferentes modos cognitivos.",
+  "compare_placeholder": "Prompt para comparar...",
+  "compare_btn": "Comparar",
+  "compare_running": "Comparando modelos en curso...",
+  "cmd_compare": "Comparar Modelos",
+  "compare_time": "Tiempo:"
 }

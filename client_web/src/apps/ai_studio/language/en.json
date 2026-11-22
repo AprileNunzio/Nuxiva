@@ -100,5 +100,12 @@
   "sandbox_ok": "Execution successful",
   "sandbox_fail": "Execution failed",
   "sandbox_approve": "Approve & Run",
-  "sandbox_confirm": "Do you want to run this code in Nuxiva sandbox?"
+  "sandbox_confirm": "Do you want to run this code in Nuxiva sandbox?",
+  "compare_title": "Side-by-Side Model Comparison",
+  "compare_desc": "Compare parallel answers generated across different cognitive modes.",
+  "compare_placeholder": "Prompt to compare...",
+  "compare_btn": "Compare",
+  "compare_running": "Running comparison across models...",
+  "cmd_compare": "Compare Models",
+  "compare_time": "Time:"
 }

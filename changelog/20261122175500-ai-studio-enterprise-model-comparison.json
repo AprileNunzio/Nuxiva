@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-22",
+  "title": {
+    "it": "AI Studio Enterprise: confronto modelli side-by-side parallelo con latenze e processo di pensiero",
+    "en": "AI Studio Enterprise: parallel side-by-side model comparison with latency tracking and thoughts",
+    "fr": "AI Studio Enterprise : comparaison de modèles côte à côte en parallèle avec latence et pensées",
+    "es": "AI Studio Enterprise: comparación de modelos lado a lado en paralelo con latencia y pensamientos"
+  },
+  "features": [
+    {
+      "it": "Interfaccia di confronto side-by-side per interrogare in parallelo molteplici modalità cognitive (veloce, ragionamento, codice, creativa).",
+      "en": "Side-by-side comparison interface to query multiple cognitive modes (fast, reasoning, code, creative) concurrently.",
+      "fr": "Interface de comparaison côte à côte pour interroger simultanément plusieurs modes cognitifs (rapide, raisonnement, code, créatif).",
+      "es": "Interfaz de comparación lado a lado para consultar simultáneamente múltiples modos cognitivos (rápido, razonamiento, código, creativo)."
+    },
+    {
+      "it": "Tracciamento comparativo delle risposte con visualizzazione dei passaggi di pensiero, rendering Markdown e latenze di risposta.",
+      "en": "Comparative response tracking displaying thought reasoning blocks, rich Markdown rendering, and run latencies.",
+      "fr": "Suivi comparatif des réponses avec affichage des blocs de pensée, rendu Markdown et latence d'exécution.",
+      "es": "Seguimiento comparativo de respuestas con visualización de pensamientos, renderizado Markdown y latencias."
+    }
+  ]
+}

@@ -287,3 +287,23 @@ export async function streamMessage(
   }
   return finalMessage;
 }
+
+export interface ModelComparisonResult {
+  mode: ModelMode;
+  content: string;
+  thought: string;
+  duration_ms: number;
+}
+
+export async function compareModels(
+  prompt: string,
+  modes?: ModelMode[],
+  projectId?: string | null,
+): Promise<ModelComparisonResult[]> {
+  const res = await fetch(`${BASE_URL}/models/compare`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt, modes, project_id: projectId || undefined }),
+  });
+  return handleResponse<ModelComparisonResult[]>(res);
+}

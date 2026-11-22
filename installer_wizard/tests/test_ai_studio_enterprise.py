@@ -115,3 +115,15 @@ class EnterpriseApiTests(unittest.TestCase):
 
         audit = self.client.get("/api/ai_studio/audit").json()
         self.assertTrue(any(a["action"] == "dlp.mask" for a in audit))
+
+    def test_compare_modes_endpoint(self):
+        res = self.client.post("/api/ai_studio/models/compare", json={"prompt": "Spiega gli stati della materia", "modes": ["fast", "reasoning"]})
+        self.assertEqual(res.status_code, 200)
+        items = res.json()
+        self.assertEqual(len(items), 2)
+        modes = [it["mode"] for it in items]
+        self.assertIn("fast", modes)
+        self.assertIn("reasoning", modes)
+
+        audit = self.client.get("/api/ai_studio/audit").json()
+        self.assertTrue(any(a["action"] == "models.compare" for a in audit))

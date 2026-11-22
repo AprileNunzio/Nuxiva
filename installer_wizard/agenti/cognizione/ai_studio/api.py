@@ -37,6 +37,12 @@ class KnowledgeAddRequest(BaseModel):
     content: str = Field(..., min_length=1, max_length=400000)
 
 
+class CompareModesRequest(BaseModel):
+    prompt: str = Field(..., min_length=1, max_length=20000)
+    modes: Optional[List[str]] = None
+    project_id: Optional[str] = None
+
+
 class CodeExecuteRequest(BaseModel):
     code: str = Field(..., min_length=1, max_length=100000)
     language: str = Field("python", max_length=32)
@@ -195,6 +201,17 @@ async def delete_knowledge(project_id: str, doc_id: str, _=Depends(require_admin
 async def search_knowledge(project_id: str, q: str = Query("", max_length=300)) -> List[Dict[str, Any]]:
     _require_project(project_id)
     return service.knowledge.search(project_id, q)
+
+
+@admin_routes.post("/models/compare")
+async def compare_modes_endpoint(body: CompareModesRequest, _=Depends(require_admin)) -> List[Dict[str, Any]]:
+    res = await service.compare_modes(body.prompt, body.modes, body.project_id)
+    service.audit.append(
+        str(_ or "admin"),
+        "models.compare",
+        f"modes={[r['mode'] for r in res]} prompt_len={len(body.prompt)}",
+    )
+    return res
 
 
 @admin_routes.post("/sandbox/run")

@@ -1,3 +1,5 @@
+import asyncio
+from typing import Any, Dict
 import json
 import re
 import time
@@ -49,6 +51,36 @@ class StudioService:
         self.execution = ExecutionService()
         self.dlp = DlpService()
         self.presets = PresetService(self.store)
+
+    async def compare_modes(
+        self,
+        prompt: str,
+        modes: Optional[List[str]] = None,
+        project_id: Optional[str] = None,
+    ) -> List[Dict[str, Any]]:
+        target_modes = [m for m in (modes or ["fast", "reasoning", "creative", "code"]) if m in ("fast", "reasoning", "creative", "code")]
+        if not target_modes:
+            target_modes = ["fast", "reasoning"]
+
+        project = self.store.get_project(project_id) if project_id else None
+        system_parts = ["Sei Nuxiva Studio AI. Rispondi alla richiesta dell'utente."]
+        if project:
+            system_parts.append(f"[Progetto]: {project.name}\n{project.instructions}")
+        system = "\n\n".join(system_parts)
+
+        async def _run_single(mode: str) -> Dict[str, Any]:
+            start = time.perf_counter()
+            raw = await self._execute_inference(prompt, system, mode)
+            duration_ms = int((time.perf_counter() - start) * 1000)
+            thought, clean = self._decompose_thought(raw)
+            return {
+                "mode": mode,
+                "content": clean,
+                "thought": thought,
+                "duration_ms": duration_ms,
+            }
+
+        return await asyncio.gather(*[_run_single(m) for m in target_modes])
 
     def create_project(self, name: str, description: str = "", instructions: str = "", smb_folder: str = "") -> Project:
         now = int(time.time())
