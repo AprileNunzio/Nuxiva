@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-22",
+  "title": {
+    "it": "AI Studio Enterprise: protezione preventiva DLP con mascheramento automatico credenziali e audit",
+    "en": "AI Studio Enterprise: preventative DLP data protection with automatic credential masking and audit",
+    "fr": "AI Studio Enterprise : protection préventive DLP avec masquage automatique des identifiants et audit",
+    "es": "AI Studio Enterprise: protección preventiva DLP con enmascaramiento automático de credenciales y auditoría"
+  },
+  "features": [
+    {
+      "it": "Motore DLP automatico per il rilevamento e mascheramento di chiavi API (OpenAI, AWS, GitHub), token JWT, carte di credito e credenziali prima della persistenza e dell'invio all'inferenza.",
+      "en": "Automated DLP engine to detect and mask API keys (OpenAI, AWS, GitHub), JWT tokens, credit cards, and credentials before storage and model inference.",
+      "fr": "Moteur DLP automatisé pour détecter et masquer les clés d'API (OpenAI, AWS, GitHub), jetons JWT, cartes de crédit et identifiants avant l'inférence.",
+      "es": "Motor DLP automatizado para detectar y enmascarar claves de API (OpenAI, AWS, GitHub), tokens JWT, tarjetas de crédito y credenciales antes de la inferencia."
+    },
+    {
+      "it": "Tracciamento automatico e immutabile delle violazioni DLP con regole coinvolte nel registro crittografico SHA-256.",
+      "en": "Immutable and verifiable recording of DLP detection events with triggered rules in the SHA-256 cryptographic audit trail.",
+      "fr": "Enregistrement immuable et vérifiable des détections DLP avec règles déclenchées dans le journal d'audit SHA-256.",
+      "es": "Registro inmutable y verificable de eventos de detección DLP con reglas activadas en la auditoría SHA-256."
+    }
+  ]
+}

@@ -6,6 +6,7 @@ from typing import List, Optional, Tuple
 from .artifact_extractor import ArtifactExtractor
 from .memory_service import CrossMemoryService
 from .audit_service import AuditService
+from .dlp_service import DlpService
 from .execution_service import ExecutionService
 from .knowledge_service import KnowledgeService
 from .preset_service import PresetService
@@ -46,6 +47,7 @@ class StudioService:
         self.knowledge = KnowledgeService(self.store)
         self.audit = AuditService(self.store)
         self.execution = ExecutionService()
+        self.dlp = DlpService()
         self.presets = PresetService(self.store)
 
     def create_project(self, name: str, description: str = "", instructions: str = "", smb_folder: str = "") -> Project:
@@ -149,6 +151,12 @@ class StudioService:
             memory_recalls=[],
             created_at=now,
         )
+        masked_content, dlp_matches = self.dlp.inspect_and_mask(content)
+        if dlp_matches:
+            self.audit.append(actor, "dlp.mask", f"thread={thread.id} rules={[d['rule'] for d in dlp_matches]}")
+            content = masked_content
+            user_msg.content = masked_content
+
         self.store.add_message(user_msg)
         self.audit.append(actor, "message.send", f"thread={thread.id} preset={preset_id or '-'} chars={len(content)}")
         self.memory.learn(content=content, source="written_chat", speaker="user")
