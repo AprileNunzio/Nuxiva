@@ -7,6 +7,7 @@ import { MessageReactions } from './MessageReactions';
 import { InteractivePollCard } from './InteractivePollCard';
 import { DomainWidgetsPanel } from './DomainWidgetsPanel';
 import { Markdown } from './Markdown';
+import { formatThinking } from '../thinking';
 
 interface ConversationViewProps {
   thread: Thread | null;
@@ -162,7 +163,7 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
                 {!isUser && (
                   <ThoughtActionBlock
                     thought={msg.thought}
-                    thinkingDuration={msg.thinking_duration}
+                    thinkingDuration={formatThinking(msg.thinking_ms)}
                     actions={msg.actions}
                     onOpenDiff={(diffId) => onOpenDiff?.(diffId, msg.diffs)}
                   />

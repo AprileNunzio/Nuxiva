@@ -127,7 +127,7 @@ export interface Message {
   role: 'user' | 'assistant' | 'system';
   content: string;
   thought: string;
-  thinking_duration?: string;
+  thinking_ms?: number;
   actions?: AgentAction[];
   diffs?: FileDiff[];
   reactions?: Reaction[];

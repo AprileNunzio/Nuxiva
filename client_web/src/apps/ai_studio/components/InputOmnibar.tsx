@@ -9,6 +9,7 @@ interface InputOmnibarProps {
   selectedMode: ModelMode;
   onChangeMode: (mode: ModelMode) => void;
   disabled?: boolean;
+  onStop?: () => void;
 }
 
 export const InputOmnibar: React.FC<InputOmnibarProps> = ({
@@ -17,6 +18,7 @@ export const InputOmnibar: React.FC<InputOmnibarProps> = ({
   selectedMode,
   onChangeMode,
   disabled = false,
+  onStop,
 }) => {
   const { t } = useStudioI18n();
   const [text, setText] = useState('');
@@ -282,15 +284,27 @@ export const InputOmnibar: React.FC<InputOmnibarProps> = ({
           className="flex-1 bg-transparent border-0 text-sm text-slate-100 placeholder-slate-500 focus:outline-none resize-none max-h-40 py-2"
         />
 
-        <button
-          type="button"
-          disabled={(!text.trim() && attachments.length === 0) || disabled}
-          onClick={handleSend}
-          className="p-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white disabled:opacity-40 disabled:hover:from-cyan-600 disabled:hover:to-blue-600 transition-all shadow-md active:scale-95 flex items-center justify-center mb-0.5"
-          title={t('send')}
-        >
-          ➤
-        </button>
+        {disabled && onStop ? (
+          <button
+            type="button"
+            onClick={onStop}
+            className="p-2 rounded-xl bg-rose-600/90 hover:bg-rose-500 text-white transition-all shadow-md active:scale-95 flex items-center justify-center mb-0.5"
+            title={t('stop_reply')}
+            aria-label={t('stop_reply')}
+          >
+            <span aria-hidden className="block w-3 h-3 rounded-[3px] bg-white" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            disabled={(!text.trim() && attachments.length === 0) || disabled}
+            onClick={handleSend}
+            className="p-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white disabled:opacity-40 disabled:hover:from-cyan-600 disabled:hover:to-blue-600 transition-all shadow-md active:scale-95 flex items-center justify-center mb-0.5"
+            title={t('send')}
+          >
+            ➤
+          </button>
+        )}
       </div>
     </div>
   );

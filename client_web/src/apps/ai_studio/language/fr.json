@@ -24,6 +24,7 @@
   "attach_file": "Joindre un fichier ou du code",
   "browse_smb": "Parcourir les fichiers du réseau SMB",
   "send": "Envoyer",
+  "stop_reply": "Arrêter la réponse",
   "thought_process": "Processus de Raisonnement",
   "recalled_memories": "Mémoire Rappelée",
   "voice_memory": "Voix",

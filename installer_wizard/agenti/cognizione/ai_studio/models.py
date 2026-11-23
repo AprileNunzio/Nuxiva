@@ -124,6 +124,7 @@ class Message:
     memory_recalls: List[MemoryFact] = field(default_factory=list)
     created_at: int = 0
     cached: bool = False
+    thinking_ms: int = 0
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -137,6 +138,7 @@ class Message:
             "memory_recalls": [m.to_dict() for m in self.memory_recalls],
             "created_at": self.created_at,
             "cached": self.cached,
+            "thinking_ms": self.thinking_ms,
         }
 
 

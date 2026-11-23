@@ -24,6 +24,7 @@
   "attach_file": "Attach file or code",
   "browse_smb": "Browse files from SMB network",
   "send": "Send",
+  "stop_reply": "Stop the reply",
   "thought_process": "Reasoning Process",
   "recalled_memories": "Recalled Memory",
   "voice_memory": "Voice",

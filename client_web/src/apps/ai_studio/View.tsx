@@ -15,6 +15,7 @@ import { ResizeHandle, useResizableWidth } from './components/ResizeHandle';
 import { AuroraBackground, ACCENTS } from './components/AuroraBackground';
 import { votePoll } from './messageMutations';
 import { useMessageMarks } from './useMessageMarks';
+import { useStreamingReply } from './useStreamingReply';
 import { PresetsModal } from './components/PresetsModal';
 import { ModelComparisonModal } from './components/ModelComparisonModal';
 import { KnowledgeModal } from './components/KnowledgeModal';
@@ -38,7 +39,6 @@ export const View: React.FC = () => {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isSmbPickerOpen, setIsSmbPickerOpen] = useState(false);
   const [isMemoryHudOpen, setIsMemoryHudOpen] = useState(false);
-  const [isThinking, setIsThinking] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
   const [isKnowledgeOpen, setIsKnowledgeOpen] = useState(false);
@@ -125,6 +125,8 @@ export const View: React.FC = () => {
   };
 
   const marks = useMessageMarks(selectedThreadId === VOICE_VIEW_ID ? null : selectedThreadId, setMessages, (err) => reportError(err, 'err_send'));
+  const streaming = useStreamingReply(setMessages);
+  const isThinking = streaming.isThinking;
 
   const handleVotePoll = (msgId: string, pollId: string, optionId: string, stepIndex?: number) =>
     setMessages((prev) => votePoll(prev, msgId, pollId, optionId, stepIndex));
@@ -198,64 +200,16 @@ export const View: React.FC = () => {
       }
     }
 
-    const tempUserMsg: Message = {
-      id: `temp_${Date.now()}`,
-      thread_id: currentThId,
-      role: 'user',
-      content,
-      thought: '',
-      artifacts: [],
-      attachments,
-      memory_recalls: [],
-      created_at: Math.floor(Date.now() / 1000),
-    };
-    setMessages((prev) => [...prev, tempUserMsg]);
-    setIsThinking(true);
-
-    const streamingId = `stream_${Date.now()}`;
-    const initialAssistant: Message = {
-      id: streamingId,
-      thread_id: currentThId,
-      role: 'assistant',
-      content: '',
-      thought: '',
-      artifacts: [],
-      attachments: [],
-      memory_recalls: [],
-      created_at: Math.floor(Date.now() / 1000),
-    };
-
-    setMessages((prev) => [...prev, initialAssistant]);
-
     try {
-      const assistantMsg = await api.streamMessage(
-        currentThId,
-        content,
-        attachments,
-        activePresetId,
-        selectedMode,
-        (token) => {
-          setMessages((prev) =>
-            prev.map((m) => (m.id === streamingId ? { ...m, content: m.content + token } : m))
-          );
-        },
-        (delta) => {
-          setMessages((prev) =>
-            prev.map((m) => (m.id === streamingId ? { ...m, thought: (m.thought || '') + delta } : m))
-          );
-        }
-      );
-      setMessages((prev) => prev.map((m) => (m.id === streamingId ? assistantMsg : m)));
-      if (assistantMsg.artifacts && assistantMsg.artifacts.length > 0) {
-        setActiveArtifact(assistantMsg.artifacts[0]);
-      }
+      const assistantMsg = await streaming.run({
+        threadId: currentThId, content, attachments, presetId: activePresetId, mode: selectedMode,
+      });
+      if (!assistantMsg) return;
+      if (assistantMsg.artifacts.length > 0) setActiveArtifact(assistantMsg.artifacts[0]);
       void loadThreads(selectedProjectId);
       void loadMessages(currentThId);
     } catch (err) {
       reportError(err, 'err_send');
-      setMessages((prev) => prev.filter((m) => m.id !== streamingId));
-    } finally {
-      setIsThinking(false);
     }
   };
 
@@ -439,6 +393,7 @@ export const View: React.FC = () => {
                 selectedMode={selectedMode}
                 onChangeMode={setSelectedMode}
                 disabled={isThinking}
+                onStop={streaming.stop}
               />
             </>
           )}

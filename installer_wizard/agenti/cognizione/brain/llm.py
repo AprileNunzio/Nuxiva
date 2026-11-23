@@ -9,7 +9,7 @@ import native_core
 from config import env_get, ollama_url
 from tasks import background
 
-from agenti.brain import scope
+from agenti.brain import scope, token_sink
 from agenti.brain.assignments import load_synaptic_weights, save_synaptic_weights
 from agenti.brain.brains import brains
 from agenti.brain.privacy.gate import PrivacyBlocked, privacy_gate
@@ -104,9 +104,31 @@ async def _ollama(model: str, prompt: str, system: str, as_json: bool, max_token
         body["system"] = system
     if as_json:
         body["format"] = "json"
+    if token_sink.active() and not as_json:
+        return await _ollama_stream(model, body, timeout)
     data = await _post_generate(ollama_url(), body, timeout)
     usage_ledger.record(model, data.get("prompt_eval_count"), data.get("eval_count"))
     return data.get("response", "")
+
+
+async def _ollama_stream(model: str, body: dict, timeout: float) -> str:
+    parts: list[str] = []
+    async with httpx.AsyncClient(timeout=httpx.Timeout(timeout, connect=10)) as client:
+        async with client.stream("POST", f"{ollama_url()}/api/generate", json={**body, "stream": True}) as r:
+            r.raise_for_status()
+            async for line in r.aiter_lines():
+                if not line.strip():
+                    continue
+                data = json.loads(line)
+                if data.get("error"):
+                    raise ValueError(str(data["error"])[:200])
+                piece = data.get("response") or ""
+                if piece:
+                    parts.append(piece)
+                    token_sink.emit(piece)
+                if data.get("done"):
+                    usage_ledger.record(model, data.get("prompt_eval_count"), data.get("eval_count"))
+    return "".join(parts)
 
 
 def _govern(system: str) -> str:
@@ -157,6 +179,8 @@ async def generate(prompt: str, *, as_json: bool = False, max_tokens: int | None
                 reply = await complete(model, [{"role": "user", "content": prompt}], system, max_tokens=max_tokens,
                                        temperature=temperature, json_mode=as_json)
                 text = reply.text
+                if not as_json:
+                    token_sink.emit(text)
             else:
                 target = getattr(_ollama, "side_effect", None) or _ollama
                 try:
@@ -173,6 +197,7 @@ async def generate(prompt: str, *, as_json: bool = False, max_tokens: int | None
             result = decode(text, as_json)
         except (httpx.HTTPError, CloudError, ValueError) as exc:
             errors.append(f"{model}: {str(exc)[:120]}")
+            token_sink.restart()
             trace.failed(call, model, str(exc) or type(exc).__name__)
             brains.record(model, (time.perf_counter() - started) * 1000, False, kind)
             if component:

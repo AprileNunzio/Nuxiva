@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import List, Sequence
 
 from .models import Message
+from .token_stream import listener
 
 HISTORY_TURNS = 12
 HISTORY_CHARS = 12000
@@ -57,11 +58,13 @@ def build_prompt(content: str, history: Sequence[Message], attachment_summary: s
 
 
 async def infer(prompt: str, system: str, mode: str) -> str:
+    from agenti.brain import token_sink
     from agenti.brain.llm import BrainUnavailable, generate
     profile = profile_for(mode)
     try:
-        reply = await generate(prompt, system=system, kind=profile.kind, max_tokens=profile.max_tokens,
-                               temperature=profile.temperature, timeout=profile.timeout)
+        with token_sink.feeding(listener()):
+            reply = await generate(prompt, system=system, kind=profile.kind, max_tokens=profile.max_tokens,
+                                   temperature=profile.temperature, timeout=profile.timeout)
     except BrainUnavailable as exc:
         raise StudioBrainUnavailable(str(exc)[:300]) from exc
     text = reply if isinstance(reply, str) else str(reply or "")

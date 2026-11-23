@@ -15,6 +15,7 @@ from .knowledge_service import KnowledgeService
 from .inference_service import build_prompt, infer
 from .preset_service import VALID_MODES, PresetService
 from .reaction_service import ReactionService
+from .token_stream import listener
 from .models import Artifact, Attachment, Message, Project, Thread
 from .smb_service import SmbStudioService
 from .store import StudioStore
@@ -290,6 +291,7 @@ class StudioService:
             memory_recalls=memory_recalls,
             created_at=int(time.time()),
             cached=False,
+            thinking_ms=relay.thinking_ms() if (relay := listener()) and thought else 0,
         )
         self.store.add_message(assistant_msg)
 

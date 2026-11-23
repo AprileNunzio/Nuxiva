@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "AI Studio scrive la risposta in diretta, parola per parola",
+    "en": "AI Studio writes the reply live, word by word",
+    "fr": "AI Studio écrit la réponse en direct, mot par mot",
+    "es": "AI Studio escribe la respuesta en directo, palabra por palabra"
+  },
+  "features": [
+    {
+      "it": "In Nuova Chat il testo compare mentre il modello lo genera, invece di arrivare tutto insieme alla fine; il ragionamento appare nel suo riquadro mentre viene scritto.",
+      "en": "In New Chat the text appears while the model generates it, instead of arriving all at once at the end; the reasoning shows in its own box as it is written.",
+      "fr": "Dans Nouvelle discussion le texte apparaît pendant que le modèle le génère, au lieu d'arriver d'un coup à la fin ; le raisonnement s'affiche dans son cadre au fil de l'écriture.",
+      "es": "En Nuevo chat el texto aparece mientras el modelo lo genera, en lugar de llegar todo junto al final; el razonamiento se muestra en su recuadro a medida que se escribe."
+    },
+    {
+      "it": "Nuovo pulsante Stop per interrompere una risposta: la generazione si ferma anche sul server.",
+      "en": "New Stop button to interrupt a reply: generation also stops on the server.",
+      "fr": "Nouveau bouton Arrêter pour interrompre une réponse : la génération s'arrête aussi sur le serveur.",
+      "es": "Nuevo botón Detener para interrumpir una respuesta: la generación se detiene también en el servidor."
+    },
+    {
+      "it": "Il tempo di ragionamento mostrato è quello misurato davvero e resta salvato con il messaggio.",
+      "en": "The reasoning time shown is the one actually measured and stays saved with the message.",
+      "fr": "Le temps de raisonnement affiché est celui réellement mesuré et reste enregistré avec le message.",
+      "es": "El tiempo de razonamiento mostrado es el medido de verdad y queda guardado con el mensaje."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Se un modello cade a metà risposta e Nuxiva passa al successivo, il testo parziale viene cancellato invece di mescolarsi con la nuova risposta.",
+      "en": "If a model fails mid-reply and Nuxiva moves to the next one, the partial text is cleared instead of mixing with the new reply.",
+      "fr": "Si un modèle échoue au milieu d'une réponse et que Nuxiva passe au suivant, le texte partiel est effacé au lieu de se mélanger à la nouvelle réponse.",
+      "es": "Si un modelo falla a mitad de respuesta y Nuxiva pasa al siguiente, el texto parcial se borra en lugar de mezclarse con la nueva respuesta."
+    }
+  ]
+}

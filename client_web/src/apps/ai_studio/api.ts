@@ -240,19 +240,50 @@ export async function executeCode(code: string, language: string = 'python'): Pr
   return handleResponse<ExecutionResult>(res);
 }
 
+export interface StreamHandlers {
+  onToken?: (token: string) => void;
+  onThoughtDelta?: (delta: string) => void;
+  onReset?: () => void;
+  signal?: AbortSignal;
+}
+
+type StreamFrame = {
+  type?: string;
+  token?: string;
+  message?: Message;
+  code?: string;
+  detail?: string;
+};
+
+export function parseStreamFrames(buffer: string): { frames: StreamFrame[]; rest: string } {
+  const chunks = buffer.split('\n\n');
+  const rest = chunks.pop() ?? '';
+  const frames: StreamFrame[] = [];
+  for (const chunk of chunks) {
+    const trimmed = chunk.trim();
+    if (!trimmed.startsWith('data:')) continue;
+    try {
+      frames.push(JSON.parse(trimmed.slice(5).trim()) as StreamFrame);
+    } catch (err) {
+      console.error('AI Studio stream frame not parsable', err);
+    }
+  }
+  return { frames, rest };
+}
+
 export async function streamMessage(
   threadId: string,
   content: string,
-  attachments?: Attachment[],
-  presetId?: string | null,
-  modelMode?: ModelMode,
-  onToken?: (token: string) => void,
-  onThoughtDelta?: (delta: string) => void,
+  attachments: Attachment[] | undefined,
+  presetId: string | null | undefined,
+  modelMode: ModelMode | undefined,
+  handlers: StreamHandlers = {},
 ): Promise<Message> {
   const res = await fetch(`${BASE_URL}/threads/${encodeURIComponent(threadId)}/stream`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ content, attachments, preset_id: presetId || undefined, model_mode: modelMode }),
+    signal: handlers.signal,
   });
 
   if (!res.ok) {
@@ -265,42 +296,27 @@ export async function streamMessage(
 
   const decoder = new TextDecoder('utf-8');
   let buffer = '';
-  let finalMessage: Message | null = null;
+  let result: Message | null = null;
 
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split('\n\n');
-    buffer = lines.pop() || '';
-
-    for (const chunk of lines) {
-      const trimmed = chunk.trim();
-      if (!trimmed.startsWith('data:')) continue;
-      let payload: { type?: string; token?: string; message?: Message; code?: string; detail?: string };
-      try {
-        payload = JSON.parse(trimmed.slice(5).trim());
-      } catch (err) {
-        console.error('AI Studio stream frame not parsable', err);
-        continue;
-      }
-      if (payload.type === 'token') {
-        onToken?.(payload.token ?? '');
-      } else if (payload.type === 'thought_delta') {
-        onThoughtDelta?.(payload.token ?? '');
-      } else if (payload.type === 'done' && payload.message) {
-        finalMessage = payload.message;
-      } else if (payload.type === 'error') {
+    const parsed = parseStreamFrames(buffer + decoder.decode(value, { stream: true }));
+    buffer = parsed.rest;
+    for (const frame of parsed.frames) {
+      if (frame.type === 'token') handlers.onToken?.(frame.token ?? '');
+      else if (frame.type === 'thought_delta') handlers.onThoughtDelta?.(frame.token ?? '');
+      else if (frame.type === 'reset') handlers.onReset?.();
+      else if (frame.type === 'done' && frame.message) result = frame.message;
+      else if (frame.type === 'error') {
         await reader.cancel();
-        throw new Error(`${payload.code ?? 'stream_error'}: ${payload.detail ?? ''}`);
+        throw new Error(`${frame.code ?? 'stream_error'}: ${frame.detail ?? ''}`);
       }
     }
   }
 
-  if (!finalMessage) {
-    throw new Error('Incomplete stream response from AI Studio');
-  }
-  return finalMessage;
+  if (!result) throw new Error('Incomplete stream response from AI Studio');
+  return result;
 }
 
 export interface ModelComparisonResult {

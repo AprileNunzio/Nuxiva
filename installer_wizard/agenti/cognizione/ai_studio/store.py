@@ -86,10 +86,10 @@ class StudioStore:
                 CREATE INDEX IF NOT EXISTS idx_learned_ts ON learned_memory(timestamp);
                 """
             )
-            try:
-                conn.execute("ALTER TABLE messages ADD COLUMN cached INTEGER NOT NULL DEFAULT 0")
-            except Exception:
-                pass
+            columns = {row[1] for row in conn.execute("PRAGMA table_info(messages)")}
+            for name, ddl in (("cached", "INTEGER NOT NULL DEFAULT 0"), ("thinking_ms", "INTEGER NOT NULL DEFAULT 0")):
+                if name not in columns:
+                    conn.execute(f"ALTER TABLE messages ADD COLUMN {name} {ddl}")
 
     def list_projects(self) -> List[Project]:
         query = """
@@ -340,7 +340,8 @@ class StudioStore:
                         attachments=attachments,
                         memory_recalls=memory_recalls,
                         created_at=row["created_at"],
-                        cached=bool(row["cached"]) if "cached" in row.keys() else False,
+                        cached=bool(row["cached"]),
+                        thinking_ms=int(row["thinking_ms"] or 0),
                     )
                 )
             return results
@@ -349,8 +350,8 @@ class StudioStore:
         with self._lock, self._get_connection() as conn:
             conn.execute(
                 """
-                INSERT INTO messages (id, thread_id, role, content, thought, artifacts_json, attachments_json, memory_json, created_at, cached)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO messages (id, thread_id, role, content, thought, artifacts_json, attachments_json, memory_json, created_at, cached, thinking_ms)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     message.id,
@@ -363,6 +364,7 @@ class StudioStore:
                     json.dumps([m.to_dict() for m in message.memory_recalls]),
                     message.created_at or int(time.time()),
                     1 if message.cached else 0,
+                    max(0, int(message.thinking_ms)),
                 ),
             )
             conn.execute(

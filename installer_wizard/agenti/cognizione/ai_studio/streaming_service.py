@@ -1,10 +1,11 @@
 import asyncio
 import json
 import logging
-from typing import AsyncGenerator, Dict, Any, List, Optional
+from typing import Any, AsyncGenerator, Dict, List, Optional
 
 from .inference_service import StudioBrainUnavailable
 from .models import Attachment, Message
+from .token_stream import StreamRelay, listening
 
 log = logging.getLogger("nuxiva.ai_studio")
 
@@ -24,31 +25,44 @@ class StreamingService:
         actor: str = "admin",
         model_mode: Optional[str] = None,
     ) -> AsyncGenerator[str, None]:
+        queue: "asyncio.Queue[Dict[str, Any]]" = asyncio.Queue()
+        relay = StreamRelay(queue)
+
+        async def run() -> Message:
+            with listening(relay):
+                return await service_ref.send_message(
+                    thread_id=thread_id,
+                    content=content,
+                    attachments=attachments,
+                    preset_id=preset_id,
+                    actor=actor,
+                    model_mode=model_mode,
+                )
+
         yield _event({"type": "status", "state": "thinking"})
+        task = asyncio.create_task(run())
+        getter: Optional[asyncio.Future] = None
         try:
-            msg: Message = await service_ref.send_message(
-                thread_id=thread_id,
-                content=content,
-                attachments=attachments,
-                preset_id=preset_id,
-                actor=actor,
-                model_mode=model_mode,
-            )
-        except StudioBrainUnavailable as exc:
-            log.warning("AI Studio senza cervello disponibile: %s", exc)
-            yield _event({"type": "error", "code": "brain_unavailable", "detail": str(exc)})
-            return
-
-        thought_chunks = msg.thought.split(" ") if msg.thought else []
-        for i, word in enumerate(thought_chunks):
-            token = word + (" " if i < len(thought_chunks) - 1 else "")
-            yield _event({"type": "thought_delta", "token": token})
-            await asyncio.sleep(0.004)
-
-        content_chunks = msg.content.split(" ")
-        for i, word in enumerate(content_chunks):
-            token = word + (" " if i < len(content_chunks) - 1 else "")
-            yield _event({"type": "token", "token": token})
-            await asyncio.sleep(0.006)
-
-        yield _event({"type": "done", "message": msg.to_dict()})
+            while True:
+                getter = asyncio.ensure_future(queue.get())
+                done, _ = await asyncio.wait({task, getter}, return_when=asyncio.FIRST_COMPLETED)
+                if getter in done:
+                    yield _event(getter.result())
+                    continue
+                getter.cancel()
+                break
+            relay.close()
+            while not queue.empty():
+                yield _event(queue.get_nowait())
+            try:
+                msg = task.result()
+            except StudioBrainUnavailable as exc:
+                log.warning("AI Studio senza cervello disponibile: %s", exc)
+                yield _event({"type": "error", "code": "brain_unavailable", "detail": str(exc)})
+                return
+            yield _event({"type": "done", "message": msg.to_dict()})
+        finally:
+            if getter is not None and not getter.done():
+                getter.cancel()
+            if not task.done():
+                task.cancel()
