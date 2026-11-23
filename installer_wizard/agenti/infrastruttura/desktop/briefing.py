@@ -66,16 +66,19 @@ def firewall() -> tuple[str, dict, int]:
     return "brief", {"title": "Firewall", "lines": lines}, 85 if serious else 40
 
 
-def important() -> tuple[str, dict, int] | None:
+def important(known: frozenset[str] = frozenset()) -> tuple[str, dict, int] | None:
+    from agenti.desktop.recall import normalize
     now = time.time()
-    seen, lines, details = set(), [], []
+    seen, lines, details, errors = set(), [], [], False
     for e in reversed(list(store.events)):
         if e.get("level") not in ("WARN", "ERROR") or now - _ts(e) > IMPORTANT_WINDOW:
             continue
         msg = str(e.get("msg", ""))[:120]
-        if msg in seen:
+        key = normalize(msg)
+        if key in seen or key in known:
             continue
-        seen.add(msg)
+        seen.add(key)
+        errors = errors or e.get("level") == "ERROR"
         lines.append(msg)
         details.append({"title": "Avviso" if e.get("level") == "WARN" else "Errore", "text": str(e.get("msg", ""))[:1500],
                         "source": str(e.get("component", "")), "at": str(e.get("ts", ""))[:19].replace("T", " ")})
@@ -83,7 +86,7 @@ def important() -> tuple[str, dict, int] | None:
             break
     if not lines:
         return None
-    return "brief", {"title": "Da sapere", "lines": lines, "details": details}, 70
+    return "brief", {"title": "Da sapere", "lines": lines, "details": details}, 70 if errors else 50
 
 
 def network() -> tuple[str, dict, int] | None:

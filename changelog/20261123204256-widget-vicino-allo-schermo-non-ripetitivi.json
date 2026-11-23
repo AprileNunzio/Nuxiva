@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Avvicinandoti allo schermo vedi cose nuove, non sempre gli stessi widget",
+    "en": "When you walk up to the screen you see new things, not always the same widgets",
+    "fr": "En vous approchant de l'écran vous voyez du nouveau, pas toujours les mêmes widgets",
+    "es": "Al acercarte a la pantalla ves cosas nuevas, no siempre los mismos widgets"
+  },
+  "features": [
+    {
+      "it": "I widget scelti cambiano con l'ora del giorno: al mattino meteo e notizie, la sera tramonto e rete, di notte sicurezza.",
+      "en": "The chosen widgets change with the time of day: weather and news in the morning, sunset and network in the evening, security at night.",
+      "fr": "Les widgets choisis changent selon l'heure : météo et actualités le matin, coucher du soleil et réseau le soir, sécurité la nuit.",
+      "es": "Los widgets elegidos cambian con la hora del día: tiempo y noticias por la mañana, atardecer y red por la tarde, seguridad por la noche."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "\"Da sapere\" ripeteva gli stessi avvisi a ogni passaggio: ora mostra solo ciò che non hai ancora visto e scompare se non c'è nulla di nuovo; gli avvisi uguali che cambiano solo nei numeri contano una volta.",
+      "en": "\"Good to know\" repeated the same notices every time: it now shows only what you have not seen yet and disappears when there is nothing new; identical notices that only differ in numbers count once.",
+      "fr": "« À savoir » répétait les mêmes avis à chaque passage : il n'affiche plus que ce que vous n'avez pas encore vu et disparaît s'il n'y a rien de nouveau ; les avis identiques qui ne diffèrent que par des chiffres comptent une fois.",
+      "es": "\"Para saber\" repetía los mismos avisos cada vez: ahora solo muestra lo que aún no has visto y desaparece si no hay nada nuevo; los avisos iguales que solo cambian en los números cuentan una vez."
+    },
+    {
+      "it": "Un widget importante già visto non resta più fisso in primo piano: torna in rotazione finché il suo contenuto non cambia.",
+      "en": "An important widget you have already seen no longer stays pinned in front: it goes back into rotation until its content changes.",
+      "fr": "Un widget important déjà vu ne reste plus figé au premier plan : il revient dans la rotation jusqu'à ce que son contenu change.",
+      "es": "Un widget importante ya visto ya no se queda fijo delante: vuelve a la rotación hasta que su contenido cambie."
+    }
+  ]
+}

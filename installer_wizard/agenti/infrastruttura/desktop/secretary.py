@@ -3,10 +3,11 @@ import logging
 import random
 import time
 
-from config import env_get
+from config import STATE_DIR, env_get
 from state import store
 
-from agenti.desktop import briefing
+from agenti.desktop import briefing, context
+from agenti.desktop.recall import Recall, signature
 from agenti.desktop.news import news
 
 log = logging.getLogger("nuxiva.secretary")
@@ -21,11 +22,14 @@ SLOTS = 4
 MIN_ROTATING = 2
 URGENT = 65
 WEATHER_TTL = 15 * 60
+BOOST_SECONDS = 120
+REPEAT_PRIORITY = 30
 
 
 def pick(cards: list[tuple[str, tuple]], shown_at: dict, slots: int = SLOTS) -> list[str]:
     must = [n for n, c in cards if c[2] >= URGENT]
-    rest = sorted((n for n, c in cards if c[2] < URGENT), key=lambda n: (shown_at.get(n, 0.0), random.random()))
+    rest = sorted((n for n, c in cards if c[2] < URGENT),
+                  key=lambda n: (shown_at.get(n, 0.0) - context.boost(n) * BOOST_SECONDS, random.random()))
     return must + rest[:max(MIN_ROTATING, slots - len(must))]
 
 
@@ -42,6 +46,8 @@ class Secretary:
         self.rotation = 0
         self.shown_at: dict[str, float] = {}
         self.weather: tuple[float, tuple | None] = (0.0, None)
+        self.recall = Recall(STATE_DIR / "display" / "briefing_recall.json")
+        self.pending: dict[str, tuple[str, list | None]] = {}
 
     @staticmethod
     def enabled() -> bool:
@@ -61,6 +67,7 @@ class Secretary:
         return bool(mine), any(p.get("near") for p in mine)
 
     def clear(self, desk) -> None:
+        self._flush()
         keys = [k for k in desk.instances if k.startswith(PREFIX)]
         for k in keys:
             desk.instances.pop(k, None)
@@ -71,7 +78,7 @@ class Secretary:
         out = []
         for name, collect in briefing.COLLECTORS.items():
             try:
-                card = collect()
+                card = briefing.important(self.recall.known_lines()) if name == "important" else collect()
             except Exception:
                 log.exception("Widget del proprietario: sezione %s non disponibile", name)
                 continue
@@ -83,7 +90,13 @@ class Secretary:
         card = await self.forecast()
         if card:
             out.append(("weather", card))
-        return out
+        return [(name, self._demote(name, card)) for name, card in out]
+
+    def _demote(self, name: str, card: tuple) -> tuple:
+        wid, data, priority = card
+        if priority >= URGENT and self.recall.seen_card(name, signature(wid, data, True)):
+            return wid, data, REPEAT_PRIORITY
+        return card
 
     async def forecast(self) -> tuple | None:
         if time.time() - self.weather[0] < WEATHER_TTL:
@@ -104,6 +117,7 @@ class Secretary:
         rotate = now - self.rotated >= ROTATE or not self.chosen
         if rotate:
             self.rotation += 1
+            self._flush()
         cards = await self.cards()
         if rotate:
             self.chosen, self.rotated = pick(cards, self.shown_at), now
@@ -116,7 +130,14 @@ class Secretary:
         for name, (wid, data, priority) in cards:
             if name in self.chosen:
                 desk.show(wid, data, key=PREFIX + name, ttl=TTL, priority=priority)
+                lines = data.get("lines") if name == "important" and isinstance(data, dict) else None
+                self.pending[name] = (signature(wid, data, True), lines)
         self.refreshed = now
+
+    def _flush(self) -> None:
+        for name, (sig, lines) in self.pending.items():
+            self.recall.mark(name, sig, lines)
+        self.pending = {}
 
     async def step(self, desk) -> None:
         if not self.enabled():
