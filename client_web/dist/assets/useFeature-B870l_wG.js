@@ -1,1 +1,0 @@
-import{n as e}from"./useResource-D_xPL_FS.js";function t(t,n=1e4){let{data:r,error:i,loading:a,reload:o}=e(`/api/features`,n);return{feature:r?.features.find(e=>e.id===t)??null,error:i,loading:a,reload:o}}export{t};
