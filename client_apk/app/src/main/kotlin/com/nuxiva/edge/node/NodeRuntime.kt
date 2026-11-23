@@ -30,6 +30,7 @@ class NodeRuntime(
     private val ollama: OllamaProbe,
     private val shareSettings: ShareSettingsStore,
     private val orientation: OrientationMonitor,
+    private val multicast: MulticastGuard,
 ) {
     private val handler = CoroutineExceptionHandler { _, error -> Log.e(TAG, "Uncaught runtime error", error) }
     private var scope: CoroutineScope? = null
@@ -48,6 +49,7 @@ class NodeRuntime(
         val created = CoroutineScope(SupervisorJob() + Dispatchers.Default + handler)
         scope = created
         orientation.start()
+        multicast.acquire()
         runningState.value = true
         created.launch { store.profiles.collect { reconcile(it) } }
     }
@@ -59,6 +61,7 @@ class NodeRuntime(
         scope = null
         workers.clear()
         orientation.stop()
+        multicast.release()
         linkState.value = emptyMap()
         runningState.value = false
     }
@@ -89,6 +92,15 @@ class NodeRuntime(
         kotlinx.coroutines.coroutineScope {
             launch { guarded("heartbeat ${profile.nodeId}") { loop.run() } }
             launch { guarded("compute ${profile.nodeId}") { relay.run() } }
+            launch {
+                guarded("peer ${profile.nodeId}") {
+                    PeerWatch(
+                        profile,
+                        isOnline = { linkState.value[profile.nodeId] is LinkState.Online },
+                        moveTo = { url -> store.update(profile.nodeId) { it.copy(server = url) } },
+                    ).run()
+                }
+            }
         }
     }
 

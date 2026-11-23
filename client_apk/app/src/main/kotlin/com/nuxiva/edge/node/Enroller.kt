@@ -36,7 +36,7 @@ class Enroller(private val store: ProfileStore) {
             val key = DeviceKey.generate()
             val nodeId = NodeIds.generate(deviceModel)
             val name = displayName.trim().take(NAME_LIMIT).ifEmpty { nodeId }
-            val bootstrap = NodeProfile(nodeId, name, payload.server, "", caPem, fingerprint, Hex.encode(key.seedBytes()), System.currentTimeMillis() / 1000L)
+            val bootstrap = NodeProfile(nodeId, name, payload.server, "", caPem, fingerprint, Hex.encode(key.seedBytes()), System.currentTimeMillis() / 1000L, peerId = payload.peer)
             val body = buildJsonObject {
                 put("token", JsonPrimitive(payload.token))
                 put("id", JsonPrimitive(nodeId))
@@ -55,7 +55,9 @@ class Enroller(private val store: ProfileStore) {
             }
             val token = reply["token"]?.jsonPrimitive?.content.orEmpty()
             if (token.isEmpty()) throw EnrollmentFailure("enroll_rejected")
-            val profile = bootstrap.copy(token = token)
+            val announced = reply["peer"]?.jsonPrimitive?.takeIf { it.isString }?.content.orEmpty()
+            val peerId = payload.peer.ifEmpty { if (PEER_ID.matches(announced)) announced else "" }
+            val profile = bootstrap.copy(token = token, peerId = peerId)
             if (!store.add(profile)) throw EnrollmentFailure("enroll_too_many_nodes")
             profile
         }
@@ -119,5 +121,6 @@ class Enroller(private val store: ProfileStore) {
         const val CODE_LIMIT = 8192
         const val CA_LIMIT = 65536
         const val NAME_LIMIT = 60
+        val PEER_ID = Regex("[0-9a-f]{64}")
     }
 }

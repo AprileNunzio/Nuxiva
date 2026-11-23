@@ -13,6 +13,7 @@ data class NodeProfile(
     val seedHex: String,
     val enrolledAt: Long,
     val enabled: Boolean = true,
+    val peerId: String = "",
 )
 
 sealed interface LinkState {

@@ -28,6 +28,8 @@ from connection.client import Client, ServerError, Unreachable
 from connection import declare
 from connection.devicekey import DeviceKey
 from connection.heartbeat import Heartbeat
+from connection.peer import PeerListener
+from connection.relocate import Relocator
 from connection.inbox import Inbox
 from connection.metrics import Sampler
 from i18n.strings import t
@@ -76,6 +78,8 @@ class Assistant:
         self.sampler = Sampler()
         self.heartbeat = Heartbeat(self.client, self._report, self._on_reply,
                                    lambda: self.ui.dispatch.post(self.unpair, True), self._security, self.sampler.timed)
+        self.relocator = Relocator(self.client, cfg, lambda: self.heartbeat.online, lambda saved: store.save(saved))
+        self.peer = PeerListener(cfg["peer"], self.relocator.offer) if cfg.get("peer") else None
         self.compute = ComputeRelay(
             self.client, self.gate, self.policy, lambda: self.ollama.read()["available"], session_is_idle,
         )
@@ -215,6 +219,8 @@ class Assistant:
         self.voice.start()
         if self.has_server:
             self.heartbeat.start()
+            if self.peer:
+                self.peer.start()
             self.inbox.start()
             self.compute.start()
             self.doc_sync.start()
@@ -228,7 +234,7 @@ class Assistant:
         from tkinter import messagebox
         if not revoked and not messagebox.askyesno("Nuxiva", "Scollegare questo PC da NUXIVA? Dovrai abbinarlo di nuovo."):
             return
-        self.cfg.update(token="", pin="", ca="", key="")
+        self.cfg.update(token="", pin="", ca="", key="", peer="")
         store.save(self.cfg)
         if revoked:
             messagebox.showwarning("Nuxiva", "Questo PC non è più autorizzato da NUXIVA. Riavvia l'assistente per abbinarlo di nuovo.")
@@ -241,6 +247,8 @@ class Assistant:
     def quit(self) -> None:
         self.voice.stop()
         self.heartbeat.stop()
+        if self.peer:
+            self.peer.stop()
         self.inbox.stop()
         self.compute.stop()
         self.doc_sync.stop()

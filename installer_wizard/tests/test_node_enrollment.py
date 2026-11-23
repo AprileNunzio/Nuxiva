@@ -148,12 +148,14 @@ class SatelliteEnrollmentTest(unittest.TestCase):
         self.client = TestClient(app, base_url="https://192.168.1.10")
 
     def test_admin_downloads_a_single_use_pinned_enrollment(self):
-        response = self.client.post("/api/nodes/satellite-enrollment")
+        with mock.patch.object(enroll_routes, "public_id", return_value="c" * 64):
+            response = self.client.post("/api/nodes/satellite-enrollment")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers["cache-control"], "no-store")
         data = response.json()
         self.assertEqual(data["server"], "https://192.168.1.10:8443")
         self.assertEqual(data["pin"], "a" * 64)
+        self.assertEqual(data["peer"], "c" * 64)
         self.assertTrue(self.tokens.verify(data["token"]))
 
     def test_refused_without_https_or_from_localhost(self):

@@ -8,6 +8,7 @@ from state import store
 
 from agenti.nodes import trust
 from agenti.nodes.enrollment import EnrollmentError, tokens
+from agenti.nodes.peer_identity import public_id
 from agenti.secure import api as secure
 from agenti.nodes.registry import TYPES, clean_id, registry
 
@@ -62,7 +63,7 @@ async def node_enroll(request: Request):
         raise HTTPException(400, "enroll_rejected")
     tokens.burn(digest)
     store.event("INFO", f"Nodo {node_id} iscritto con token monouso ({ip})", "nodes")
-    return {"token": node_token, "heartbeat": 30}
+    return {"token": node_token, "heartbeat": 30, "peer": public_id()}
 
 
 @admin_routes.post("/api/nodes/satellite-enrollment")
@@ -78,6 +79,6 @@ async def satellite_enrollment(request: Request, user: str = Depends(require_adm
     except EnrollmentError as exc:
         raise HTTPException(429, exc.code)
     store.event("INFO", f"Iscrizione monouso per un satellite generata da {user}", "nodes")
-    body = json.dumps({"server": origin, "token": token, "pin": pin, "expires": int(expires)})
+    body = json.dumps({"server": origin, "token": token, "pin": pin, "expires": int(expires), "peer": public_id()})
     return Response(body, media_type="application/json",
                     headers={"Content-Disposition": "attachment; filename=nuxiva-satellite-enroll.json", "Cache-Control": "no-store"})

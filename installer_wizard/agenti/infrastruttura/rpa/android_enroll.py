@@ -8,6 +8,7 @@ from state import store
 
 from agenti.nodes import trust
 from agenti.nodes.enrollment import EnrollmentError, tokens
+from agenti.nodes.peer_identity import public_id
 from agenti.rpa import android_release
 from agenti.rpa.android_pairing import MAX_ACTIVE, PairingError, pairings
 from agenti.secure import api as secure
@@ -46,7 +47,7 @@ async def android_enrollment(request: Request, user: str = Depends(require_admin
         if len(pairings.items) >= MAX_ACTIVE:
             raise EnrollmentError("enroll_too_many_tokens")
         token, expires = tokens.issue(LIFETIME)
-        payload = {"server": origin, "token": token, "pin": pin, "expires": int(expires)}
+        payload = {"server": origin, "token": token, "pin": pin, "expires": int(expires), "peer": public_id()}
         handle, code = pairings.create(token, payload, expires)
     except (EnrollmentError, PairingError) as exc:
         raise HTTPException(429, exc.code)

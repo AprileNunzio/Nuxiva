@@ -1,6 +1,7 @@
 import http.client
 import json
 import logging
+import re
 import ssl
 import time
 from urllib.parse import urlsplit
@@ -11,6 +12,14 @@ from connection.devicekey import DeviceKey
 log = logging.getLogger("nuxiva.link")
 CA_PATH = "/nuxiva-ca.crt"
 CA_LIMIT = 65536
+
+
+PEER_RE = re.compile(r"[0-9a-f]{64}")
+
+
+def _peer(reply: dict) -> str:
+    value = reply.get("peer") if isinstance(reply, dict) else None
+    return value if isinstance(value, str) and PEER_RE.fullmatch(value) else ""
 
 
 class Unauthorized(Exception):
@@ -72,6 +81,7 @@ def first_contact(server: str, timeout: float = 10) -> tuple[str, str]:
 class Client:
     def __init__(self, server: str, node_id: str, token: str, ca_pem: str, key: DeviceKey | None = None) -> None:
         self.server, self.node_id, self.token, self.ca_pem, self.key = server, node_id, token, ca_pem, key
+        self.peer = ""
 
     def headers(self) -> dict:
         return {"X-Nuxiva-Node": self.node_id, "Authorization": f"Bearer {self.token}"}
@@ -119,13 +129,17 @@ class Client:
         body = {"code": code, "id": self.node_id, "name": name, "type": "desktop"}
         if self.key is not None:
             body["pubkey"] = self.key.public_hex()
-        return self.request("/api/nodes/pair", body, auth=False)["token"]
+        reply = self.request("/api/nodes/pair", body, auth=False)
+        self.peer = _peer(reply)
+        return reply["token"]
 
     def enroll(self, enrollment_token: str, node_id: str, name: str) -> str:
         body = {"token": enrollment_token, "id": node_id, "name": name}
         if self.key is not None:
             body["pubkey"] = self.key.public_hex()
-        return self.request("/api/nodes/enroll", body, auth=False)["token"]
+        reply = self.request("/api/nodes/enroll", body, auth=False)
+        self.peer = _peer(reply)
+        return reply["token"]
 
     def heartbeat(self, report: dict) -> dict:
         return self.request("/api/nodes/heartbeat", report, timeout=10)

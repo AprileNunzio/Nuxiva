@@ -13,6 +13,7 @@ public data class EnrollmentPayload(
     val token: String,
     val pin: String,
     val expires: Long,
+    val peer: String = "",
 )
 
 public class EnrollmentException(public val code: String) : Exception(code)
@@ -50,8 +51,10 @@ public object EnrollmentParser {
         if (token == null || !tokenPattern.matches(token) || pin == null || !pinPattern.matches(pin) || expires == null) {
             throw EnrollmentException("enroll_file_invalid")
         }
+        val peer = if (wire.containsKey("peer")) text(wire["peer"]) else ""
+        if (peer == null || (peer.isNotEmpty() && !pinPattern.matches(peer))) throw EnrollmentException("enroll_file_invalid")
         if (expires < nowSeconds) throw EnrollmentException("enroll_file_expired")
-        return EnrollmentPayload(server, token, pin, expires)
+        return EnrollmentPayload(server, token, pin, expires, peer)
     }
 
     private fun text(element: kotlinx.serialization.json.JsonElement?): String? =

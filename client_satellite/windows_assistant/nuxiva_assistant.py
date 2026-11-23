@@ -49,8 +49,9 @@ def pair(cfg: dict, address: str, code: str, name: str, start_with_windows: bool
     name = name or cfg["name"]
     node_id = store.node_id_for(name)
     key = DeviceKey.generate()
-    token = Client(server, node_id, "", ca_pem, key).pair(code, name)
-    cfg.update(server=server, name=name, node_id=node_id, token=token, pin=fingerprint, ca=ca_pem, key=key.seed_hex())
+    client = Client(server, node_id, "", ca_pem, key)
+    token = client.pair(code, name)
+    cfg.update(server=server, name=name, node_id=node_id, token=token, pin=fingerprint, ca=ca_pem, key=key.seed_hex(), peer=client.peer)
     store.save(cfg)
     autostart.set_enabled(start_with_windows)
 

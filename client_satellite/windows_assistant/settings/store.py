@@ -11,7 +11,7 @@ from settings import paths, protect
 log = logging.getLogger("nuxiva.settings")
 
 DEFAULTS = {
-    "server": "", "node_id": "", "token": "", "key": "", "pin": "", "ca": "", "name": socket.gethostname(),
+    "server": "", "node_id": "", "token": "", "key": "", "pin": "", "ca": "", "peer": "", "name": socket.gethostname(),
     "hotkey": "ctrl+alt+space", "voice": True, "host_full": False, "headset": False,
     "mic_device": None, "orb_x": None, "orb_y": None,
     "backup_folders": [], "backup_target": "", "backup_hours": 24, "agent_name": "", "mode": "auto", "local_model": "",

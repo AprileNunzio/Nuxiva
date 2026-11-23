@@ -43,6 +43,9 @@ def parse(raw: bytes) -> dict:
     if not (isinstance(server, str) and server.startswith("https://") and isinstance(token, str) and TOKEN_RE.fullmatch(token)
             and isinstance(pin, str) and PIN_RE.fullmatch(pin) and isinstance(expires, int) and not isinstance(expires, bool)):
         raise EnrollError("enroll.file_invalid")
+    peer = data.get("peer", "")
+    if not (isinstance(peer, str) and (not peer or PIN_RE.fullmatch(peer))):
+        raise EnrollError("enroll.file_invalid")
     if expires < time.time():
         raise EnrollError("enroll.file_expired")
     return data
@@ -101,11 +104,13 @@ def redeem(cfg: dict, data: dict, first_contact, name: str | None = None) -> Non
     name = name or cfg["name"]
     node_id = store.node_id_for(name)
     key = DeviceKey.generate()
+    client = Client(server, node_id, "", ca_pem, key)
     try:
-        token = Client(server, node_id, "", ca_pem, key).enroll(data["token"], node_id, name)
+        token = client.enroll(data["token"], node_id, name)
     except ServerError as exc:
         raise EnrollError(SERVER_ERRORS.get(str(exc), "enroll.unreachable")) from exc
-    cfg.update(server=server, name=name, node_id=node_id, token=token, pin=fingerprint, ca=ca_pem, key=key.seed_hex())
+    cfg.update(server=server, name=name, node_id=node_id, token=token, pin=fingerprint, ca=ca_pem, key=key.seed_hex(),
+               peer=data.get("peer") or client.peer)
     store.save(cfg)
 
 

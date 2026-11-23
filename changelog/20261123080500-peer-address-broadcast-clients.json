@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Il PC Windows e l'app Android ritrovano il server anche se cambia indirizzo",
+    "en": "The Windows PC and the Android app find the server again even if its address changes",
+    "fr": "Le PC Windows et l'application Android retrouvent le serveur même si son adresse change",
+    "es": "El PC con Windows y la app de Android vuelven a encontrar el servidor aunque cambie de dirección"
+  },
+  "features": [
+    {
+      "it": "Il server annuncia in rete locale il proprio indirizzo con un messaggio firmato, e l'assistente Windows e l'app Android lo seguono da soli quando il collegamento si interrompe, senza nuovo abbinamento.",
+      "en": "The server announces its address on the local network with a signed message, and the Windows assistant and the Android app follow it on their own when the link drops, without pairing again.",
+      "fr": "Le serveur annonce son adresse sur le réseau local par un message signé, et l'assistant Windows et l'application Android le suivent seuls quand la liaison tombe, sans nouvel appairage.",
+      "es": "El servidor anuncia su dirección en la red local con un mensaje firmado, y el asistente de Windows y la app de Android lo siguen solos cuando se corta el enlace, sin volver a emparejar."
+    },
+    {
+      "it": "Il nuovo abbinamento memorizza l'identità del server, così i dispositivi si fidano solo degli annunci firmati dal proprio server.",
+      "en": "New pairings remember the server identity, so devices only trust announcements signed by their own server.",
+      "fr": "Les nouveaux appairages mémorisent l'identité du serveur, de sorte que les appareils ne font confiance qu'aux annonces signées par leur propre serveur.",
+      "es": "Los nuevos emparejamientos recuerdan la identidad del servidor, así los dispositivos solo confían en los anuncios firmados por su propio servidor."
+    }
+  ]
+}

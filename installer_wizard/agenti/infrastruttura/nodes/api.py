@@ -14,6 +14,7 @@ from agenti.nodes.audit import audit
 from agenti.nodes.beacon import beacon
 from agenti.nodes.requests import requests
 from agenti.nodes.inbox import inbox
+from agenti.nodes.peer_identity import public_id
 from agenti.nodes.registry import COMMANDS, TYPES, registry
 
 INBOX_WAIT = 25.0
@@ -65,7 +66,7 @@ async def node_pair(request: Request):
     except ValueError as exc:
         raise HTTPException(400, str(exc))
     store.event("INFO", f"Nuovo nodo abbinato: {body.get('name') or body.get('id')} ({ip})", "nodes")
-    return {"token": token, "heartbeat": 30}
+    return {"token": token, "heartbeat": 30, "peer": public_id()}
 
 
 @public_routes.post("/api/nodes/heartbeat")
@@ -244,7 +245,7 @@ async def nodes_reject(node_id: str, user: str = Depends(require_admin)):
 async def nodes_code(user: str = Depends(require_admin)):
     store.event("INFO", f"Codice di abbinamento nodi generato da {user}", "nodes")
     from agenti.nodes import trust
-    return {**registry.new_code(), "ca_fingerprint": trust.ca_fingerprint()}
+    return {**registry.new_code(), "ca_fingerprint": trust.ca_fingerprint(), "peer_id": public_id()}
 
 
 @admin_routes.get("/api/nodes/connection")

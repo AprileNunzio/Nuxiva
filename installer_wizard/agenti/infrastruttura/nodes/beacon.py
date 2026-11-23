@@ -6,6 +6,8 @@ import time
 
 from config import PUBLIC_PORT
 
+from agenti.nodes.peer_sender import sender as peer_sender
+
 log = logging.getLogger("nuxiva.nodes")
 
 DISCOVER_PORT = 50505
@@ -64,6 +66,13 @@ class Beacon:
         return [s for s in self.seen.values() if now - s["at"] < within]
 
     async def run(self) -> None:
+        locator = asyncio.create_task(peer_sender.run())
+        try:
+            await self._announce()
+        finally:
+            locator.cancel()
+
+    async def _announce(self) -> None:
         loop = asyncio.get_running_loop()
         try:
             transport, _ = await loop.create_datagram_endpoint(lambda: _Protocol(self), local_addr=("0.0.0.0", DISCOVER_PORT),

@@ -8,6 +8,7 @@ import com.nuxiva.edge.device.OrientationMonitor
 import com.nuxiva.edge.device.PowerMonitor
 import com.nuxiva.edge.node.Enroller
 import com.nuxiva.edge.node.KeystoreCipher
+import com.nuxiva.edge.node.MulticastGuard
 import com.nuxiva.edge.node.NodeRuntime
 import com.nuxiva.edge.node.ProfileStore
 import com.nuxiva.edge.node.ReportBuilder
@@ -25,5 +26,5 @@ class AppGraph(app: Application) {
     val inspector = DeviceInspector(app, orientation)
     val enroller = Enroller(profiles)
     private val reports = ReportBuilder(app, inspector, power, ollama, load, audio, updater)
-    val runtime = NodeRuntime(profiles, reports, power, ollama, shareSettings, orientation)
+    val runtime = NodeRuntime(profiles, reports, power, ollama, shareSettings, orientation, MulticastGuard(app))
 }
