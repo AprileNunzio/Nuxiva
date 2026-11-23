@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import math
 import time
@@ -5,7 +6,7 @@ from datetime import date, datetime
 
 import httpx
 
-from agenti.weather import alerts, astro, extras, radar, settings, skill
+from agenti.weather import alerts, astro, blend, extras, radar, settings, skill, sources
 from agenti.weather.algorithms import engine
 from agenti.weather.codes import DAYS_IT, MONTHS_IT, compass, describe
 
@@ -134,32 +135,51 @@ def build(place: dict, forecast: dict, air: dict | None, hours: int, past_days: 
     return payload
 
 
+async def _json(client: httpx.AsyncClient, url: str, params: dict) -> dict:
+    response = await client.get(url, params=params)
+    response.raise_for_status()
+    body = response.json()
+    if not isinstance(body, dict) or body.get("error"):
+        raise ValueError("risposta meteo non valida")
+    return body
+
+
+async def _optional_json(client: httpx.AsyncClient, url: str, params: dict, label: str) -> dict | None:
+    try:
+        return await _json(client, url, params)
+    except (httpx.HTTPError, ValueError) as exc:
+        log.warning("%s non disponibile: %s", label, type(exc).__name__)
+        return None
+
+
+async def _nothing() -> None:
+    return None
+
+
 async def fetch(place: dict, days: int, hours: int, with_air: bool, refresh_minutes: int, model: str | None = None) -> dict:
     key = (round(place["lat"], 2), round(place["lon"], 2), days, hours, with_air, model)
     hit = cache.get(key)
     if hit and time.time() - hit[0] < refresh_minutes * 60:
         return {**hit[1], "location": place["name"], "detail": place.get("detail", "")}
+    base = {"latitude": place["lat"], "longitude": place["lon"], "timezone": "auto", "forecast_days": days, "forecast_hours": 72,
+            "past_hours": 25, "past_days": 1, "current": CURRENT, "hourly": HOURLY, "daily": DAILY,
+            "minutely_15": "precipitation", "forecast_minutely_15": 12}
+    air_params = {"latitude": place["lat"], "longitude": place["lon"], "timezone": "auto", "current": AIR_CURRENT,
+                  "hourly": AIR_HOURLY, "forecast_days": extras.AIR_DAYS}
     try:
         async with httpx.AsyncClient(timeout=12) as client:
-            forecast_task = client.get(FORECAST_URL, params={"latitude": place["lat"], "longitude": place["lon"], "timezone": "auto",
-                                                              "forecast_days": days, "forecast_hours": 72, "past_hours": 25, "past_days": 1,
-                                                              "current": CURRENT, "hourly": HOURLY, "daily": DAILY,
-                                                              "minutely_15": "precipitation", "forecast_minutely_15": 12,
-                                                              **({"models": model} if model else {})})
-            air = None
-            if with_air:
-                try:
-                    air = (await client.get(AIR_URL, params={"latitude": place["lat"], "longitude": place["lon"], "timezone": "auto",
-                                                              "current": AIR_CURRENT, "hourly": AIR_HOURLY,
-                                                              "forecast_days": extras.AIR_DAYS})).json()
-                except (httpx.HTTPError, ValueError) as exc:
-                    log.info("Qualità dell'aria non disponibile: %s", type(exc).__name__)
-            response = await forecast_task
-            response.raise_for_status()
-            payload = {**build(place, response.json(), air, hours, 1), "model": model or "best_match"}
+            forecast, air, chosen = await asyncio.gather(
+                _json(client, FORECAST_URL, base),
+                _optional_json(client, AIR_URL, air_params, "qualità dell'aria") if with_air else _nothing(),
+                _optional_json(client, FORECAST_URL, blend.params(base, model), f"modello {model}") if model else _nothing())
+        merged, used = blend.merge(forecast, chosen)
+        air_status = sources.air_state(air, with_air)
+        payload = {**build(place, merged, air if air_status == sources.OK else None, hours, 1), "model": model if used else "best_match",
+                   "sources": {"forecast": sources.OK, "model": sources.model_state(model, used), "air": air_status,
+                               "pollen": sources.pollen_state(air, air_status)}}
     except (httpx.HTTPError, ValueError, KeyError) as exc:
         if hit and time.time() - hit[0] < STALE_SECONDS:
-            return {**hit[1], "stale": True}
+            return {**hit[1], "stale": True, "sources": {**(hit[1].get("sources") or {}), "forecast": sources.STALE}}
         raise WeatherUnavailable(type(exc).__name__) from exc
     cache[key] = (time.time(), payload)
     return payload
@@ -175,7 +195,7 @@ async def _optional(task, fallback):
     try:
         return await task
     except (alerts.AlertsUnavailable, ValueError, KeyError, TypeError) as exc:
-        log.info("dato meteo facoltativo non disponibile: %s", type(exc).__name__)
+        log.warning("dato meteo facoltativo non disponibile: %s", type(exc).__name__)
         return fallback
 
 
@@ -186,14 +206,10 @@ async def report(place: dict, language: str = "it") -> dict:
     except (ValueError, KeyError, TypeError):
         model = None
     payload = await fetch(place, prefs["days"], prefs["hours"], prefs["air"], prefs["refresh"], model)
-    result = {**payload, "units": prefs["units"], "view": prefs["view"]}
-    if not prefs["air"]:
-        result["air"], result["air_days"] = None, []
-    elif not prefs["pollen"] and result.get("air"):
-        result["air"] = {**result["air"], "pollen": {}}
-        result["air_days"] = [{**d, "pollen": {}} for d in result.get("air_days") or []]
+    result = sources.apply_preferences({**payload, "units": prefs["units"], "view": prefs["view"]}, prefs)
     result["astro"] = astro.moon(datetime.now().astimezone()) if prefs["astro"] else None
     result["insights"] = engine.insights(situation(result))
-    result["alerts"] = await _optional(alerts.official(place, language), None)
-    result["radar"] = await _optional(radar.latest(), None)
+    result["alerts"], result["radar"] = await asyncio.gather(_optional(alerts.official(place, language), None), _optional(radar.latest(), None))
+    result["sources"] = {**result["sources"], "alerts": sources.OK if result["alerts"] is not None else sources.UNAVAILABLE,
+                         "radar": sources.OK if result["radar"] else sources.UNAVAILABLE}
     return result

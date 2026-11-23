@@ -551,6 +551,23 @@
     "lab_brain_title": "Cervello condiviso",
     "lab_brain_tip": "{{decisions}} decisioni, {{questions}} domande aperte",
     "lab_screen_attempts": "Tentativo {{n}}",
-    "lab_wall_kicker": "NunzioTech Agency"
+    "lab_wall_kicker": "NunzioTech Agency",
+    "wx_details": "Dettagli",
+    "wx_rain_now": "pioggia ora",
+    "wx_elevation": "quota",
+    "wx_dust": "polveri",
+    "wx_src_title": "Fonti dei dati",
+    "wx_src_forecast": "Previsioni",
+    "wx_src_model": "Modello locale",
+    "wx_src_air": "Qualità dell'aria",
+    "wx_src_pollen": "Pollini",
+    "wx_src_alerts": "Allerte ufficiali",
+    "wx_src_radar": "Radar",
+    "wx_st_ok": "attivo",
+    "wx_st_stale": "dati non aggiornati",
+    "wx_st_unavailable": "fonte non disponibile",
+    "wx_st_disabled": "disattivato nelle impostazioni",
+    "wx_st_out_of_season": "fuori stagione o zona non coperta",
+    "wx_st_fallback": "non raggiungibile, uso il modello generale"
   }
 }

@@ -551,6 +551,23 @@
     "lab_brain_title": "Cerebro compartido",
     "lab_brain_tip": "{{decisions}} decisiones, {{questions}} preguntas abiertas",
     "lab_screen_attempts": "Intento {{n}}",
-    "lab_wall_kicker": "NunzioTech Agency"
+    "lab_wall_kicker": "NunzioTech Agency",
+    "wx_details": "Detalles",
+    "wx_rain_now": "lluvia ahora",
+    "wx_elevation": "altitud",
+    "wx_dust": "polvo",
+    "wx_src_title": "Fuentes de datos",
+    "wx_src_forecast": "Previsión",
+    "wx_src_model": "Modelo local",
+    "wx_src_air": "Calidad del aire",
+    "wx_src_pollen": "Polen",
+    "wx_src_alerts": "Avisos oficiales",
+    "wx_src_radar": "Radar",
+    "wx_st_ok": "activo",
+    "wx_st_stale": "datos no actualizados",
+    "wx_st_unavailable": "fuente no disponible",
+    "wx_st_disabled": "desactivado en los ajustes",
+    "wx_st_out_of_season": "fuera de temporada o zona no cubierta",
+    "wx_st_fallback": "inalcanzable, uso el modelo general"
   }
 }
