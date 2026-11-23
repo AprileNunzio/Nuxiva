@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Aggiornamento di sicurezza del supervisore e della lettura dei tag audio",
+    "en": "Security update of the supervisor and of audio tag reading",
+    "fr": "Mise à jour de sécurité du superviseur et de la lecture des tags audio",
+    "es": "Actualización de seguridad del supervisor y de la lectura de etiquetas de audio"
+  },
+  "fixes": [
+    {
+      "it": "Il framework web del supervisore e la libreria che legge i tag dei file audio sono stati aggiornati per correggere vulnerabilità note.",
+      "en": "The supervisor web framework and the library that reads audio file tags were updated to fix known vulnerabilities.",
+      "fr": "Le framework web du superviseur et la bibliothèque de lecture des tags audio ont été mis à jour pour corriger des vulnérabilités connues.",
+      "es": "Se actualizaron el framework web del supervisor y la biblioteca que lee las etiquetas de los archivos de audio para corregir vulnerabilidades conocidas."
+    }
+  ]
+}

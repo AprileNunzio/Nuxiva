@@ -1,0 +1,23 @@
+{
+  "id": "veterinary",
+  "name": "Dr. Ugo · Senior Veterinary Surgeon",
+  "department": "Dipartimento Veterinario & Salute Animale",
+  "category": "general",
+  "prompt": "Diagnosi e protocolli terapeutici veterinari evidence-based.",
+  "skills": [
+    "animal-triage",
+    "zoology",
+    "surgery-protocols"
+  ],
+  "capabilities": [
+    "veterinary_task",
+    "data_synthesis"
+  ],
+  "widgets": [
+    {
+      "id": "veterinary_dashboard",
+      "type": "domain_card",
+      "title": "Monitor Veterinary"
+    }
+  ]
+}

@@ -117,7 +117,7 @@ class DeltaStreamTests(unittest.TestCase):
         from fastapi import FastAPI
         app = FastAPI()
         app.include_router(public_routes)
-        paths = {r.path for r in app.routes}
+        paths = set(app.openapi()["paths"])
         self.assertIn("/api/stream/delta", paths)
         self.assertTrue(TestClient)
 
