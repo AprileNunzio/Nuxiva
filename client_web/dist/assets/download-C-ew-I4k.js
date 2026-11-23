@@ -1,0 +1,1 @@
+async function e(e,t,n){let r=new Headers(n?.headers);r.set(`Accept`,`application/octet-stream`);let i=await fetch(e,{...n,headers:r});if(!i.ok)throw Error(`download_http_${i.status}`);let a=URL.createObjectURL(await i.blob()),o=document.createElement(`a`);o.href=a,o.download=t,o.click(),window.setTimeout(()=>URL.revokeObjectURL(a),6e4)}export{e as t};
