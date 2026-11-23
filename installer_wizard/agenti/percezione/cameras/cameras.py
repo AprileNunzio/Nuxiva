@@ -12,6 +12,7 @@ KINDS = ("webcam", "rtsp", "rtsps", "onvif", "hikvision")
 RETENTIONS = (5, 15, 60)
 _URL_RE = re.compile(r"^(?:rtsp|rtsps|http|https)://[^\s]{3,300}$", re.I)
 _DEV_RE = re.compile(r"^(?:/dev/video\d+|\d+)$")
+_DEVICE_RE = re.compile(r"^[0-9A-Za-z\-]{1,8}:[0-9A-Za-z\-]{1,8}@[\w.:\-]{1,80}$")
 
 
 class Cameras:
@@ -56,7 +57,9 @@ class Cameras:
         retention = int(body.get("retention_min", base.get("retention_min", 5)))
         if retention not in RETENTIONS:
             retention = 5
+        device_id = str(body.get("device_id", base.get("device_id", "")))
         return {"name": name, "kind": kind, "url": url, "node": str(body.get("node", base.get("node", "")))[:60],
+                "device_id": device_id if kind == "webcam" and _DEVICE_RE.fullmatch(device_id) else "",
                 "retention_min": retention,
                 "enabled": bool(body.get("enabled", base.get("enabled", False))),
                 "record": bool(body.get("record", base.get("record", False))),

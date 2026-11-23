@@ -22,6 +22,7 @@ mod context;
 mod cortex;
 mod creations;
 mod defense;
+mod devid;
 mod dialog;
 mod dialogue;
 mod display;
@@ -305,6 +306,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(mastery::mastery_evaluate, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_verify, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_insights, m)?)?;
+    m.add_function(wrap_pyfunction!(devid::device_resolve, m)?)?;
     vitals::register(m)?;
     m.add_function(wrap_pyfunction!(gesture_validate_profile, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_catalog, m)?)?;

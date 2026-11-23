@@ -1,6 +1,5 @@
 import asyncio
 import ipaddress
-import json
 import logging
 import re
 import time
@@ -9,11 +8,12 @@ from collections import Counter
 
 import httpx
 
-from config import STATE_DIR, env_get
+from config import env_get
+from agenti.network import neighbours, store as vault
+from agenti.network.identity import engine as identity, history
 from state import store
 
 log = logging.getLogger("nuxiva.network")
-DEVICES_FILE = STATE_DIR / "devices.json"
 SCAN_EVERY = 10 * 60
 RESTUDY_EVERY = 7 * 24 * 3600
 MAX_SESSIONS = 300
@@ -71,15 +71,10 @@ class NetworkExplorer:
         self.on_device_learned = None
 
     def _load(self) -> dict:
-        try:
-            return json.loads(DEVICES_FILE.read_text(encoding="utf-8"))
-        except (OSError, ValueError):
-            return {}
+        return vault.load()
 
     def save(self) -> None:
-        tmp = DEVICES_FILE.with_suffix(".tmp")
-        tmp.write_text(json.dumps(self.devices, ensure_ascii=False, indent=1), encoding="utf-8")
-        tmp.replace(DEVICES_FILE)
+        vault.save(self.devices)
 
     async def detect_subnet(self) -> None:
         _, route = await sh("ip", "-4", "route", "show", "default", timeout=10)
@@ -142,10 +137,13 @@ class NetworkExplorer:
                         entry["ip"] = a.get("addr")
                     elif a.get("addrtype") == "mac":
                         entry["mac"], entry["vendor"] = a.get("addr").lower(), a.get("vendor") or ""
-                if entry["ip"] == self.own_ip and not entry["mac"]:
-                    entry["mac"] = "self"
                 if entry["ip"]:
+                    entry["own"] = entry["ip"] == self.own_ip
                     found.append(entry)
+        arp = neighbours.table()
+        for entry in found:
+            if not entry["mac"] and not entry["own"] and entry["ip"] in arp:
+                entry["mac"] = arp[entry["ip"]]
         _, names = await sh("avahi-browse", "-aprt", timeout=15)
         mdns: dict = {}
         for line in names.splitlines():
@@ -168,15 +166,24 @@ class NetworkExplorer:
             found = await self.discover()
             seen = set()
             for entry in found:
-                key = entry["mac"] or f"ip:{entry['ip']}"
+                found_id = identity.resolve(self.devices, entry)
+                if found_id is None:
+                    continue
+                key = found_id["key"]
                 seen.add(key)
                 d = self.devices.get(key)
-                is_new = d is None
-                if is_new:
+                is_new = d is None and not found_id["merge"]
+                if d is None:
                     d = {"key": key, "first_seen": now, "sessions": [], "ports": [], "studied": 0, "name": "",
                          "room": "", "owner": "", "trusted": False, "notes": ""}
                     self.devices[key] = d
-                d.update({k: v for k, v in entry.items() if v})
+                for old in found_id["merge"]:
+                    history.absorb(d, self.devices.pop(old, None) or {})
+                previous_ip = d.get("ip")
+                d.update({k: v for k, v in entry.items() if v and k not in ("own", "mac")})
+                d["mac"] = "self" if entry.get("own") else (found_id["mac"] or d.get("mac"))
+                d["randomized_mac"] = bool(found_id["randomized"])
+                history.remember(d, previous_ip, found_id["mac"])
                 sessions = d.setdefault("sessions", [])
                 if sessions and now - sessions[-1][1] <= SCAN_EVERY * 2.5:
                     sessions[-1][1] = now

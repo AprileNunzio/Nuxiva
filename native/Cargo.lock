@@ -2059,6 +2059,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-devid-core"
+version = "5.8.23"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-dialog-core"
 version = "5.8.23"
 dependencies = [
@@ -2405,6 +2413,7 @@ dependencies = [
  "nuxiva-crdt-core",
  "nuxiva-creations-core",
  "nuxiva-defense-core",
+ "nuxiva-devid-core",
  "nuxiva-dialog-core",
  "nuxiva-display-learner",
  "nuxiva-display-planner",

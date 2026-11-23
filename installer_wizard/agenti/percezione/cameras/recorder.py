@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import time
 
+from agenti.cameras import enroll
 from agenti.cameras.cameras import CAM_DIR, cameras
 from agenti.cameras.segments import SegmentError, strip_audio, video_args
 from agenti.nvr.archive import archive
@@ -91,7 +92,7 @@ class Recorder:
             return
         desc = ""
         if code == 240:
-            desc = "dispositivo occupato da un altro processo o visione (EBUSY)"
+            desc = "dispositivo occupato da un altro programma (EBUSY)"
         elif code == 250:
             desc = "dispositivo non connesso o non trovato (ENXIO)"
         elif code == -15:
@@ -102,7 +103,10 @@ class Recorder:
             reason = f"{reason} [{desc}]"
 
         cid = cam["id"]
-        if code not in (0, -15):
+        if code == 240:
+            self.backoff_delay[cid] = 300
+            self.backoff[cid] = time.time() + 300
+        elif code not in (0, -15):
             self.backoff_delay[cid] = min(300, self.backoff_delay.get(cid, 15) * 2)
             self.backoff[cid] = time.time() + self.backoff_delay[cid]
         else:
@@ -183,29 +187,43 @@ class Recorder:
             except OSError:
                 pass
 
-    def _enroll_connected_cameras(self) -> None:
-        try:
-            from agenti.vision.webcams import webcams
-            devices = webcams.state.get("devices") or []
-            for dev in devices:
-                node = dev.get("rgb") or dev.get("ir")
-                if not node:
-                    continue
-                exists = any(c.get("url") == node or c.get("node") == node for c in cameras.items.values())
-                if not exists:
-                    name = str(dev.get("name") or "Webcam").strip()[:40]
-                    cameras.add({"name": name, "kind": "webcam", "url": node, "node": node,
-                                 "retention_min": 60, "enabled": True, "record": True, "consent": True})
-        except Exception:
-            pass
+    @staticmethod
+    def _vision() -> tuple[list[dict], set[str]]:
+        from agenti.vision.webcams import webcams
+        selected = webcams.state.get("selected") or {}
+        return list(webcams.state.get("devices") or []), {n for n in (selected.get("rgb"), selected.get("ir")) if n}
+
+    def _enroll_connected_cameras(self, devices: list[dict], busy: set[str]) -> None:
+        actions = enroll.plan(devices, cameras.items, busy)
+        for cid in actions["remove"]:
+            self._stop(cid)
+            cameras.delete(cid)
+            store.event("INFO", f"Telecamera doppia unita alla stessa webcam fisica: {cid}", "cameras")
+        for cid, changes in actions["update"]:
+            cameras.update(cid, changes)
+        for body in actions["add"]:
+            cameras.add(body)
+
+    def _busy(self, cam: dict, busy: set[str]) -> bool:
+        reason = enroll.busy_reason(cam, busy)
+        if not reason:
+            if self.last_exit.get(cam["id"]) == "in_use_by_vision":
+                self.last_exit.pop(cam["id"], None)
+            return False
+        self._stop(cam["id"])
+        if self.last_exit.get(cam["id"]) != reason:
+            self.last_exit[cam["id"]] = reason
+            store.event("INFO", f"Telecamera {cam['name']}: non registra perché la usa la visione di Nuxiva (stesso dispositivo)", "cameras")
+        return True
 
     async def run(self) -> None:
         if not shutil.which("ffmpeg"):
             return
         while True:
             try:
-                self._enroll_connected_cameras()
-                wanted = {c["id"]: c for c in cameras.items.values() if cameras._recording(c)}
+                devices, busy = self._vision()
+                self._enroll_connected_cameras(devices, busy)
+                wanted = {c["id"]: c for c in cameras.items.values() if cameras._recording(c) and not self._busy(c, busy)}
                 self._refresh_audio(wanted)
                 for cid in list(self.procs):
                     rec = self.procs[cid]
