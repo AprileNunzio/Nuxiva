@@ -1,12 +1,14 @@
 mod code;
 mod cognition;
 mod dispatch;
+mod forge;
 mod projects;
 
 use std::collections::BTreeMap;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use agency_domain::{ProjectId, TaskId, TaskStatus};
+use agency_forge::ForgeCatalog;
 use agency_ledger::{LedgerKey, LedgerStore};
 use agency_scheduler::capacity;
 use agency_scheduler::{HostProfile, ModelProfile, Settings};
@@ -33,6 +35,7 @@ pub struct Engine {
     pub(crate) projects: BTreeMap<ProjectId, ProjectState>,
     pub(crate) ledger: LedgerStore,
     pub(crate) foresight: Foresight,
+    pub(crate) forge: ForgeCatalog,
     pub(crate) agi_kernel: AutonomousAgiKernel,
 }
 
@@ -58,6 +61,7 @@ impl Engine {
         };
         settings.scheduler.validate()?;
         let foresight = Foresight::open(config.path("foresight"))?;
+        let forge = Self::load_forge(&config)?;
         let mut engine = Self {
             config,
             host,
@@ -65,6 +69,7 @@ impl Engine {
             projects: BTreeMap::new(),
             ledger,
             foresight,
+            forge,
             agi_kernel: AutonomousAgiKernel::new(),
         };
         engine.load_projects()?;
@@ -316,6 +321,15 @@ impl Engine {
                 &expected_cases,
                 &outcomes,
             )),
+            Request::ForgePropose { attempt, tool } => self.forge_propose(&attempt, tool),
+            Request::ForgeActivate { name, outcomes } => self.forge_activate(&name, &outcomes),
+            Request::ForgeRevoke { name, reason } => self.forge_revoke(&name, &reason),
+            Request::ForgeAuthorize {
+                attempt,
+                tool,
+                kind,
+                target,
+            } => self.forge_authorize(&attempt, &tool, kind, &target),
             Request::AgiObserveTransition { transition } => {
                 self.agi_observe_transition(&transition)
             }

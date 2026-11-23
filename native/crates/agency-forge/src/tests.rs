@@ -3,8 +3,8 @@ use std::collections::BTreeMap;
 use serde_json::json;
 
 use crate::{
-    ForgeCatalog, ForgeError, ForgedToolSpec, ToolStatus, ToolTestCase, diagnose_failure,
-    inspect_tool_source, values_equivalent,
+    Access, ForgeCatalog, ForgeError, ForgedToolSpec, ToolPermissions, ToolStatus, ToolTestCase,
+    diagnose_failure, inspect_tool_source, values_equivalent,
 };
 
 fn sample_spec(name: &str, code: &str) -> ForgedToolSpec {
@@ -30,6 +30,7 @@ fn sample_spec(name: &str, code: &str) -> ForgedToolSpec {
         ],
         project_id: "ecom-1".to_owned(),
         task_id: "t-checkout".to_owned(),
+        permissions: ToolPermissions::default(),
     }
 }
 
@@ -172,4 +173,56 @@ fn self_healing_planner_diagnoses_and_caps_attempts() {
         assert_eq!(plan.remaining_attempts, 2);
         assert_eq!(plan.target_tool_name, "convert_currency_eur_usd");
     }
+}
+
+#[test]
+fn authorize_requires_active_tool_and_matching_scope() -> Result<(), ForgeError> {
+    let code = "def run(args):\n    return args['price']\n";
+    let mut spec = sample_spec("net_tool", code);
+    spec.permissions = ToolPermissions {
+        read_paths: vec!["data".to_owned()],
+        write_paths: Vec::new(),
+        network_hosts: vec!["api.example.com".to_owned()],
+    };
+    let mut catalog = ForgeCatalog::new();
+    catalog.propose(spec)?;
+    let read = Access::Read("data/a.json");
+    assert!(matches!(
+        catalog.authorize("net_tool", "ecom-1", "t-checkout", read),
+        Err(ForgeError::NotCallable(_))
+    ));
+    catalog.approve("net_tool")?;
+    assert!(
+        catalog
+            .authorize("x_net_tool", "ecom-1", "t-checkout", read)
+            .is_ok()
+    );
+    assert!(matches!(
+        catalog.authorize("net_tool", "other", "t-checkout", read),
+        Err(ForgeError::PermissionDenied(_))
+    ));
+    assert!(matches!(
+        catalog.authorize(
+            "net_tool",
+            "ecom-1",
+            "t-checkout",
+            Access::Write("data/a.json")
+        ),
+        Err(ForgeError::PermissionDenied(_))
+    ));
+    assert!(matches!(
+        catalog.authorize(
+            "net_tool",
+            "ecom-1",
+            "t-checkout",
+            Access::Network("evil.com")
+        ),
+        Err(ForgeError::PermissionDenied(_))
+    ));
+    catalog.revoke("net_tool", "withdrawn")?;
+    assert!(matches!(
+        catalog.authorize("net_tool", "ecom-1", "t-checkout", read),
+        Err(ForgeError::NotCallable(_))
+    ));
+    Ok(())
 }

@@ -1,5 +1,6 @@
 mod cognition;
 mod foresight;
+mod forge;
 mod lifecycle;
 mod planning;
 mod reliability;

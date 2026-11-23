@@ -14,6 +14,10 @@ pub enum ForgeError {
     NotFound(String),
     #[error("tool '{0}' is not approved or has been revoked")]
     NotCallable(String),
+    #[error("invalid permissions: {0}")]
+    InvalidPermissions(String),
+    #[error("permission denied: {0}")]
+    PermissionDenied(String),
     #[error("catalog capacity reached ({0})")]
     CapacityReached(usize),
 }

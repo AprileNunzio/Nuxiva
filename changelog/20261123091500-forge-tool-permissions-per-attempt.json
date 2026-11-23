@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Strumenti generati: permessi per progetto e tentativo, attivazione solo con prove",
+    "en": "Generated tools: per-project and per-attempt permissions, activation only with proofs",
+    "fr": "Outils générés : permissions par projet et par tentative, activation seulement avec preuves",
+    "es": "Herramientas generadas: permisos por proyecto e intento, activación solo con pruebas"
+  },
+  "features": [
+    {
+      "it": "Gli strumenti creati da Nuxiva restano proposte finché i test isolati non passano e possono leggere, scrivere o usare la rete solo negli ambiti dichiarati, solo nel proprio progetto e solo da un tentativo ancora valido.",
+      "en": "Tools created by Nuxiva stay proposals until isolated tests pass, and may read, write or use the network only inside their declared scopes, only in their own project and only from a still valid attempt.",
+      "fr": "Les outils créés par Nuxiva restent des propositions tant que les tests isolés ne passent pas et ne lisent, n'écrivent ou n'utilisent le réseau que dans leurs périmètres déclarés, dans leur projet et depuis une tentative encore valide.",
+      "es": "Las herramientas creadas por Nuxiva siguen siendo propuestas hasta que pasan las pruebas aisladas y solo leen, escriben o usan la red dentro de sus ámbitos declarados, en su propio proyecto y desde un intento aún válido."
+    }
+  ]
+}

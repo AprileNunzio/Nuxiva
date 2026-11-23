@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::error::ForgeError;
 use crate::manifest::{ForgedToolRecord, ForgedToolSpec, ToolStatus};
+use crate::permissions::Access;
 
 pub const MAX_CATALOG_TOOLS: usize = 512;
 pub const AUTO_QUARANTINE_FAILURES: u64 = 3;
@@ -116,6 +117,34 @@ impl ForgeCatalog {
             }
         }
         Ok(tool.clone())
+    }
+
+    pub fn authorize(
+        &self,
+        name: &str,
+        project_id: &str,
+        task_id: &str,
+        access: Access<'_>,
+    ) -> Result<(), ForgeError> {
+        let key = name.trim().trim_start_matches("x_");
+        let tool = self
+            .tools
+            .get(key)
+            .ok_or_else(|| ForgeError::NotFound(key.to_owned()))?;
+        if !tool.is_callable() {
+            return Err(ForgeError::NotCallable(tool.call_name.clone()));
+        }
+        if tool.project_id != project_id || tool.task_id != task_id {
+            return Err(ForgeError::PermissionDenied(
+                "tool belongs to another project or task".to_owned(),
+            ));
+        }
+        if !tool.permissions.allows(access) {
+            return Err(ForgeError::PermissionDenied(format!(
+                "{access:?} is outside the granted scope"
+            )));
+        }
+        Ok(())
     }
 
     #[must_use]

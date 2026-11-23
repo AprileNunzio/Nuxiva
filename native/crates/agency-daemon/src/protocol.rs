@@ -1,7 +1,7 @@
 use agency_action::ReplacementChunk;
 use agency_domain::TaskSpec;
 use agency_foresight::{EventSpec, ScenarioSpec};
-use agency_forge::{SandboxExecutionOutcome, ToolTestCase};
+use agency_forge::{SandboxExecutionOutcome, ToolPermissions, ToolTestCase};
 use agency_scheduler::{ModelProfile, Settings};
 use agency_thought::{
     AlgorithmicStrategy, ArchitectureCandidate, EpistemicHypothesis, PolicyCandidate, ProbeFinding,
@@ -9,6 +9,7 @@ use agency_thought::{
 };
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use std::collections::BTreeMap;
 
 #[derive(Debug, Clone, Copy, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -87,6 +88,36 @@ pub struct ProofSpec {
     pub verified: bool,
     #[serde(default)]
     pub artifact_hash: Option<String>,
+}
+
+#[derive(Debug, Clone, Copy, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum AccessKind {
+    Read,
+    Write,
+    Network,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct AttemptRef {
+    pub project: String,
+    pub task: String,
+    pub worker: String,
+    pub generation: u64,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ForgeProposal {
+    pub name: String,
+    pub description: String,
+    #[serde(default)]
+    pub args_schema: BTreeMap<String, String>,
+    pub code: String,
+    pub tests: Vec<ToolTestCase>,
+    #[serde(default)]
+    pub permissions: ToolPermissions,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -261,6 +292,24 @@ pub enum Request {
         code: String,
         expected_cases: Vec<ToolTestCase>,
         outcomes: Vec<SandboxExecutionOutcome>,
+    },
+    ForgePropose {
+        attempt: AttemptRef,
+        tool: ForgeProposal,
+    },
+    ForgeActivate {
+        name: String,
+        outcomes: Vec<SandboxExecutionOutcome>,
+    },
+    ForgeRevoke {
+        name: String,
+        reason: String,
+    },
+    ForgeAuthorize {
+        attempt: AttemptRef,
+        tool: String,
+        kind: AccessKind,
+        target: String,
     },
     AgiObserveTransition {
         transition: WorldTransition,

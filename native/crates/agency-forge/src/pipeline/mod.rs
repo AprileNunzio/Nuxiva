@@ -40,7 +40,16 @@ pub fn diagnose_failure(error: &ForgeError) -> SynthesisDiagnosis {
             ),
             allowed_imports,
         },
+        ForgeError::InvalidPermissions(reason) => SynthesisDiagnosis {
+            recoverable: true,
+            category: "permissions",
+            hint: format!(
+                "Dichiara permessi validi ({reason}): percorsi relativi senza '..' e host DNS validi."
+            ),
+            allowed_imports,
+        },
         ForgeError::AlreadyExists(_)
+        | ForgeError::PermissionDenied(_)
         | ForgeError::NotFound(_)
         | ForgeError::NotCallable(_)
         | ForgeError::CapacityReached(_) => SynthesisDiagnosis {

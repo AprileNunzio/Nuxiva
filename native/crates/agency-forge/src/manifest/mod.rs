@@ -5,6 +5,7 @@ use serde_json::Value;
 
 use crate::ast_guard::{inspect_tool_source, validate_tool_name};
 use crate::error::ForgeError;
+use crate::permissions::ToolPermissions;
 
 pub const MIN_TESTS: usize = 2;
 pub const MAX_TESTS: usize = 8;
@@ -33,6 +34,8 @@ pub struct ForgedToolSpec {
     pub tests: Vec<ToolTestCase>,
     pub project_id: String,
     pub task_id: String,
+    #[serde(default)]
+    pub permissions: ToolPermissions,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -48,6 +51,8 @@ pub struct ForgedToolRecord {
     pub approved: bool,
     pub project_id: String,
     pub task_id: String,
+    #[serde(default)]
+    pub permissions: ToolPermissions,
     pub invocations: u64,
     pub failures: u64,
     pub last_error: Option<String>,
@@ -62,6 +67,7 @@ impl ForgedToolRecord {
                 "between {MIN_TESTS} and {MAX_TESTS} deterministic test cases are required"
             )));
         }
+        let permissions = spec.permissions.normalized()?;
         let call_name = format!("x_{clean_name}");
         Ok(Self {
             name: clean_name,
@@ -75,6 +81,7 @@ impl ForgedToolRecord {
             approved: false,
             project_id: spec.project_id,
             task_id: spec.task_id,
+            permissions,
             invocations: 0,
             failures: 0,
             last_error: None,

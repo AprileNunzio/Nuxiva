@@ -3,6 +3,7 @@ pub mod catalog;
 pub mod error;
 pub mod healing;
 pub mod manifest;
+pub mod permissions;
 pub mod pipeline;
 pub mod sandbox;
 
@@ -22,6 +23,7 @@ pub use healing::{
 pub use manifest::{
     ForgedToolRecord, ForgedToolSpec, MAX_TESTS, MIN_TESTS, ToolStatus, ToolTestCase,
 };
+pub use permissions::{Access, MAX_SCOPES, ToolPermissions};
 pub use pipeline::{SynthesisDiagnosis, diagnose_failure, values_equivalent};
 pub use sandbox::{
     MAX_STDOUT_BYTES, MAX_WALL_MS, SandboxExecutionOutcome, VerificationProof,
