@@ -39,7 +39,7 @@ final class EnrollmentModel {
         step = .working
         failure = nil
         Task {
-            do {
+            do throws(NodeFailure) {
                 let payload = try await enroller.payload(server: server, code: code)
                 await review(payload)
             } catch {
