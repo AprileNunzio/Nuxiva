@@ -125,3 +125,20 @@ pub fn update_system_auto_config(enabled: bool) -> PyResult<String> {
 pub fn update_valid_package(name: &str) -> bool {
     nuxiva_update_core::system::valid_package_name(name)
 }
+
+#[pyfunction]
+pub fn update_apt_line(raw: &str) -> PyResult<String> {
+    to_json(&nuxiva_update_core::apt_stream::classify(bounded(raw)?))
+}
+
+#[pyfunction]
+pub fn update_apt_percent(summary_json: &str, unpacked: u32, configured: u32) -> PyResult<u8> {
+    let summary: Option<nuxiva_update_core::AptSummary> =
+        serde_json::from_str(bounded(summary_json)?)
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+    Ok(nuxiva_update_core::apt_stream::upgrade_percent(
+        summary.as_ref(),
+        unpacked,
+        configured,
+    ))
+}

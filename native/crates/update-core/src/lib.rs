@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+pub mod apt_stream;
 pub mod changelog;
 pub mod fleet;
 pub mod impact;
@@ -10,6 +11,7 @@ pub mod rev;
 pub mod signature;
 pub mod system;
 
+pub use apt_stream::{AptKind, AptLine, AptSummary};
 pub use changelog::{ChangeEntry, parse_oneline};
 pub use impact::{ImpactReport, analyze};
 pub use integrity::{IntegrityReport, TreeEntry, blob_oid, parse_ls_tree, verify};

@@ -136,6 +136,8 @@ def full_snapshot(admin: bool) -> dict:
     snap["selftest"] = getattr(store, "selftest", None)
     from agenti.update_center.progress import tracker as update_tracker
     snap["update_progress"] = update_tracker.public()
+    from agenti.update_center.apt_phase.state import phase as apt_phase
+    snap["update_system"] = apt_phase.public()
     from background import queue
     snap["background"] = queue.snapshot()
     try:

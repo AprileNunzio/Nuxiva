@@ -301,7 +301,25 @@ def _tracker():
     return tracker
 
 
-async def apply(reason: str = "automatico", fetch_timeout: float = 180, force: bool = False) -> bool:
+_apply_lock = asyncio.Lock()
+
+
+async def _system_packages() -> None:
+    from agenti.update_center.apt_phase import runner as apt_phase
+    store.set_phase("UPDATING", "Aggiornamento dei pacchetti di sistema…")
+    await apt_phase.run(lambda level, message: store.event(level, message, "updater"), store.touch)
+
+
+async def apply(reason: str = "automatico", fetch_timeout: float = 180, force: bool = False,
+                system_first: bool = True) -> bool:
+    if _apply_lock.locked():
+        store.event("WARN", f"Aggiornamento {reason} ignorato: un altro è già in corso", "updater")
+        return False
+    async with _apply_lock:
+        return await _apply(reason, fetch_timeout, force, system_first)
+
+
+async def _apply(reason: str, fetch_timeout: float, force: bool, system_first: bool) -> bool:
     info = await check(fetch_timeout, allow_bad=force)
     if info.get("check_error"):
         return False
@@ -317,6 +335,8 @@ async def apply(reason: str = "automatico", fetch_timeout: float = 180, force: b
     from agenti.update_center import guard
     previous = pending()
     rollback_to = previous["from"] if previous else info["local_rev"]
+    if system_first:
+        await _system_packages()
     tracker = _tracker()
     tracker.begin(info["local_rev"], target, reason)
     store.event("INFO", f"Aggiornamento {reason}: {info['local_rev'][:7]} → {target[:7]}", "updater")

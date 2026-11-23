@@ -86,6 +86,8 @@
     const revs = document.getElementById("upd-revs");
     if (run && REV.test(run.from || "") && REV.test(run.to || "")) PageText.plain(revs, `${run.from} → ${run.to}`);
     else PageText.plain(revs, "");
+    const system = global.NuxivaUpdateSystem ? global.NuxivaUpdateSystem.sync(root, s.update_system) : false;
+    root.classList.toggle("upd-system-mode", system);
     root.classList.toggle("upd-failed", !!run && run.outcome === "failed");
     progress(run, s);
     global.NuxivaUpdateNotes.update(run ? run.notes : null, ready(run));
@@ -95,6 +97,7 @@
   function clear() {
     if (!root || root.classList.contains("hidden")) return;
     root.classList.add("hidden");
+    if (global.NuxivaUpdateSystem) global.NuxivaUpdateSystem.hide();
     if (global.NuxivaResources) global.NuxivaResources.release("update");
     global.NuxivaUpdateNotes.stop();
   }

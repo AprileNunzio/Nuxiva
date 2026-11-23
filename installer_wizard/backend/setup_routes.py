@@ -199,7 +199,7 @@ async def setup_update_sync(_: None = Depends(require_update_open)):
             "applied": False,
         }, headers=NO_CACHE)
     if check_info.get("available") and check_info.get("target_rev"):
-        applied = await updater.apply(reason="setup_initial", fetch_timeout=60, force=True)
+        applied = await updater.apply(reason="setup_initial", fetch_timeout=60, force=True, system_first=False)
         if applied:
             import asyncio
             asyncio.create_task(_restart_kiosk_browser())

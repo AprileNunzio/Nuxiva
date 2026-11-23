@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Ogni aggiornamento di Nuxiva aggiorna prima i pacchetti del sistema operativo",
+    "en": "Every Nuxiva update first upgrades the operating system packages",
+    "fr": "Chaque mise à jour de Nuxiva met d'abord à jour les paquets du système d'exploitation",
+    "es": "Cada actualización de Nuxiva actualiza primero los paquetes del sistema operativo"
+  },
+  "features": [
+    {
+      "it": "Prima di installare una nuova versione di Nuxiva, il server aggiorna da solo i pacchetti del sistema operativo (apt update e apt upgrade), senza domande e senza rimuovere pacchetti.",
+      "en": "Before installing a new Nuxiva version, the server upgrades the operating system packages on its own (apt update and apt upgrade), with no prompts and without removing packages.",
+      "fr": "Avant d'installer une nouvelle version de Nuxiva, le serveur met à jour tout seul les paquets du système (apt update et apt upgrade), sans questions et sans supprimer de paquets.",
+      "es": "Antes de instalar una nueva versión de Nuxiva, el servidor actualiza solo los paquetes del sistema operativo (apt update y apt upgrade), sin preguntas y sin eliminar paquetes."
+    },
+    {
+      "it": "Nuova schermata futuristica sul display: anello di avanzamento, contatori dei pacchetti e console in diretta con ogni riga di apt, poi transizione alla schermata di installazione di Nuxiva.",
+      "en": "New futuristic screen on the display: progress ring, package counters and a live console with every apt line, then a transition to the Nuxiva installation screen.",
+      "fr": "Nouvel écran futuriste sur l'affichage : anneau de progression, compteurs de paquets et console en direct avec chaque ligne d'apt, puis transition vers l'écran d'installation de Nuxiva.",
+      "es": "Nueva pantalla futurista en el display: anillo de progreso, contadores de paquetes y consola en directo con cada línea de apt, y luego transición a la pantalla de instalación de Nuxiva."
+    },
+    {
+      "it": "Se apt non riesce l'errore viene segnalato e l'aggiornamento di Nuxiva prosegue comunque; il registro completo resta salvato sul server e due aggiornamenti non possono partire insieme.",
+      "en": "If apt fails the error is reported and the Nuxiva update continues anyway; the full log stays saved on the server and two updates can no longer start together.",
+      "fr": "Si apt échoue, l'erreur est signalée et la mise à jour de Nuxiva continue quand même ; le journal complet reste enregistré sur le serveur et deux mises à jour ne peuvent plus démarrer ensemble.",
+      "es": "Si apt falla, el error se notifica y la actualización de Nuxiva continúa igualmente; el registro completo queda guardado en el servidor y dos actualizaciones ya no pueden empezar a la vez."
+    }
+  ],
+  "fixes": []
+}

@@ -133,10 +133,10 @@ use surface::{RustMoveGuard, surface_audience, surface_layout};
 use token::{RustTokenCodec, TokenRejected};
 use topics::{TopicRouter, matches, valid_origin, valid_pattern, valid_topic};
 use update::{
-    update_changelog, update_fleet_overview, update_fleet_sanitize, update_impact,
-    update_pipeline_advance, update_release_notes, update_signature, update_system_auto_config,
-    update_system_parse, update_system_plan, update_valid_package, update_valid_rev,
-    update_verify_tree,
+    update_apt_line, update_apt_percent, update_changelog, update_fleet_overview,
+    update_fleet_sanitize, update_impact, update_pipeline_advance, update_release_notes,
+    update_signature, update_system_auto_config, update_system_parse, update_system_plan,
+    update_valid_package, update_valid_rev, update_verify_tree,
 };
 
 #[pymodule(gil_used = false)]
@@ -309,6 +309,8 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(gesture_validate_profile, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_catalog, m)?)?;
     m.add_function(wrap_pyfunction!(update_valid_rev, m)?)?;
+    m.add_function(wrap_pyfunction!(update_apt_line, m)?)?;
+    m.add_function(wrap_pyfunction!(update_apt_percent, m)?)?;
     m.add_function(wrap_pyfunction!(update_signature, m)?)?;
     m.add_function(wrap_pyfunction!(update_verify_tree, m)?)?;
     m.add_function(wrap_pyfunction!(update_impact, m)?)?;
