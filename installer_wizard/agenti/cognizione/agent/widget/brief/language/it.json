@@ -6,6 +6,16 @@
   },
   "dictionary": {
     "label": "Riepilogo",
-    "simple_title": "Da sapere oggi"
+    "simple_title": "Da sapere oggi",
+    "bf_away_title": "Mentre eri fuori",
+    "bf_away_for": "Assente da: {{time}}",
+    "bf_away_alerts": "Avvisi: {{n}}",
+    "bf_away_errors": "Errori: {{n}}",
+    "bf_away_devices": "Nuovi dispositivi: {{n}}",
+    "bf_away_people": "In casa ora: {{names}}",
+    "bf_away_quiet": "Nessuna novità",
+    "bf_mesh_title": "Rete Nuxiva",
+    "bf_mesh_online": "Nodi attivi: {{n}} su {{total}}",
+    "bf_mesh_offline": "Non raggiungibile: {{name}}"
   }
 }
