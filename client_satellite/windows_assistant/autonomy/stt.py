@@ -4,6 +4,8 @@ import threading
 
 import numpy as np
 
+from autonomy.sapi_stt import SapiRecognizer
+
 log = logging.getLogger("nuxiva.localstt")
 RATE = 16000
 
@@ -46,5 +48,4 @@ class WhisperEngine:
 def pick_engine(model: str, folder: str, gpu: bool, lang: str):
     if available():
         return WhisperEngine(model, folder, gpu)
-    from autonomy.sapi_stt import SapiRecognizer
     return SapiRecognizer(lang)

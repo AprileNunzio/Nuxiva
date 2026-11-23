@@ -1,6 +1,7 @@
 import importlib
 import importlib.util
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -12,6 +13,7 @@ THEMES = ("blue.json", "dark-blue.json", "green.json")
 FONT_SUFFIXES = (".otf", ".ttf")
 EXIT_ASSETS = 3
 EXIT_TOOLKIT = 4
+EXIT_BUNDLE = 5
 
 
 def toolkit_root() -> Path | None:
@@ -56,11 +58,28 @@ def ensure(interactive: bool = True) -> int:
     return 0
 
 
+def bundle_unreadable(exc: OSError) -> bool:
+    if not getattr(sys, "frozen", False) or not isinstance(exc.filename, str):
+        return False
+    return os.path.normcase(os.path.abspath(exc.filename)) == os.path.normcase(os.path.abspath(sys.executable))
+
+
+def guard(entry) -> int:
+    try:
+        return entry() or 0
+    except OSError as exc:
+        if not bundle_unreadable(exc):
+            raise
+        log.error("Pacchetto non leggibile", exc_info=exc)
+        report(t("startup.bundle_unreadable", path=exc.filename), True)
+        return EXIT_BUNDLE
+
+
 def smoke() -> int:
     code = ensure(interactive=False)
     if code:
         return code
-    for module in ("ui.theme", "ui.pairing_view", "ui.panel", "app.interface", "app.conversation", "app.voice", "app.assistant"):
+    for module in ("autonomy.stt", "autonomy.sapi_stt", "ui.theme", "ui.pairing_view", "ui.panel", "app.interface", "app.conversation", "app.voice", "app.assistant"):
         try:
             importlib.import_module(module)
         except (ImportError, OSError) as exc:

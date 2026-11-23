@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "L'assistente Windows non si chiude più all'avvio se il suo file viene bloccato",
+    "en": "The Windows assistant no longer closes at startup when its file gets blocked",
+    "fr": "L'assistant Windows ne se ferme plus au démarrage quand son fichier est bloqué",
+    "es": "El asistente de Windows ya no se cierra al iniciar cuando su archivo queda bloqueado"
+  },
+  "fixes": [
+    {
+      "it": "Risolto il crash all'avvio «Errno 22 Invalid argument» su Nuxiva.exe: l'assistente non deve più rileggere il proprio eseguibile mentre è in funzione.",
+      "en": "Fixed the «Errno 22 Invalid argument» startup crash on Nuxiva.exe: the assistant no longer needs to read its own executable back while running.",
+      "fr": "Correction du plantage au démarrage « Errno 22 Invalid argument » sur Nuxiva.exe : l'assistant n'a plus besoin de relire son propre exécutable pendant son fonctionnement.",
+      "es": "Corregido el cierre al iniciar «Errno 22 Invalid argument» en Nuxiva.exe: el asistente ya no necesita releer su propio ejecutable mientras funciona."
+    },
+    {
+      "it": "Se Windows o l'antivirus bloccano comunque i file di Nuxiva, compare un messaggio chiaro su come ripristinarli invece di una finestra di errore tecnica.",
+      "en": "If Windows or an antivirus still blocks Nuxiva's files, a clear message explains how to restore them instead of a technical error window.",
+      "fr": "Si Windows ou un antivirus bloque malgré tout les fichiers de Nuxiva, un message clair explique comment les restaurer au lieu d'une fenêtre d'erreur technique.",
+      "es": "Si Windows o un antivirus bloquean igualmente los archivos de Nuxiva, aparece un mensaje claro sobre cómo restaurarlos en lugar de una ventana de error técnica."
+    }
+  ]
+}

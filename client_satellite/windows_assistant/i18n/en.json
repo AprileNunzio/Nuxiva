@@ -64,6 +64,7 @@
   "mode.host_hint": "With the signed pairing, this PC announces compute, agents and local models to the server. It stays off unless you turn it on or you use This PC only.",
   "startup.assets_missing": "Interface files are missing from the installation: {files}. Reinstall Nuxiva with the latest installer.",
   "startup.toolkit_failed": "The graphical interface could not start: {reason}. Reinstall Nuxiva with the latest installer.",
+  "startup.bundle_unreadable": "Windows prevented Nuxiva from reading its own files ({path}). This is usually an antivirus that blocked or quarantined them: restore them, or reinstall Nuxiva with the latest installer.",
   "screenshot.saved": "Screenshot saved to the shared folder",
   "screenshot.queued": "Share unreachable: will retry",
   "screenshot.blocked": "Screenshot not taken: blocked by privacy policy",

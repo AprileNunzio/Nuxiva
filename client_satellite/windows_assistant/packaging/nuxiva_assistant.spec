@@ -19,7 +19,7 @@ analysis = Analysis(
     datas=datas,
     hiddenimports=hiddenimports,
     excludes=["tests", "pytest", "matplotlib"],
-    noarchive=False,
+    noarchive=True,
 )
 pyz = PYZ(analysis.pure)
 exe = EXE(

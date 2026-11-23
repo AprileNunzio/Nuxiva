@@ -64,6 +64,7 @@
   "mode.host_hint": "Con el emparejamiento firmado, este PC anuncia cálculo, agentes y modelos locales al servidor. Queda apagado si no lo activas o si usas Solo este PC.",
   "startup.assets_missing": "Faltan archivos de la interfaz en la instalación: {files}. Reinstala Nuxiva con el último instalador.",
   "startup.toolkit_failed": "No se pudo iniciar la interfaz gráfica: {reason}. Reinstala Nuxiva con el último instalador.",
+  "startup.bundle_unreadable": "Windows impidió que Nuxiva leyera sus propios archivos ({path}). Normalmente es un antivirus que los bloqueó o puso en cuarentena: restáuralos, o reinstala Nuxiva con el último instalador.",
   "screenshot.saved": "Captura guardada en la carpeta compartida",
   "screenshot.queued": "Recurso inaccesible: se reintentará",
   "screenshot.blocked": "Captura no realizada: bloqueada por privacidad",
