@@ -2510,6 +2510,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-peer-ledger"
+version = "5.8.18"
+dependencies = [
+ "ed25519-dalek",
+ "nuxiva-node-core",
+ "nuxiva-peer-core",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
 name = "nuxiva-peer-net"
 version = "5.8.18"
 dependencies = [

@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Registro degli indirizzi a catena firmata per ritrovare nodi, server e satelliti",
+    "en": "Signed address chain to find nodes, servers and satellites again",
+    "fr": "Registre d'adresses à chaîne signée pour retrouver nœuds, serveurs et satellites",
+    "es": "Registro de direcciones en cadena firmada para volver a encontrar nodos, servidores y satélites"
+  },
+  "features": [
+    {
+      "it": "Ogni dispositivo tiene un registro dei propri indirizzi in cui ogni voce è firmata e legata alla precedente, così i cambi di IP restano verificabili e non falsificabili; il registro si salva su disco e si scambia tra i pari.",
+      "en": "Each device keeps a log of its own addresses in which every entry is signed and linked to the previous one, so IP changes stay verifiable and cannot be forged; the log is saved to disk and exchanged between peers.",
+      "fr": "Chaque appareil tient un registre de ses adresses où chaque entrée est signée et liée à la précédente, de sorte que les changements d'IP restent vérifiables et infalsifiables ; le registre est enregistré sur disque et échangé entre pairs.",
+      "es": "Cada dispositivo guarda un registro de sus direcciones en el que cada entrada está firmada y enlazada con la anterior, de modo que los cambios de IP siguen siendo verificables y no falsificables; el registro se guarda en disco y se intercambia entre pares."
+    }
+  ]
+}

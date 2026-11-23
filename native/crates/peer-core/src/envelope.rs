@@ -63,6 +63,11 @@ impl PeerKey {
         &self.id
     }
 
+    #[must_use]
+    pub fn sign(&self, bytes: &[u8]) -> String {
+        hexutil::encode(&self.key.sign(bytes).to_bytes())
+    }
+
     pub fn seal(&self, seq: u64, ts: i64, ttl: u8, message: &Message) -> PeerResult<Envelope> {
         let payload = serde_json::to_string(message).map_err(|_| PeerError::Payload)?;
         if payload.len() > MAX_PAYLOAD || ttl > MAX_TTL {
