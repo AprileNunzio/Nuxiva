@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Dispositivi di rete riconosciuti anche quando cambiano IP e una sola voce per ogni telecamera",
+    "en": "Network devices recognised even when their IP changes, and a single entry for every camera",
+    "fr": "Appareils réseau reconnus même quand leur IP change, et une seule entrée par caméra",
+    "es": "Dispositivos de red reconocidos aunque cambien de IP y una sola entrada por cámara"
+  },
+  "features": [
+    {
+      "it": "Nuxiva ricorda ogni dispositivo di rete dal suo indirizzo MAC, con lo storico degli IP usati; i telefoni con indirizzo privato a rotazione vengono riconosciuti dal nome.",
+      "en": "Nuxiva remembers every network device by its MAC address, with the history of IPs it used; phones with a rotating private address are recognised by name.",
+      "fr": "Nuxiva mémorise chaque appareil réseau par son adresse MAC, avec l'historique des IP utilisées ; les téléphones à adresse privée tournante sont reconnus par leur nom.",
+      "es": "Nuxiva recuerda cada dispositivo de red por su dirección MAC, con el historial de IP usadas; los teléfonos con dirección privada rotativa se reconocen por el nombre."
+    },
+    {
+      "it": "Il registro dei dispositivi di rete ora è cifrato sul disco.",
+      "en": "The network device registry is now encrypted on disk.",
+      "fr": "Le registre des appareils réseau est désormais chiffré sur le disque.",
+      "es": "El registro de dispositivos de red ahora está cifrado en el disco."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Un dispositivo che cambiava IP veniva segnalato ogni volta come nuovo: ora mantiene nome, stanza e proprietario.",
+      "en": "A device that changed IP was reported as new every time: it now keeps its name, room and owner.",
+      "fr": "Un appareil qui changeait d'IP était signalé comme nouveau à chaque fois : il garde désormais son nom, sa pièce et son propriétaire.",
+      "es": "Un dispositivo que cambiaba de IP se señalaba siempre como nuevo: ahora conserva nombre, habitación y propietario."
+    },
+    {
+      "it": "Errore 240 delle telecamere: la registrazione partiva sulla stessa webcam usata dalla visione di Nuxiva e la trovava occupata. Ora quella webcam non viene registrata e lo dice chiaramente.",
+      "en": "Camera error 240: recording started on the same webcam used by Nuxiva's vision and found it busy. That webcam is no longer recorded and this is stated clearly.",
+      "fr": "Erreur 240 des caméras : l'enregistrement démarrait sur la webcam utilisée par la vision de Nuxiva et la trouvait occupée. Cette webcam n'est plus enregistrée et c'est indiqué clairement.",
+      "es": "Error 240 de las cámaras: la grabación empezaba en la misma webcam usada por la visión de Nuxiva y la encontraba ocupada. Esa webcam ya no se graba y se indica claramente."
+    },
+    {
+      "it": "La stessa webcam compariva come più telecamere dopo un riavvio o se esponeva più sensori: ora è una sola, riconosciuta dalla porta USB, e i doppioni vengono uniti.",
+      "en": "The same webcam showed up as several cameras after a restart or when it exposed several sensors: it is now one, recognised by its USB port, and duplicates are merged.",
+      "fr": "La même webcam apparaissait comme plusieurs caméras après un redémarrage ou si elle exposait plusieurs capteurs : elle n'en fait plus qu'une, reconnue par son port USB, et les doublons sont fusionnés.",
+      "es": "La misma webcam aparecía como varias cámaras tras un reinicio o si exponía varios sensores: ahora es una sola, reconocida por su puerto USB, y los duplicados se unen."
+    }
+  ]
+}

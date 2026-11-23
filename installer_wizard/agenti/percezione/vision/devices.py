@@ -16,17 +16,19 @@ USB_CLASS_VIDEO = "0e"
 
 
 def parse_list(text: str) -> list[dict]:
-    groups, current = [], None
+    groups: dict[str, dict] = {}
+    current = None
     for line in text.splitlines():
         header = HEADER_RE.match(line)
         if header and not line.startswith((" ", "\t")):
-            current = {"name": header["name"].strip(), "bus": header["bus"].strip(), "nodes": []}
-            groups.append(current)
+            bus, name = header["bus"].strip(), header["name"].strip()
+            key = bus if bus.startswith("usb-") else f"{name}|{bus}"
+            current = groups.setdefault(key, {"name": name, "bus": bus, "nodes": []})
             continue
         node = NODE_RE.match(line)
-        if node and current is not None:
+        if node and current is not None and node[1] not in current["nodes"]:
             current["nodes"].append(node[1])
-    return groups
+    return list(groups.values())
 
 
 def parse_formats(text: str) -> dict:
