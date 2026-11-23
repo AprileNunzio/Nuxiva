@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Riavvio del motore agenti: i lavori interrotti ripartono, con prova sul progetto e-commerce",
+    "en": "Agent engine restart: interrupted work resumes, proven on the e-commerce project",
+    "fr": "Redémarrage du moteur d'agents : les travaux interrompus reprennent, prouvé sur le projet e-commerce",
+    "es": "Reinicio del motor de agentes: el trabajo interrumpido se reanuda, probado con el proyecto de comercio electrónico"
+  },
+  "fixes": [
+    {
+      "it": "Dopo un riavvio i lavori che erano in corso non restavano bloccati da un incarico ancora attivo: ora vengono riassegnati con una nuova generazione e i risultati tardivi del vecchio incarico vengono rifiutati.",
+      "en": "After a restart, work that was in progress is no longer stuck behind a still-active assignment: it is reassigned with a new generation and late results from the old assignment are rejected.",
+      "fr": "Après un redémarrage, les travaux en cours ne restent plus bloqués par une affectation encore active : ils sont réaffectés avec une nouvelle génération et les résultats tardifs de l'ancienne affectation sont refusés.",
+      "es": "Tras un reinicio, el trabajo en curso ya no queda bloqueado por una asignación aún activa: se reasigna con una nueva generación y se rechazan los resultados tardíos de la asignación anterior."
+    }
+  ]
+}

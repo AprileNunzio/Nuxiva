@@ -11,6 +11,7 @@ use agency_domain::{ProjectId, TaskId, TaskStatus};
 use agency_forge::ForgeCatalog;
 use agency_ledger::{LedgerKey, LedgerStore};
 use agency_scheduler::capacity;
+use agency_scheduler::leases::Owner;
 use agency_scheduler::{HostProfile, ModelProfile, Settings};
 use agency_thought::AutonomousAgiKernel;
 use serde_json::{Value, json};
@@ -93,8 +94,17 @@ impl Engine {
                 .filter(|t| t.status() == TaskStatus::Running)
                 .map(|t| t.id().clone())
                 .collect();
+            let owner = Owner {
+                tenant: "nuxiva".to_owned(),
+                account: state.project.id().as_str().to_owned(),
+            };
             for id in &running {
                 state.graph.update(id, agency_domain::Task::interrupt)?;
+                if let Some(lease) = state.leases.get_mut(id) {
+                    lease
+                        .revoke(&owner)
+                        .map_err(|e| AgencyError::BadRequest(e.to_string()))?;
+                }
             }
             if !running.is_empty() {
                 recovered.push(state.project.id().clone());
