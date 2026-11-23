@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Ricerca automatica di un dispositivo per identità dopo un cambio di indirizzo",
+    "en": "Automatic lookup of a device by identity after an address change",
+    "fr": "Recherche automatique d'un appareil par identité après un changement d'adresse",
+    "es": "Búsqueda automática de un dispositivo por identidad tras un cambio de dirección"
+  },
+  "features": [
+    {
+      "it": "Quando un dispositivo cambia indirizzo, gli altri lo ritrovano da soli provando prima gli indirizzi salvati, poi chiedendo in rete locale e infine ai dispositivi conosciuti, con attese crescenti tra i tentativi; le risposte false vengono scartate.",
+      "en": "When a device changes address, the others find it on their own by trying saved addresses first, then asking on the local network and finally the known devices, with growing waits between attempts; forged answers are discarded.",
+      "fr": "Quand un appareil change d'adresse, les autres le retrouvent seuls en essayant d'abord les adresses enregistrées, puis en demandant sur le réseau local et enfin aux appareils connus, avec des attentes croissantes entre les essais ; les réponses falsifiées sont écartées.",
+      "es": "Cuando un dispositivo cambia de dirección, los demás lo encuentran solos probando primero las direcciones guardadas, luego preguntando en la red local y por último a los dispositivos conocidos, con esperas crecientes entre intentos; las respuestas falsas se descartan."
+    }
+  ]
+}

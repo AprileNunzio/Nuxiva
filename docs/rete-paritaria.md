@@ -57,6 +57,14 @@ EN: the `nuxiva-peer-ledger` crate adds a per-node append-only log. Each block h
 
 Assunzioni / assumptions: la verifica di fork non copre i blocchi già potati; la ricerca per id e la riconnessione automatica (fase 4B) e il collegamento a server, Windows e APK (fase 4C) seguono.
 
+## Fase 4B: ricerca per id e riconnessione / lookup by id and reconnection
+
+IT: `lookup.rs` e `wire.rs` del crate `nuxiva-peer-ledger` aggiungono la ricerca di un nodo per id come macchina a stati senza I/O, pilotata dal chiamante. Ordine: indirizzi in cache (dal registro, quelli falliti per ultimi), poi un `Want` in broadcast con attesa di 800 ms, poi interrogazione diretta dei pari noti (al massimo 8, 1,5 s di attesa), poi rinuncia; tempo totale massimo 12 s e nessun ciclo, perché ogni indirizzo e ogni pari si prova una volta sola. Le risposte (`Have` con l'ultimo blocco, `Delta` con i blocchi mancanti) passano sempre da `Ledger::accept`, quindi una risposta falsa o di un nodo non iscritto non cambia nulla. I messaggi `Wire` sono JSON con campi sconosciuti rifiutati, id validati e limite di 64 KiB. `reconnect_delay_ms` dà l'attesa esponenziale tra un tentativo e l'altro (1 s fino a 60 s) con jitter fornito dal chiamante.
+
+EN: `lookup.rs` and `wire.rs` add node lookup by id as an I/O-free state machine driven by the caller. Order: cached addresses (failed ones last), then a broadcast `Want` with an 800 ms wait, then direct queries to known peers (at most 8, 1.5 s wait), then giving up; 12 s total and no loops, since each address and each peer is tried once. Replies always go through `Ledger::accept`, so a forged reply or one from an unenrolled node changes nothing. `reconnect_delay_ms` gives exponential backoff (1 s to 60 s) with caller-supplied jitter.
+
+Assunzioni / assumptions: il trasporto reale (UDP, WebSocket) e il collegamento a server, Windows e APK sono la fase 4C.
+
 ## Test di carico / load test
 
 `native/crates/peer-core/tests/load_100.rs` simula 100 nodi (1 server, 20 desktop, 79 telefoni con batteria diversa), tutti con messaggi firmati e verificati:
