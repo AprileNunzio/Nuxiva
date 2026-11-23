@@ -18,7 +18,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-VERSION = "5.8.16"
+VERSION = "5.8.17"
 DISCOVER_PORT = 50505
 JOIN_TIMEOUT = 15 * 60
 REDISCOVER_AFTER = 3
