@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Aggiornamento di sicurezza delle librerie di base",
+    "en": "Security update of core libraries",
+    "fr": "Mise à jour de sécurité des bibliothèques de base",
+    "es": "Actualización de seguridad de las bibliotecas base"
+  },
+  "fixes": [
+    {
+      "it": "Aggiornate le librerie di rete, tempo e URL dei componenti nativi e gli strumenti di compilazione della console web per correggere vulnerabilità note.",
+      "en": "Updated the network, time and URL libraries of the native components and the web console build tools to fix known vulnerabilities.",
+      "fr": "Bibliothèques réseau, temps et URL des composants natifs et outils de compilation de la console web mises à jour pour corriger des vulnérabilités connues.",
+      "es": "Actualizadas las bibliotecas de red, tiempo y URL de los componentes nativos y las herramientas de compilación de la consola web para corregir vulnerabilidades conocidas."
+    }
+  ]
+}
