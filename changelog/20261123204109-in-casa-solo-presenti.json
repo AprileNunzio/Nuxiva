@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "\"In casa\" mostra solo chi è davvero in casa adesso",
+    "en": "\"At home\" only shows who is really at home right now",
+    "fr": "« À la maison » n'affiche que les personnes réellement présentes",
+    "es": "\"En casa\" solo muestra quién está realmente en casa ahora"
+  },
+  "features": [
+    {
+      "it": "La presenza usa anche il telefono connesso al Wi-Fi di casa: se nelle schede dei dispositivi di rete indichi il proprietario, Nuxiva sa che è in casa anche quando non è davanti alla telecamera.",
+      "en": "Presence also uses the phone connected to the home Wi-Fi: if you set the owner in the network device cards, Nuxiva knows they are home even when not in front of the camera.",
+      "fr": "La présence utilise aussi le téléphone connecté au Wi-Fi de la maison : si vous indiquez le propriétaire dans les fiches des appareils réseau, Nuxiva sait qu'il est là même hors du champ de la caméra.",
+      "es": "La presencia también usa el teléfono conectado al Wi-Fi de casa: si indicas el propietario en las fichas de los dispositivos de red, Nuxiva sabe que está en casa aunque no esté delante de la cámara."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il riquadro \"In casa\" elencava anche le persone uscite o mai viste: ora mostra solo i presenti e si nasconde quando la casa è vuota.",
+      "en": "The \"At home\" panel also listed people who had left or were never seen: it now shows only who is present and hides when the house is empty.",
+      "fr": "L'encadré « À la maison » listait aussi les personnes sorties ou jamais vues : il n'affiche plus que les présents et se masque quand la maison est vide.",
+      "es": "El panel \"En casa\" también mostraba a quien había salido o nunca se había visto: ahora solo muestra a los presentes y se oculta cuando la casa está vacía."
+    }
+  ]
+}

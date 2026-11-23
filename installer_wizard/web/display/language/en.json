@@ -568,6 +568,8 @@
     "wx_st_unavailable": "source unavailable",
     "wx_st_disabled": "turned off in settings",
     "wx_st_out_of_season": "out of season or area not covered",
-    "wx_st_fallback": "unreachable, using the general model"
+    "wx_st_fallback": "unreachable, using the general model",
+    "rl_via_wifi": "phone connected at home",
+    "rl_via_camera": "here now"
   }
 }

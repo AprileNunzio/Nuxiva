@@ -4,14 +4,13 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter, HTTPException, Request
 
 from access import require_display
-from agenti.people import learning, mood, people
+from agenti.people import home, learning, mood, people
 from agenti.medico.vitals import cloud, service
 from tasks import background
 from state import store
 
 public_routes = APIRouter()
 
-HOME_WINDOW = 600
 MAX_ROSTER = 8
 MAX_LEARNED = 4
 SERIES_DAYS = 7
@@ -24,14 +23,16 @@ def initials(name: str) -> str:
 
 
 def roster(now: float, visible: set) -> list[dict]:
+    devices = home.network_devices()
     rows = []
     for profile in people.all_profiles(light=True):
-        stats = profile.get("stats") or {}
-        seen = float(stats.get("last_seen") or 0)
-        home = profile["slug"] in visible or (seen and now - seen <= HOME_WINDOW)
-        rows.append({"slug": profile["slug"], "name": people.display_name(profile), "initials": initials(people.display_name(profile)),
-                     "home": bool(home), "seen": seen or None, "visible": profile["slug"] in visible})
-    rows.sort(key=lambda r: (not r["home"], -(r["seen"] or 0)))
+        name = people.display_name(profile)
+        where = home.status(profile, name, visible, now, devices)
+        if not where["home"]:
+            continue
+        rows.append({"slug": profile["slug"], "name": name, "initials": initials(name), "home": True, "via": where["via"],
+                     "seen": where["seen"], "visible": profile["slug"] in visible})
+    rows.sort(key=lambda r: (not r["visible"], -(r["seen"] or 0)))
     return rows[:MAX_ROSTER]
 
 
