@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Il PC Windows ritrova il server da solo anche dopo un cambio di indirizzo",
+    "en": "The Windows PC finds the server on its own even after an address change",
+    "fr": "Le PC Windows retrouve seul le serveur même après un changement d'adresse",
+    "es": "El PC con Windows encuentra el servidor por sí solo incluso tras un cambio de dirección"
+  },
+  "features": [
+    {
+      "it": "L'assistente Windows tiene un registro firmato degli indirizzi del server, lo aggiorna mentre è collegato e, se il server cambia indirizzo, prova quelli salvati con attese crescenti; ogni informazione falsa o manomessa viene scartata.",
+      "en": "The Windows assistant keeps a signed record of the server's addresses, updates it while connected and, if the server changes address, tries the saved ones with growing waits; any forged or tampered information is discarded.",
+      "fr": "L'assistant Windows conserve un registre signé des adresses du serveur, le met à jour en ligne et, si le serveur change d'adresse, essaie celles enregistrées avec des attentes croissantes ; toute information falsifiée ou altérée est écartée.",
+      "es": "El asistente de Windows guarda un registro firmado de las direcciones del servidor, lo actualiza mientras está conectado y, si el servidor cambia de dirección, prueba las guardadas con esperas crecientes; toda información falsa o alterada se descarta."
+    }
+  ]
+}

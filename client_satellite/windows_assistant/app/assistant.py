@@ -28,6 +28,7 @@ from connection.client import Client, ServerError, Unreachable
 from connection import declare
 from connection.devicekey import DeviceKey
 from connection.heartbeat import Heartbeat
+from connection.ledger_watch import LedgerWatch
 from connection.peer import PeerListener
 from connection.relocate import Relocator
 from connection.inbox import Inbox
@@ -80,6 +81,8 @@ class Assistant:
                                    lambda: self.ui.dispatch.post(self.unpair, True), self._security, self.sampler.timed)
         self.relocator = Relocator(self.client, cfg, lambda: self.heartbeat.online, lambda saved: store.save(saved))
         self.peer = PeerListener(cfg["peer"], self.relocator.offer) if cfg.get("peer") else None
+        self.ledger = (LedgerWatch(self.client, cfg["peer"], paths.DATA_DIR / "peer_ledger.chain", lambda: self.heartbeat.online,
+                                   self.relocator.offer) if cfg.get("peer") else None)
         self.compute = ComputeRelay(
             self.client, self.gate, self.policy, lambda: self.ollama.read()["available"], session_is_idle,
         )
@@ -221,6 +224,8 @@ class Assistant:
             self.heartbeat.start()
             if self.peer:
                 self.peer.start()
+            if self.ledger:
+                self.ledger.start()
             self.inbox.start()
             self.compute.start()
             self.doc_sync.start()
@@ -249,6 +254,8 @@ class Assistant:
         self.heartbeat.stop()
         if self.peer:
             self.peer.stop()
+        if self.ledger:
+            self.ledger.stop()
         self.inbox.stop()
         self.compute.stop()
         self.doc_sync.stop()

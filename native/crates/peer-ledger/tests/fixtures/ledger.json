@@ -1,0 +1,237 @@
+{
+  "candidates": [
+    "192.168.1.12:8443",
+    "nodo-12.local:8443"
+  ],
+  "heads": [
+    {
+      "author": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+      "hash": "a2df20121f898f6eccc8d87b36c16d983d32647bd23c7ba1560e35343a8f913e",
+      "index": 2
+    }
+  ],
+  "now": 1700000000000,
+  "steps": [
+    {
+      "block": {
+        "addrs": [
+          "192.168.1.10:8443",
+          "nodo-10.local:8443"
+        ],
+        "author": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+        "index": 0,
+        "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sig": "15536c090c676251da27643ef557af75fa133eff8653dbf9a6faa1177cffeece210f7c6eee80a5e583cc7e9308312f4ac053e8466997d54c0ad3c0ebcb883b0e",
+        "ts": 1700000000000
+      },
+      "expect": "new",
+      "hash": "c7a6f7e2a4aa8ceb4e185f3ff2844a010f664e34b02ce1c830b19a92162d9fe1",
+      "name": "first"
+    },
+    {
+      "block": {
+        "addrs": [
+          "192.168.1.10:8443",
+          "nodo-10.local:8443"
+        ],
+        "author": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+        "index": 0,
+        "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sig": "15536c090c676251da27643ef557af75fa133eff8653dbf9a6faa1177cffeece210f7c6eee80a5e583cc7e9308312f4ac053e8466997d54c0ad3c0ebcb883b0e",
+        "ts": 1700000000000
+      },
+      "expect": "known",
+      "hash": "c7a6f7e2a4aa8ceb4e185f3ff2844a010f664e34b02ce1c830b19a92162d9fe1",
+      "name": "repeat"
+    },
+    {
+      "block": {
+        "addrs": [
+          "192.168.1.12:8443",
+          "nodo-12.local:8443"
+        ],
+        "author": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+        "index": 2,
+        "prev": "6abb07923e1ebdd39078ab2465cc27676edaa8bc1b97ebcbb1cf73202f481a4c",
+        "sig": "9253970d36ffad0d389b673c8a6c8f350469c58f0b65db10b48cd1b889af22873efd6f7899a770398011970350ac1c5b102f97ea96f649ff302bf40d5053dd06",
+        "ts": 1700000002000
+      },
+      "expect": "ledger.error.gap",
+      "hash": "a2df20121f898f6eccc8d87b36c16d983d32647bd23c7ba1560e35343a8f913e",
+      "name": "gap"
+    },
+    {
+      "block": {
+        "addrs": [
+          "192.168.1.11:8443",
+          "nodo-11.local:8443"
+        ],
+        "author": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+        "index": 1,
+        "prev": "c7a6f7e2a4aa8ceb4e185f3ff2844a010f664e34b02ce1c830b19a92162d9fe1",
+        "sig": "1bc72c042c910d2e5dcaa68e3a63c28d3cf226a8ad3b2f5b745331e43a92c89f22f7be3bc622e979cf26b585b58523f5e1579121bd17bb8ecf61cbfbca993601",
+        "ts": 1700000001000
+      },
+      "expect": "new",
+      "hash": "6abb07923e1ebdd39078ab2465cc27676edaa8bc1b97ebcbb1cf73202f481a4c",
+      "name": "second"
+    },
+    {
+      "block": {
+        "addrs": [
+          "192.168.1.99:8443",
+          "nodo-99.local:8443"
+        ],
+        "author": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+        "index": 1,
+        "prev": "c7a6f7e2a4aa8ceb4e185f3ff2844a010f664e34b02ce1c830b19a92162d9fe1",
+        "sig": "e7e70a19c0150e1c4c16a5123d79b5c57e4ccf9c276dec33b305c4ad090e8cfd70a4b30e6757a0def6ad895ebda87cb37487f93c5e0c8f4861ff80ededa49907",
+        "ts": 1700000001000
+      },
+      "expect": "ledger.error.fork",
+      "hash": "3f8647ace4ab8754f6b5a2d08e567c77fc3c0ce190432d89ef80066071245fef",
+      "name": "fork"
+    },
+    {
+      "block": {
+        "addrs": [
+          "192.168.1.12:8443",
+          "nodo-12.local:8443"
+        ],
+        "author": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+        "index": 2,
+        "prev": "6abb07923e1ebdd39078ab2465cc27676edaa8bc1b97ebcbb1cf73202f481a4c",
+        "sig": "9253970d36ffad0d389b673c8a6c8f350469c58f0b65db10b48cd1b889af22873efd6f7899a770398011970350ac1c5b102f97ea96f649ff302bf40d5053dd06",
+        "ts": 1700000002000
+      },
+      "expect": "new",
+      "hash": "a2df20121f898f6eccc8d87b36c16d983d32647bd23c7ba1560e35343a8f913e",
+      "name": "third"
+    },
+    {
+      "block": {
+        "addrs": [
+          "192.168.1.77:8443",
+          "nodo-77.local:8443"
+        ],
+        "author": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+        "index": 2,
+        "prev": "6abb07923e1ebdd39078ab2465cc27676edaa8bc1b97ebcbb1cf73202f481a4c",
+        "sig": "9253970d36ffad0d389b673c8a6c8f350469c58f0b65db10b48cd1b889af22873efd6f7899a770398011970350ac1c5b102f97ea96f649ff302bf40d5053dd06",
+        "ts": 1700000002000
+      },
+      "expect": "ledger.error.signature",
+      "hash": "489b32321911fb87b24756e1521072c294c975a1549733e924359f57eaf82e68",
+      "name": "tampered"
+    },
+    {
+      "block": {
+        "addrs": [
+          "192.168.1.10:8443",
+          "nodo-10.local:8443"
+        ],
+        "author": "8139770ea87d175f56a35466c34c7ecccb8d8a91b4ee37a25df60f5b8fc9b394",
+        "index": 0,
+        "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sig": "667154ffa338e22a2678fc7caa317567a775a1ff9e0e96fb342af8ab28b394c9bfef97caeef1bef16f8b238c8e5d77502b4591904842fc5b2e69bf6fef1e9d0f",
+        "ts": 1700000000000
+      },
+      "expect": "ledger.error.untrusted",
+      "hash": "b918ed359f18d23cee603925f0ffb544f9168b045bbc1ae5bc6953f2f92651b5",
+      "name": "unknown_author"
+    },
+    {
+      "block": {
+        "addrs": [
+          "192.168.1.13:8443",
+          "nodo-13.local:8443"
+        ],
+        "author": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+        "index": 3,
+        "prev": "a2df20121f898f6eccc8d87b36c16d983d32647bd23c7ba1560e35343a8f913e",
+        "sig": "8ef31fa654c9fd2ef37634ab3438d94ca404e84f60e3dbcbad192e9260af6f7d41e44c9434cbe7bc685e0030eca208ab0aa6e37ce8566cf519a297f27141cb0a",
+        "ts": 1700000500000
+      },
+      "expect": "ledger.error.clock",
+      "hash": "fae858158088f3b9a034b71d3ac8a63567dc753d2c2bb6f7b475e52718dd1455",
+      "name": "future_clock"
+    },
+    {
+      "block": {
+        "addrs": [
+          "192.168.1.13:8443",
+          "nodo-13.local:8443"
+        ],
+        "author": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+        "index": 3,
+        "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sig": "ea8c4a83b0f28b637bdffd9ed5e2d32a5f64e2a43311a166d2c7d1a1704a0fb7b838f929db0d4ae514ad01b58ff27ed9c6c929fad3429e4b9d6295bf9e7a6e0f",
+        "ts": 1700000003000
+      },
+      "expect": "ledger.error.link",
+      "hash": "dd986a8c7e01b9a99f3c171a499071f124f98ca78297f943e5083f68a72dfa5a",
+      "name": "wrong_link"
+    },
+    {
+      "block": {
+        "addrs": [
+          "192.168.1.13:8443",
+          "nodo-13.local:8443"
+        ],
+        "author": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+        "index": 3,
+        "prev": "a2df20121f898f6eccc8d87b36c16d983d32647bd23c7ba1560e35343a8f913e",
+        "sig": "2c8a1a0fbe6ebe6d988c33bba8491e00fa23d123c2f4114445a9a0bfea87370f1ca9539a8b6077cc2d805f161ce5b8d71a2377b19b6212d2578a510ed4b5d606",
+        "ts": 1700000000000
+      },
+      "expect": "ledger.error.clock",
+      "hash": "815904e9ac44123dc126f1c3dc5a53ae37151b9106ae7d9092755806b5fc0598",
+      "name": "clock_backwards"
+    },
+    {
+      "block": {
+        "addrs": [
+          "0.0.0.0:7000"
+        ],
+        "author": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+        "index": 3,
+        "prev": "a2df20121f898f6eccc8d87b36c16d983d32647bd23c7ba1560e35343a8f913e",
+        "sig": "40bab213c74c6bbc86ce0fcd2ba61c44905539bdff051b7362ec03d74d8afca0ef1a39b0c266b203138ed0556ade151562596886eb933009f0f3468552770e03",
+        "ts": 1700000003000
+      },
+      "expect": "ledger.error.field",
+      "hash": "0c7c909d989b2a7c8b7eb982ec796d48f3a3bca62563934b1480542601bc87be",
+      "name": "wildcard_address"
+    }
+  ],
+  "trusted": [
+    "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c"
+  ],
+  "wires": [
+    {
+      "expect": "ok",
+      "name": "want",
+      "raw": "{\"t\":\"want\",\"id\":\"8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c\"}"
+    },
+    {
+      "expect": "ok",
+      "name": "have",
+      "raw": "{\"t\":\"have\",\"block\":{\"author\":\"8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c\",\"index\":2,\"prev\":\"6abb07923e1ebdd39078ab2465cc27676edaa8bc1b97ebcbb1cf73202f481a4c\",\"ts\":1700000002000,\"addrs\":[\"192.168.1.12:8443\",\"nodo-12.local:8443\"],\"sig\":\"9253970d36ffad0d389b673c8a6c8f350469c58f0b65db10b48cd1b889af22873efd6f7899a770398011970350ac1c5b102f97ea96f649ff302bf40d5053dd06\"}}"
+    },
+    {
+      "expect": "ok",
+      "name": "delta",
+      "raw": "{\"t\":\"delta\",\"blocks\":[{\"author\":\"8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c\",\"index\":0,\"prev\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"ts\":1700000000000,\"addrs\":[\"192.168.1.10:8443\",\"nodo-10.local:8443\"],\"sig\":\"15536c090c676251da27643ef557af75fa133eff8653dbf9a6faa1177cffeece210f7c6eee80a5e583cc7e9308312f4ac053e8466997d54c0ad3c0ebcb883b0e\"},{\"author\":\"8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c\",\"index\":1,\"prev\":\"c7a6f7e2a4aa8ceb4e185f3ff2844a010f664e34b02ce1c830b19a92162d9fe1\",\"ts\":1700000001000,\"addrs\":[\"192.168.1.11:8443\",\"nodo-11.local:8443\"],\"sig\":\"1bc72c042c910d2e5dcaa68e3a63c28d3cf226a8ad3b2f5b745331e43a92c89f22f7be3bc622e979cf26b585b58523f5e1579121bd17bb8ecf61cbfbca993601\"},{\"author\":\"8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c\",\"index\":2,\"prev\":\"6abb07923e1ebdd39078ab2465cc27676edaa8bc1b97ebcbb1cf73202f481a4c\",\"ts\":1700000002000,\"addrs\":[\"192.168.1.12:8443\",\"nodo-12.local:8443\"],\"sig\":\"9253970d36ffad0d389b673c8a6c8f350469c58f0b65db10b48cd1b889af22873efd6f7899a770398011970350ac1c5b102f97ea96f649ff302bf40d5053dd06\"}]}"
+    },
+    {
+      "expect": "ledger.error.field",
+      "name": "bad_field",
+      "raw": "{\"t\":\"want\",\"id\":\"zz\"}"
+    },
+    {
+      "expect": "ledger.error.field",
+      "name": "unknown_field",
+      "raw": "{\"t\":\"want\",\"id\":\"8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c\",\"x\":1}"
+    }
+  ]
+}

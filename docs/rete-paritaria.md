@@ -73,6 +73,14 @@ EN: the PyO3 `PeerLedger` binding exposes the ledger to Python; `nodes/peer_ledg
 
 Assunzioni / assumptions: l'iscrizione automatica della chiave `peer` di un nodo già abbinato si fida dell'abbinamento; i client Windows e APK useranno l'endpoint di sincronizzazione (4C-2 e 4C-3).
 
+## Fase 4C-2: client Windows / Windows client
+
+IT: `connection/ledger.py` è la porta Python della verifica del registro (stesse regole di `nuxiva-peer-ledger`: catena per autore, hash, firma Ed25519, fork, gap, link, clock, finestra di 64 blocchi, file privato riverificato per intero). Il client Windows si fida solo dell'id del server e non scrive blocchi. Il verdetto di ogni caso è confrontato con `native/crates/peer-ledger/tests/fixtures/ledger.json`, generato da Rust (`UPDATE_VECTORS=1 cargo test -p nuxiva-peer-ledger --test vectors`). `connection/ledger_watch.py` sincronizza ogni 60 s con `/api/nodes/peer/sync` mentre è collegato e, da scollegato, offre al `Relocator` gli indirizzi salvati con attesa esponenziale e jitter.
+
+EN: `connection/ledger.py` is the Python port of the ledger verification (same rules as `nuxiva-peer-ledger`). The Windows client trusts only the server id and never writes blocks. Every case verdict is compared with the Rust-generated fixture. `connection/ledger_watch.py` syncs every 60 s through `/api/nodes/peer/sync` while online and, when offline, offers the saved addresses to the `Relocator` with exponential backoff and jitter.
+
+Assunzioni / assumptions: i client non annunciano blocchi propri; la porta Kotlin è la 4C-3.
+
 ## Test di carico / load test
 
 `native/crates/peer-core/tests/load_100.rs` simula 100 nodi (1 server, 20 desktop, 79 telefoni con batteria diversa), tutti con messaggi firmati e verificati:
