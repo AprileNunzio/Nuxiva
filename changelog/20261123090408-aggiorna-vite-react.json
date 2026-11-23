@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Console web aggiornata a React 19 e al nuovo motore di compilazione",
+    "en": "Web console updated to React 19 and the new build engine",
+    "fr": "Console web mise à jour vers React 19 et le nouveau moteur de compilation",
+    "es": "Consola web actualizada a React 19 y al nuevo motor de compilación"
+  },
+  "features": [
+    {
+      "it": "La console web usa le versioni più recenti di React e dello strumento di compilazione, con interfaccia invariata.",
+      "en": "The web console uses the latest versions of React and the build tool, with an unchanged interface.",
+      "fr": "La console web utilise les dernières versions de React et de l'outil de compilation, avec une interface inchangée.",
+      "es": "La consola web usa las versiones más recientes de React y de la herramienta de compilación, con la interfaz sin cambios."
+    }
+  ]
+}
