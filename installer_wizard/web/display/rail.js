@@ -134,16 +134,15 @@
   }
 
   function renderHome(roster, familyNear) {
-    const rows = roster || [];
-    const home = rows.filter((r) => r.home).length;
-    refs.homeCount.textContent = T(home === 1 ? "rl_present_one" : "rl_present_n", { n: home });
+    const rows = (roster || []).filter((r) => r.home);
+    refs.homeCount.textContent = T(rows.length === 1 ? "rl_present_one" : "rl_present_n", { n: rows.length });
     const isFamilyNear = familyNear ?? (D.isFamilyNear ? D.isFamilyNear() : true);
     refs.home.hidden = rows.length === 0 || !isFamilyNear;
     refs.homeList.replaceChildren(...rows.map((r, i) => {
-      const row = el("div", `rl-person ${r.home ? "home" : "away"}`);
+      const row = el("div", "rl-person home");
       const av = el("span", `rl-av t${i % 4}`, r.initials);
       const who = el("div", "rl-who");
-      const sub = r.home ? T("rl_at_home") : r.seen ? `${T("rl_away")} · ${T("rl_seen", { when: ago(r.seen) })}` : T("rl_never");
+      const sub = r.via === "wifi" ? T("rl_via_wifi") : r.via === "recent" && r.seen ? T("rl_seen", { when: ago(r.seen) }) : T("rl_via_camera");
       who.append(el("b", "", r.name), el("small", "", sub));
       row.append(av, who, el("i", "rl-dot"));
       return row;

@@ -14,7 +14,7 @@ class PanelTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         root = Path(self.tmp.name)
-        for p in (mock.patch.object(people, "PEOPLE_DIR", root), mock.patch.object(private_store, "KEY_FILE", root / "people.key"),
+        for p in (mock.patch.object(panel.home, "network_devices", return_value=[]), mock.patch.object(people, "PEOPLE_DIR", root), mock.patch.object(private_store, "KEY_FILE", root / "people.key"),
                   mock.patch.object(learning.store, "event"), mock.patch.object(panel.store, "event"), mock.patch.object(panel.cloud, "ready", return_value=False)):
             p.start()
             self.addCleanup(p.stop)
@@ -37,7 +37,8 @@ class PanelTest(unittest.TestCase):
             data = self.get().json()
         rows = {r["slug"]: r for r in data["roster"]}
         self.assertTrue(rows["anna"]["home"])
-        self.assertFalse(rows["marco"]["home"])
+        self.assertEqual(rows["anna"]["via"], "camera")
+        self.assertNotIn("marco", rows)
         self.assertEqual(rows["anna"]["initials"], "AR")
         self.assertEqual(data["focus"]["slug"], "anna")
         self.assertTrue(data.get("family_near"))
