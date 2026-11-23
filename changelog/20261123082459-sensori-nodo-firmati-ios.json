@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": { "it": "Sensori dei telefoni protetti dalla firma del dispositivo e tipo di nodo iPhone/iPad", "en": "Phone sensors protected by device signatures and iPhone/iPad node type", "fr": "Capteurs des téléphones protégés par la signature de l'appareil et type de nœud iPhone/iPad", "es": "Sensores de los teléfonos protegidos por la firma del dispositivo y tipo de nodo iPhone/iPad" },
+  "features": [
+    { "it": "Il server riconosce i nodi iPhone e iPad abbinati, in preparazione dell'app iOS.", "en": "The server recognises paired iPhone and iPad nodes, ahead of the iOS app.", "fr": "Le serveur reconnaît les nœuds iPhone et iPad appairés, en préparation de l'app iOS.", "es": "El servidor reconoce los nodos iPhone e iPad emparejados, como preparación de la app iOS." },
+    { "it": "Fotocamera e microfono dei telefoni abbinati inviano immagini e voce solo con richieste firmate dal dispositivo e con il permesso del nodo.", "en": "Camera and microphone of paired phones send images and voice only through device-signed requests and with the node's permission.", "fr": "La caméra et le micro des téléphones appairés n'envoient images et voix qu'avec des requêtes signées par l'appareil et l'autorisation du nœud.", "es": "La cámara y el micrófono de los teléfonos emparejados envían imágenes y voz solo con solicitudes firmadas por el dispositivo y con el permiso del nodo." }
+  ],
+  "fixes": [
+    { "it": "L'app Android non usa più indirizzi e credenziali fissi per fotocamera e microfono e segnala gli errori di invio invece di ignorarli.", "en": "The Android app no longer uses fixed addresses and credentials for camera and microphone and reports upload errors instead of ignoring them.", "fr": "L'app Android n'utilise plus d'adresses ni d'identifiants fixes pour la caméra et le micro et signale les erreurs d'envoi au lieu de les ignorer.", "es": "La app Android ya no usa direcciones ni credenciales fijas para la cámara y el micrófono e informa de los errores de envío en lugar de ignorarlos." }
+  ]
+}

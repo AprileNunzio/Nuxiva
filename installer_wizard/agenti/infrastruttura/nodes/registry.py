@@ -19,7 +19,7 @@ OFFLINE_AFTER = 90
 MAX_NODES = 64
 UPDATE_HISTORY = 20
 TYPES = {"satellite": "Satellite audio", "desktop": "Assistente PC (Windows)", "display": "Display", "server": "Server Nuxiva", "esp32": "Microcontrollore",
-         "android": "Android", "sensor": "Sensore", "other": "Altro"}
+         "android": "Android", "ios": "iPhone/iPad", "sensor": "Sensore", "other": "Altro"}
 COMMANDS = {"identify": "Identificati", "adapt": "Auto-adatta all'hardware", "restart": "Riavvia l'agente", "update": "Aggiorna",
             "reboot": "Riavvia il dispositivo"}
 _ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{2,47}$")

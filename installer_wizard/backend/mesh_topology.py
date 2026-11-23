@@ -13,6 +13,7 @@ PAIRED_KIND = {
     "esp32": "micro",
     "sensor": "micro",
     "android": "mobile",
+    "ios": "mobile",
     "other": "satellite",
 }
 

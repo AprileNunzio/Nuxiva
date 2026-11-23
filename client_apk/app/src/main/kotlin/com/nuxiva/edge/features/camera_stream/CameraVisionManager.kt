@@ -6,15 +6,14 @@ import android.hardware.camera2.*
 import android.media.ImageReader
 import android.os.Handler
 import android.os.HandlerThread
-import android.util.Base64
-import kotlinx.coroutines.*
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
+import android.util.Log
+import com.nuxiva.edge.features.sensor_uplink.SensorUplink
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
-class CameraVisionManager(private val context: Context) {
+class CameraVisionManager(private val context: Context, private val uplink: SensorUplink) {
 
     private var cameraDevice: CameraDevice? = null
     private var captureSession: CameraCaptureSession? = null
@@ -22,14 +21,8 @@ class CameraVisionManager(private val context: Context) {
     private var backgroundThread: HandlerThread? = null
     private var backgroundHandler: Handler? = null
 
-    private val httpClient = OkHttpClient()
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private var isStreaming = false
-    private var targetServerUrl = "http://192.168.1.100:8443"
-
-    fun updateServerUrl(url: String) {
-        this.targetServerUrl = url
-    }
 
     fun startCameraCapture() {
         startBackgroundThread()
@@ -73,7 +66,10 @@ class CameraVisionManager(private val context: Context) {
                 }
             }, backgroundHandler)
             isStreaming = true
-        } catch (_: SecurityException) {
+        } catch (error: SecurityException) {
+            Log.w(TAG, "Camera permission missing: ${error.message}")
+        } catch (error: CameraAccessException) {
+            Log.w(TAG, "Camera unavailable: ${error.reason}")
         }
     }
 
@@ -92,38 +88,24 @@ class CameraVisionManager(private val context: Context) {
                         captureSession = session
                         try {
                             session.setRepeatingRequest(builder.build(), null, backgroundHandler)
-                        } catch (_: CameraAccessException) {
+                        } catch (error: CameraAccessException) {
+                            Log.w(TAG, "Camera capture refused: ${error.reason}")
                         }
                     }
 
                     override fun onConfigureFailed(session: CameraCaptureSession) {
+                        Log.w(TAG, "Camera session configuration failed")
                     }
                 },
                 backgroundHandler
             )
-        } catch (_: CameraAccessException) {
+        } catch (error: CameraAccessException) {
+            Log.w(TAG, "Camera session unavailable: ${error.reason}")
         }
     }
 
     private fun dispatchFrameToServer(jpegBytes: ByteArray) {
-        scope.launch {
-            val b64Frame = Base64.encodeToString(jpegBytes, Base64.NO_WRAP)
-            val json = JSONObject().apply {
-                put("device_id", "apk_edge_camera")
-                put("frame_base64", b64Frame)
-                put("timestamp", System.currentTimeMillis())
-            }
-            val body = json.toString().toRequestBody("application/json".toMediaType())
-            val req = Request.Builder()
-                .url("$targetServerUrl/api/v1/vision/feed")
-                .post(body)
-                .build()
-
-            try {
-                httpClient.newCall(req).execute().close()
-            } catch (_: Exception) {
-            }
-        }
+        scope.launch { uplink.frame(jpegBytes) }
     }
 
     fun stopCameraCapture() {
@@ -135,7 +117,8 @@ class CameraVisionManager(private val context: Context) {
             cameraDevice = null
             imageReader?.close()
             imageReader = null
-        } catch (_: Exception) {
+        } catch (error: IllegalStateException) {
+            Log.w(TAG, "Camera close failed: ${error.message}")
         }
         stopBackgroundThread()
     }
@@ -151,7 +134,13 @@ class CameraVisionManager(private val context: Context) {
             backgroundThread?.join()
             backgroundThread = null
             backgroundHandler = null
-        } catch (_: Exception) {
+        } catch (error: InterruptedException) {
+            Thread.currentThread().interrupt()
+            Log.w(TAG, "Camera thread stop interrupted")
         }
+    }
+
+    private companion object {
+        const val TAG = "NuxivaCamera"
     }
 }

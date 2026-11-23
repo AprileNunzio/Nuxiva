@@ -120,7 +120,7 @@ class RouteTest(unittest.TestCase):
         self.assertEqual(self.client.post("/api/nodes/enroll", json=[1]).status_code, 400)
 
     def test_satellites_keep_their_type_but_cannot_claim_to_be_a_server(self):
-        for kind, expected in (("satellite", "satellite"), ("display", "display"), ("server", "desktop"), ("<x>", "desktop")):
+        for kind, expected in (("satellite", "satellite"), ("display", "display"), ("ios", "ios"), ("server", "desktop"), ("<x>", "desktop")):
             token, _ = self.tokens.issue()
             node_id = f"nodo-{expected}-{len(kind)}"
             response = self.client.post("/api/nodes/enroll", json={"token": token, "id": node_id, "name": "Nodo", "type": kind})

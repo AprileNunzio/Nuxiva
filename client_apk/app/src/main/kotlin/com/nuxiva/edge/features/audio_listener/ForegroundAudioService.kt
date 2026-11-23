@@ -7,15 +7,18 @@ import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.nuxiva.edge.core.NuxivaApplication
-import kotlinx.coroutines.*
-import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
-import java.io.File
 import com.nuxiva.edge.R
+import com.nuxiva.edge.core.NuxivaApplication
+import com.nuxiva.edge.core.graph
+import com.nuxiva.edge.features.sensor_uplink.SensorUplink
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import java.io.File
 
 class ForegroundAudioService : Service(), WakeWordDetector.WakeWordCallback {
 
@@ -23,16 +26,15 @@ class ForegroundAudioService : Service(), WakeWordDetector.WakeWordCallback {
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
     private val wakeDetector = WakeWordDetector()
-    private val httpClient = OkHttpClient()
+    private var uplink: SensorUplink? = null
 
     private var audioRecord: AudioRecord? = null
     private var isRecording = false
 
-    private val sampleRate = 16000
+    private val sampleRate = SensorUplink.VOICE_RATE
     private val channelConfig = AudioFormat.CHANNEL_IN_MONO
     private val audioFormat = AudioFormat.ENCODING_PCM_16BIT
     private val WAKE_MODEL_FILE = "wakeword.nxwk"
-    private var serverUrl = "http://192.168.1.100:8443/api/v1/command"
 
     override fun onCreate() {
         super.onCreate()
@@ -40,11 +42,10 @@ class ForegroundAudioService : Service(), WakeWordDetector.WakeWordCallback {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        intent?.getStringExtra("SERVER_URL")?.let {
-            if (it.isNotEmpty()) {
-                serverUrl = "$it/api/v1/command"
-            }
-        }
+        val wanted = intent?.getStringExtra(EXTRA_NODE_ID).orEmpty()
+        val profiles = graph.profiles.profiles.value
+        val profile = profiles.firstOrNull { it.nodeId == wanted } ?: profiles.firstOrNull()
+        uplink = profile?.let(::SensorUplink)
 
         val modelFile = File(filesDir, WAKE_MODEL_FILE)
         val ready = modelFile.isFile && wakeDetector.loadModel(modelFile.readBytes()) == WakeWordDetector.State.Ready
@@ -64,7 +65,7 @@ class ForegroundAudioService : Service(), WakeWordDetector.WakeWordCallback {
             .build()
 
         startForeground(1001, notification)
-        if (!ready) {
+        if (!ready || uplink == null) {
             stopSelf()
             return START_NOT_STICKY
         }
@@ -98,31 +99,15 @@ class ForegroundAudioService : Service(), WakeWordDetector.WakeWordCallback {
                     }
                 }
             }
-        } catch (_: SecurityException) {
+        } catch (error: SecurityException) {
+            Log.w(TAG, "Microphone permission missing: ${error.message}")
             stopSelf()
         }
     }
 
     override fun onWakeWordDetected(confidence: Float, capturedPcm: ByteArray) {
-        serviceScope.launch {
-            val json = JSONObject().apply {
-                put("query", "")
-                put("wake_confidence", confidence.toDouble())
-                put("device_id", "apk_edge_tablet_phone")
-                put("voice_pcm_base64", android.util.Base64.encodeToString(capturedPcm, android.util.Base64.NO_WRAP))
-            }
-            val body = json.toString().toRequestBody("application/json".toMediaType())
-            val request = Request.Builder()
-                .url(serverUrl)
-                .addHeader("Authorization", "Bearer v1.local.apk_edge_token")
-                .post(body)
-                .build()
-
-            try {
-                httpClient.newCall(request).execute().close()
-            } catch (_: Exception) {
-            }
-        }
+        val target = uplink ?: return
+        serviceScope.launch { target.voice(capturedPcm) }
     }
 
     override fun onDestroy() {
@@ -132,10 +117,16 @@ class ForegroundAudioService : Service(), WakeWordDetector.WakeWordCallback {
         try {
             audioRecord?.stop()
             audioRecord?.release()
-        } catch (_: Exception) {
+        } catch (error: IllegalStateException) {
+            Log.w(TAG, "Microphone stop failed: ${error.message}")
         }
         serviceJob.cancel()
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    companion object {
+        const val EXTRA_NODE_ID = "NODE_ID"
+        private const val TAG = "NuxivaAudio"
+    }
 }
