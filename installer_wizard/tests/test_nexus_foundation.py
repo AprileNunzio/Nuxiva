@@ -77,7 +77,15 @@ class NexusApiTest(unittest.TestCase):
         for directive in ("default-src 'none'", "script-src 'self'", "style-src 'self'", "frame-ancestors 'none'",
                           "object-src 'none'", "require-trusted-types-for 'script'"):
             self.assertIn(directive, csp)
-        self.assertNotIn("unsafe", csp)
+        directives = {d.split()[0]: d.split()[1:] for d in csp.split("; ")}
+        self.assertEqual(directives["script-src"], ["'self'"])
+        self.assertNotIn("'unsafe-eval'", csp)
+        self.assertNotIn("script-src-elem", directives)
+        self.assertNotIn("script-src-attr", directives)
+        policies = next(d for d in csp.split("; ") if d.startswith("trusted-types ")).split()[1:]
+        self.assertIn("editorViewLayer", policies)
+        self.assertNotIn("*", policies)
+        self.assertNotIn("'allow-duplicates'", policies)
         self.assertEqual(r.headers["x-frame-options"], "DENY")
         self.assertEqual(r.headers["referrer-policy"], "no-referrer")
         self.assertTrue("/static/nexus/app.js?v=" in r.text or '<div id="root">' in r.text)

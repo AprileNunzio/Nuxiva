@@ -1,5 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import * as monaco from 'monaco-editor';
+import { installMonacoWorkers } from '../../../shared/monaco/workerEnvironment';
+
+installMonacoWorkers();
 
 interface MonacoEditorProps {
   value: string;

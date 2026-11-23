@@ -14,6 +14,7 @@ import {
   Server
 } from 'lucide-react';
 import * as monaco from 'monaco-editor';
+import { installMonacoWorkers } from '../../shared/monaco/workerEnvironment';
 import { Terminal as XTerm } from 'xterm';
 import 'xterm/css/xterm.css';
 import { AgentDescriptor, SystemModelConfig, KnowledgeNode } from '../../shared/types';
@@ -22,6 +23,8 @@ import { ProjectWidget } from './ProjectWidget';
 import { useI18n } from '../../shared/i18n/I18nContext';
 import { CognitiveEngineSelector } from '../cognitive_engine';
 import { DynamicWidgetDeck } from '../dynamic_widgets';
+
+installMonacoWorkers();
 
 interface ControlDeckViewProps {
   nodes: KnowledgeNode[];

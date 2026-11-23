@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Corretti tre bug segnalati: editor di Lavorazione 3D, Silenzia con più microfoni e riproduzione dal Media Player",
+    "en": "Three reported bugs fixed: 3D Machining editor, Mute with several microphones and Media Player playback",
+    "fr": "Trois bugs signalés corrigés : éditeur d'Usinage 3D, Muet avec plusieurs micros et lecture du Media Player",
+    "es": "Corregidos tres errores reportados: editor de Mecanizado 3D, Silenciar con varios micrófonos y reproducción del Media Player"
+  },
+  "fixes": [
+    {
+      "it": "L'editor di Lavorazione 3D in AI Studio si apre di nuovo: la protezione della pagina ora consente solo i componenti dell'editor di cui ha bisogno.",
+      "en": "The 3D Machining editor in AI Studio opens again: the page protection now allows only the editor components it needs.",
+      "fr": "L'éditeur d'Usinage 3D d'AI Studio s'ouvre à nouveau : la protection de la page n'autorise que les composants de l'éditeur nécessaires.",
+      "es": "El editor de Mecanizado 3D de AI Studio vuelve a abrirse: la protección de la página ahora permite solo los componentes del editor que necesita."
+    },
+    {
+      "it": "Il tasto Silenzia del pannello Microfono silenzia tutti i microfoni collegati, anche quando Nuxiva ascolta con più microfoni insieme.",
+      "en": "The Mute button in the Microphone panel mutes every connected microphone, even when Nuxiva listens with several microphones at once.",
+      "fr": "Le bouton Muet du panneau Microphone coupe tous les micros connectés, même quand Nuxiva écoute avec plusieurs micros à la fois.",
+      "es": "El botón Silenciar del panel Micrófono silencia todos los micrófonos conectados, incluso cuando Nuxiva escucha con varios micrófonos a la vez."
+    },
+    {
+      "it": "I brani si riproducono di nuovo dal Media Player quando il pannello è aperto tramite il gateway.",
+      "en": "Tracks play again from the Media Player when the panel is opened through the gateway.",
+      "fr": "Les morceaux se lisent à nouveau depuis le Media Player quand le panneau est ouvert via la passerelle.",
+      "es": "Las canciones vuelven a reproducirse desde el Media Player cuando el panel se abre a través de la pasarela."
+    }
+  ]
+}

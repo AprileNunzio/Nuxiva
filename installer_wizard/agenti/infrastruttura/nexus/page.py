@@ -8,10 +8,26 @@ from pages import ASSET_VERSION
 
 INDEX = WEB_DIR / "nexus" / "index.html"
 _ASSET = re.compile(r'((?:src|href)="/static/nexus/[^"?]+)"')
+TRUSTED_TYPE_POLICIES = (
+    "editorViewLayer",
+    "stickyScrollViewLayer",
+    "editorGhostText",
+    "domLineBreaksComputer",
+    "diffEditorWidget",
+    "diffReview",
+    "richScreenReaderContent",
+    "standaloneColorizer",
+    "tokenizeToString",
+    "defaultWorkerFactory",
+    "nuxivaMonacoWorker",
+    "dompurify",
+)
 CSP = "; ".join((
     "default-src 'none'",
     "script-src 'self'",
     "style-src 'self'",
+    "style-src-elem 'self' 'unsafe-inline'",
+    "style-src-attr 'unsafe-inline'",
     "img-src 'self' data: blob: https: http:",
     "font-src 'self'",
     "connect-src 'self' https: http: ws: wss:",
@@ -23,7 +39,7 @@ CSP = "; ".join((
     "frame-ancestors 'none'",
     "object-src 'none'",
     "require-trusted-types-for 'script'",
-    "trusted-types 'none'",
+    "trusted-types " + " ".join(TRUSTED_TYPE_POLICIES),
 ))
 
 

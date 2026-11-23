@@ -128,7 +128,7 @@ export async function triggerLibraryScan(): Promise<void> {
 }
 
 export function getStreamUrl(trackId: number): string {
-  return `/api/music/stream/${trackId}`;
+  return adminPath(`/api/music/stream/${trackId}`);
 }
 
 export function getCoverUrl(albumKey: string): string {

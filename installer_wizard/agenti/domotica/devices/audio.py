@@ -8,6 +8,7 @@ log = logging.getLogger("nuxiva.audio")
 
 KIOSK_USER = "nuxiva-kiosk"
 WATCH_SECONDS = 3
+SOURCE_NAME = re.compile(r"^[A-Za-z0-9_.:@+\-]{1,200}$")
 
 
 async def _pactl(*args: str) -> tuple[int, str]:
@@ -227,8 +228,23 @@ async def update(changes: dict) -> dict:
             vol = max(0, min(150, int(c["volume"])))
             await _pactl(f"set-{target}-volume", f"@DEFAULT_{target.upper()}@", f"{vol}%")
         if "muted" in c:
-            await _pactl(f"set-{target}-mute", f"@DEFAULT_{target.upper()}@", "1" if c["muted"] else "0")
+            flag = "1" if c["muted"] else "0"
+            await _pactl(f"set-{target}-mute", f"@DEFAULT_{target.upper()}@", flag)
+            if target == "source":
+                await _mute_capture_sources(flag)
     return await status()
+
+
+async def capture_sources() -> list[str]:
+    return [d["name"] for d in await _list("sources")
+            if not (d["name"].endswith(".monitor") or d.get("monitor_of")) and SOURCE_NAME.fullmatch(d["name"])]
+
+
+async def _mute_capture_sources(flag: str) -> None:
+    results = await asyncio.gather(*(_pactl("set-source-mute", name, flag) for name in await capture_sources()))
+    for code, text in results:
+        if code:
+            log.warning("Silenziamento microfono non riuscito: %s", text[:200])
 
 
 class DeviceWatcher:
