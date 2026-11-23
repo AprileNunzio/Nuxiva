@@ -1,3 +1,4 @@
+pub mod bench;
 mod index;
 mod scan;
 mod search;

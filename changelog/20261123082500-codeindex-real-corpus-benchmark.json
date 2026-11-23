@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Indice del codice: benchmark riproducibile su un milione di file reali",
+    "en": "Code index: reproducible benchmark on one million real files",
+    "fr": "Index du code : benchmark reproductible sur un million de fichiers réels",
+    "es": "Índice de código: prueba de rendimiento reproducible con un millón de archivos reales"
+  },
+  "features": [
+    {
+      "it": "Nuxiva misura ricerca, memoria e aggiornamenti dell'indice del codice su un milione di file creati su disco, con configurazione e risultati pubblicati.",
+      "en": "Nuxiva measures code index search, memory and updates on one million files created on disk, with the configuration and results published.",
+      "fr": "Nuxiva mesure la recherche, la mémoire et les mises à jour de l'index du code sur un million de fichiers créés sur disque, avec configuration et résultats publiés.",
+      "es": "Nuxiva mide la búsqueda, la memoria y las actualizaciones del índice de código con un millón de archivos creados en disco, con configuración y resultados publicados."
+    }
+  ]
+}

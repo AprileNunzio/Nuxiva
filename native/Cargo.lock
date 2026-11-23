@@ -58,6 +58,7 @@ version = "5.8.19"
 dependencies = [
  "getrandom 0.3.4",
  "serde",
+ "serde_json",
  "thiserror 2.0.21",
 ]
 
