@@ -1,13 +1,15 @@
 import base64
 import hashlib
 import json
+import threading
 import unittest
 from unittest import mock
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
-from updates import manifest, updater
+from updates import manifest, releases, updater
+from updates.errors import UpdateFailure
 
 INSTALLER = b"MZ" + b"\x00" * 1000
 URL = "https://github.com/AprileNunzio/NUXIVA/releases/download/assistant-v1.2.0/Nuxiva_Setup.exe"
@@ -69,41 +71,54 @@ class ManifestTest(unittest.TestCase):
         self.assertEqual(len(base64.b64decode(manifest.PUBLIC_KEY)), 32)
 
 
+def asset(name):
+    return {"name": name, "browser_download_url": f"https://github.com/AprileNunzio/NUXIVA/releases/download/x/{name}"}
+
+
+SIGNED = [asset("manifest.json"), asset("manifest.sig")]
+
+
 class LatestTest(unittest.TestCase):
+    def pick(self, entries, current="0.1"):
+        with mock.patch.object(releases.fetch, "get", return_value=json.dumps(entries).encode()):
+            return releases.latest(current, threading.Event())
+
     def test_the_highest_complete_assistant_release_is_chosen(self):
-        def asset(name):
-            return {"name": name, "browser_download_url": f"https://x/{name}"}
-
-        releases = [
-            {"tag_name": "assistant-v1.2.0", "assets": [asset("manifest.json"), asset("manifest.sig")]},
-            {"tag_name": "assistant-v1.10.0", "assets": [asset("manifest.json"), asset("manifest.sig")]},
+        found = self.pick([
+            {"tag_name": "assistant-v1.2.0", "assets": SIGNED},
+            {"tag_name": "assistant-v1.10.0", "assets": SIGNED},
             {"tag_name": "assistant-v2.0.0", "assets": [asset("manifest.json")]},
-            {"tag_name": "assistant-v3.0.0", "draft": True, "assets": [asset("manifest.json"), asset("manifest.sig")]},
-            {"tag_name": "assistant-v5.0.0", "prerelease": True, "assets": [asset("manifest.json"), asset("manifest.sig")]},
-            {"tag_name": "other-v4.0.0", "assets": [asset("manifest.json"), asset("manifest.sig")]},
-        ]
-        with mock.patch.object(updater, "_get", return_value=json.dumps(releases).encode()):
-            version, assets = updater.latest()
-        self.assertEqual(version, "1.10.0")
-        self.assertIn("manifest.sig", assets)
+            {"tag_name": "assistant-v3.0.0", "draft": True, "assets": SIGNED},
+            {"tag_name": "assistant-v5.0.0", "prerelease": True, "assets": SIGNED},
+            {"tag_name": "other-v4.0.0", "assets": SIGNED},
+        ])
+        self.assertEqual(found.version, "1.10.0")
+        self.assertIn("manifest.sig", found.assets)
 
-
-class UnifiedReleaseTest(unittest.TestCase):
     def test_unified_tag_wins_over_legacy_and_is_accepted_in_the_manifest(self):
-        def asset(name):
-            return {"name": name, "browser_download_url": f"https://x/{name}"}
-
-        releases = [
-            {"tag_name": "assistant-v5.8.3", "assets": [asset("manifest.json"), asset("manifest.sig")]},
-            {"tag_name": "v5.8.4", "assets": [asset("manifest.json"), asset("manifest.sig")]},
-        ]
-        with mock.patch.object(updater, "_get", return_value=json.dumps(releases).encode()):
-            version, _assets = updater.latest()
-        self.assertEqual(version, "5.8.4")
+        found = self.pick([{"tag_name": "assistant-v5.8.3", "assets": SIGNED}, {"tag_name": "v5.8.4", "assets": SIGNED}])
+        self.assertEqual(found.version, "5.8.4")
         key, public = keypair()
         url = "https://github.com/AprileNunzio/NUXIVA/releases/download/v5.8.4/Nuxiva_Setup.exe"
         data, signature = signed(key, url=url, version="5.8.4")
         self.assertEqual(manifest.verify(data, signature, public).version, "5.8.4")
+
+    def test_unsigned_newer_release_is_reported_not_ignored(self):
+        with self.assertRaises(UpdateFailure) as caught:
+            self.pick([{"tag_name": "v5.8.17", "assets": [asset("manifest.json")]}], current="5.8.15")
+        self.assertEqual((caught.exception.code, caught.exception.detail), ("release_unsigned", "v5.8.17"))
+
+    def test_nothing_newer_means_no_update(self):
+        self.assertIsNone(self.pick([{"tag_name": "v5.8.15", "assets": SIGNED}], current="5.8.15"))
+
+    def test_assets_outside_github_are_dropped(self):
+        evil = [{"name": "manifest.json", "browser_download_url": "https://evil.example/manifest.json"}, asset("manifest.sig")]
+        self.assertIsNone(self.pick([{"tag_name": "v9.0.0", "assets": evil}]))
+
+    def test_release_list_is_requested_as_json(self):
+        with mock.patch.object(releases.fetch, "get", return_value=b"[]") as get:
+            releases.latest("1.0", threading.Event())
+        self.assertEqual(get.call_args.kwargs["accept"], "application/vnd.github+json")
 
 
 class StateTest(unittest.TestCase):
@@ -140,24 +155,22 @@ class StateTest(unittest.TestCase):
 
     def test_rejected_manifest_is_reported_as_failure(self):
         worker = self.build()
-        with mock.patch.object(updater, "latest", side_effect=manifest.UpdateRejected("x")):
-            try:
+        with mock.patch.object(updater.releases, "latest", side_effect=manifest.UpdateRejected("x")):
+            with self.assertRaises(UpdateFailure) as caught:
                 worker.cycle()
-            except manifest.UpdateRejected:
-                worker.fail("invalid_signature")
+        worker.fail(caught.exception)
         report = worker.report()
         self.assertEqual((report["state"], report["last_error"]["code"]), ("failed", "invalid_signature"))
 
     def test_up_to_date_cycle_clears_error(self):
         worker = self.build()
-        worker.fail("hash_mismatch")
-        with mock.patch.object(updater, "latest", return_value=None):
+        worker.fail(UpdateFailure("hash_mismatch"))
+        with mock.patch.object(updater.releases, "latest", return_value=None):
             worker.cycle()
         report = worker.report()
         self.assertEqual(report["state"], "idle")
         self.assertNotIn("last_error", report)
         self.assertGreater(report["last_check"], 0)
-
 
 if __name__ == "__main__":
     unittest.main()

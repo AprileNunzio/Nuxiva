@@ -238,6 +238,11 @@
     "fleet_error_invalid_signature": "invalid signature",
     "fleet_error_signature_invalid": "invalid signature",
     "fleet_error_install_blocked": "installation blocked by the device",
-    "fleet_error_storage_full": "not enough storage"
+    "fleet_error_storage_full": "not enough storage",
+    "fleet_error_network_unreachable": "update server unreachable",
+    "fleet_error_server_rejected": "request rejected by the update server",
+    "fleet_error_release_unsigned": "the new version is not signed, the node will not install it",
+    "fleet_error_storage_failed": "cannot save the update file",
+    "fleet_error_with_detail": "{reason} ({detail})"
   }
 }

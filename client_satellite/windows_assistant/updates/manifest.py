@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
+from updates.errors import UpdateFailure
+
 PUBLIC_KEY = "DN6SKGGnjtJbKYc7I4CajVCrV8X1hLrXYDR0U9x5qOU="
 REPOSITORY = "AprileNunzio/NUXIVA"
 DOWNLOAD_RE = re.compile(rf"https://github\.com/{re.escape(REPOSITORY)}/releases/download/(?:assistant-)?v[0-9.]+/[A-Za-z0-9_.-]+\.exe")
@@ -16,8 +18,13 @@ VERSION_RE = re.compile(r"\d+(?:\.\d+){1,3}")
 MAX_SIZE = 400 * 1024 * 1024
 
 
-class UpdateRejected(Exception):
-    pass
+class UpdateRejected(UpdateFailure):
+    def __init__(self, message: str, code: str = "invalid_signature") -> None:
+        super().__init__(code, message)
+        self.message = message
+
+    def __str__(self) -> str:
+        return self.message
 
 
 @dataclass(frozen=True)
@@ -62,8 +69,12 @@ def verify(manifest: bytes, signature: bytes, public_key: str = PUBLIC_KEY) -> R
     return Release(str(version), url, digest, size)
 
 
+def check_digest(size: int, digest: str, release: Release) -> None:
+    if size != release.size:
+        raise UpdateRejected("dimensione del file scaricato diversa da quella firmata", "hash_mismatch")
+    if not hmac.compare_digest(digest, release.sha256):
+        raise UpdateRejected("il file scaricato non corrisponde all'impronta firmata", "hash_mismatch")
+
+
 def check_file(data: bytes, release: Release) -> None:
-    if len(data) != release.size:
-        raise UpdateRejected("dimensione del file scaricato diversa da quella firmata")
-    if not hmac.compare_digest(hashlib.sha256(data).hexdigest(), release.sha256):
-        raise UpdateRejected("il file scaricato non corrisponde all'impronta firmata")
+    check_digest(len(data), hashlib.sha256(data).hexdigest(), release)

@@ -114,5 +114,17 @@
   "access.state.deny": "{name}: BLOCKED by Windows (Settings → Privacy)",
   "access.state.unknown": "{name}: no Windows block detected",
   "selfcheck.server_ok": "Server {server} answers and the certificate is correct.",
-  "selfcheck.permissions": "Windows permissions:"
+  "selfcheck.permissions": "Windows permissions:",
+  "updates.installing": "⬆ Update {version} verified: installing and restarting NUXIVA…",
+  "updates.rejected": "🛑 Update rejected for security: {reason} ({detail}).",
+  "updates.failed": "NUXIVA update failed: {reason} ({detail}). I will retry on my own.",
+  "updates.error.network_unreachable": "update server unreachable",
+  "updates.error.server_rejected": "the update server rejected the request",
+  "updates.error.release_unsigned": "the new version is not signed",
+  "updates.error.download_failed": "download failed",
+  "updates.error.invalid_signature": "invalid signature",
+  "updates.error.hash_mismatch": "file fingerprint mismatch",
+  "updates.error.storage_full": "not enough disk space",
+  "updates.error.storage_failed": "cannot save the update file",
+  "updates.error.install_blocked": "installer launch blocked"
 }

@@ -3,6 +3,7 @@ use serde_json::{Map, Value, json};
 
 pub const MAX_VERSION: usize = 40;
 pub const MAX_CODE: usize = 48;
+pub const MAX_DETAIL: usize = 80;
 pub const MAX_NODES: usize = 512;
 pub const MAX_HISTORY: usize = 20;
 const FUTURE_SKEW: f64 = 86_400.0;
@@ -21,6 +22,8 @@ const CHANNELS: [&str; 5] = ["debian", "android", "windows", "esp32", "other"];
 pub struct Failure {
     pub code: String,
     pub at: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub detail: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -52,6 +55,10 @@ fn code(value: Option<&Value>) -> Option<String> {
     token(value?, MAX_CODE, &['.', '-', '_']).map(|c| c.to_ascii_lowercase())
 }
 
+fn detail(value: Option<&Value>) -> Option<String> {
+    token(value?, MAX_DETAIL, &['.', '-', '_', ' ', ':', '/'])
+}
+
 fn stamp(value: Option<&Value>, now: f64) -> Option<f64> {
     let number = value?.as_f64()?;
     (number.is_finite() && number > 0.0 && number <= now + FUTURE_SKEW).then_some(number.floor())
@@ -76,6 +83,7 @@ pub fn sanitize(raw: &Value, now: f64) -> Option<NodeUpdate> {
             Some(Failure {
                 code: code(error.get("code"))?,
                 at: stamp(error.get("at"), now),
+                detail: detail(error.get("detail")),
             })
         });
     Some(NodeUpdate {
@@ -292,6 +300,21 @@ mod tests {
         .unwrap();
         assert_eq!(report.last_error.unwrap().code, "hash_mismatch");
         assert_eq!(report.version.as_deref(), Some("5.8.3"));
+    }
+
+    #[test]
+    fn keeps_only_safe_error_detail() {
+        let detail = |raw: Value| {
+            sanitize(&json!({"state": "failed", "last_error": {"code": "server_rejected", "detail": raw}}), NOW)
+                .unwrap()
+                .last_error
+                .unwrap()
+                .detail
+        };
+        assert_eq!(detail(json!("HTTP 415")).as_deref(), Some("HTTP 415"));
+        assert!(detail(json!("<script>alert(1)</script>")).is_none());
+        assert!(detail(json!("x".repeat(MAX_DETAIL + 1))).is_none());
+        assert!(detail(json!(42)).is_none());
     }
 
     #[test]

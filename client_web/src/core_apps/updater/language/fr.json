@@ -238,6 +238,11 @@
     "fleet_error_invalid_signature": "signature invalide",
     "fleet_error_signature_invalid": "signature invalide",
     "fleet_error_install_blocked": "installation bloquée par l'appareil",
-    "fleet_error_storage_full": "espace insuffisant"
+    "fleet_error_storage_full": "espace insuffisant",
+    "fleet_error_network_unreachable": "serveur de mises à jour injoignable",
+    "fleet_error_server_rejected": "requête refusée par le serveur de mises à jour",
+    "fleet_error_release_unsigned": "la nouvelle version n'est pas signée, le nœud ne l'installe pas",
+    "fleet_error_storage_failed": "impossible d'enregistrer le fichier de mise à jour",
+    "fleet_error_with_detail": "{reason} ({detail})"
   }
 }

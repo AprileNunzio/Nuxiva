@@ -114,5 +114,17 @@
   "access.state.deny": "{name}: BLOQUEADO por Windows (Configuración → Privacidad)",
   "access.state.unknown": "{name}: ningún bloqueo de Windows detectado",
   "selfcheck.server_ok": "El servidor {server} responde y el certificado es correcto.",
-  "selfcheck.permissions": "Permisos de Windows:"
+  "selfcheck.permissions": "Permisos de Windows:",
+  "updates.installing": "⬆ Actualización {version} verificada: instalando y reiniciando NUXIVA…",
+  "updates.rejected": "🛑 Actualización rechazada por seguridad: {reason} ({detail}).",
+  "updates.failed": "No se pudo actualizar NUXIVA: {reason} ({detail}). Lo reintentaré solo.",
+  "updates.error.network_unreachable": "servidor de actualizaciones inaccesible",
+  "updates.error.server_rejected": "el servidor de actualizaciones rechazó la solicitud",
+  "updates.error.release_unsigned": "la nueva versión no está firmada",
+  "updates.error.download_failed": "descarga fallida",
+  "updates.error.invalid_signature": "firma no válida",
+  "updates.error.hash_mismatch": "huella del archivo no coincide",
+  "updates.error.storage_full": "espacio en disco insuficiente",
+  "updates.error.storage_failed": "no se puede guardar el archivo de actualización",
+  "updates.error.install_blocked": "inicio de la instalación bloqueado"
 }

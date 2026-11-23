@@ -242,6 +242,7 @@ export type FleetState = 'idle' | 'checking' | 'downloading' | 'installing' | 'a
 export interface FleetFailure {
   readonly code: string;
   readonly at: number | null;
+  readonly detail?: string | null;
 }
 
 export interface FleetNodeUpdate {

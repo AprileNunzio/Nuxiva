@@ -28,6 +28,7 @@ const NODE_TONE: Readonly<Record<FleetNodeStatus, string>> = {
 const KNOWN_CODES = new Set([
   'hash_mismatch', 'selftest_failed', 'download_failed', 'boot_failed', 'integrity_mismatch',
   'invalid_signature', 'signature_invalid', 'install_blocked', 'storage_full',
+  'network_unreachable', 'server_rejected', 'release_unsigned', 'storage_failed',
 ]);
 
 function SummaryIcon({ summary }: { readonly summary: FleetSummary }) {
@@ -38,9 +39,10 @@ function SummaryIcon({ summary }: { readonly summary: FleetSummary }) {
   return <CheckCircle2 className={className} aria-hidden="true" />;
 }
 
-function describeError(code: string | null | undefined, t: Translate): string | null {
+function describeError(code: string | null | undefined, t: Translate, detail?: string | null): string | null {
   if (!code) return null;
-  return KNOWN_CODES.has(code) ? t(`fleet_error_${code}`) : code;
+  const reason = KNOWN_CODES.has(code) ? t(`fleet_error_${code}`) : code;
+  return detail ? t('fleet_error_with_detail', { reason, detail }) : reason;
 }
 
 function Fact({ label, value }: { readonly label: string; readonly value: string }) {
@@ -70,7 +72,7 @@ function HistoryList({ entries, locale, t }: { readonly entries: readonly FleetH
 
 function NodeRow({ node, locale, t }: { readonly node: FleetNode; readonly locale: string; readonly t: Translate }) {
   const update = node.update;
-  const error = describeError(update?.last_error?.code, t);
+  const error = describeError(update?.last_error?.code, t, update?.last_error?.detail);
   return (
     <li className="py-3">
       <div className="flex flex-wrap items-center justify-between gap-2">

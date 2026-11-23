@@ -10,6 +10,7 @@ from . import native
 
 MAX_VERSION = 40
 MAX_CODE = 48
+MAX_DETAIL = 80
 MAX_NODES = 512
 MAX_HISTORY = 20
 FUTURE_SKEW = 86400.0
@@ -18,6 +19,7 @@ CHANNELS = ("debian", "android", "windows", "esp32", "other")
 ACTIVE = ("checking", "downloading", "installing")
 _VERSION = re.compile(r"^[A-Za-z0-9._+\-]{1,%d}$" % MAX_VERSION)
 _CODE = re.compile(r"^[A-Za-z0-9._\-]{1,%d}$" % MAX_CODE)
+_DETAIL = re.compile(r"^[A-Za-z0-9._\- :/]{1,%d}$" % MAX_DETAIL)
 _ID = re.compile(r"^[A-Za-z0-9_\-]{1,48}$")
 
 
@@ -73,6 +75,9 @@ def _py_sanitize(raw: Any, now: float) -> Optional[Dict[str, Any]]:
         error_code = _code(error.get("code"))
         if error_code:
             failure = {"code": error_code, "at": _stamp(error.get("at"), now)}
+            detail = _token(error.get("detail"), _DETAIL)
+            if detail:
+                failure["detail"] = detail
     return {"state": state, "channel": channel if channel in CHANNELS else "other",
             "version": _token(raw.get("version"), _VERSION), "target": _token(raw.get("target"), _VERSION),
             "last_check": _stamp(raw.get("last_check"), now), "last_success": _stamp(raw.get("last_success"), now),

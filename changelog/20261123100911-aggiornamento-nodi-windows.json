@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Aggiornamento automatico affidabile dei PC Windows abbinati",
+    "en": "Reliable automatic updates for paired Windows PCs",
+    "fr": "Mises à jour automatiques fiables des PC Windows appairés",
+    "es": "Actualizaciones automáticas fiables de los PC Windows emparejados"
+  },
+  "features": [
+    {
+      "it": "Il PC ritenta da solo con attese crescenti quando la rete o il server non rispondono, invece di aspettare sei ore.",
+      "en": "The PC retries on its own with growing pauses when the network or server does not answer, instead of waiting six hours.",
+      "fr": "Le PC réessaie tout seul avec des pauses croissantes quand le réseau ou le serveur ne répond pas, au lieu d'attendre six heures.",
+      "es": "El PC reintenta solo con pausas crecientes cuando la red o el servidor no responden, en lugar de esperar seis horas."
+    },
+    {
+      "it": "Nel pannello Nodi l'errore di aggiornamento indica la causa precisa, per esempio server non raggiungibile, richiesta rifiutata o versione non firmata, con il dettaglio tecnico.",
+      "en": "The Nodes panel shows the exact update error cause, such as unreachable server, rejected request or unsigned version, with the technical detail.",
+      "fr": "Le panneau Nœuds indique la cause exacte de l'erreur de mise à jour, par exemple serveur injoignable, requête refusée ou version non signée, avec le détail technique.",
+      "es": "El panel Nodos indica la causa exacta del error de actualización, por ejemplo servidor inaccesible, solicitud rechazada o versión sin firmar, con el detalle técnico."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "I PC Windows non riuscivano mai a scaricare gli aggiornamenti perché la richiesta delle versioni veniva rifiutata da GitHub: ora l'elenco viene letto correttamente.",
+      "en": "Windows PCs could never download updates because GitHub rejected the version request: the list is now read correctly.",
+      "fr": "Les PC Windows ne pouvaient jamais télécharger les mises à jour car GitHub refusait la demande des versions : la liste est maintenant lue correctement.",
+      "es": "Los PC Windows nunca podían descargar las actualizaciones porque GitHub rechazaba la solicitud de versiones: ahora la lista se lee correctamente."
+    },
+    {
+      "it": "L'installer viene scaricato su disco a blocchi, verificato due volte con firma e impronta SHA-256 e solo da indirizzi GitHub autorizzati, poi NUXIVA si riavvia da solo.",
+      "en": "The installer is streamed to disk, verified twice with signature and SHA-256 fingerprint and only from authorised GitHub addresses, then NUXIVA restarts on its own.",
+      "fr": "L'installateur est téléchargé par blocs, vérifié deux fois par signature et empreinte SHA-256 et uniquement depuis des adresses GitHub autorisées, puis NUXIVA redémarre seul.",
+      "es": "El instalador se descarga por bloques, se verifica dos veces con firma y huella SHA-256 y solo desde direcciones de GitHub autorizadas, y luego NUXIVA se reinicia solo."
+    }
+  ]
+}

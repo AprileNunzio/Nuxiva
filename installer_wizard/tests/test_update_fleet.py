@@ -24,6 +24,9 @@ REPORTS = [
     {"state": "idle", "last_check": True},
     "idle",
     None,
+    {"state": "failed", "channel": "windows", "last_error": {"code": "server_rejected", "at": NOW - 3, "detail": "HTTP 415"}},
+    {"state": "failed", "channel": "windows", "last_error": {"code": "download_failed", "detail": "<img src=x>"}},
+    {"state": "failed", "channel": "windows", "last_error": {"code": "download_failed", "detail": "x" * 81}},
 ]
 
 SCENARIOS = [
@@ -60,6 +63,11 @@ class FleetSanitizeTest(unittest.TestCase):
         self.assertEqual((loose["channel"], loose["version"], loose["last_check"]), ("other", None, None))
         self.assertIsNone(fleet._py_sanitize(REPORTS[5], NOW)["last_error"])
         self.assertIsNone(fleet._py_sanitize(REPORTS[6], NOW)["last_check"])
+
+    def test_error_detail_is_kept_only_when_safe(self):
+        self.assertEqual(fleet._py_sanitize(REPORTS[9], NOW)["last_error"]["detail"], "HTTP 415")
+        self.assertNotIn("detail", fleet._py_sanitize(REPORTS[10], NOW)["last_error"])
+        self.assertNotIn("detail", fleet._py_sanitize(REPORTS[11], NOW)["last_error"])
 
     def test_version_with_newline_is_trimmed(self):
         self.assertEqual(fleet._py_sanitize(REPORTS[4], NOW)["version"], "5.8.3")

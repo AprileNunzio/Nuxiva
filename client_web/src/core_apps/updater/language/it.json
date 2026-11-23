@@ -238,6 +238,11 @@
     "fleet_error_invalid_signature": "firma non valida",
     "fleet_error_signature_invalid": "firma non valida",
     "fleet_error_install_blocked": "installazione bloccata dal dispositivo",
-    "fleet_error_storage_full": "spazio insufficiente"
+    "fleet_error_storage_full": "spazio insufficiente",
+    "fleet_error_network_unreachable": "server degli aggiornamenti non raggiungibile",
+    "fleet_error_server_rejected": "richiesta rifiutata dal server degli aggiornamenti",
+    "fleet_error_release_unsigned": "la nuova versione non è firmata, il nodo non la installa",
+    "fleet_error_storage_failed": "impossibile salvare il file di aggiornamento",
+    "fleet_error_with_detail": "{reason} ({detail})"
   }
 }
