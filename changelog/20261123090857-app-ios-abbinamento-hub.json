@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": { "it": "Prima versione dell'app per iPhone e iPad", "en": "First version of the iPhone and iPad app", "fr": "Première version de l'app pour iPhone et iPad", "es": "Primera versión de la app para iPhone y iPad" },
+  "features": [
+    { "it": "Abbinamento di iPhone e iPad come nodo inquadrando il QR del server o con il codice a 6 cifre, sempre con conferma di indirizzo e impronta del server.", "en": "Pair an iPhone or iPad as a node by scanning the server QR code or with the 6-digit code, always confirming the server address and fingerprint.", "fr": "Appairage d'un iPhone ou d'un iPad comme nœud en scannant le QR code du serveur ou avec le code à 6 chiffres, toujours avec confirmation de l'adresse et de l'empreinte du serveur.", "es": "Emparejamiento de iPhone e iPad como nodo escaneando el QR del servidor o con el código de 6 dígitos, siempre confirmando la dirección y la huella del servidor." },
+    { "it": "Hub a schermo intero con i widget del server, collegato solo al server abbinato.", "en": "Full-screen hub with the server widgets, connected only to the paired server.", "fr": "Hub plein écran avec les widgets du serveur, connecté uniquement au serveur appairé.", "es": "Hub a pantalla completa con los widgets del servidor, conectado solo al servidor emparejado." },
+    { "it": "Chiavi e credenziali del dispositivo custodite nel Portachiavi di iOS e ogni richiesta firmata dal dispositivo.", "en": "Device keys and credentials kept in the iOS Keychain and every request signed by the device.", "fr": "Clés et identifiants de l'appareil conservés dans le trousseau iOS et chaque requête signée par l'appareil.", "es": "Claves y credenciales del dispositivo guardadas en el llavero de iOS y cada solicitud firmada por el dispositivo." }
+  ],
+  "fixes": []
+}

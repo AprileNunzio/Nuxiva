@@ -1,0 +1,45 @@
+[package]
+name = "nuxiva-mobile-ffi"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "nuxiva_mobile"
+crate-type = ["lib", "staticlib", "cdylib"]
+
+[[bin]]
+name = "uniffi-bindgen"
+path = "src/bin/uniffi_bindgen.rs"
+required-features = ["bindgen"]
+
+[features]
+bindgen = ["uniffi/cli"]
+
+[lints.rust]
+unsafe_code = "deny"
+missing_debug_implementations = "warn"
+unused_must_use = "deny"
+
+[lints.clippy]
+all = { level = "deny", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+indexing_slicing = "deny"
+arithmetic_side_effects = "deny"
+module_name_repetitions = "allow"
+missing_errors_doc = "allow"
+
+[dependencies]
+nuxiva-node-core = { path = "../node-core" }
+uniffi = "0.32"
+base64 = "0.23"
+serde_json = "1"
+sha2 = "0.10"
+thiserror = "2"
+zeroize = "1"
+getrandom = "0.3"
