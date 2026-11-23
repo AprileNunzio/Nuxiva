@@ -1,0 +1,1 @@
+import{L as e}from"./index-65EwRTMj.js";var t=(t,n)=>e(t,{signal:n}),n=(t,n,r)=>e(t,{method:n,body:r===void 0?void 0:JSON.stringify(r)}),r=e=>Array.isArray(e)?e:[],i=e=>typeof e==`object`&&e&&!Array.isArray(e)?e:{},a=(e,t=``)=>typeof e==`string`?e:t,o=(e,t=0)=>typeof e==`number`&&Number.isFinite(e)?e:t,s=e=>e===!0;export{o as a,t as i,i as n,n as o,s as r,a as s,r as t};

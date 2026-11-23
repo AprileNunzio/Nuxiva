@@ -1,0 +1,1 @@
+import"./useResource-D0V519Wp.js";
