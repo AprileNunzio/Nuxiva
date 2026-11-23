@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Più widget a schermo, incastrati senza sovrapposizioni",
+    "en": "More widgets on screen, fitted together with no overlaps",
+    "fr": "Plus de widgets à l'écran, imbriqués sans chevauchement",
+    "es": "Más widgets en pantalla, encajados sin superposiciones"
+  },
+  "features": [
+    {
+      "it": "Sugli schermi larghi la pagina 80 usa fino a quattro colonne per lato attorno a Nuxiva, così entrano molti più widget.",
+      "en": "On wide screens page 80 uses up to four columns per side around Nuxiva, so many more widgets fit.",
+      "fr": "Sur les écrans larges la page 80 utilise jusqu'à quatre colonnes de chaque côté autour de Nuxiva, pour afficher beaucoup plus de widgets.",
+      "es": "En pantallas anchas la página 80 usa hasta cuatro columnas por lado alrededor de Nuxiva, así caben muchos más widgets."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Un widget che non entrava veniva messo comunque, sopra altri riquadri o fuori dallo schermo: ora resta in attesa finché non si libera spazio, e i widget fissati non vengono più coperti.",
+      "en": "A widget that did not fit was placed anyway, over other panels or off screen: it now waits until space frees up, and pinned widgets are no longer covered.",
+      "fr": "Un widget qui ne tenait pas était placé quand même, par-dessus d'autres encadrés ou hors de l'écran : il attend désormais qu'une place se libère, et les widgets épinglés ne sont plus recouverts.",
+      "es": "Un widget que no cabía se colocaba igualmente, encima de otros paneles o fuera de la pantalla: ahora espera hasta que haya sitio, y los widgets fijados ya no se tapan."
+    }
+  ]
+}

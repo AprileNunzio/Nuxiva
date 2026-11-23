@@ -376,38 +376,15 @@
       zone = { x: M, y: TOP - 20, w: W - 2 * M, h: Math.max(160, avatarH) };
     } else if (normal.length) {
       const availW = W - 2 * M;
-      const minCenterW = Math.max(260, Math.min(520, W * 0.28));
-      const availSideW = availW - minCenterW - 2 * GAP;
-      const wingW = availSideW / 2;
-      const canFour = wingW >= 460;
-      const cols = Math.max(1, canFour ? 4 : 2);
-      const colW = cols === 4
-        ? Math.max(220, Math.min(350, Math.floor((wingW - GAP) / 2)))
-        : Math.max(240, Math.min(380, Math.floor(wingW)));
-      const colXs = cols === 4
-        ? [M, M + colW + GAP, W - M - 2 * colW - GAP, W - M - colW]
-        : [M, W - M - colW];
-      const outer = cols === 4 ? [0, 3] : [0, 1];
-      const inner = cols === 4 ? [1, 2] : [];
-      const colTops = Array(cols).fill(TOP);
+      const grid = window.NuxivaDeskGrid.wings(W, M, GAP);
+      const colTops = grid.xs.map(() => TOP);
+      const obstacles = blocked.concat(fixed);
       for (const c of normal) {
-        const w = colW, h = measure(c, w);
-        const outerFit = outer.filter((i) => colTops[i] + h <= BOTTOM);
-        let chosen;
-        if (outerFit.length) {
-          chosen = outerFit.reduce((best, i) => (colTops[i] < colTops[best] ? i : best));
-        } else {
-          const innerFit = inner.filter((i) => colTops[i] + h <= BOTTOM);
-          if (innerFit.length) {
-            chosen = innerFit.reduce((best, i) => (colTops[i] < colTops[best] ? i : best));
-          } else {
-            chosen = 0;
-            for (let i = 1; i < cols; i++) { if (colTops[i] < colTops[chosen]) chosen = i; }
-          }
-        }
-        const x = colXs[chosen], y = colTops[chosen];
+        const w = grid.colW, h = measure(c, w), spot = window.NuxivaDeskGrid.fit(grid, colTops, h, BOTTOM, obstacles, GAP);
+        if (!spot) { c.el.classList.add("hidden"); continue; }
+        const x = grid.xs[spot.i], y = spot.y;
         place(c, x, y, w);
-        colTops[chosen] = y + h + GAP;
+        colTops[spot.i] = y + h + GAP;
         blocked.push({ x, y, w, h });
       }
       const leftBlocked = blocked.filter((b) => b.x < W / 2);

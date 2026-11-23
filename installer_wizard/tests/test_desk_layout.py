@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 
 DESK = Path(__file__).resolve().parents[1] / "web" / "display" / "desk.js"
+GRID = Path(__file__).resolve().parents[1] / "web" / "display" / "desk_grid.js"
 CSS = Path(__file__).resolve().parents[1] / "web" / "display" / "widgets_hud.css"
 
 
@@ -21,10 +22,36 @@ class LayoutSourceTest(unittest.TestCase):
 
     def test_lateral_first_and_center_keepout(self):
         source = DESK.read_text()
-        self.assertIn("outerFit", source)
-        self.assertIn("innerFit", source)
-        self.assertIn("minCenterW", source)
+        self.assertIn("NuxivaDeskGrid.wings", source)
+        self.assertIn("NuxivaDeskGrid.fit", source)
         self.assertIn("hooks.onStage(stage)", source)
+
+    @unittest.skipUnless(shutil.which("node"), "node assente")
+    def test_grid_never_overlaps_and_fills_outside_first(self):
+        script = """
+global.window = {};
+require(process.argv[1]);
+const G = window.NuxivaDeskGrid;
+for (const W of [1024, 1920, 2560, 3840]) {
+  const H = 1080, GAP = 14, TOP = 124, BOTTOM = H - 104, grid = G.wings(W, 26, GAP), tops = grid.xs.map(() => TOP);
+  const pinned = [{ x: W - 320, y: 110, w: 300, h: 220 }], placed = [];
+  const first = G.fit(grid, tops, 100, BOTTOM, pinned, GAP);
+  if (![0, grid.xs.length - 1].includes(first.i)) throw new Error("not outer first " + W);
+  for (let n = 0; n < 40; n++) {
+    const h = 80 + (n * 53) % 220, spot = G.fit(grid, tops, h, BOTTOM, pinned.concat(placed), GAP);
+    if (!spot) continue;
+    const r = { x: grid.xs[spot.i], y: spot.y, w: grid.colW, h };
+    for (const o of pinned.concat(placed)) if (r.x < o.x + o.w && o.x < r.x + r.w && r.y < o.y + o.h && o.y < r.y + r.h) throw new Error("overlap " + W);
+    if (r.y + h > BOTTOM || r.x < 0 || r.x + r.w > W) throw new Error("outside " + W);
+    placed.push(r); tops[spot.i] = r.y + h + GAP;
+  }
+  const leftEdge = Math.max(...grid.xs.filter((x) => x < W / 2).map((x) => x + grid.colW));
+  const rightEdge = Math.min(...grid.xs.filter((x) => x > W / 2));
+  if (rightEdge - leftEdge < 250) throw new Error("center too small " + W);
+}
+"""
+        done = subprocess.run(["node", "-e", script, str(GRID)], capture_output=True, text=True)
+        self.assertEqual(done.returncode, 0, done.stderr)
 
     @unittest.skipUnless(shutil.which("node"), "node assente")
     def test_syntax(self):
