@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Nuova chiave di firma per gli aggiornamenti dei PC Windows",
+    "en": "New signing key for Windows PC updates",
+    "fr": "Nouvelle clé de signature pour les mises à jour des PC Windows",
+    "es": "Nueva clave de firma para las actualizaciones de los PC Windows"
+  },
+  "fixes": [
+    {
+      "it": "I PC Windows riconoscono la nuova chiave di firma delle release, così da questa versione in poi installano gli aggiornamenti firmati da soli.",
+      "en": "Windows PCs recognise the new release signing key, so from this version on they install signed updates on their own.",
+      "fr": "Les PC Windows reconnaissent la nouvelle clé de signature des versions et installent désormais seuls les mises à jour signées.",
+      "es": "Los PC Windows reconocen la nueva clave de firma de las versiones y a partir de esta instalan solos las actualizaciones firmadas."
+    }
+  ]
+}

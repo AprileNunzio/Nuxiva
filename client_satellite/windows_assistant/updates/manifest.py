@@ -11,7 +11,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
 from updates.errors import UpdateFailure
 
-PUBLIC_KEY = "DN6SKGGnjtJbKYc7I4CajVCrV8X1hLrXYDR0U9x5qOU="
+PUBLIC_KEY = "rQra6b4Ba+SD1RBgDTPWULpO+/zt7xhusF58fM9Y7s0="
 REPOSITORY = "AprileNunzio/NUXIVA"
 DOWNLOAD_RE = re.compile(rf"https://github\.com/{re.escape(REPOSITORY)}/releases/download/(?:assistant-)?v[0-9.]+/[A-Za-z0-9_.-]+\.exe")
 VERSION_RE = re.compile(r"\d+(?:\.\d+){1,3}")
