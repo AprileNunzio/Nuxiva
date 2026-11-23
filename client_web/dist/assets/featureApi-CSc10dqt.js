@@ -1,0 +1,1 @@
+import{o as e}from"./http-CmouBZBP.js";var t=encodeURIComponent,n=(n,r)=>e(`/api/features/${t(n)}`,`PUT`,{mode:r}),r=(n,r)=>e(`/api/features/${t(n)}/settings`,`PUT`,r);export{n,r as t};
