@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useStudioI18n } from '../scope';
 
 /**
  * Renderer Markdown leggero e sicuro: costruisce elementi React (nessun innerHTML).
@@ -47,6 +48,8 @@ function renderInline(text: string, keyPrefix: string): React.ReactNode[] {
 }
 
 const CodeBlock: React.FC<{ code: string; lang: string }> = ({ code, lang }) => {
+  const { t } = useStudioI18n();
+  const copyLabel = t('code_copy');
   const [copied, setCopied] = useState(false);
   const copy = () => {
     void navigator.clipboard?.writeText(code).then(() => {
@@ -59,7 +62,7 @@ const CodeBlock: React.FC<{ code: string; lang: string }> = ({ code, lang }) => 
       <div className="flex items-center justify-between px-3 py-1 bg-slate-900/80 text-[10px] uppercase tracking-wider text-slate-400">
         <span>{lang || 'code'}</span>
         <button type="button" onClick={copy} className="hover:text-cyan-300 transition-colors">
-          {copied ? '✓' : 'Copy'}
+          {copied ? '✓' : copyLabel}
         </button>
       </div>
       <pre className="p-3 overflow-x-auto text-xs leading-relaxed font-mono text-slate-200">

@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "AI Studio parla la tua lingua in ogni pannello",
+    "en": "AI Studio speaks your language in every panel",
+    "fr": "AI Studio parle ta langue dans chaque panneau",
+    "es": "AI Studio habla tu idioma en cada panel"
+  },
+  "fixes": [
+    {
+      "it": "I testi fissi rimasti in AI Studio (vista 3D, confronto file, sondaggi, ragionamento, canvas, reazioni e widget) ora seguono la lingua scelta in italiano, inglese, spagnolo e francese.",
+      "en": "The remaining fixed texts in AI Studio (3D view, file comparison, surveys, reasoning, canvas, reactions and widgets) now follow the chosen language in Italian, English, Spanish and French.",
+      "fr": "Les textes figés restants d'AI Studio (vue 3D, comparaison de fichiers, sondages, réflexion, canevas, réactions et widgets) suivent maintenant la langue choisie en italien, anglais, espagnol et français.",
+      "es": "Los textos fijos restantes de AI Studio (vista 3D, comparación de archivos, encuestas, razonamiento, lienzo, reacciones y widgets) ahora siguen el idioma elegido en italiano, inglés, español y francés."
+    },
+    {
+      "it": "Spariti i valori inventati: i widget senza dati reali non vengono mostrati e il tempo di ragionamento compare solo quando è misurato.",
+      "en": "Invented values are gone: widgets without real data are not shown and the reasoning time appears only when it is measured.",
+      "fr": "Les valeurs inventées ont disparu : les widgets sans données réelles ne s'affichent pas et le temps de réflexion n'apparaît que s'il est mesuré.",
+      "es": "Se acabaron los valores inventados: los widgets sin datos reales no se muestran y el tiempo de razonamiento aparece solo cuando se mide."
+    }
+  ]
+}

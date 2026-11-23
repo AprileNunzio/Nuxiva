@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { Poll } from '../types';
+import { useStudioI18n } from '../scope';
 
 interface InteractivePollCardProps {
   poll: Poll;
@@ -12,6 +13,7 @@ export const InteractivePollCard: React.FC<InteractivePollCardProps> = ({
   onVote,
   onSubmitSurvey,
 }) => {
+  const { t } = useStudioI18n();
   const [selectedOptionId, setSelectedOptionId] = useState<string | undefined>(poll.userVotedId);
   const [currentStepIdx, setCurrentStepIdx] = useState<number>(poll.currentStepIndex || 0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -53,11 +55,11 @@ export const InteractivePollCard: React.FC<InteractivePollCardProps> = ({
           <div className="flex items-center gap-2">
             <span className="text-cyan-400 font-semibold text-sm">📋</span>
             <span className="text-xs font-semibold text-cyan-200">
-              Sondaggio Progetto & Requisiti Dettagliati
+              {t('poll_title')}
             </span>
           </div>
           <span className="text-[11px] font-mono text-cyan-400 bg-cyan-950/80 px-2 py-0.5 rounded-full border border-cyan-800">
-            Passo {currentStepIdx + 1} di {totalSteps}
+            {t('poll_step', { current: currentStepIdx + 1, total: totalSteps })}
           </span>
         </div>
 
@@ -120,7 +122,7 @@ export const InteractivePollCard: React.FC<InteractivePollCardProps> = ({
                 disabled={currentStepIdx === 0}
                 className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-300 text-xs font-medium border border-slate-700 transition-colors"
               >
-                ← Indietro
+                {t('poll_back')}
               </button>
 
               <button
@@ -129,7 +131,7 @@ export const InteractivePollCard: React.FC<InteractivePollCardProps> = ({
                 disabled={!answers[currentStep.id] && !currentStep.userVotedId}
                 className="px-4 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-40 text-white text-xs font-semibold shadow-md transition-all"
               >
-                {currentStepIdx === totalSteps - 1 ? 'Conferma e Invia ✓' : 'Avanti →'}
+                {currentStepIdx === totalSteps - 1 ? t('poll_submit') : t('poll_next')}
               </button>
             </div>
           </div>
@@ -137,11 +139,10 @@ export const InteractivePollCard: React.FC<InteractivePollCardProps> = ({
           <div className="p-4 rounded-xl bg-cyan-950/40 border border-cyan-800/60 flex flex-col items-center text-center gap-2">
             <span className="text-2xl">✓</span>
             <div className="text-xs font-semibold text-cyan-200">
-              Sondaggio Completato & Ricevuto da Nuxiva!
+              {t('poll_done')}
             </div>
             <p className="text-[11px] text-slate-400 max-w-sm">
-              I parametri selezionati per architettura, tolleranze, e workflow sono stati sincronizzati
-              nel cervello dell'agente per l'elaborazione autonoma.
+              {t('poll_done_desc')}
             </p>
           </div>
         )}
@@ -162,10 +163,10 @@ export const InteractivePollCard: React.FC<InteractivePollCardProps> = ({
       <div className="flex items-center justify-between border-b border-slate-800 pb-2">
         <div className="flex items-center gap-2">
           <span className="text-cyan-400">📊</span>
-          <span className="text-xs font-semibold text-slate-200">Domanda & Scelta Rapida</span>
+          <span className="text-xs font-semibold text-slate-200">{t('poll_quick')}</span>
         </div>
         <span className="text-[11px] text-slate-500 font-mono">
-          {totalVotes} {totalVotes === 1 ? 'risposta' : 'risposte'}
+          {totalVotes === 1 ? t('poll_answer_one') : t('poll_answers', { count: totalVotes })}
         </span>
       </div>
 
@@ -214,7 +215,7 @@ export const InteractivePollCard: React.FC<InteractivePollCardProps> = ({
       {selectedOptionId && (
         <div className="text-[11px] text-emerald-400 font-mono flex items-center gap-1 mt-0.5">
           <span>✓</span>
-          <span>Risposta registrata da Nuxiva</span>
+          <span>{t('poll_recorded')}</span>
         </div>
       )}
     </div>

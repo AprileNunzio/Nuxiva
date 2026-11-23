@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { Reaction } from '../types';
+import { useStudioI18n } from '../scope';
 
 interface MessageReactionsProps {
   reactions?: Reaction[];
@@ -12,6 +13,7 @@ export const MessageReactions: React.FC<MessageReactionsProps> = ({
   reactions = [],
   onToggleReaction,
 }) => {
+  const { t } = useStudioI18n();
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +50,7 @@ export const MessageReactions: React.FC<MessageReactionsProps> = ({
                 ? 'bg-cyan-950/80 border-cyan-500/80 text-cyan-300 shadow-sm'
                 : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
             }`}
-            title={`Reagito da: ${r.authors.join(', ')}`}
+            title={t('react_by', { who: r.authors.join(', ') })}
           >
             <span>{r.emoji}</span>
             <span className="text-[11px] font-medium">{r.count}</span>
@@ -61,7 +63,7 @@ export const MessageReactions: React.FC<MessageReactionsProps> = ({
           type="button"
           onClick={() => setIsPickerOpen((prev) => !prev)}
           className="flex items-center justify-center h-6 w-6 rounded-full bg-slate-900 border border-slate-800 text-slate-500 hover:text-cyan-300 hover:border-slate-700 text-xs transition-colors"
-          title="Aggiungi reazione"
+          title={t('react_add')}
         >
           <span>☺+</span>
         </button>

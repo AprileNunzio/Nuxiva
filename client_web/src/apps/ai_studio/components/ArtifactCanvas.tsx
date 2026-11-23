@@ -188,9 +188,9 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
                 ? 'bg-cyan-600 text-white border-cyan-500'
                 : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300'
             }`}
-            title="Modifica solo una porzione del file"
+            title={t('canvas_partial_hint')}
           >
-            ✂️ Modifica parte
+            {t('canvas_partial_btn')}
           </button>
 
           {isExecutable && (
@@ -303,13 +303,13 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
       {isPartialEditOpen && (
         <div className="p-3 bg-slate-900 border-b border-slate-800 flex flex-col gap-2 text-xs">
           <div className="flex items-center justify-between text-slate-300 font-semibold">
-            <span>✂️ Modifica Parziale (Intervallo di Righe)</span>
-            <span className="text-[11px] font-mono text-cyan-400">Totale: {lineCount} righe</span>
+            <span>{t('canvas_partial_title')}</span>
+            <span className="text-[11px] font-mono text-cyan-400">{t('canvas_partial_total', { count: lineCount })}</span>
           </div>
 
           <div className="flex items-center gap-2">
             <label className="flex items-center gap-1 text-slate-400">
-              <span>Da riga:</span>
+              <span>{t('canvas_from_line')}</span>
               <input
                 type="number"
                 min={1}
@@ -321,7 +321,7 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
             </label>
 
             <label className="flex items-center gap-1 text-slate-400">
-              <span>A riga:</span>
+              <span>{t('canvas_to_line')}</span>
               <input
                 type="number"
                 min={1}
@@ -336,7 +336,7 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
           <div className="flex gap-2">
             <input
               type="text"
-              placeholder="Istruzioni per modificare solo queste righe..."
+              placeholder={t('canvas_partial_placeholder')}
               value={partialInstructions}
               onChange={(e) => setPartialInstructions(e.target.value)}
               className="flex-1 px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs placeholder:text-slate-500"
@@ -346,7 +346,7 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
               onClick={handleSendPartialEdit}
               className="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-xs transition-colors shadow-sm"
             >
-              Applica
+              {t('canvas_apply')}
             </button>
           </div>
         </div>
@@ -380,7 +380,7 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
               <span className="text-5xl">🧊</span>
               <span className="text-sm font-bold text-white">{artifact.title}</span>
               <p className="text-xs text-slate-400 max-w-xs">
-                Modello 3D CAD parametrico ({artifact.language}). Visualizzabile in viewport 3D WebGL con assi e rotazione.
+                {t('canvas_3d_desc', { lang: artifact.language })}
               </p>
               <pre className="w-full max-h-48 overflow-y-auto text-left font-mono text-[11px] p-2 bg-slate-950 rounded border border-slate-800 text-cyan-300">
                 <code>{content}</code>

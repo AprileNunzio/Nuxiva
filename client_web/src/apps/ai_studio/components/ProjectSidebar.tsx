@@ -110,7 +110,7 @@ export const ProjectSidebar: React.FC<ProjectSidebarProps> = ({
               onClick={() => onOpen3DViewer({
                 title: currentProject ? `${t('hdr_3d')} · ${currentProject.name}` : t('work3d_default'),
                 format: 'openscad',
-                material: 'PLA / Compensato Laser',
+                material: t('w3d_material_default'),
                 dimensions_mm: [60, 90, 30],
                 tolerance_mm: 0.15,
                 kerf_mm: 0.14,

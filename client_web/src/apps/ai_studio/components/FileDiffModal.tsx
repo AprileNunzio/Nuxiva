@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { FileDiff, DiffLine } from '../types';
+import { useStudioI18n } from '../scope';
 
 interface FileDiffModalProps {
   isOpen: boolean;
@@ -42,6 +43,7 @@ export const FileDiffModal: React.FC<FileDiffModalProps> = ({
   diffs,
   initialDiffId,
 }) => {
+  const { t } = useStudioI18n();
   const [selectedDiffId, setSelectedDiffId] = useState<string>(
     initialDiffId || (diffs.length > 0 ? diffs[0].id : '')
   );
@@ -80,14 +82,14 @@ export const FileDiffModal: React.FC<FileDiffModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-slate-100">
-                  Confronto File Modificati (Prima / Dopo)
+                  {t('diff_title')}
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-800 text-[10px] text-cyan-300 font-mono">
                   {diffs.length} {diffs.length === 1 ? 'file' : 'file'}
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
-                Ispezione differenziale delle modifiche applicate dall'agente
+                {t('diff_desc')}
               </p>
             </div>
           </div>
@@ -103,7 +105,7 @@ export const FileDiffModal: React.FC<FileDiffModalProps> = ({
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
-                Unificato
+                {t('diff_unified')}
               </button>
               <button
                 type="button"
@@ -114,7 +116,7 @@ export const FileDiffModal: React.FC<FileDiffModalProps> = ({
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
-                Affiancato (Prima / Dopo)
+                {t('diff_split')}
               </button>
             </div>
 
@@ -122,18 +124,18 @@ export const FileDiffModal: React.FC<FileDiffModalProps> = ({
               type="button"
               onClick={handleCopy}
               className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition-colors"
-              title="Copia codice finale"
+              title={t('diff_copy_hint')}
             >
-              {copied ? '✓ Copiato' : 'Copia'}
+              {copied ? `✓ ${t('copied')}` : t('copy_code')}
             </button>
 
             <button
               type="button"
               onClick={handleDownload}
               className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-medium border border-slate-700 transition-colors"
-              title="Scarica file aggiornato"
+              title={t('diff_download_hint')}
             >
-              Scarica
+              {t('diff_download')}
             </button>
 
             <button
@@ -150,7 +152,7 @@ export const FileDiffModal: React.FC<FileDiffModalProps> = ({
           {diffs.length > 1 && (
             <div className="w-64 border-r border-slate-800 bg-slate-950/60 p-3 overflow-y-auto flex flex-col gap-1.5">
               <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-2 mb-1">
-                File Modificati
+                {t('diff_files')}
               </div>
               {diffs.map((d) => {
                 const isSelected = d.id === currentDiff.id;
@@ -230,7 +232,7 @@ export const FileDiffModal: React.FC<FileDiffModalProps> = ({
                 <div className="grid grid-cols-2 gap-3 h-full">
                   <div className="border border-slate-800 rounded-xl bg-slate-900/40 p-3 overflow-auto flex flex-col">
                     <div className="text-[11px] font-semibold text-rose-300 pb-2 mb-2 border-b border-slate-800 flex items-center justify-between">
-                      <span>PRIMA (ORIGINALE)</span>
+                      <span className="uppercase">{t('diff_before')}</span>
                       <span className="text-rose-400 font-mono">-{currentDiff.removed}</span>
                     </div>
                     <pre className="text-rose-200/90 whitespace-pre font-mono text-xs overflow-x-auto flex-1">
@@ -240,7 +242,7 @@ export const FileDiffModal: React.FC<FileDiffModalProps> = ({
 
                   <div className="border border-slate-800 rounded-xl bg-slate-900/40 p-3 overflow-auto flex flex-col">
                     <div className="text-[11px] font-semibold text-emerald-300 pb-2 mb-2 border-b border-slate-800 flex items-center justify-between">
-                      <span>DOPO (MODIFICATO)</span>
+                      <span className="uppercase">{t('diff_after')}</span>
                       <span className="text-emerald-400 font-mono">+{currentDiff.added}</span>
                     </div>
                     <pre className="text-emerald-200 whitespace-pre font-mono text-xs overflow-x-auto flex-1">

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { AgentAction } from '../types';
+import { useStudioI18n } from '../scope';
 
 interface ThoughtActionBlockProps {
   thought?: string;
@@ -10,10 +11,11 @@ interface ThoughtActionBlockProps {
 
 export const ThoughtActionBlock: React.FC<ThoughtActionBlockProps> = ({
   thought,
-  thinkingDuration = '6m 36s',
+  thinkingDuration,
   actions = [],
   onOpenDiff,
 }) => {
+  const { t } = useStudioI18n();
   const [isThoughtOpen, setIsThoughtOpen] = useState(false);
   const [expandedActionIds, setExpandedActionIds] = useState<Record<string, boolean>>({});
 
@@ -40,7 +42,7 @@ export const ThoughtActionBlock: React.FC<ThoughtActionBlockProps> = ({
             onClick={() => setIsThoughtOpen((prev) => !prev)}
             className="flex items-center gap-1.5 py-1 text-slate-400 hover:text-slate-200 transition-colors w-fit group"
           >
-            <span className="font-medium text-slate-300">Thinking</span>
+            <span className="font-medium text-slate-300">{t('tab_thinking')}</span>
             <span className="text-slate-500 font-mono text-[11px] group-hover:text-slate-400">
               {thinkingDuration}
             </span>
@@ -100,7 +102,7 @@ export const ThoughtActionBlock: React.FC<ThoughtActionBlockProps> = ({
 
                   {isAnalyze && (
                     <div className="flex items-center gap-1.5">
-                      <span className="text-slate-400">Analyzed</span>
+                      <span className="text-slate-400">{t('tab_analyzed')}</span>
                       {act.ext && (
                         <span className="px-1 py-0.2 rounded bg-cyan-950/80 border border-cyan-800/60 text-[10px] font-mono text-cyan-300 uppercase">
                           {act.ext}
@@ -118,9 +120,9 @@ export const ThoughtActionBlock: React.FC<ThoughtActionBlockProps> = ({
                       type="button"
                       onClick={() => onOpenDiff?.(act.diff_id)}
                       className="flex items-center gap-1.5 hover:text-slate-200 transition-colors cursor-pointer group/edit"
-                      title="Clicca per visualizzare confronto prima/dopo"
+                      title={t('tab_diff_hint')}
                     >
-                      <span className="text-slate-400 group-hover/edit:text-cyan-300">Edited</span>
+                      <span className="text-slate-400 group-hover/edit:text-cyan-300">{t('tab_edited')}</span>
                       {act.ext && (
                         <span className="px-1 py-0.2 rounded bg-cyan-950/80 border border-cyan-800/60 text-[10px] font-mono text-cyan-300 uppercase">
                           {act.ext}
@@ -143,8 +145,8 @@ export const ThoughtActionBlock: React.FC<ThoughtActionBlockProps> = ({
 
                   {act.kind === 'think' && (
                     <span className="text-slate-500 flex items-center gap-1 italic">
-                      <span>Thinking for</span>
-                      <span className="font-mono">{act.duration || '13s'}</span>
+                      <span>{t('tab_thinking_for')}</span>
+                      <span className="font-mono">{act.duration}</span>
                     </span>
                   )}
                 </div>

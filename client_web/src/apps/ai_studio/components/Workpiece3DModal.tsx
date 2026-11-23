@@ -25,9 +25,9 @@ export const Workpiece3DModal: React.FC<Workpiece3DModalProps> = ({
   const axesRef = useRef<THREE.AxesHelper | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
 
-  const title = workpiece?.title || 'Lavorazione 3D CAD & CNC Laser';
+  const title = workpiece?.title || t('work3d_default');
   const dimensions = workpiece?.dimensions_mm || [60, 90, 30];
-  const material = workpiece?.material || 'PLA Filamento (Stampa 3D)';
+  const material = workpiece?.material || t('w3d_material_default');
   const tolerance = workpiece?.tolerance_mm ?? 0.15;
   const kerf = workpiece?.kerf_mm ?? 0.14;
 
@@ -195,7 +195,7 @@ export const Workpiece3DModal: React.FC<Workpiece3DModalProps> = ({
                 {title}
               </h2>
               <span className="text-[11px] text-cyan-400 font-mono">
-                Porta 8080 · Viewport Lavorazione WebGL
+                {t('w3d_subtitle')}
               </span>
             </div>
           </div>
@@ -210,7 +210,7 @@ export const Workpiece3DModal: React.FC<Workpiece3DModalProps> = ({
                   : 'bg-slate-800 text-slate-300 border-slate-700 hover:text-white'
               }`}
             >
-              {wireframe ? 'Solido' : 'Wireframe'}
+              {wireframe ? t('w3d_solid') : t('w3d_wire')}
             </button>
             <button
               type="button"
@@ -221,14 +221,14 @@ export const Workpiece3DModal: React.FC<Workpiece3DModalProps> = ({
                   : 'bg-slate-800 text-slate-300 border-slate-700 hover:text-white'
               }`}
             >
-              Assi X/Y/Z
+              {t('w3d_axes')}
             </button>
             <button
               type="button"
               onClick={() => setIsRotating(!isRotating)}
               className="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-xs text-slate-300 hover:text-white transition-colors"
             >
-              {isRotating ? 'Pausa 3D' : 'Ruota 3D'}
+              {isRotating ? t('w3d_pause') : t('w3d_rotate')}
             </button>
             <button
               type="button"
@@ -250,25 +250,25 @@ export const Workpiece3DModal: React.FC<Workpiece3DModalProps> = ({
           <div className="w-full md:w-72 bg-slate-900/90 border-t md:border-t-0 md:border-l border-slate-800 p-4 flex flex-col gap-3.5 text-xs text-slate-200 overflow-y-auto">
             <div>
               <span className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
-                Parametri Lavorazione
+                {t('w3d_params')}
               </span>
               <div className="mt-2 flex flex-col gap-1.5">
                 <div className="flex justify-between items-center py-1 border-b border-slate-800/60">
-                  <span className="text-slate-400">Dimensioni (X/Y/Z):</span>
+                  <span className="text-slate-400">{t('w3d_dims')}</span>
                   <span className="font-mono text-cyan-300">
                     {dimensions[0]} × {dimensions[1]} × {dimensions[2]} mm
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-800/60">
-                  <span className="text-slate-400">Materiale:</span>
+                  <span className="text-slate-400">{t('w3d_material')}</span>
                   <span className="font-medium text-slate-200">{material}</span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-800/60">
-                  <span className="text-slate-400">Tolleranza Meccanica:</span>
+                  <span className="text-slate-400">{t('w3d_tolerance')}</span>
                   <span className="font-mono text-purple-300">±{tolerance} mm</span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-800/60">
-                  <span className="text-slate-400">Compensazione Kerf:</span>
+                  <span className="text-slate-400">{t('w3d_kerf')}</span>
                   <span className="font-mono text-emerald-300">{kerf} mm</span>
                 </div>
               </div>
@@ -276,12 +276,12 @@ export const Workpiece3DModal: React.FC<Workpiece3DModalProps> = ({
 
             <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800">
               <span className="text-[10px] font-semibold text-cyan-400 uppercase tracking-wider block mb-1">
-                Comandi Interattivi
+                {t('w3d_controls')}
               </span>
               <ul className="text-[11px] text-slate-400 flex flex-col gap-1">
-                <li>• <b>Trascina mouse</b>: Ruota pezzo 3D</li>
-                <li>• <b>Rotellina</b>: Zoom avanti / indietro</li>
-                <li>• <b>Wireframe</b>: Ispezione percorsi e layer</li>
+                <li>• {t('w3d_ctl_drag')}</li>
+                <li>• {t('w3d_ctl_wheel')}</li>
+                <li>• {t('w3d_ctl_wire')}</li>
               </ul>
             </div>
 
@@ -300,7 +300,7 @@ export const Workpiece3DModal: React.FC<Workpiece3DModalProps> = ({
                 className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-cyan-950 transition-all"
               >
                 <span>💾</span>
-                <span>Esporta File Manifattura</span>
+                <span>{t('w3d_export')}</span>
               </button>
             </div>
           </div>

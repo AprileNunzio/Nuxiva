@@ -89,7 +89,7 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
                 title: thread?.title ? `${t('hdr_3d')} · ${thread.title}` : t('work3d_default'),
                 format: 'openscad',
                 dimensions_mm: [60, 90, 30],
-                material: 'PLA / Compensato Laser',
+                material: t('w3d_material_default'),
               })}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-700/80 text-cyan-300 hover:text-white text-xs font-medium transition-all shadow-sm"
               title={t('work3d_open')}

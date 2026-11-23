@@ -227,10 +227,10 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
                         ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500 animate-pulse'
                         : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-cyan-300 hover:border-slate-700'
                     }`}
-                    title="Ascolta audio registrato o sintetizzato"
+                    title={t('msg_listen_hint')}
                   >
                     <span>{isPlaying ? '⏸️' : '🔊'}</span>
-                    <span>{isPlaying ? 'In Riproduzione...' : 'Ascolta'}</span>
+                    <span>{isPlaying ? t('msg_listening') : t('msg_listen')}</span>
                   </button>
 
                   {!isUser && onRegenerate && msg.id === lastAssistantId && !isThinking && (
@@ -248,7 +248,7 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
                     type="button"
                     onClick={() => handleCopyMessage(msg.id, msg.content)}
                     className="p-1 rounded-md text-slate-500 hover:text-slate-300 text-xs transition-colors"
-                    title="Copia testo messaggio"
+                    title={t('msg_copy_hint')}
                   >
                     {isCopied ? '✓' : '📋'}
                   </button>
@@ -262,7 +262,7 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
                           ? 'text-emerald-400 bg-emerald-950/60 border border-emerald-800'
                           : 'text-slate-500 hover:text-emerald-400'
                       }`}
-                      title="Feedback positivo"
+                      title={t('msg_good')}
                     >
                       👍
                     </button>
@@ -274,7 +274,7 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
                           ? 'text-red-400 bg-red-950/60 border border-red-800'
                           : 'text-slate-500 hover:text-red-400'
                       }`}
-                      title="Segnala risposta"
+                      title={t('msg_bad')}
                     >
                       👎
                     </button>
@@ -292,7 +292,7 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
                       className="flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-950/70 border border-emerald-800/80 text-[10px] text-emerald-300 hover:text-white transition-colors"
                     >
                       <span>⇄</span>
-                      <span>{msg.diffs.length} file modificati</span>
+                      <span>{t('diff_count', { count: msg.diffs.length })}</span>
                     </button>
                   )}
 
@@ -300,14 +300,14 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
                     <button
                       type="button"
                       onClick={() => onOpen3DViewer({
-                        title: `Lavorazione 3D · ${msg.content.slice(0, 30)}`,
+                        title: `${t('hdr_3d')} · ${msg.content.slice(0, 30)}`,
                         format: 'openscad',
                         dimensions_mm: [60, 90, 30],
                       })}
                       className="flex items-center gap-1 px-2 py-0.5 rounded bg-cyan-950/80 border border-cyan-800/80 text-[10px] text-cyan-300 hover:text-white transition-colors"
                     >
                       <span>🧊</span>
-                      <span>Finestra 3D</span>
+                      <span>{t('msg_3d')}</span>
                     </button>
                   )}
                 </div>

@@ -105,7 +105,7 @@ export const View: React.FC = () => {
       title: t('work3d_default'),
       format: 'openscad',
       dimensions_mm: [60, 90, 30],
-      material: 'PLA / Compensato Laser',
+      material: t('w3d_material_default'),
       tolerance_mm: 0.15,
       kerf_mm: 0.14,
     });
@@ -130,11 +130,11 @@ export const View: React.FC = () => {
     setMessages((prev) => votePoll(prev, msgId, pollId, optionId, stepIndex));
 
   const handleSubmitSurvey = (msgId: string, pollId: string, answers: Record<string, string>) => {
-    handleSendMessage(`[Sondaggio Requisiti Completato]: ${JSON.stringify(answers)}`, []);
+    handleSendMessage(t('prompt_survey', { answers: JSON.stringify(answers) }), []);
   };
 
   const handlePartialEdit = (artifactTitle: string, startLine: number, endLine: number, instructions: string) => {
-    handleSendMessage(`[Modifica Parziale: "${artifactTitle}" (Righe ${startLine}-${endLine})]: ${instructions}`, []);
+    handleSendMessage(t('prompt_partial', { title: artifactTitle, start: startLine, end: endLine, instructions }), []);
   };
 
   const handleNewChat = async () => {
@@ -486,7 +486,7 @@ export const View: React.FC = () => {
 
       <StudioAuxiliaryModals
         isProjectModalOpen={isProjectModalOpen} setIsProjectModalOpen={setIsProjectModalOpen} editingProject={editingProject} loadProjects={loadProjects}
-        isSmbPickerOpen={isSmbPickerOpen} setIsSmbPickerOpen={setIsSmbPickerOpen} onSendAttachment={(att) => handleSendMessage(`[Allegato SMB: ${att.name}]`, [att])}
+        isSmbPickerOpen={isSmbPickerOpen} setIsSmbPickerOpen={setIsSmbPickerOpen} onSendAttachment={(att) => handleSendMessage(t('prompt_smb', { name: att.name }), [att])}
         is3DModalOpen={is3DModalOpen} setIs3DModalOpen={setIs3DModalOpen} selectedWorkpiece3D={selectedWorkpiece3D}
         isDiffModalOpen={isDiffModalOpen} setIsDiffModalOpen={setIsDiffModalOpen} currentDiffs={currentDiffs} selectedDiffId={selectedDiffId}
       />

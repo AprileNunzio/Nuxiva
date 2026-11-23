@@ -2,8 +2,9 @@ import { describe, expect, it } from 'vitest';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Markdown, messagesToMarkdown } from './Markdown';
+import { ScopedI18nProvider } from '../../../shared/i18n/I18nContext';
 
-const html = (src: string) => renderToStaticMarkup(React.createElement(Markdown, { source: src }));
+const html = (src: string) => renderToStaticMarkup(React.createElement(ScopedI18nProvider, { lang: 'it', onChange: () => undefined }, React.createElement(Markdown, { source: src })));
 
 describe('Markdown renderer', () => {
   it('renders bold, inline code and lists', () => {
