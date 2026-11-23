@@ -8,7 +8,7 @@ final class EnrollmentModel {
         case choose
         case scanning
         case code
-        case confirm(String)
+        case confirm(server: String, fingerprint: String)
         case working
     }
 
@@ -29,8 +29,7 @@ final class EnrollmentModel {
     func scanned(_ raw: String) {
         do {
             let payload = try enroller.payload(scanned: raw)
-            pending = payload
-            Task { await finish(payload) }
+            Task { await review(payload) }
         } catch {
             fail(error.code)
         }
@@ -42,12 +41,22 @@ final class EnrollmentModel {
         Task {
             do {
                 let payload = try await enroller.payload(server: server, code: code)
-                let ca = try await enroller.certificate(for: payload)
-                pending = payload
-                step = .confirm(PinnedTrust.short(ca.fingerprint))
+                await review(payload)
             } catch {
                 fail(error.code)
             }
+        }
+    }
+
+    private func review(_ payload: EnrollmentPayload) async {
+        step = .working
+        failure = nil
+        do {
+            let ca = try await enroller.certificate(for: payload)
+            pending = payload
+            step = .confirm(server: payload.server, fingerprint: PinnedTrust.short(ca.fingerprint))
+        } catch {
+            fail(error.code)
         }
     }
 

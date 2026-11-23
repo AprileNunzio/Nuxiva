@@ -181,25 +181,25 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Confrontala con l'impronta mostrata sul server. Se è diversa qualcuno potrebbe intercettare la rete: annulla."
+            "value": "Verifica che indirizzo e impronta siano quelli mostrati sul tuo server. Se non li riconosci, o il collegamento arriva da un messaggio o da un sito, annulla."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Compare it with the fingerprint shown on the server. If it differs someone may be intercepting the network: cancel."
+            "value": "Check that the address and fingerprint are the ones shown on your server. If you do not recognise them, or the link came from a message or a website, cancel."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Comparez-la avec l'empreinte affichée sur le serveur. Si elle diffère, quelqu'un intercepte peut-être le réseau : annulez."
+            "value": "Vérifiez que l'adresse et l'empreinte sont celles affichées sur votre serveur. Si vous ne les reconnaissez pas, ou si le lien vient d'un message ou d'un site, annulez."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Compárala con la huella que muestra el servidor. Si es distinta alguien podría estar interceptando la red: cancela."
+            "value": "Comprueba que la dirección y la huella son las que muestra tu servidor. Si no las reconoces, o el enlace llega de un mensaje o de una web, cancela."
           }
         }
       }

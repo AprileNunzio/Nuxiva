@@ -63,8 +63,9 @@ struct EnrollmentView: View {
             } footer: {
                 Text("enroll.code.hint")
             }
-        case .confirm(let fingerprint):
+        case .confirm(let server, let fingerprint):
             Section {
+                LabeledContent("enroll.server", value: server)
                 Text(fingerprint)
                     .font(.system(.title2, design: .monospaced))
                     .frame(maxWidth: .infinity)
