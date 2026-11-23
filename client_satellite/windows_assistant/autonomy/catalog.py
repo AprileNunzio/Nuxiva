@@ -10,7 +10,7 @@ ACTIONS = {
     "append_docx": ("path", "destination", "paragraphs"),
     "open": ("path",),
     "open_app": ("name", "path"),
-    "open_url": ("url",),
+    "open_url": ("url", "browser"),
     "type_text": ("text",),
     "copy_text": ("text",),
     "run_powershell": ("command",),

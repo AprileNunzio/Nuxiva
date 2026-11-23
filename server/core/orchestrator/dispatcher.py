@@ -8,6 +8,7 @@ from server.core.context_graph.graph_client import graph_client
 from server.core.kernel.consensus.laws_book import laws_book
 from server.core.context_graph.node_schema import NodeType, RelationType
 from server.core.orchestrator.brain_routing import preferred_brain_for
+from server.core.orchestrator.browser_reply import browser_query, browser_speech
 from server.core.orchestrator.intent_classifier import intent_classifier
 from server.core.planner.task_decomposer import task_planner
 from server.shared.utils.text_sanitizer import TextSanitizer
@@ -218,20 +219,18 @@ class OrchestratorDispatcher:
 
         if sys1_decision.intent == System1Intent.BROWSER_ACTION:
             started = time.time()
-            search_query = sanitized_query
-            for p in ["apri il sito di", "apri il sito", "vai su", "naviga su", "cerca su"]:
-                if p in search_query.lower():
-                    search_query = search_query.lower().replace(p, "").strip()
-            details = f"Navigazione richiesta: {search_query}"
+            search_query = browser_query(sanitized_query)
+            details, searched = f"Navigazione richiesta: {search_query}", False
             journey.step("decision", "Instradamento → browser", f"System 1: browser_action · ricerca: {search_query}")
             with journey.span("tool", "Ricerca web", search_query) as web_span:
                 try:
                     from server.features.agent_tools.scanner import tool_scanner
                     details = await tool_scanner.execute("web_search", query=search_query)
+                    searched = True
                     web_span.ok(str(details)[:600])
                 except Exception as exc:
                     web_span.fail(f"{type(exc).__name__}: {exc}")
-            speech = f"Ho aperto il browser ed effettuato la ricerca per '{search_query}', signore."
+            speech = browser_speech(search_query, searched)
             graph_client.upsert_node(
                 node_id=task_id,
                 node_type=NodeType.CONCEPT,
@@ -241,7 +240,7 @@ class OrchestratorDispatcher:
             res = AgentTaskResponse(
                 task_id=task_id,
                 agent_id="browser_agent",
-                status="SUCCESS",
+                status="SUCCESS" if searched else "FAILED",
                 result_data={
                     "surface": "browser",
                     "action": "navigate_web",

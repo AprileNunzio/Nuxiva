@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Assistente Windows: comandi capiti davvero, webcam solo su richiesta e resoconti veritieri",
+    "en": "Windows assistant: commands truly understood, webcam only on request and truthful reports",
+    "fr": "Assistant Windows : commandes vraiment comprises, webcam uniquement sur demande et comptes rendus fidèles",
+    "es": "Asistente Windows: órdenes entendidas de verdad, webcam solo bajo petición e informes veraces"
+  },
+  "features": [
+    {
+      "it": "«Aprimi il sito X su Chrome» apre direttamente il sito nel browser indicato (Chrome, Edge, Firefox, Brave, Opera), anche senza modelli di intelligenza artificiale.",
+      "en": "“Open site X in Chrome” opens the site directly in the named browser (Chrome, Edge, Firefox, Brave, Opera), even without AI models.",
+      "fr": "« Ouvre le site X dans Chrome » ouvre directement le site dans le navigateur indiqué (Chrome, Edge, Firefox, Brave, Opera), même sans modèle d'IA.",
+      "es": "«Abre el sitio X en Chrome» abre directamente el sitio en el navegador indicado (Chrome, Edge, Firefox, Brave, Opera), incluso sin modelos de IA."
+    },
+    {
+      "it": "Se il server non ha un modello disponibile, il PC passa da solo al modello locale Ollama in modalità Automatico.",
+      "en": "If the server has no model available, the PC switches on its own to the local Ollama model in Automatic mode.",
+      "fr": "Si le serveur n'a aucun modèle disponible, le PC passe tout seul au modèle local Ollama en mode Automatique.",
+      "es": "Si el servidor no tiene ningún modelo disponible, el PC pasa solo al modelo local Ollama en modo Automático."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "La webcam non viene più accesa su iniziativa del modello: si usa solo quando l'utente lo chiede esplicitamente; lo schermo chiesto dal modello richiede sempre conferma.",
+      "en": "The webcam is no longer turned on at the model's initiative: it is used only when the user explicitly asks; screen access requested by the model always needs confirmation.",
+      "fr": "La webcam n'est plus allumée à l'initiative du modèle : elle n'est utilisée que sur demande explicite ; l'écran demandé par le modèle exige toujours une confirmation.",
+      "es": "La webcam ya no se enciende por iniciativa del modelo: solo se usa cuando el usuario lo pide explícitamente; la pantalla pedida por el modelo siempre requiere confirmación."
+    },
+    {
+      "it": "La risposta descrive ciò che è stato davvero eseguito: azioni fallite, browser mancante o ricerca non riuscita non vengono più annunciati come successi.",
+      "en": "The reply describes what was really done: failed actions, a missing browser or a failed search are no longer announced as successes.",
+      "fr": "La réponse décrit ce qui a vraiment été fait : actions échouées, navigateur absent ou recherche ratée ne sont plus annoncés comme des réussites.",
+      "es": "La respuesta describe lo que se hizo de verdad: acciones fallidas, navegador ausente o búsqueda fallida ya no se anuncian como éxitos."
+    },
+    {
+      "it": "«Nessun cervello disponibile» è sostituito da un messaggio tradotto che spiega cosa controllare: Ollama sul server, chiavi cloud o modello locale sul PC.",
+      "en": "“No brain available” is replaced by a translated message explaining what to check: Ollama on the server, cloud keys or a local model on the PC.",
+      "fr": "« Aucun cerveau disponible » est remplacé par un message traduit qui explique quoi vérifier : Ollama sur le serveur, clés cloud ou modèle local sur le PC.",
+      "es": "«Ningún cerebro disponible» se sustituye por un mensaje traducido que explica qué revisar: Ollama en el servidor, claves cloud o modelo local en el PC."
+    }
+  ]
+}

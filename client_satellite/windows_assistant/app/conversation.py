@@ -1,15 +1,16 @@
 import base64
 import getpass
 import logging
-import re
 import socket
 import threading
 import uuid
 
 from actions.executor import Executor
+from app import report
 from connection import tls
 from connection.client import Client, ServerError, Unauthorized
 from i18n.strings import t
+from intents import senses, site
 from permissions.gate import Denied, Gate, Request
 from permissions.policy import Policy
 from senses import capture, reading
@@ -18,12 +19,6 @@ from senses.windows import Focus
 log = logging.getLogger("nuxiva.conversation")
 MAX_ROUNDS = 4
 TEXT_MIN = 120
-SCREEN_HINT = re.compile(r"\b(scherm|finestr|document|questo test|questa (?:pagina|mail|email|tabella|slide|foto)|"
-                         r"questo (?:codice|errore|file|disegno|progetto|foglio)|sto (?:scrivendo|leggendo|guardando|"
-                         r"lavorando)|cosa vedi|leggi|riassum|correggi|migliora|riformula|tradu|screen|this (?:page|"
-                         r"document|code|error)|what.*see|écran|cette page|ce document)", re.I)
-WEBCAM_HINT = re.compile(r"\b(guardami|mi vedi|webcam|telecamera|come (?:sto|sono vestit)|cosa ho in mano|"
-                         r"cosa (?:ti )?mostro|look at me|can you see me|what am i holding|regarde-moi)", re.I)
 
 
 class Conversation:
@@ -78,24 +73,32 @@ class Conversation:
                         "permissions": self.policy.summary()},
                 "context": {"window": window.title if window else "", "app": window.app if window else ""}}
 
-    def _capture(self, need: str, body: dict) -> None:
+    def _capture(self, need: str, body: dict, explicit: bool = True) -> None:
         window = self.focus.current()
         if need == "webcam":
-            self.gate.check(Request("senses.webcam", "Scattare una foto con la webcam"))
-            self._post(self.ui.note, "📷 Scatto una foto dalla webcam…")
+            self.gate.check(Request("senses.webcam", t("senses.webcam.confirm"), body["text"]), always_ask=not explicit)
+            self._post(self.ui.note, t("senses.webcam.note"))
             body["image"], body["image_source"] = base64.b64encode(capture.webcam_image()).decode(), "webcam"
             return
-        where = f"«{window.title[:60]}»" if window else "lo schermo"
-        self.gate.check(Request("senses.screen", f"Guardare {where}"))
+        where = f"«{window.title[:60]}»" if window else t("senses.screen.whole")
+        self.gate.check(Request("senses.screen", t("senses.screen.confirm", where=where), body["text"]),
+                        always_ask=not explicit)
         content = reading.window_text(window) if window else ""
         if len(content) >= TEXT_MIN:
             body["context"]["content"] = content
-            self._post(self.ui.note, f"👁 Leggo {where}")
+            self._post(self.ui.note, t("senses.screen.reading", where=where))
         else:
             body["image"], body["image_source"] = base64.b64encode(capture.window_image(window)).decode(), "screen"
-            self._post(self.ui.note, f"👁 Guardo {where}")
+            self._post(self.ui.note, t("senses.screen.looking", where=where))
 
-    def _rounds(self, body: dict) -> dict:
+    def _execute(self, actions: list, executed: list) -> list:
+        lines, results = self.executor.run(actions or [])
+        for line in lines:
+            self._post(self.ui.note, line)
+        executed.extend(results)
+        return results
+
+    def _rounds(self, body: dict, executed: list) -> dict:
         result: dict = {}
         research_requested = False
         for _ in range(MAX_ROUNDS):
@@ -103,7 +106,7 @@ class Conversation:
             body.pop("research_approved", None)
             if self._cancelled or result.get("cancelled"):
                 return {"cancelled": True}
-            if result.get("ignored"):
+            if result.get("ignored") or result.get("error"):
                 return result
             if result.get("need") == "research":
                 if research_requested:
@@ -112,18 +115,31 @@ class Conversation:
                 body["research_approved"] = True
                 research_requested = True
                 continue
-            if result.get("need") and not body.get("image") and not body["context"].get("content"):
-                self._capture(result["need"], body)
+            need = result.get("need")
+            if need and not body.get("image") and not body["context"].get("content"):
+                if need == "webcam" and not senses.asks_webcam(body["text"]):
+                    log.info("Webcam richiesta dal modello senza domanda esplicita: rifiutata")
+                    return {"reply": t("senses.webcam.not_requested"), "lang": result.get("lang")}
+                self._capture(need, body, explicit=senses.asks_screen(body["text"]))
                 continue
-            lines, results = self.executor.run(result.get("actions") or [])
-            for line in lines:
-                self._post(self.ui.note, line)
+            results = self._execute(result.get("actions") or [], executed)
             if result.get("followup") and results:
                 body.pop("image", None)
                 body["results"] = results
                 continue
             return result
         return result
+
+    def _direct(self, text: str, body: dict, executed: list) -> dict | None:
+        intent = site.parse(text)
+        if intent is None:
+            return None
+        action = {"type": "open_url", "url": intent.url}
+        if intent.browser:
+            action["browser"] = intent.browser
+        log.info("Intento diretto: apertura sito %s (browser: %s)", intent.host, intent.browser or "predefinito")
+        self._execute([action], executed)
+        return {"reply": "", "lang": body.get("lang") or None}
 
     def _ask(self, text: str, lang: str | None, spoken: bool) -> None:
         with self.busy:
@@ -138,14 +154,17 @@ class Conversation:
                 if audio_b64:
                     body["audio_pcm16_b64"] = audio_b64
                     body["audio_sample_rate"] = 16000
+            executed: list[dict] = []
             try:
-                if WEBCAM_HINT.search(text):
-                    self._capture("webcam", body)
-                elif SCREEN_HINT.search(text):
-                    self._capture("screen", body)
-                result = self._rounds(body)
+                result = self._direct(text, body, executed)
+                if result is None:
+                    if senses.asks_webcam(text):
+                        self._capture("webcam", body)
+                    elif senses.asks_screen(text):
+                        self._capture("screen", body)
+                    result = self._rounds(body, executed)
             except Denied as exc:
-                self._post(self.ui.say, "nuxiva", f"Non posso: {exc}. Puoi cambiarlo in Permessi.")
+                self._post(self.ui.say, "nuxiva", t("assist.denied", reason=str(exc)))
                 self._post(self.ui.set_state, "idle")
                 return
             except Unauthorized:
@@ -156,23 +175,32 @@ class Conversation:
                 return
             except (ServerError, capture.CaptureError) as exc:
                 log.warning("Richiesta non riuscita: %s", exc)
-                self._post(self.ui.say, "nuxiva", f"Non ci sono riuscita: {exc}")
+                self._post(self.ui.say, "nuxiva", t("assist.failed", reason=str(exc)))
                 self._post(self.ui.set_state, "error")
                 return
             except Exception as exc:
                 log.exception("Errore imprevisto durante l'assistenza: %s", exc)
-                self._post(self.ui.say, "nuxiva", f"Non sono riuscita a completare la richiesta: {exc}")
+                self._post(self.ui.say, "nuxiva", t("assist.unexpected", reason=str(exc)))
                 self._post(self.ui.set_state, "error")
                 return
-            if not isinstance(result, dict) or self._cancelled or result.get("cancelled") or result.get("ignored"):
-                self._post(self.ui.set_state, "idle")
-                return
-            reply, show = str(result.get("reply") or "").strip(), str(result.get("show") or "").strip()
-            if not reply and not show:
-                reply = "Ho elaborato la tua richiesta, ma non ho alcuna informazione aggiuntiva da comunicarti."
-            self._post(self.ui.say, "nuxiva", reply, show if show else None)
-            try:
-                self.voice.answer(reply, result.get("lang") or lang, spoken, result.get("voice_modulation"))
-            except Exception as exc:
-                log.warning("Riproduzione vocale non riuscita: %s", exc)
+            self._finish(result, executed, lang, spoken)
+
+    def _finish(self, result, executed: list, lang: str | None, spoken: bool) -> None:
+        if not isinstance(result, dict) or self._cancelled or result.get("cancelled") or result.get("ignored"):
             self._post(self.ui.set_state, "idle")
+            return
+        if result.get("error"):
+            log.warning("Il server non ha trovato un cervello: %s", result.get("error"))
+            self._post(self.ui.say, "nuxiva", report.error_message(result["error"]))
+            self._post(self.ui.set_state, "error")
+            return
+        reply = report.compose(str(result.get("reply") or ""), executed)
+        show = str(result.get("show") or "").strip()
+        if not reply and not show:
+            reply = t("assist.nothing_to_add")
+        self._post(self.ui.say, "nuxiva", reply, show if show else None)
+        try:
+            self.voice.answer(reply, result.get("lang") or lang, spoken, result.get("voice_modulation"))
+        except Exception as exc:
+            log.warning("Riproduzione vocale non riuscita: %s", exc)
+        self._post(self.ui.set_state, "idle")

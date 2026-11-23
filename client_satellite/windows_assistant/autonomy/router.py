@@ -7,6 +7,7 @@ from connection.client import ServerError
 
 log = logging.getLogger("nuxiva.router")
 RETRY_AFTER = 30.0
+LOCAL_FALLBACK_ERRORS = frozenset({"brain_unavailable", "brain_timeout"})
 
 
 class Router:
@@ -21,6 +22,10 @@ class Router:
 
     def server_up(self) -> bool:
         return self.has_server and time.monotonic() >= self.down_until
+
+    def _server_brain_missing(self, result, mode: profile.Mode) -> bool:
+        return (isinstance(result, dict) and result.get("error") in LOCAL_FALLBACK_ERRORS
+                and mode is not profile.Mode.SERVER and self.brain.ready())
 
     def assist(self, body: dict) -> dict:
         mode = self.mode()
@@ -39,12 +44,14 @@ class Router:
                 self.down_until = time.monotonic() + RETRY_AFTER
                 log.info("Errore connessione server (%s), passo al cervello locale", exc)
             else:
-                self.last = "server"
-                if self.sync is not None:
-                    self.sync.flush_later()
-                return result
+                if not self._server_brain_missing(result, mode):
+                    self.last = "server"
+                    if self.sync is not None:
+                        self.sync.flush_later()
+                    return result
+                log.info("Il server non ha un cervello disponibile (%s), passo al cervello locale", result.get("error"))
         elif route == "none":
-            raise ServerError("Nessun cervello disponibile: collega il PC a NUXIVA oppure installa Ollama con un modello")
+            return {"error": "brain_unavailable", "reply": "", "actions": []}
         try:
             result = self.brain.assist(body)
         except (OSError, BrainError) as exc:

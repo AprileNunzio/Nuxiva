@@ -6,7 +6,10 @@ import re
 
 from agenti.brain.llm import BrainUnavailable, generate
 from agenti.nodes import jev
-from agenti.nodes.desk_intents import RESEARCH_REQUEST, browser_target
+from fastapi import HTTPException
+
+from agenti.nodes import desk_site
+from agenti.nodes.desk_intents import RESEARCH_REQUEST, asks_webcam, browser_target
 
 log = logging.getLogger("nuxiva.nodes.desk")
 
@@ -19,7 +22,7 @@ ACTIONS = {
     "append_docx": "{path, destination, content}: aggiunge paragrafi a una copia Word, lasciando intatto l'originale",
     "open": "{path}: apre un file o una cartella con il programma predefinito",
     "open_app": "{name, path?}: avvia un'applicazione installata (es. \"Visual Studio Code\", \"AutoCAD\", \"Archicad\", \"Word\", \"Excel\", \"Chrome\"), opzionalmente aprendo un file o una cartella",
-    "open_url": "{url}: apre un sito web (solo http/https)",
+    "open_url": "{url, browser?}: apre un sito web (solo http/https); browser facoltativo tra chrome, edge, firefox, brave, opera se l'utente lo nomina",
     "type_text": "{text}: scrive il testo nella finestra su cui l'utente sta lavorando (lo incolla nel punto del cursore)",
     "copy_text": "{text}: copia il testo negli appunti",
     "read_file": "{path}: legge un file di testo e te lo rimanda per continuare",
@@ -35,7 +38,7 @@ ACTIONS = {
 }
 FOLLOWUP = {"read_file", "list_folder", "search_files", "run_powershell", "run_script", "ssh"}
 NEGOTIATED_ACTIONS = {"move_path", "create_docx", "append_docx"}
-TEXT_FIELDS = ("path", "destination", "name", "url", "query", "folder", "host", "user", "op", "title", "keys")
+TEXT_FIELDS = ("path", "destination", "name", "url", "browser", "query", "folder", "host", "user", "op", "title", "keys")
 LEVELS = {"allow": "consentito", "ask": "chiedi conferma", "deny": "VIETATO"}
 MAX_CONTENT = 400_000
 
@@ -190,6 +193,9 @@ async def think(text: str, body: dict, history: list, research_report: str = "",
     result["actions"] = [action for action in result["actions"] if action["type"] in allowed]
     if result["need"] == "research" and (not research_supported or research_report):
         result["need"] = None
+    if result["need"] == "webcam" and not asks_webcam(text):
+        log.warning("Il modello ha chiesto la webcam senza richiesta esplicita dell'utente: ignorata")
+        result["need"] = None
     return result
 
 
@@ -210,6 +216,10 @@ async def assist(node: dict, body: dict) -> dict:
     if url:
         return {"route": "pc", "reply": "", "show": "", "actions": [{"type": "open_url", "url": url}],
                 "need": None, "lang": lang}
+    site = desk_site.parse(text)
+    if site:
+        action = {"type": "open_url", "url": site.url, **({"browser": site.browser} if site.browser else {})}
+        return {"route": "pc", "reply": "", "show": "", "actions": [action], "need": None, "lang": lang}
     research = RESEARCH_REQUEST.fullmatch(text)
     if research:
         report = await _research_report(research[1])
@@ -243,7 +253,23 @@ async def assist(node: dict, body: dict) -> dict:
     return result
 
 
+BRAIN_ERRORS = {502: "brain_unavailable", 504: "brain_timeout"}
+
+
+def _brain_error(exc: HTTPException) -> str:
+    if exc.status_code == 503 and exc.detail == "privacy_blocked":
+        return "privacy_blocked"
+    return BRAIN_ERRORS.get(exc.status_code, "")
+
+
 async def _general(assistant_reply, text: str, device: str, lang: str | None) -> dict:
-    data = await assistant_reply(text, device, lang)
+    try:
+        data = await assistant_reply(text, device, lang)
+    except HTTPException as exc:
+        code = _brain_error(exc)
+        if not code:
+            raise
+        log.warning("Assistente desktop: risposta generale non disponibile (%s: %s)", code, exc.detail)
+        return {"route": "nuxiva", "reply": "", "lang": lang, "actions": [], "need": None, "show": "", "error": code}
     return {"route": "nuxiva", "reply": data.get("reply", ""), "lang": data.get("lang"), "actions": [], "need": None,
             "show": "", "ignored": bool(data.get("ignored"))}

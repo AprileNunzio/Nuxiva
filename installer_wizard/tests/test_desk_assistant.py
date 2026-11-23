@@ -98,5 +98,36 @@ class ResearchTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["actions"], [])
 
 
+class DeskRegressionTest(unittest.IsolatedAsyncioTestCase):
+    async def test_site_on_named_browser_opens_the_domain_instead_of_searching(self):
+        with mock.patch.object(desk_assistant, "generate", new_callable=mock.AsyncMock) as model:
+            result = await desk_assistant.assist({"id": "pc"}, {"text": "aprimi il sito nunziotech.com su google chrome"})
+        model.assert_not_awaited()
+        self.assertEqual(result["actions"], [{"type": "open_url", "url": "https://nunziotech.com", "browser": "chrome"}])
+        self.assertIsNone(result["need"])
+
+    async def test_model_cannot_request_the_webcam_without_an_explicit_request(self):
+        with mock.patch.object(desk_assistant, "generate", new_callable=mock.AsyncMock,
+                               return_value={"route": "pc", "need": "webcam", "actions": []}):
+            result = await desk_assistant.think("apri il mio progetto", {}, [])
+            asked = await desk_assistant.think("guardami e dimmi come sto", {}, [])
+        self.assertIsNone(result["need"])
+        self.assertEqual(asked["need"], "webcam")
+
+    def test_browser_field_survives_cleaning(self):
+        out = desk_assistant._clean({"actions": [{"type": "open_url", "url": "https://a.it", "browser": "edge"}]})
+        self.assertEqual(out["actions"][0]["browser"], "edge")
+
+    async def test_missing_brain_returns_a_typed_error_not_an_exception(self):
+        failing = mock.AsyncMock(side_effect=desk_assistant.HTTPException(502, "Nessun cervello disponibile"))
+        result = await desk_assistant._general(failing, "bene grazie e a te?", "pc", "it")
+        self.assertEqual(result["error"], "brain_unavailable")
+        blocked = mock.AsyncMock(side_effect=desk_assistant.HTTPException(503, "privacy_blocked"))
+        self.assertEqual((await desk_assistant._general(blocked, "x", "pc", "it"))["error"], "privacy_blocked")
+        other = mock.AsyncMock(side_effect=desk_assistant.HTTPException(400, "Messaggio vuoto"))
+        with self.assertRaises(desk_assistant.HTTPException):
+            await desk_assistant._general(other, "x", "pc", "it")
+
+
 if __name__ == "__main__":
     unittest.main()

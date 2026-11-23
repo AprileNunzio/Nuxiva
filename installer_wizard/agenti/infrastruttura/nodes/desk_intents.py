@@ -19,3 +19,12 @@ def browser_target(text: str) -> str:
     except ValueError:
         return ""
     return match[1]
+
+
+WEBCAM_REQUEST = re.compile(r"\b(guardami|mi vedi|webcam|telecamera|fotocamera|come (?:sto|sono vestit)|cosa ho in mano|"
+                            r"cosa (?:ti )?mostro|look at me|can you see me|camera|what am i holding|regarde-moi|"
+                            r"mírame|mirame)", re.IGNORECASE)
+
+
+def asks_webcam(text: str) -> bool:
+    return bool(WEBCAM_REQUEST.search(text or ""))

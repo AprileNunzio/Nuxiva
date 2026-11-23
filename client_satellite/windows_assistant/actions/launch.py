@@ -6,18 +6,21 @@ import webbrowser
 from pathlib import Path
 
 from actions.common import EXEC_EXT, ActionError, Outcome, PathGuard, Request
+from i18n.strings import t
 from permissions.gate import Gate
 
 ALIASES = {
     "vscode": "Visual Studio Code", "vs code": "Visual Studio Code", "code": "Visual Studio Code",
     "word": "Word", "excel": "Excel", "powerpoint": "PowerPoint", "outlook": "Outlook",
-    "chrome": "Google Chrome", "edge": "Microsoft Edge", "firefox": "Firefox",
+    "chrome": "Google Chrome", "edge": "Microsoft Edge", "firefox": "Firefox", "brave": "Brave", "opera": "Opera",
     "blocco note": "Blocco note", "notepad": "Blocco note", "calcolatrice": "Calcolatrice",
     "esplora file": "Esplora file", "explorer": "Esplora file",
 }
 BUILTIN = {"blocco note": "notepad.exe", "notepad": "notepad.exe", "calcolatrice": "calc.exe", "calculator": "calc.exe",
            "esplora file": "explorer.exe", "explorer": "explorer.exe", "paint": "mspaint.exe"}
 SHELL_OK = 32
+WEB_URL = re.compile(r"^https?://[^\s\"<>`]+$", re.I)
+BROWSERS = frozenset({"chrome", "edge", "firefox", "brave", "opera"})
 
 
 def shell_open(target: str, params: str | None = None) -> None:
@@ -64,8 +67,22 @@ class Launcher:
 
     def open_url(self, a: dict) -> Outcome:
         url = a.get("url", "").strip()
-        if not re.match(r"^https?://[^\s]+$", url, re.I):
-            raise ActionError("apro solo indirizzi web http o https")
-        self.gate.check(Request("open.web", f"Aprire {url[:120]}"))
-        webbrowser.open(url)
-        return Outcome(f"🌐 Aperto {url[:80]}")
+        if len(url) > 2048 or not WEB_URL.match(url):
+            raise ActionError(t("web.only_http"))
+        browser = str(a.get("browser") or "").strip().lower()
+        if browser and browser not in BROWSERS:
+            raise ActionError(t("web.browser_unknown", browser=browser[:40]))
+        found = self.find_app(browser) if browser else None
+        label = found[0] if found else ""
+        self.gate.check(Request("open.web", t("web.confirm_in", url=url[:120], browser=label) if label
+                                else t("web.confirm", url=url[:120])))
+        if found:
+            shell_open(found[1], f'"{url}"')
+            return Outcome(t("web.opened_in", url=url[:80], browser=label), {"url": url, "browser": label})
+        if not webbrowser.open(url):
+            raise ActionError(t("web.open_failed", url=url[:80]))
+        if browser:
+            return Outcome(t("web.browser_missing", url=url[:80], browser=ALIASES.get(browser, browser)),
+                           {"url": url, "browser": "", "requested_browser": ALIASES.get(browser, browser),
+                            "fallback": True})
+        return Outcome(t("web.opened", url=url[:80]), {"url": url, "browser": ""})

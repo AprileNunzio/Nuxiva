@@ -154,8 +154,19 @@ class RouterTest(unittest.TestCase):
         self.assertEqual(client.calls, 0)
 
     def test_no_server_no_model_explains(self):
-        with self.assertRaises(ServerError):
-            self.router("auto", FakeClient(), brain_ready=False, has_server=False).assist({})
+        result = self.router("auto", FakeClient(), brain_ready=False, has_server=False).assist({})
+        self.assertEqual(result["error"], "brain_unavailable")
+
+    def test_server_without_brain_falls_back_to_the_local_model(self):
+        client = FakeClient()
+        client.assist = lambda body: {"error": "brain_unavailable", "reply": ""}
+        self.assertEqual(self.router("auto", client).assist({})["reply"], "locale")
+
+    def test_server_without_brain_reports_the_code_when_no_local_model(self):
+        client = FakeClient()
+        client.assist = lambda body: {"error": "brain_unavailable", "reply": ""}
+        self.assertEqual(self.router("auto", client, brain_ready=False).assist({})["error"], "brain_unavailable")
+        self.assertEqual(self.router("server", client).assist({})["error"], "brain_unavailable")
 
     def test_auto_without_local_model_reports_the_server_error(self):
         with self.assertRaises(ServerError):
