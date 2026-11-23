@@ -1,4 +1,4 @@
-import type { Project, Thread, Message, MemoryFact, SmbItem, Attachment, ModelMode } from './types';
+import type { Project, Thread, Message, MemoryFact, SmbItem, Attachment, ModelMode, Reaction } from './types';
 
 const BASE_URL = '/api/ai_studio';
 
@@ -328,4 +328,31 @@ export async function forkThread(threadId: string): Promise<Thread> {
     method: 'POST',
   });
   return handleResponse<Thread>(res);
+}
+
+export interface MessageMarks {
+  reactions: Reaction[];
+  feedback: 'positive' | 'negative' | null;
+}
+
+function messagePath(threadId: string, messageId: string, suffix: string): string {
+  return `${BASE_URL}/threads/${encodeURIComponent(threadId)}/messages/${encodeURIComponent(messageId)}/${suffix}`;
+}
+
+export async function toggleMessageReaction(threadId: string, messageId: string, emoji: string): Promise<MessageMarks> {
+  const res = await fetch(messagePath(threadId, messageId, 'reactions'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ emoji }),
+  });
+  return handleResponse<MessageMarks>(res);
+}
+
+export async function setMessageFeedback(threadId: string, messageId: string, value: 'positive' | 'negative' | null): Promise<MessageMarks> {
+  const res = await fetch(messagePath(threadId, messageId, 'feedback'), {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ value }),
+  });
+  return handleResponse<MessageMarks>(res);
 }

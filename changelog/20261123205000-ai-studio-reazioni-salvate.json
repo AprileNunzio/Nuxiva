@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "AI Studio ricorda reazioni e valutazioni delle risposte",
+    "en": "AI Studio remembers reactions and reply ratings",
+    "fr": "AI Studio retient les réactions et les évaluations des réponses",
+    "es": "AI Studio recuerda las reacciones y valoraciones de las respuestas"
+  },
+  "features": [
+    {
+      "it": "Le reazioni e il pollice su o giù sui messaggi di Nuova Chat vengono salvati sul server e restano dopo il ricaricamento; un secondo clic sul pollice lo toglie e ogni valutazione finisce nel registro di audit.",
+      "en": "Reactions and thumbs up or down on New Chat messages are saved on the server and survive a reload; a second click on the thumb removes it and every rating goes to the audit log.",
+      "fr": "Les réactions et le pouce levé ou baissé sur les messages de Nouvelle discussion sont enregistrés sur le serveur et restent après le rechargement ; un second clic sur le pouce l'enlève et chaque évaluation va dans le journal d'audit.",
+      "es": "Las reacciones y el pulgar arriba o abajo en los mensajes de Nuevo chat se guardan en el servidor y siguen tras recargar; un segundo clic en el pulgar lo quita y cada valoración va al registro de auditoría."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Dopo ogni risposta la chat si riallinea al server, così i messaggi appena inviati si possono subito valutare e reagire.",
+      "en": "After each reply the chat resyncs with the server, so freshly sent messages can be rated and reacted to right away.",
+      "fr": "Après chaque réponse la discussion se resynchronise avec le serveur, pour pouvoir évaluer et réagir tout de suite aux messages envoyés.",
+      "es": "Tras cada respuesta el chat se sincroniza con el servidor, así los mensajes recién enviados se pueden valorar y reaccionar enseguida."
+    }
+  ]
+}
