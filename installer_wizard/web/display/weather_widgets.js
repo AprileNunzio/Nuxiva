@@ -70,7 +70,7 @@
   function airDays(data, k) {
     const days = Array.isArray(data.air_days) ? data.air_days.filter((d) => d && has(d.aqi)) : [];
     if (days.length < 2) return "";
-    return `<section class="wx-panel wx-airdays" data-prio="3"><h4>${k.esc(k.t("wx_air_days"))}</h4><div class="wx-aird">${days.map((d) => {
+    return `<section class="wx-panel wx-airdays" data-prio="2"><h4>${k.esc(k.t("wx_air_days"))}</h4><div class="wx-aird">${days.map((d) => {
       const lv = band(d.aqi, [20, 40, 60, 80, 100]), names = ["good", "fair", "moderate", "poor", "very_poor", "extreme"];
       const top = Object.entries(d.pollen || {}).sort((a, b) => b[1] - a[1])[0];
       return `<div style="--c:${AQI_COLORS[lv]}"><b>${k.esc(new Date(`${d.iso}T12:00:00`).toLocaleDateString(k.loc, { weekday: "short" }))}</b>
@@ -84,6 +84,18 @@
     if (!r || !Array.isArray(r.frames) || !r.frames.length || !has(data.lat) || !has(data.lon)) return "";
     return `<section class="wx-panel wx-radar" data-prio="2"><h4>${k.esc(k.t("wx_radar"))}<span class="wx-rtime" data-radar-time></span></h4>
       <div class="wx-rmap" data-radar></div><p class="wx-foot">${k.esc(k.t("wx_radar_credit"))}</p></section>`;
+  }
+
+  const SOURCES = ["forecast", "model", "air", "pollen", "alerts", "radar"];
+  const STATES = ["ok", "stale", "unavailable", "out_of_season", "fallback"];
+
+  function sources(data, k) {
+    const map = data.sources || {}, items = SOURCES.filter((n) => STATES.includes(map[n]));
+    if (!items.length) return "";
+    return `<ul class="wx-src" data-prio="1" aria-label="${k.esc(k.t("wx_src_title"))}">${items.map((n) => {
+      const label = n === "model" && data.model && data.model !== "best_match" ? k.t("wx_model", { model: data.model }) : k.t(`wx_src_${n}`);
+      return `<li class="st-${map[n]}"><i aria-hidden="true"></i>${k.esc(label)}${map[n] === "ok" ? "" : ` · ${k.esc(k.t(`wx_st_${map[n]}`))}`}</li>`;
+    }).join("")}</ul>`;
   }
 
   const timers = new WeakMap();
@@ -120,5 +132,5 @@
     }
   }
 
-  window.NuxivaWeatherWidgets = Object.freeze({ alerts, insights, nowcastTile, yesterdayTile, airDays, radar, mount });
+  window.NuxivaWeatherWidgets = Object.freeze({ alerts, insights, nowcastTile, yesterdayTile, airDays, radar, sources, mount });
 })();

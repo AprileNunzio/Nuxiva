@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Il meteo a schermo intero torna completo: aria, pollini, UV, visibilità e lo stato di ogni fonte",
+    "en": "Full-screen weather is complete again: air, pollen, UV, visibility and the status of every source",
+    "fr": "La météo plein écran redevient complète : air, pollens, UV, visibilité et l'état de chaque source",
+    "es": "El tiempo a pantalla completa vuelve a estar completo: aire, polen, UV, visibilidad y el estado de cada fuente"
+  },
+  "features": [
+    {
+      "it": "Nuovo riquadro Dettagli con percepita, rugiada, nuvole, pioggia in corso e quota, e qualità dell'aria con monossido di carbonio e polveri.",
+      "en": "New Details panel with feels-like, dew point, clouds, current rain and elevation, and air quality with carbon monoxide and dust.",
+      "fr": "Nouvel encadré Détails avec ressenti, point de rosée, nuages, pluie en cours et altitude, et qualité de l'air avec monoxyde de carbone et poussières.",
+      "es": "Nuevo panel Detalles con sensación térmica, punto de rocío, nubes, lluvia actual y altitud, y calidad del aire con monóxido de carbono y polvo."
+    },
+    {
+      "it": "In fondo al meteo compare lo stato di ogni fonte: previsioni, modello locale, aria, pollini, allerte e radar, con il motivo quando una non risponde.",
+      "en": "At the bottom of the weather you now see the status of every source: forecast, local model, air, pollen, alerts and radar, with the reason when one does not respond.",
+      "fr": "En bas de la météo apparaît l'état de chaque source : prévisions, modèle local, air, pollens, alertes et radar, avec la raison quand l'une ne répond pas.",
+      "es": "Al final del tiempo aparece el estado de cada fuente: previsión, modelo local, aire, polen, avisos y radar, con el motivo cuando una no responde."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Quando Nuxiva sceglieva il modello più preciso per la tua zona, sparivano probabilità di pioggia, UV, visibilità e raffiche: ora il modello migliora solo temperatura, pioggia e vento e tutti gli altri dati restano.",
+      "en": "When Nuxiva picked the most accurate model for your area, rain chance, UV, visibility and gusts disappeared: now the model only refines temperature, rain and wind and all other data stays.",
+      "fr": "Quand Nuxiva choisissait le modèle le plus précis pour votre zone, probabilité de pluie, UV, visibilité et rafales disparaissaient : désormais le modèle affine seulement température, pluie et vent et toutes les autres données restent.",
+      "es": "Cuando Nuxiva elegía el modelo más preciso para tu zona desaparecían probabilidad de lluvia, UV, visibilidad y rachas: ahora el modelo solo afina temperatura, lluvia y viento y el resto de datos se mantiene."
+    },
+    {
+      "it": "Qualità dell'aria e pollini non spariscono più in silenzio: se la fonte non risponde o i pollini sono fuori stagione il riquadro resta e lo dice.",
+      "en": "Air quality and pollen no longer vanish silently: if the source does not respond or pollen is out of season the panel stays and says so.",
+      "fr": "Qualité de l'air et pollens ne disparaissent plus en silence : si la source ne répond pas ou si les pollens sont hors saison l'encadré reste et l'indique.",
+      "es": "La calidad del aire y el polen ya no desaparecen en silencio: si la fuente no responde o el polen está fuera de temporada el panel se queda y lo indica."
+    },
+    {
+      "it": "A schermo intero i riquadri si compattano invece di essere nascosti per mancanza di spazio, e una probabilità di pioggia sconosciuta non viene più mostrata come 0%.",
+      "en": "In full screen the panels get more compact instead of being hidden for lack of space, and an unknown rain chance is no longer shown as 0%.",
+      "fr": "En plein écran les encadrés se compactent au lieu d'être masqués faute de place, et une probabilité de pluie inconnue n'est plus affichée comme 0 %.",
+      "es": "A pantalla completa los paneles se compactan en vez de ocultarse por falta de espacio, y una probabilidad de lluvia desconocida ya no se muestra como 0%."
+    }
+  ]
+}

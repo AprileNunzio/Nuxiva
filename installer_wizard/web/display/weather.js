@@ -4,7 +4,8 @@
   const has = (v) => v !== null && v !== undefined && Number.isFinite(Number(v));
   const AQI_COLORS = ["#3ddc97", "#a6e22e", "#ffd166", "#ff9a4d", "#ff5d73", "#b24bf3"];
   const UV_COLORS = ["#3ddc97", "#ffd166", "#ff9a4d", "#ff5d73", "#b24bf3"];
-  const PRIO = { "wx-wind": 1, "wx-rain": 1, "wx-now": 1, "wx-yday": 2, "wx-hum": 2, "wx-uv": 2, "wx-air": 2, "wx-sun": 2, "wx-press": 3, "wx-vis": 3, "wx-moon": 3, "wx-pollen": 3 };
+  const PRIO = { "wx-wind": 1, "wx-rain": 1, "wx-now": 1, "wx-hum": 1, "wx-uv": 1, "wx-air": 1, "wx-pollen": 1, "wx-press": 1, "wx-vis": 1, "wx-sun": 1, "wx-more": 1, "wx-yday": 2, "wx-moon": 3 };
+  const STATES = ["ok", "stale", "unavailable", "disabled", "out_of_season", "fallback"];
 
   function units(u = {}) {
     const imperial = u.temp === "f";
@@ -28,7 +29,9 @@
     const dayName = (d, long) => new Date(`${d.iso}T12:00:00`).toLocaleDateString(loc, { weekday: long ? "long" : "short" });
     const rel = (d, i) => (i === 0 ? t("wx_today") : i === 1 ? t("wx_tomorrow") : dayName(d, true));
     const tile = (cls, title, body, foot) => `<section class="wx-tile ${cls}" data-prio="${PRIO[cls] || 2}"><h4>${esc(title)}</h4>${body}${foot ? `<p class="wx-foot">${foot}</p>` : ""}</section>`;
-    return { t, U, deg, cond, dirName, hourLabel, dayName, rel, tile, loc, esc };
+    const src = (name) => { const v = (data.sources || {})[name]; return STATES.includes(v) ? v : "unavailable"; };
+    const na = (cls, title, state) => `<section class="wx-tile wx-na ${cls}" data-prio="${PRIO[cls] || 2}"><h4>${esc(title)}</h4><b class="wx-big" aria-hidden="true">—</b><p class="wx-foot">${esc(t(`wx_st_${state}`))}</p></section>`;
+    return { t, U, deg, cond, dirName, hourLabel, dayName, rel, tile, na, src, loc, esc };
   }
 
   function band(value, limits) { const i = limits.findIndex((l) => value <= l); return i < 0 ? limits.length : i; }
@@ -38,39 +41,44 @@
     const toKmh = (v) => v;
     out.push(tile("wx-wind", t("wx_wind"), C.compass(c.dir, U.wind(toKmh(c.wind)), has(c.gust) ? U.wind(c.gust) : "", U.windUnit, ["N", "E", "S", "W"].map((x) => k.dirName(x))),
       `${esc(k.dirName(c.dir_name))} · ${t("wx_gust")} ${U.wind(c.gust) ?? "—"} ${U.windUnit}`));
-    if (has(c.humidity)) out.push(tile("wx-hum", t("wx_humidity"), `<div class="wx-row">${C.water(c.humidity)}<b class="wx-big">${Math.round(c.humidity)}<small>%</small></b></div>`,
-      has(c.dew) ? `${t("wx_dew")} ${k.deg(c.dew)}` : ""));
+    out.push(has(c.humidity) ? tile("wx-hum", t("wx_humidity"), `<div class="wx-row">${C.water(c.humidity)}<b class="wx-big">${Math.round(c.humidity)}<small>%</small></b></div>`,
+      has(c.dew) ? `${t("wx_dew")} ${k.deg(c.dew)}` : "") : k.na("wx-hum", t("wx_humidity"), "unavailable"));
     const air = data.air;
     if (air && has(air.aqi)) {
       const level = band(air.aqi, [20, 40, 60, 80, 100]);
       out.push(tile("wx-air", t("wx_air"), C.arc(air.aqi, 120, AQI_COLORS, Math.round(air.aqi), t(`wx_aqi_${air.level || "good"}`)),
-        `PM2.5 ${air.pm25 ?? "—"} · PM10 ${air.pm10 ?? "—"} · O₃ ${air.o3 ?? "—"}<br>NO₂ ${air.no2 ?? "—"} · SO₂ ${air.so2 ?? "—"} <span class="wx-tag" style="--c:${AQI_COLORS[level]}">US ${air.us_aqi ?? "—"}</span>`));
-    }
+        `PM2.5 ${air.pm25 ?? "—"} · PM10 ${air.pm10 ?? "—"} · O₃ ${air.o3 ?? "—"}<br>NO₂ ${air.no2 ?? "—"} · SO₂ ${air.so2 ?? "—"} · CO ${air.co ?? "—"}<br>${t("wx_dust")} ${air.dust ?? "—"} <span class="wx-tag" style="--c:${AQI_COLORS[level]}">US ${air.us_aqi ?? "—"}</span>`));
+    } else out.push(k.na("wx-air", t("wx_air"), k.src("air") === "ok" ? "unavailable" : k.src("air")));
     const uv = has(day.uv) && k.focus > 0 ? day.uv : has(c.uv) ? c.uv : day.uv;
     if (has(uv)) {
       const lv = band(uv, [2.9, 5.9, 7.9, 10.9]), names = ["low", "moderate", "high", "very_high", "extreme"];
       out.push(tile("wx-uv", t("wx_uv"), C.arc(uv, 12, UV_COLORS, uv, t(`wx_uv_${names[lv]}`)), t(`wx_uv_tip_${names[lv]}`)));
-    }
+    } else out.push(k.na("wx-uv", t("wx_uv"), "unavailable"));
     if (has(c.pressure)) {
       const arrow = { rising: "↗", falling: "↘", steady: "→" }[c.pressure_trend] || "";
       out.push(tile("wx-press", t("wx_pressure"), C.arc(Math.max(0, c.pressure - 960), 90, ["#6cc1ff", "#29e0ff", "#ffd166"], U.pressure(c.pressure), U.pressureUnit),
         `${arrow} ${c.pressure_trend ? t(`wx_trend_${c.pressure_trend}`) : ""}`));
-    }
-    if (has(c.visibility)) out.push(tile("wx-vis", t("wx_visibility"), `<b class="wx-big">${U.dist(c.visibility)}<small>${U.distUnit}</small></b>`, `${t("wx_cloud")} ${c.cloud ?? "—"}%`));
+    } else out.push(k.na("wx-press", t("wx_pressure"), "unavailable"));
+    out.push(has(c.visibility) ? tile("wx-vis", t("wx_visibility"), `<b class="wx-big">${U.dist(c.visibility)}<small>${U.distUnit}</small></b>`, `${t("wx_cloud")} ${c.cloud ?? "—"}%`)
+      : k.na("wx-vis", t("wx_visibility"), "unavailable"));
     const rain = has(day.rain_sum) ? day.rain_sum : c.rain_now;
-    out.push(tile("wx-rain", t("wx_rain"), `<b class="wx-big">${day.rain ?? 0}<small>%</small></b><div class="wx-bar"><i style="width:${Math.min(100, day.rain ?? 0)}%"></i></div>`,
+    out.push(tile("wx-rain", t("wx_rain"), `<b class="wx-big">${has(day.rain) ? day.rain : "—"}<small>%</small></b><div class="wx-bar"><i style="width:${has(day.rain) ? Math.min(100, day.rain) : 0}%"></i></div>`,
       `${U.precip(rain) ?? 0} ${U.precipUnit}${has(day.rain_hours) && day.rain_hours ? ` · ${day.rain_hours} ${t("wx_hours")}` : ""}${has(day.snow_sum) && day.snow_sum ? ` · ❄ ${day.snow_sum} cm` : ""}`));
     if (day.sunrise) {
       const now = new Date(), minutes = k.focus === 0 ? now.getHours() * 60 + now.getMinutes() : 720;
       const span = has(day.daylight_min) ? `${Math.floor(day.daylight_min / 60)}h ${day.daylight_min % 60}m` : "";
       out.push(tile("wx-sun", t("wx_sun"), C.sunArc(day.sunrise, day.sunset, minutes, span), has(day.sun_min) ? `${t("wx_sunshine")} ${Math.floor(day.sun_min / 60)}h ${day.sun_min % 60}m` : ""));
     }
+    out.push(tile("wx-more", t("wx_details"), `<dl class="wx-dl"><dt>${t("wx_feels")}</dt><dd>${has(c.feels) ? k.deg(c.feels) : "—"}</dd><dt>${t("wx_dew")}</dt><dd>${has(c.dew) ? k.deg(c.dew) : "—"}</dd>
+      <dt>${t("wx_cloud")}</dt><dd>${has(c.cloud) ? `${c.cloud}%` : "—"}</dd><dt>${t("wx_rain_now")}</dt><dd>${has(c.rain_now) ? `${U.precip(c.rain_now)} ${U.precipUnit}` : "—"}</dd>
+      <dt>${t("wx_elevation")}</dt><dd>${has(data.elevation) ? `${Math.round(data.elevation)} m` : "—"}</dd></dl>`));
     if (W) out.push(W.nowcastTile(data, k), W.yesterdayTile(data, k));
     if (data.astro) out.push(tile("wx-moon", t("wx_moon"), `<div class="wx-row">${C.moon(data.astro.fraction)}<b class="wx-big">${data.astro.illumination}<small>%</small></b></div>`,
       `${t(`wx_moon_${data.astro.phase}`)}<br>${t("wx_full")} ${new Date(data.astro.next_full).toLocaleDateString(k.loc, { day: "numeric", month: "short" })}`));
     const pollen = air && air.pollen ? Object.entries(air.pollen).filter(([, v]) => v.level) : [];
     if (pollen.length) out.push(tile("wx-pollen", t("wx_pollen"), `<div class="wx-chips">${pollen.map(([n, v]) =>
       `<span class="wx-chip lv-${e(v.level)}" title="${e(v.value)}">${t(`wx_pl_${n}`)}<i>${t(`wx_plv_${v.level}`)}</i></span>`).join("")}</div>`));
+    else out.push(k.na("wx-pollen", t("wx_pollen"), k.src("pollen") === "ok" ? "out_of_season" : k.src("pollen")));
     return out.join("");
   }
 
@@ -99,7 +107,7 @@
   function strip(data, k) {
     const days = data.days || [];
     return `<section class="wx-panel" data-prio="2"><h4>${k.esc(k.t("wx_next_days"))}</h4><div class="wx-strip">${days.slice(0, 10).map((d, i) => `<div class="wx-mini ${i === k.focus ? "on" : ""}">
-      <b>${k.esc(k.rel(d, i))}</b>${I.icon(d.icon, 34)}<span>${k.deg(d.tmax)} <small>${k.deg(d.tmin)}</small></span><em>☂ ${d.rain ?? 0}%</em></div>`).join("")}</div></section>`;
+      <b>${k.esc(k.rel(d, i))}</b>${I.icon(d.icon, 34)}<span>${k.deg(d.tmax)} <small>${k.deg(d.tmin)}</small></span><em>☂ ${has(d.rain) ? d.rain : "—"}%</em></div>`).join("")}</div></section>`;
   }
 
   function weekRows(data, k) {
@@ -108,7 +116,7 @@
       <div class="wx-dn"><b>${k.esc(k.rel(d, i))}</b><small>${k.esc(d.date)}</small></div>${I.icon(d.icon, 38)}
       <div class="wx-dd">${k.esc(k.cond(d.code, d.desc))}</div>
       <div class="wx-rg"><span>${k.deg(d.tmin)}</span>${C.range(k.U.temp(d.tmin), k.U.temp(d.tmax), lo, hi)}<span>${k.deg(d.tmax)}</span></div>
-      <div class="wx-st" title="${k.esc(k.t("wx_rain"))}">☂ ${d.rain ?? 0}%<small>${k.U.precip(d.rain_sum) ?? 0} ${k.U.precipUnit}</small></div>
+      <div class="wx-st" title="${k.esc(k.t("wx_rain"))}">☂ ${has(d.rain) ? d.rain : "—"}%<small>${k.U.precip(d.rain_sum) ?? 0} ${k.U.precipUnit}</small></div>
       <div class="wx-st" title="${k.esc(k.t("wx_wind"))}"><i class="wx-arrow" style="transform:rotate(${(d.dir ?? 0) + 180}deg)">↑</i> ${k.U.wind(d.wind) ?? "—"}<small>${k.U.windUnit}${has(d.gust) ? ` · ↯${k.U.wind(d.gust)}` : ""}</small></div>
       <div class="wx-st" title="${k.esc(k.t("wx_uv"))}">UV <b class="uv-${has(d.uv) ? band(d.uv, [2.9, 5.9, 7.9, 10.9]) : 0}">${d.uv ?? "—"}</b><small>☀ ${k.esc(d.sunrise)}–${k.esc(d.sunset)}</small></div></div>`).join("");
     return `<section class="wx-panel" data-prio="1"><h4>${k.esc(k.t("wx_week"))}</h4><div class="wx-scroll" data-prio="3">${C.weekChart(days, { temp: k.U.temp, day: (d) => k.dayName(d, false), label: k.t("wx_week") })}</div>
@@ -124,7 +132,7 @@
     const body = view === "week"
       ? `${hero(data, k)}${weekRows(data, k)}<div class="wx-tiles">${tiles(data, k)}</div>${W ? W.airDays(data, k) : ""}`
       : `${hero(data, k)}${hourlyBlock(data, k)}<div class="wx-tiles">${tiles(data, k)}</div><div class="wx-duo">${W ? W.radar(data, k) : ""}${strip(data, k)}</div>${W ? W.airDays(data, k) : ""}`;
-    return `<div class="wx wx-${view} wx-theme-${theme} ${opts.compact ? "wx-compact" : ""}">${body}<p class="wx-credit" data-prio="4">${k.esc(data.source || "")}${data.model && data.model !== "best_match" ? ` · ${k.esc(k.t("wx_model", { model: data.model }))}` : ""}${data.stale ? ` · ${k.esc(k.t("wx_stale"))}` : ""}</p></div>`;
+    return `<div class="wx wx-${view} wx-theme-${theme} ${opts.compact ? "wx-compact" : ""}">${body}${W ? W.sources(data, k) : ""}<p class="wx-credit" data-prio="4">${k.esc(data.source || "")}${data.model && data.model !== "best_match" ? ` · ${k.esc(k.t("wx_model", { model: data.model }))}` : ""}${data.stale ? ` · ${k.esc(k.t("wx_stale"))}` : ""}</p></div>`;
   }
 
   function compact(data, opts) {

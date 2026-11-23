@@ -551,6 +551,23 @@
     "lab_brain_title": "Shared brain",
     "lab_brain_tip": "{{decisions}} decisions, {{questions}} open questions",
     "lab_screen_attempts": "Attempt {{n}}",
-    "lab_wall_kicker": "NunzioTech Agency"
+    "lab_wall_kicker": "NunzioTech Agency",
+    "wx_details": "Details",
+    "wx_rain_now": "rain now",
+    "wx_elevation": "elevation",
+    "wx_dust": "dust",
+    "wx_src_title": "Data sources",
+    "wx_src_forecast": "Forecast",
+    "wx_src_model": "Local model",
+    "wx_src_air": "Air quality",
+    "wx_src_pollen": "Pollen",
+    "wx_src_alerts": "Official alerts",
+    "wx_src_radar": "Radar",
+    "wx_st_ok": "active",
+    "wx_st_stale": "data not up to date",
+    "wx_st_unavailable": "source unavailable",
+    "wx_st_disabled": "turned off in settings",
+    "wx_st_out_of_season": "out of season or area not covered",
+    "wx_st_fallback": "unreachable, using the general model"
   }
 }
