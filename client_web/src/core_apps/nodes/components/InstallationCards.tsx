@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Cpu, Laptop, LucideIcon, Monitor, Smartphone, Terminal } from 'lucide-react';
+import { Box, Cpu, Laptop, LucideIcon, Monitor, Smartphone, Tablet, Terminal } from 'lucide-react';
 import { useScopedI18n } from '../../../shared/i18n/useScopedI18n';
 import { LinksHandle } from '../../../node_apps/client_link/hooks/useLinks';
 import { UsbPort } from '../types';
@@ -9,8 +9,11 @@ import { WindowsGuide } from './WindowsGuide';
 import { DockerGuide } from './DockerGuide';
 import { Esp32Guide } from './Esp32Guide';
 import { MacosGuide } from './MacosGuide';
+import { IosGuide } from './IosGuide';
 
-export type PlatformId = 'windows' | 'android' | 'linux' | 'docker' | 'esp32' | 'macos';
+export type PlatformId = 'windows' | 'android' | 'linux' | 'docker' | 'esp32' | 'macos' | 'ios';
+
+const PENDING: ReadonlySet<PlatformId> = new Set<PlatformId>(['macos', 'ios']);
 
 interface PlatformMeta {
   readonly id: PlatformId;
@@ -70,6 +73,14 @@ const PLATFORMS: readonly PlatformMeta[] = [
     descKey: 'install_macos_desc',
     stepCount: 3,
   },
+  {
+    id: 'ios',
+    icon: Tablet,
+    titleKey: 'install_ios_title',
+    badgeKey: 'install_ios_badge',
+    descKey: 'install_ios_desc',
+    stepCount: 4,
+  },
 ];
 
 export const InstallationCards: React.FC<{
@@ -92,11 +103,10 @@ export const InstallationCards: React.FC<{
         </p>
       </div>
 
-      {/* Interactive Selection Cards */}
       <div
         role="tablist"
         aria-label={t('install_platforms')}
-        className="grid grid-cols-2 gap-3 cq-sm:grid-cols-3 cq-lg:grid-cols-6"
+        className="grid grid-cols-2 gap-3 cq-sm:grid-cols-3 cq-lg:grid-cols-4 cq-2xl:grid-cols-7"
       >
         {PLATFORMS.map((platform) => {
           const Icon = platform.icon;
@@ -146,7 +156,6 @@ export const InstallationCards: React.FC<{
         })}
       </div>
 
-      {/* Selected Platform Detailed Guide Panel */}
       <div
         role="tabpanel"
         id={`panel-${activePlatform.id}`}
@@ -161,7 +170,7 @@ export const InstallationCards: React.FC<{
             <div>
               <h2 className="text-lg font-bold text-on-surface">{t(activePlatform.titleKey)}</h2>
               <p className="text-xs text-on-surface-variant">
-                {t(activePlatform.id === 'macos' ? 'install_pending' : 'install_steps_count', {
+                {t(PENDING.has(activePlatform.id) ? 'install_pending' : 'install_steps_count', {
                   count: activePlatform.stepCount,
                 })}{' '}
                 · {t(activePlatform.badgeKey)}
@@ -183,6 +192,7 @@ export const InstallationCards: React.FC<{
           <Esp32Guide usbPorts={usbPorts} detectingUsb={detectingUsb} detectUsb={detectUsb} />
         )}
         {selected === 'macos' && <MacosGuide />}
+        {selected === 'ios' && <IosGuide />}
       </div>
     </section>
   );

@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": { "it": "Schede Mac e iPhone/iPad in Nodi e Server", "en": "Mac and iPhone/iPad tabs in Nodes and Servers", "fr": "Onglets Mac et iPhone/iPad dans Nœuds et Serveurs", "es": "Pestañas Mac e iPhone/iPad en Nodos y Servidores" },
+  "features": [
+    { "it": "Nuova scheda iPhone e iPad: indica che l'app è in preparazione e spiega come funzionerà l'abbinamento con QR code o codice a 6 cifre.", "en": "New iPhone and iPad tab: it shows that the app is in preparation and explains how pairing with a QR code or 6-digit code will work.", "fr": "Nouvel onglet iPhone et iPad : il indique que l'app est en préparation et explique comment fonctionnera l'association par QR code ou code à 6 chiffres.", "es": "Nueva pestaña iPhone y iPad: indica que la app está en preparación y explica cómo funcionará el emparejamiento con código QR o código de 6 cifras." },
+    { "it": "Le schede Mac e iPhone/iPad mostrano l'indirizzo di Nuxiva da copiare per usarlo subito da Safari.", "en": "The Mac and iPhone/iPad tabs show the Nuxiva address to copy and use right away from Safari.", "fr": "Les onglets Mac et iPhone/iPad affichent l'adresse de Nuxiva à copier pour l'utiliser tout de suite depuis Safari.", "es": "Las pestañas Mac e iPhone/iPad muestran la dirección de Nuxiva para copiarla y usarla enseguida desde Safari." }
+  ],
+  "fixes": [
+    { "it": "La scheda Mac non propone più un comando da Terminale che non funzionava e ora è tradotta in tutte le lingue.", "en": "The Mac tab no longer offers a Terminal command that did not work and is now translated into every language.", "fr": "L'onglet Mac ne propose plus une commande Terminal qui ne fonctionnait pas et il est désormais traduit dans toutes les langues.", "es": "La pestaña Mac ya no propone un comando de Terminal que no funcionaba y ahora está traducida a todos los idiomas." }
+  ]
+}
