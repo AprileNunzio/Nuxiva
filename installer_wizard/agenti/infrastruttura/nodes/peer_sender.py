@@ -8,6 +8,7 @@ from config import PUBLIC_PORT
 
 from agenti.nodes import peer_envelope
 from agenti.nodes.peer_identity import identity
+from agenti.nodes.peer_ledger import ledger
 
 log = logging.getLogger("nuxiva.peer")
 
@@ -54,6 +55,7 @@ def build_record(port: int | None = None, addresses=local_addresses) -> bytes | 
     addrs = [f"{ip}:{port}" for ip in addresses()]
     if not addrs:
         return None
+    ledger.announce(addrs)
     data = json.dumps(identity().seal_locate(addrs), separators=(",", ":")).encode("utf-8")
     return data if len(data) <= MAX_DATAGRAM else None
 

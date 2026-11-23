@@ -48,6 +48,7 @@ class PeerIdentity:
         if seed is None:
             seed = secrets.token_bytes(32)
             _write_seed(path, seed)
+        self._seed = seed.hex()
         self._key = Ed25519PrivateKey.from_private_bytes(seed)
         self._public = self._key.public_key().public_bytes(**_RAW).hex()
         self._clock = clock
@@ -57,6 +58,9 @@ class PeerIdentity:
     @property
     def public_hex(self) -> str:
         return self._public
+
+    def seed_hex(self) -> str:
+        return self._seed
 
     def _next_seq(self, now_ms: int) -> int:
         with self._lock:

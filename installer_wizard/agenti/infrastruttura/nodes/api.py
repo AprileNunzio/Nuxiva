@@ -1,3 +1,4 @@
+import asyncio
 import hashlib
 import time
 
@@ -15,6 +16,7 @@ from agenti.nodes.beacon import beacon
 from agenti.nodes.requests import requests
 from agenti.nodes.inbox import inbox
 from agenti.nodes.peer_identity import public_id
+from agenti.nodes.peer_ledger import ledger
 from agenti.nodes.registry import COMMANDS, TYPES, registry
 
 INBOX_WAIT = 25.0
@@ -309,6 +311,18 @@ async def node_assist(request: Request):
     from agenti.nodes import desk_assistant
     NODE.set(node["id"])
     return await assist_turn.run(node["id"], body.get("turn_id"), lambda: desk_assistant.assist(node, body))
+
+
+@public_routes.post("/api/nodes/peer/sync")
+async def node_peer_sync(request: Request):
+    _node(request)
+    body = await _body(request, 70000)
+    wire = body.get("wire")
+    peer = body.get("peer")
+    if isinstance(peer, str) and len(peer) == 64 and all(c in "0123456789abcdef" for c in peer):
+        ledger.enroll(peer)
+    reply = await asyncio.to_thread(ledger.handle, wire) if isinstance(wire, str) else None
+    return {"wire": reply, "digest": await asyncio.to_thread(ledger.digest)}
 
 
 @public_routes.post("/api/nodes/memory-sync")

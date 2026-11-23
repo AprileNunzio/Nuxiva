@@ -60,6 +60,7 @@ mod molecule;
 mod node;
 mod node_telemetry;
 mod nvr;
+mod peer_ledger;
 mod percept;
 mod planner;
 mod presence;
@@ -172,6 +173,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     authz::register(m)?;
     node::register(m)?;
     node_telemetry::register(m)?;
+    peer_ledger::register(m)?;
     home_rules::register(m)?;
     ear::register(m)?;
     sensory::register(m)?;

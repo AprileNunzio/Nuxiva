@@ -65,6 +65,14 @@ EN: `lookup.rs` and `wire.rs` add node lookup by id as an I/O-free state machine
 
 Assunzioni / assumptions: il trasporto reale (UDP, WebSocket) e il collegamento a server, Windows e APK sono la fase 4C.
 
+## Fase 4C-1: integrazione nel server / server integration
+
+IT: il binding PyO3 `PeerLedger` (`nuxiva-native`) espone il registro a Python; `nodes/peer_ledger.py` lo apre con la stessa chiave Ed25519 del server, lo carica da `peer_ledger.chain` (file 0600, verificato per intero al caricamento; se illeggibile si riparte da zero), registra ogni cambio di indirizzo ad ogni invio periodico e salva solo se qualcosa è cambiato. `POST /api/nodes/peer/sync` (solo nodi autenticati, corpo massimo 70 KB) iscrive la chiave `peer` del nodo e risponde con `Wire` verificato e il digest del server. Senza modulo Rust tutto degrada senza errori.
+
+EN: the PyO3 `PeerLedger` binding exposes the ledger to Python; `nodes/peer_ledger.py` opens it with the server's Ed25519 key, loads it from `peer_ledger.chain` (0600, fully re-verified on load; unreadable means a fresh start), records each address change on every periodic send and saves only on change. `POST /api/nodes/peer/sync` (authenticated nodes only, 70 KB body cap) enrolls the node's `peer` key and replies with a verified `Wire` and the server digest. Without the Rust module everything degrades silently.
+
+Assunzioni / assumptions: l'iscrizione automatica della chiave `peer` di un nodo già abbinato si fida dell'abbinamento; i client Windows e APK useranno l'endpoint di sincronizzazione (4C-2 e 4C-3).
+
 ## Test di carico / load test
 
 `native/crates/peer-core/tests/load_100.rs` simula 100 nodi (1 server, 20 desktop, 79 telefoni con batteria diversa), tutti con messaggi firmati e verificati:

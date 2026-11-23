@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Il server salva e condivide la cronologia dei propri indirizzi",
+    "en": "The server saves and shares the history of its own addresses",
+    "fr": "Le serveur enregistre et partage l'historique de ses adresses",
+    "es": "El servidor guarda y comparte el historial de sus direcciones"
+  },
+  "features": [
+    {
+      "it": "Ogni volta che il server cambia indirizzo lo registra in un registro firmato e protetto, e i dispositivi abbinati possono sincronizzarlo per ritrovare il server anche dopo un cambio di rete.",
+      "en": "Whenever the server changes address it records it in a signed, protected ledger, and paired devices can sync it to find the server again even after a network change.",
+      "fr": "Chaque fois que le serveur change d'adresse, il l'enregistre dans un registre signé et protégé, et les appareils associés peuvent le synchroniser pour retrouver le serveur même après un changement de réseau.",
+      "es": "Cada vez que el servidor cambia de dirección lo registra en un libro firmado y protegido, y los dispositivos vinculados pueden sincronizarlo para encontrar el servidor incluso tras un cambio de red."
+    }
+  ]
+}

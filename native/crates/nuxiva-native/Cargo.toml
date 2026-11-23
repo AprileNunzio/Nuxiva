@@ -68,6 +68,8 @@ nuxiva-chat-core = { path = "../chat-core" }
 nuxiva-llm-core = { path = "../llm-core" }
 nuxiva-llm-client = { path = "../llm-client" }
 nuxiva-node-core = { path = "../node-core" }
+nuxiva-peer-core = { path = "../peer-core" }
+nuxiva-peer-ledger = { path = "../peer-ledger" }
 nuxiva-rescue-core = { path = "../rescue-core" }
 nuxiva-defense-core = { path = "../defense-core" }
 nuxiva-resource-core = { path = "../resource-core" }

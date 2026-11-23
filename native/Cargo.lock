@@ -2434,6 +2434,8 @@ dependencies = [
  "nuxiva-molecule-core",
  "nuxiva-node-core",
  "nuxiva-nvr-core",
+ "nuxiva-peer-core",
+ "nuxiva-peer-ledger",
  "nuxiva-percept-core",
  "nuxiva-presence-core",
  "nuxiva-proactivity-core",
