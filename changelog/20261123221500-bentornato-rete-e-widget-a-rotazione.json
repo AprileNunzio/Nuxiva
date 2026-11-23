@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Widget di bentornato, stato della rete di nodi e rotazione dei widget",
+    "en": "Welcome-back widget, node network status and widget rotation",
+    "fr": "Widget de retour, état du réseau de nœuds et rotation des widgets",
+    "es": "Widget de bienvenida, estado de la red de nodos y rotación de widgets"
+  },
+  "features": [
+    {
+      "it": "Quando torni dopo almeno un'ora, la pagina 80 mostra da quanto mancavi e cosa è successo nel frattempo: errori, avvisi, nuovi dispositivi in rete e chi è in casa.",
+      "en": "When you come back after at least an hour, page 80 shows how long you were away and what happened meanwhile: errors, alerts, new network devices and who is home.",
+      "fr": "Quand vous revenez après au moins une heure, la page 80 indique la durée de votre absence et ce qui s'est passé entre-temps : erreurs, alertes, nouveaux appareils sur le réseau et qui est à la maison.",
+      "es": "Cuando vuelves tras al menos una hora, la página 80 muestra cuánto tiempo faltaste y qué pasó mientras tanto: errores, avisos, nuevos dispositivos en la red y quién está en casa."
+    },
+    {
+      "it": "Nuovo widget con lo stato dei nodi collegati: sale in evidenza solo quando qualche nodo è offline.",
+      "en": "New widget with the status of connected nodes: it is highlighted only when some node is offline.",
+      "fr": "Nouveau widget avec l'état des nœuds connectés : il n'est mis en avant que lorsqu'un nœud est hors ligne.",
+      "es": "Nuevo widget con el estado de los nodos conectados: solo se destaca cuando algún nodo está desconectado."
+    },
+    {
+      "it": "Se i widget non entrano tutti, quelli non essenziali si danno il cambio ogni 20 secondi, mentre urgenti ed essenziali restano sempre visibili.",
+      "en": "If not all widgets fit, the non-essential ones take turns every 20 seconds, while urgent and essential ones always stay visible.",
+      "fr": "Si tous les widgets ne tiennent pas, les non essentiels se relaient toutes les 20 secondes, tandis que les urgents et essentiels restent toujours visibles.",
+      "es": "Si no caben todos los widgets, los no esenciales se turnan cada 20 segundos, mientras que los urgentes y esenciales siempre siguen visibles."
+    }
+  ]
+}

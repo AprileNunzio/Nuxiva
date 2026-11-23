@@ -54,6 +54,21 @@ for (const W of [1024, 1920, 2560, 3840]) {
         self.assertEqual(done.returncode, 0, done.stderr)
 
     @unittest.skipUnless(shutil.which("node"), "node assente")
+    def test_rotation_keeps_steady_cards_first_and_cycles_the_rest(self):
+        script = """
+global.window = {};
+require(process.argv[1]);
+const R = window.NuxivaDeskGrid.rotate, keep = (c) => c.s;
+const list = [{ n: "a" }, { n: "u", s: true }, { n: "b" }, { n: "c" }];
+const names = (o) => R(list, o, keep).map((c) => c.n).join("");
+if (names(0) !== "uabc" || names(1) !== "ubca" || names(4) !== "ubca" || names(-1) !== "ucab") throw new Error(names(1));
+if (R([{ n: "x", s: true }], 3, keep).length !== 1) throw new Error("fixed");
+"""
+        done = subprocess.run(["node", "-e", script, str(GRID)], capture_output=True, text=True)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn("NuxivaDeskGrid.rotate(normal, rotation, steady)", DESK.read_text(encoding="utf-8"))
+
+    @unittest.skipUnless(shutil.which("node"), "node assente")
     def test_syntax(self):
         done = subprocess.run(["node", "--check", str(DESK)], capture_output=True, text=True)
         self.assertEqual(done.returncode, 0, done.stderr)

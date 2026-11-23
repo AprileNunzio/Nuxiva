@@ -6,6 +6,16 @@
   },
   "dictionary": {
     "label": "Briefing",
-    "simple_title": "Good to know today"
+    "simple_title": "Good to know today",
+    "bf_away_title": "While you were out",
+    "bf_away_for": "Away for: {{time}}",
+    "bf_away_alerts": "Notices: {{n}}",
+    "bf_away_errors": "Errors: {{n}}",
+    "bf_away_devices": "New devices: {{n}}",
+    "bf_away_people": "At home now: {{names}}",
+    "bf_away_quiet": "Nothing new",
+    "bf_mesh_title": "Nuxiva network",
+    "bf_mesh_online": "Active nodes: {{n}} of {{total}}",
+    "bf_mesh_offline": "Unreachable: {{name}}"
   }
 }

@@ -6,6 +6,16 @@
   },
   "dictionary": {
     "label": "Resumen",
-    "simple_title": "Para saber hoy"
+    "simple_title": "Para saber hoy",
+    "bf_away_title": "Mientras estabas fuera",
+    "bf_away_for": "Fuera durante: {{time}}",
+    "bf_away_alerts": "Avisos: {{n}}",
+    "bf_away_errors": "Errores: {{n}}",
+    "bf_away_devices": "Dispositivos nuevos: {{n}}",
+    "bf_away_people": "En casa ahora: {{names}}",
+    "bf_away_quiet": "Nada nuevo",
+    "bf_mesh_title": "Red Nuxiva",
+    "bf_mesh_online": "Nodos activos: {{n}} de {{total}}",
+    "bf_mesh_offline": "No accesible: {{name}}"
   }
 }

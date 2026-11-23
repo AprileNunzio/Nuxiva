@@ -9,14 +9,16 @@
   NuxivaDesk.register("brief", {
     render(el, d, ctx) {
       const data = d && typeof d === "object" ? d : {};
-      const title = ctx.str(data.title, 80);
+      const say = (v) => (v && typeof v === "object" && typeof v.key === "string" && /^bf_[a-z_]{1,40}$/.test(v.key)
+        ? ctx.str(ctx.t(v.key, v.params && typeof v.params === "object" ? v.params : {}), 300) : "");
+      const title = say(data.title) || ctx.str(data.title, 80);
       const subtitle = ctx.str(data.subtitle, 160);
       const pic = data.image && typeof data.image === "object" ? data.image : null;
       const src = safeUrl(pic && pic.src);
       const credit = pic ? ctx.str(pic.credit, 120) : "";
       const details = ctx.arr(data.details, MAX);
       const rows = ctx.arr(data.lines, MAX)
-        .map((l, i) => ({ text: l && typeof l === "object" ? ctx.pick(l, ["text", "label", "title"], 300) : ctx.str(l, 300), detail: details[i] && typeof details[i] === "object" ? details[i] : null }))
+        .map((l, i) => ({ text: l && typeof l === "object" ? say(l) || ctx.pick(l, ["text", "label", "title"], 300) : ctx.str(l, 300), detail: details[i] && typeof details[i] === "object" ? details[i] : null }))
         .filter((r) => r.text);
       const blocks = [];
       for (const r of rows) {

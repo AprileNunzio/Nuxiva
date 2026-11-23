@@ -6,7 +6,7 @@ import time
 from config import STATE_DIR, env_get
 from state import store
 
-from agenti.desktop import briefing, context
+from agenti.desktop import briefing, context, extra_cards
 from agenti.desktop.recall import Recall, signature
 from agenti.desktop.news import news
 
@@ -48,6 +48,8 @@ class Secretary:
         self.weather: tuple[float, tuple | None] = (0.0, None)
         self.recall = Recall(STATE_DIR / "display" / "briefing_recall.json")
         self.pending: dict[str, tuple[str, list | None]] = {}
+        self.away_from = 0.0
+        self.back_at = 0.0
 
     @staticmethod
     def enabled() -> bool:
@@ -79,6 +81,14 @@ class Secretary:
         for name, collect in briefing.COLLECTORS.items():
             try:
                 card = briefing.important(self.recall.known_lines()) if name == "important" else collect()
+            except Exception:
+                log.exception("Widget del proprietario: sezione %s non disponibile", name)
+                continue
+            if card:
+                out.append((name, card))
+        for name, build in (("mesh", extra_cards.mesh), ("welcome", self.welcome)):
+            try:
+                card = build()
             except Exception:
                 log.exception("Widget del proprietario: sezione %s non disponibile", name)
                 continue
@@ -137,7 +147,19 @@ class Secretary:
     def _flush(self) -> None:
         for name, (sig, lines) in self.pending.items():
             self.recall.mark(name, sig, lines)
+        if "welcome" in self.pending:
+            self.away_from = 0.0
         self.pending = {}
+
+    def welcome(self) -> tuple | None:
+        if not self.away_from:
+            return None
+        from agenti.network.explorer import explorer
+        from agenti.people.panel import roster, visible_people
+        now = self.back_at or time.time()
+        visible = {p["slug"] for p in visible_people() if p.get("known") and p.get("slug")}
+        names = [r["name"] for r in roster(now, visible)]
+        return extra_cards.welcome(list(store.events), self.away_from, now, names, list(explorer.devices.values()))
 
     async def step(self, desk) -> None:
         if not self.enabled():
@@ -157,12 +179,16 @@ class Secretary:
         if not self.active and (near or (present and self.paused)):
             self.paused = False
             self.active, self.chosen = True, []
+            if self.away_from and now - self.away_from < extra_cards.AWAY_MIN:
+                self.away_from = 0.0
+            self.back_at = now
             store.event("INFO", "Widget del proprietario aperti sul display", "desk")
             await self.show(desk)
             return
         if now - self.last_seen > AWAY_AFTER:
             self.paused = False
         if self.active and now - self.last_seen > AWAY_AFTER:
+            self.away_from = self.last_seen
             self.active = False
             self.clear(desk)
             return

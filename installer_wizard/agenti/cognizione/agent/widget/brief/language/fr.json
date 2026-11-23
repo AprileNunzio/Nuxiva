@@ -6,6 +6,16 @@
   },
   "dictionary": {
     "label": "Résumé",
-    "simple_title": "À savoir aujourd'hui"
+    "simple_title": "À savoir aujourd'hui",
+    "bf_away_title": "Pendant votre absence",
+    "bf_away_for": "Absent depuis : {{time}}",
+    "bf_away_alerts": "Avis : {{n}}",
+    "bf_away_errors": "Erreurs : {{n}}",
+    "bf_away_devices": "Nouveaux appareils : {{n}}",
+    "bf_away_people": "À la maison : {{names}}",
+    "bf_away_quiet": "Rien de nouveau",
+    "bf_mesh_title": "Réseau Nuxiva",
+    "bf_mesh_online": "Nœuds actifs : {{n}} sur {{total}}",
+    "bf_mesh_offline": "Injoignable : {{name}}"
   }
 }

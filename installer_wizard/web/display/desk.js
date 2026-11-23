@@ -318,7 +318,11 @@
     return true;
   }
 
+  let rotation = 0, overflow = false;
+  const steady = (c) => c.inst.urgent || c.inst.essential || (c.inst.priority || 0) >= 80;
+  setInterval(() => { if (overflow && !document.hidden) { rotation += 1; scheduleLayout(); } }, 20000);
   function layout() {
+    overflow = false;
     const current = lastList.map((i) => cards.get(i.key)).filter(Boolean);
     if (layoutFullscreen(current)) return;
     if (hooks.layout) { hooks.layout({ cards: current, place, measure }); return; }
@@ -379,9 +383,9 @@
       const grid = window.NuxivaDeskGrid.wings(W, M, GAP);
       const colTops = grid.xs.map(() => TOP);
       const obstacles = blocked.concat(fixed);
-      for (const c of normal) {
+      for (const c of window.NuxivaDeskGrid.rotate(normal, rotation, steady)) {
         const w = grid.colW, h = measure(c, w), spot = window.NuxivaDeskGrid.fit(grid, colTops, h, BOTTOM, obstacles, GAP);
-        if (!spot) { c.el.classList.add("hidden"); continue; }
+        if (!spot) { c.el.classList.add("hidden"); overflow = true; continue; }
         const x = grid.xs[spot.i], y = spot.y;
         place(c, x, y, w);
         colTops[spot.i] = y + h + GAP;

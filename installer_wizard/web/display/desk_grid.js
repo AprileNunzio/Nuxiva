@@ -38,5 +38,12 @@
     return null;
   }
 
-  window.NuxivaDeskGrid = Object.freeze({ wings, fit, settle });
+  function rotate(list, offset, keep) {
+    const fixed = list.filter(keep), rest = list.filter((c) => !keep(c));
+    if (!rest.length) return fixed;
+    const k = ((offset % rest.length) + rest.length) % rest.length;
+    return [...fixed, ...rest.slice(k), ...rest.slice(0, k)];
+  }
+
+  window.NuxivaDeskGrid = Object.freeze({ wings, fit, settle, rotate });
 })();
