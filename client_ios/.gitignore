@@ -1,0 +1,5 @@
+Core/
+*.xcodeproj/
+DerivedData/
+build/
+xcuserdata/

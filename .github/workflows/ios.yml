@@ -1,0 +1,77 @@
+name: iOS App
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "client_ios/**"
+      - "native/crates/mobile-ffi/**"
+      - "native/crates/node-core/**"
+      - "contracts/**"
+      - "scripts/ios/**"
+      - ".github/workflows/ios.yml"
+  pull_request:
+    paths:
+      - "client_ios/**"
+      - "native/crates/mobile-ffi/**"
+      - "native/crates/node-core/**"
+      - "contracts/**"
+      - "scripts/ios/**"
+      - ".github/workflows/ios.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  app:
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Rust toolchain
+        run: rustup toolchain install 1.99.1 --profile minimal && rustup default 1.99.1
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            native/target
+          key: ios-cargo-${{ hashFiles('native/Cargo.lock') }}
+
+      - name: XcodeGen
+        run: command -v xcodegen || brew install xcodegen
+
+      - name: Rust core for iOS
+        env:
+          NUXIVA_IOS_PROFILE: device
+        run: bash scripts/ios/build_core.sh
+
+      - name: Generate project
+        working-directory: client_ios
+        run: xcodegen generate
+
+      - name: Build and test
+        working-directory: client_ios
+        run: |
+          set -euo pipefail
+          SIM=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin)["devices"]; print(next(x["udid"] for k,v in sorted(d.items(), reverse=True) if "iOS" in k for x in v if x["name"].startswith("iPhone")))')
+          xcodebuild test -project Nuxiva.xcodeproj -scheme Nuxiva -destination "id=$SIM" \
+            CODE_SIGNING_ALLOWED=NO -resultBundlePath "$RUNNER_TEMP/Nuxiva.xcresult" | tee "$RUNNER_TEMP/xcodebuild.log" | grep -E "error:|warning:|Test |\*\*" || true
+          grep -q "\*\* TEST SUCCEEDED \*\*" "$RUNNER_TEMP/xcodebuild.log"
+
+      - name: Device build without signing
+        working-directory: client_ios
+        run: |
+          xcodebuild build -project Nuxiva.xcodeproj -scheme Nuxiva -destination "generic/platform=iOS" \
+            CODE_SIGNING_ALLOWED=NO -quiet
