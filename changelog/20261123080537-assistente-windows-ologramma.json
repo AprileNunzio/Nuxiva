@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Assistente Windows: nuova sfera olografica ad alta definizione",
+    "en": "Windows assistant: new high-definition holographic orb",
+    "fr": "Assistant Windows : nouvelle sphère holographique haute définition",
+    "es": "Asistente de Windows: nueva esfera holográfica de alta definición"
+  },
+  "features": [
+    {
+      "it": "La sfera fluttuante ha trasparenza reale con bordi morbidi, nucleo in vetro con riflessi, anelli rotanti, particelle e un alone luminoso che reagisce alla voce.",
+      "en": "The floating orb now has true transparency with soft edges, a glass core with reflections, rotating rings, particles and a glow that reacts to the voice.",
+      "fr": "La sphère flottante a une vraie transparence aux bords doux, un noyau en verre avec reflets, des anneaux rotatifs, des particules et un halo qui réagit à la voix.",
+      "es": "La esfera flotante tiene transparencia real con bordes suaves, núcleo de cristal con reflejos, anillos giratorios, partículas y un halo que reacciona a la voz."
+    },
+    {
+      "it": "Un anello a spettro e le onde vocali seguono chi parla; a riposo resta un'onda leggera sempre presente e la sfera diventa più discreta, tornando piena al passaggio del mouse.",
+      "en": "A spectrum ring and voice waves follow whoever is speaking; at rest a gentle wave stays visible and the orb becomes more discreet, returning to full opacity on hover.",
+      "fr": "Un anneau spectral et les ondes vocales suivent la personne qui parle ; au repos une onde légère reste visible et la sphère devient plus discrète, redevenant opaque au survol.",
+      "es": "Un anillo de espectro y las ondas de voz siguen a quien habla; en reposo queda una onda suave siempre visible y la esfera se vuelve más discreta, recuperando la opacidad al pasar el ratón."
+    },
+    {
+      "it": "Le animazioni rispettano l'impostazione di Windows per ridurre i movimenti.",
+      "en": "Animations respect the Windows setting for reduced motion.",
+      "fr": "Les animations respectent le réglage Windows de réduction des mouvements.",
+      "es": "Las animaciones respetan el ajuste de Windows para reducir el movimiento."
+    }
+  ],
+  "fixes": []
+}
