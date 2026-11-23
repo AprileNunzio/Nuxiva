@@ -279,6 +279,8 @@ class StudioStore:
 
     def delete_thread(self, thread_id: str) -> None:
         with self._lock, self._get_connection() as conn:
+            if conn.execute("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'message_marks'").fetchone():
+                conn.execute("DELETE FROM message_marks WHERE message_id IN (SELECT id FROM messages WHERE thread_id = ?)", (thread_id,))
             conn.execute("DELETE FROM messages WHERE thread_id = ?", (thread_id,))
             conn.execute("DELETE FROM threads WHERE id = ?", (thread_id,))
 

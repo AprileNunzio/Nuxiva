@@ -14,6 +14,7 @@ from .execution_service import ExecutionService
 from .knowledge_service import KnowledgeService
 from .inference_service import build_prompt, infer
 from .preset_service import VALID_MODES, PresetService
+from .reaction_service import ReactionService
 from .models import Artifact, Attachment, Message, Project, Thread
 from .smb_service import SmbStudioService
 from .store import StudioStore
@@ -55,6 +56,7 @@ class StudioService:
         self.execution = ExecutionService()
         self.dlp = DlpService()
         self.presets = PresetService(self.store)
+        self.reactions = ReactionService(self.store)
 
     async def compare_modes(
         self,

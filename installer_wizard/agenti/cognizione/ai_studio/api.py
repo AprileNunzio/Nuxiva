@@ -295,7 +295,35 @@ async def verify_audit(_=Depends(require_admin)) -> Dict[str, Any]:
 
 @admin_routes.get("/threads/{thread_id}/messages")
 async def list_messages(thread_id: str, _=Depends(require_admin)) -> List[Dict[str, Any]]:
-    return [m.to_dict() for m in service.store.list_messages(thread_id)]
+    return service.reactions.decorate([m.to_dict() for m in service.store.list_messages(thread_id)])
+
+
+class ReactionRequest(BaseModel):
+    emoji: str = Field(..., min_length=1, max_length=16)
+
+
+class FeedbackRequest(BaseModel):
+    value: Optional[str] = Field(None, pattern=r"^(positive|negative)$")
+
+
+@admin_routes.post("/threads/{thread_id}/messages/{message_id}/reactions")
+async def toggle_reaction(thread_id: str, message_id: str, body: ReactionRequest, _=Depends(require_admin)) -> Dict[str, Any]:
+    try:
+        marks = service.reactions.toggle(thread_id, message_id, body.emoji, str(_ or "admin"))
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    if marks is None:
+        raise HTTPException(status_code=404, detail="Message not found")
+    return marks
+
+
+@admin_routes.put("/threads/{thread_id}/messages/{message_id}/feedback")
+async def set_feedback(thread_id: str, message_id: str, body: FeedbackRequest, _=Depends(require_admin)) -> Dict[str, Any]:
+    marks = service.reactions.set_feedback(thread_id, message_id, body.value)
+    if marks is None:
+        raise HTTPException(status_code=404, detail="Message not found")
+    service.audit.append(str(_ or "admin"), "message.feedback", f"thread={thread_id} message={message_id} value={body.value or '-'}")
+    return marks
 
 
 @admin_routes.post("/threads/{thread_id}/messages")

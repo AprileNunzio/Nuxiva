@@ -13,7 +13,8 @@ import { MemoryInspectorModal } from './components/MemoryInspectorModal';
 import { StudioAuxiliaryModals } from './components/StudioAuxiliaryModals';
 import { ResizeHandle, useResizableWidth } from './components/ResizeHandle';
 import { AuroraBackground, ACCENTS } from './components/AuroraBackground';
-import { toggleReaction, votePoll } from './messageMutations';
+import { votePoll } from './messageMutations';
+import { useMessageMarks } from './useMessageMarks';
 import { PresetsModal } from './components/PresetsModal';
 import { ModelComparisonModal } from './components/ModelComparisonModal';
 import { KnowledgeModal } from './components/KnowledgeModal';
@@ -123,8 +124,7 @@ export const View: React.FC = () => {
     }
   };
 
-  const handleToggleReaction = (msgId: string, emoji: string) =>
-    setMessages((prev) => toggleReaction(prev, msgId, emoji));
+  const marks = useMessageMarks(selectedThreadId === VOICE_VIEW_ID ? null : selectedThreadId, setMessages, (err) => reportError(err, 'err_send'));
 
   const handleVotePoll = (msgId: string, pollId: string, optionId: string, stepIndex?: number) =>
     setMessages((prev) => votePoll(prev, msgId, pollId, optionId, stepIndex));
@@ -250,6 +250,7 @@ export const View: React.FC = () => {
         setActiveArtifact(assistantMsg.artifacts[0]);
       }
       void loadThreads(selectedProjectId);
+      void loadMessages(currentThId);
     } catch (err) {
       reportError(err, 'err_send');
       setMessages((prev) => prev.filter((m) => m.id !== streamingId));
@@ -429,8 +430,8 @@ export const View: React.FC = () => {
                 onOpenDiff={handleOpenDiff}
                 onQuickPrompt={(prompt) => handleSendMessage(prompt, [])}
                 onRegenerate={handleRegenerate}
-                onToggleReaction={handleToggleReaction} onVotePoll={handleVotePoll} onSubmitSurvey={handleSubmitSurvey}
-                onFeedback={(msgId, type) => setMessages((prev) => prev.map((m) => (m.id === msgId ? { ...m, feedback: type } : m)))}
+                onToggleReaction={marks.react} onVotePoll={handleVotePoll} onSubmitSurvey={handleSubmitSurvey}
+                onFeedback={marks.rate}
               />
               <InputOmnibar
                 onSendMessage={handleSendMessage}

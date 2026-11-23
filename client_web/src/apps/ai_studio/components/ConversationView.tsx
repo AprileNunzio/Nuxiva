@@ -16,7 +16,7 @@ interface ConversationViewProps {
   onOpenArtifact: (artifact: Artifact) => void;
   onOpen3DViewer?: (data?: Workpiece3DData) => void;
   onOpenDiff?: (diffId?: string, diffs?: FileDiff[]) => void;
-  onFeedback?: (messageId: string, type: 'positive' | 'negative') => void;
+  onFeedback?: (messageId: string, type: 'positive' | 'negative' | null) => void;
   onToggleReaction?: (messageId: string, emoji: string) => void;
   onVotePoll?: (messageId: string, pollId: string, optionId: string, stepIndex?: number) => void;
   onSubmitSurvey?: (messageId: string, pollId: string, answers: Record<string, string>) => void;
@@ -43,7 +43,6 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
   const safeMessages = Array.isArray(messages) ? messages.filter(Boolean) : [];
   const lastAssistantId = [...safeMessages].reverse().find((m) => m && m.role !== 'user')?.id;
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
-  const [feedbackState, setFeedbackState] = useState<Record<string, 'positive' | 'negative'>>({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -103,9 +102,8 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
     }
   };
 
-  const handleFeedbackClick = (msgId: string, type: 'positive' | 'negative') => {
-    setFeedbackState((prev) => ({ ...prev, [msgId]: type }));
-    onFeedback?.(msgId, type);
+  const handleFeedbackClick = (msg: Message, type: 'positive' | 'negative') => {
+    onFeedback?.(msg.id, msg.feedback === type ? null : type);
   };
 
   const handleCopyMessage = (msgId: string, content: string) => {
@@ -138,7 +136,7 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
           safeMessages.map((msg) => {
             const isUser = msg.role === 'user';
             const isPlaying = playingAudioId === msg.id;
-            const userFeedback = feedbackState[msg.id] || msg.feedback;
+            const userFeedback = msg.feedback;
             const isCopied = copiedId === msg.id;
 
             return (
@@ -256,7 +254,7 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
                   <div className="flex items-center gap-1">
                     <button
                       type="button"
-                      onClick={() => handleFeedbackClick(msg.id, 'positive')}
+                      onClick={() => handleFeedbackClick(msg, 'positive')}
                       className={`p-1 rounded-md text-xs transition-colors ${
                         userFeedback === 'positive'
                           ? 'text-emerald-400 bg-emerald-950/60 border border-emerald-800'
@@ -268,7 +266,7 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleFeedbackClick(msg.id, 'negative')}
+                      onClick={() => handleFeedbackClick(msg, 'negative')}
                       className={`p-1 rounded-md text-xs transition-colors ${
                         userFeedback === 'negative'
                           ? 'text-red-400 bg-red-950/60 border border-red-800'
