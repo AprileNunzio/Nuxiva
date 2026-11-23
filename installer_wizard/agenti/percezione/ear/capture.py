@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import secrets
 import sqlite3
 
 import earconf
@@ -11,6 +12,7 @@ PRUNE_EVERY = 3600.0
 
 
 BROKEN = {"reason": ""}
+PENDING: set = set()
 
 
 def disable(exc: Exception) -> None:
@@ -32,16 +34,25 @@ def full_text_on() -> bool:
 
 
 async def store(report, kind: str, text: str, lang: str, speaker: str | None, score: float, woke: bool, ms: int,
-                caption: dict, audio) -> None:
+                caption: dict, audio, entry_id: str = "") -> None:
     if not journal_on():
         return
     try:
         await asyncio.to_thread(journal.record, kind, text, lang, speaker, score, woke, ms, caption["live"],
-                                audio if audio_on() else None)
+                                audio if audio_on() else None, entry_id)
     except JournalUnavailable as exc:
         disable(exc)
     except (OSError, sqlite3.Error) as exc:
         report("registro dell'ascolto", exc)
+
+
+def spool(report, kind: str, text: str, lang: str, speaker: str | None, score: float, woke: bool, ms: int,
+          caption: dict, audio) -> str:
+    entry_id = secrets.token_hex(6)
+    PENDING.add(asyncio.create_task(store(report, kind, text, lang, speaker, score, woke, ms, caption, audio, entry_id)))
+    for task in [t for t in PENDING if t.done()]:
+        PENDING.discard(task)
+    return entry_id
 
 
 def prune() -> int:

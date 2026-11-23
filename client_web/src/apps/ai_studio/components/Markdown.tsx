@@ -207,3 +207,12 @@ export function messagesToMarkdown(title: string, msgs: { role: string; content:
     .join('\n\n---\n\n');
   return `# ${title}\n\n${body}\n`;
 }
+
+export function downloadMarkdown(title: string, msgs: { role: string; content: string; created_at: number }[]): void {
+  const url = URL.createObjectURL(new Blob([messagesToMarkdown(title, msgs)], { type: 'text/markdown;charset=utf-8' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${title.replace(/[^\w-]+/g, '_') || 'chat'}.md`;
+  a.click();
+  URL.revokeObjectURL(url);
+}

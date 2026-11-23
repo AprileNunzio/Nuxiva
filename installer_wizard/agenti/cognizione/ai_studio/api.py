@@ -7,14 +7,17 @@ from pydantic import BaseModel, Field
 from access import require_admin
 from .models import Attachment
 from .preset_service import VALID_MODES
+from .inference_service import StudioBrainUnavailable
 from .service import StudioService
 from .streaming_service import StreamingService
+from .voice_log.api import routes as voice_routes
 
-public_routes = APIRouter(prefix="/api/ai_studio", tags=["ai_studio"])
 admin_routes = APIRouter(prefix="/api/ai_studio", tags=["ai_studio"])
+admin_routes.include_router(voice_routes)
 
 service = StudioService()
 
+UPLOAD_MAX = 25 * 1024 * 1024
 SAFE_NAME_RE = re.compile(r"^[\w\s\-\.\,\:\(\)\[\]]{1,120}$", re.UNICODE)
 
 
@@ -79,8 +82,9 @@ class AttachmentPayload(BaseModel):
 
 
 class MessageSendRequest(BaseModel):
-    content: str = Field(..., min_length=1)
+    content: str = Field(..., min_length=1, max_length=100000)
     preset_id: Optional[str] = Field(None, max_length=64)
+    model_mode: Optional[str] = Field(None, max_length=32)
     attachments: Optional[List[AttachmentPayload]] = None
 
 
@@ -97,8 +101,16 @@ class SmbSaveRequest(BaseModel):
     content: str
 
 
-@public_routes.get("/projects")
-async def list_projects() -> List[Dict[str, Any]]:
+def _mode(value: Optional[str]) -> Optional[str]:
+    if value is None:
+        return None
+    if value not in VALID_MODES:
+        raise HTTPException(status_code=400, detail="Invalid model mode")
+    return value
+
+
+@admin_routes.get("/projects")
+async def list_projects(_=Depends(require_admin)) -> List[Dict[str, Any]]:
     return [p.to_dict() for p in service.store.list_projects()]
 
 
@@ -135,8 +147,8 @@ async def delete_project(project_id: str, _=Depends(require_admin)) -> Dict[str,
     return {"status": "ok"}
 
 
-@public_routes.get("/threads")
-async def list_threads(project_id: Optional[str] = Query(None)) -> List[Dict[str, Any]]:
+@admin_routes.get("/threads")
+async def list_threads(project_id: Optional[str] = Query(None, max_length=120), _=Depends(require_admin)) -> List[Dict[str, Any]]:
     return [t.to_dict() for t in service.store.list_threads(project_id=project_id)]
 
 
@@ -187,8 +199,8 @@ def _require_project(project_id: str) -> None:
         raise HTTPException(status_code=404, detail="Project not found")
 
 
-@public_routes.get("/projects/{project_id}/knowledge")
-async def list_knowledge(project_id: str) -> List[Dict[str, Any]]:
+@admin_routes.get("/projects/{project_id}/knowledge")
+async def list_knowledge(project_id: str, _=Depends(require_admin)) -> List[Dict[str, Any]]:
     _require_project(project_id)
     return service.knowledge.list_documents(project_id)
 
@@ -210,15 +222,18 @@ async def delete_knowledge(project_id: str, doc_id: str, _=Depends(require_admin
     return {"status": "deleted"}
 
 
-@public_routes.get("/projects/{project_id}/knowledge/search")
-async def search_knowledge(project_id: str, q: str = Query("", max_length=300)) -> List[Dict[str, Any]]:
+@admin_routes.get("/projects/{project_id}/knowledge/search")
+async def search_knowledge(project_id: str, q: str = Query("", max_length=300), _=Depends(require_admin)) -> List[Dict[str, Any]]:
     _require_project(project_id)
     return service.knowledge.search(project_id, q)
 
 
 @admin_routes.post("/models/compare")
 async def compare_modes_endpoint(body: CompareModesRequest, _=Depends(require_admin)) -> List[Dict[str, Any]]:
-    res = await service.compare_modes(body.prompt, body.modes, body.project_id)
+    try:
+        res = await service.compare_modes(body.prompt, body.modes, body.project_id)
+    except StudioBrainUnavailable as exc:
+        raise HTTPException(status_code=503, detail=f"brain_unavailable: {exc}")
     service.audit.append(
         str(_ or "admin"),
         "models.compare",
@@ -238,8 +253,8 @@ async def execute_code(body: CodeExecuteRequest, _=Depends(require_admin)) -> Di
     return res
 
 
-@public_routes.get("/presets")
-async def list_presets(project_id: Optional[str] = Query(None)) -> List[Dict[str, Any]]:
+@admin_routes.get("/presets")
+async def list_presets(project_id: Optional[str] = Query(None, max_length=120), _=Depends(require_admin)) -> List[Dict[str, Any]]:
     return service.presets.list(project_id)
 
 
@@ -278,8 +293,8 @@ async def verify_audit(_=Depends(require_admin)) -> Dict[str, Any]:
     return service.audit.verify()
 
 
-@public_routes.get("/threads/{thread_id}/messages")
-async def list_messages(thread_id: str) -> List[Dict[str, Any]]:
+@admin_routes.get("/threads/{thread_id}/messages")
+async def list_messages(thread_id: str, _=Depends(require_admin)) -> List[Dict[str, Any]]:
     return [m.to_dict() for m in service.store.list_messages(thread_id)]
 
 
@@ -300,13 +315,17 @@ async def send_message(thread_id: str, body: MessageSendRequest, _=Depends(requi
                 )
             )
 
-    msg = await service.send_message(
-        thread_id=thread_id,
-        content=body.content,
-        attachments=attachments,
-        preset_id=body.preset_id,
-        actor=str(_ or "admin"),
-    )
+    try:
+        msg = await service.send_message(
+            thread_id=thread_id,
+            content=body.content,
+            attachments=attachments,
+            preset_id=body.preset_id,
+            actor=str(_ or "admin"),
+            model_mode=_mode(body.model_mode),
+        )
+    except StudioBrainUnavailable as exc:
+        raise HTTPException(status_code=503, detail=f"brain_unavailable: {exc}")
     return msg.to_dict()
 
 
@@ -334,12 +353,13 @@ async def stream_message_endpoint(thread_id: str, body: MessageSendRequest, _=De
         attachments=attachments,
         preset_id=body.preset_id,
         actor=str(_ or "admin"),
+        model_mode=_mode(body.model_mode),
     )
-    return StreamingResponse(gen, media_type="text/event-stream")
+    return StreamingResponse(gen, media_type="text/event-stream", headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
 
 
-@public_routes.get("/memory/facts")
-async def list_memory_facts(q: str = Query("")) -> List[Dict[str, Any]]:
+@admin_routes.get("/memory/facts")
+async def list_memory_facts(q: str = Query("", max_length=300), _=Depends(require_admin)) -> List[Dict[str, Any]]:
     if q.strip():
         facts = service.memory.recall(q, limit=20)
     else:
@@ -365,8 +385,8 @@ async def consolidate_memory(_=Depends(require_admin)) -> Dict[str, Any]:
 
 
 
-@public_routes.get("/smb/tree")
-async def smb_tree(folder: str = Query("")) -> List[Dict[str, Any]]:
+@admin_routes.get("/smb/tree")
+async def smb_tree(folder: str = Query("", max_length=255), _=Depends(require_admin)) -> List[Dict[str, Any]]:
     try:
         items = service.smb.list_folder(folder)
         return [i.to_dict() for i in items]
@@ -391,8 +411,11 @@ async def upload_attachment(file: UploadFile = File(...), _=Depends(require_admi
     target_dir.mkdir(parents=True, exist_ok=True)
     clean_name = re.sub(r"[^A-Za-z0-9._ -]+", "_", file.filename or "file.bin")
     file_path = target_dir / f"{int(time.time())}_{clean_name}"
-    content = await file.read()
+    content = await file.read(UPLOAD_MAX + 1)
+    if len(content) > UPLOAD_MAX:
+        raise HTTPException(status_code=413, detail="File too large")
     file_path.write_bytes(content)
+    file_path.chmod(0o600)
     return {
         "name": file.filename,
         "size": len(content),

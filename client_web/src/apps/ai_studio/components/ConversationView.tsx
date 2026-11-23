@@ -114,7 +114,6 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
     setTimeout(() => setCopiedId(null), 1800);
   };
 
-  const isLiveVoice = thread?.id === 'th_live_voice_port80';
   const allDiffsAcrossMessages = messages.flatMap((m) => m.diffs || []);
 
   return (
@@ -132,12 +131,8 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
       <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-5 print:p-0 print:overflow-visible">
         {safeMessages.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-8 text-slate-500 gap-2">
-            <span className="text-4xl">{isLiveVoice ? '🎙️' : '🤖'}</span>
-            <p className="text-sm max-w-sm">
-              {isLiveVoice
-                ? 'Nessuna conversazione vocale rilevata sulla Porta 80. Parla al microfono per avviare il duplex live.'
-                : t('no_messages')}
-            </p>
+            <span className="text-4xl">🤖</span>
+            <p className="text-sm max-w-sm">{t('no_messages')}</p>
           </div>
         ) : (
           safeMessages.map((msg) => {
@@ -358,7 +353,7 @@ export const ConversationView: React.FC<ConversationViewProps> = ({
         {isThinking && (
           <div className="flex items-center gap-2 text-slate-400 text-xs bg-slate-900/60 border border-slate-800 px-3 py-2 rounded-xl w-fit animate-pulse print:hidden">
             <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
-            <span>Nuxiva {t('thought_process').toLowerCase()}...</span>
+            <span>{t('thinking')}</span>
           </div>
         )}
 

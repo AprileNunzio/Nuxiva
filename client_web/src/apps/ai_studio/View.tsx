@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useStudioI18n } from './scope';
 import type { Project, Thread, Message, Artifact, Attachment, ModelMode, Workpiece3DData, FileDiff } from './types';
 import * as api from './api';
-import { getDefaultVoiceMessages } from './seedData';
+import { VOICE_VIEW_ID } from './voice/constants';
+import { VoiceConversationView } from './voice/VoiceConversationView';
+import type { VoiceTurn } from './voice/types';
 import { ProjectSidebar } from './components/ProjectSidebar';
 import { ConversationView } from './components/ConversationView';
 import { InputOmnibar } from './components/InputOmnibar';
@@ -15,7 +17,8 @@ import { toggleReaction, votePoll } from './messageMutations';
 import { PresetsModal } from './components/PresetsModal';
 import { ModelComparisonModal } from './components/ModelComparisonModal';
 import { KnowledgeModal } from './components/KnowledgeModal';
-import { messagesToMarkdown } from './components/Markdown';
+import { downloadMarkdown } from './components/Markdown';
+import { StudioNotice } from './components/StudioNotice';
 import { CommandPalette, type PaletteItem } from './components/CommandPalette';
 
 export const View: React.FC = () => {
@@ -24,7 +27,9 @@ export const View: React.FC = () => {
   const [threads, setThreads] = useState<Thread[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const [selectedThreadId, setSelectedThreadId] = useState<string | null>('th_live_voice_port80');
+  const [selectedThreadId, setSelectedThreadId] = useState<string | null>(VOICE_VIEW_ID);
+  const [notice, setNotice] = useState<string | null>(null);
+  const freshThread = useRef<string | null>(null);
   const [selectedMode, setSelectedMode] = useState<ModelMode>('reasoning');
   const [activeArtifact, setActiveArtifact] = useState<Artifact | null>(null);
 
@@ -50,56 +55,35 @@ export const View: React.FC = () => {
   const [currentDiffs, setCurrentDiffs] = useState<FileDiff[]>([]);
   const [selectedDiffId, setSelectedDiffId] = useState<string | undefined>(undefined);
 
+  const reportError = useCallback((err: unknown, key: string) => {
+    console.error(err);
+    const detail = err instanceof Error ? err.message : String(err);
+    setNotice(detail.startsWith('brain_unavailable') ? t('err_brain') : `${t(key)}: ${detail}`);
+  }, [t]);
+
   const loadProjects = useCallback(async () => {
     try {
-      const data = await api.fetchProjects();
-      setProjects(Array.isArray(data) ? data : []);
-    } catch {
-      setProjects([]);
+      setProjects(await api.fetchProjects());
+    } catch (err) {
+      reportError(err, 'err_load');
     }
-  }, []);
+  }, [reportError]);
 
   const loadThreads = useCallback(async (projId?: string | null) => {
-    const defaultVoiceThread: Thread = {
-      id: 'th_live_voice_port80',
-      project_id: null,
-      title: 'Conversazione Vocale (Pagina 80 Live)',
-      pinned: true,
-      model_mode: 'fast',
-      created_at: Math.floor(Date.now() / 1000),
-      updated_at: Math.floor(Date.now() / 1000),
-      message_count: 2,
-    };
     try {
-      const data = await api.fetchThreads(projId);
-      const safe = Array.isArray(data) ? data.filter(Boolean) : [];
-      const hasVoice = safe.some((tItem) => tItem.id === 'th_live_voice_port80');
-      const combined = hasVoice ? safe : [defaultVoiceThread, ...safe];
-      setThreads(combined);
-      if (combined.length > 0 && !selectedThreadId) setSelectedThreadId('th_live_voice_port80');
-    } catch {
-      setThreads([defaultVoiceThread]);
-      if (!selectedThreadId) setSelectedThreadId('th_live_voice_port80');
+      setThreads(await api.fetchThreads(projId));
+    } catch (err) {
+      reportError(err, 'err_load');
     }
-  }, [selectedThreadId]);
+  }, [reportError]);
 
   const loadMessages = useCallback(async (thId: string) => {
     try {
-      if (thId === 'th_live_voice_port80') {
-        const data = await api.fetchMessages(thId).catch(() => []);
-        if (data.length === 0) {
-          setMessages(getDefaultVoiceMessages());
-          return;
-        }
-        setMessages(data);
-        return;
-      }
-      const data = await api.fetchMessages(thId);
-      setMessages(data);
+      setMessages(await api.fetchMessages(thId));
     } catch (err) {
-      console.error(err);
+      reportError(err, 'err_load');
     }
-  }, []);
+  }, [reportError]);
 
   useEffect(() => {
     loadProjects();
@@ -107,7 +91,9 @@ export const View: React.FC = () => {
   }, [loadProjects, loadThreads, selectedProjectId]);
 
   useEffect(() => {
-    if (selectedThreadId) {
+    if (selectedThreadId && selectedThreadId === freshThread.current) {
+      freshThread.current = null;
+    } else if (selectedThreadId && selectedThreadId !== VOICE_VIEW_ID) {
       loadMessages(selectedThreadId);
     } else {
       setMessages([]);
@@ -116,7 +102,7 @@ export const View: React.FC = () => {
 
   const handleOpen3DViewer = (data?: Workpiece3DData) => {
     setSelectedWorkpiece3D(data || {
-      title: 'Lavorazione 3D CAD & Laser CNC',
+      title: t('work3d_default'),
       format: 'openscad',
       dimensions_mm: [60, 90, 30],
       material: 'PLA / Compensato Laser',
@@ -158,42 +144,42 @@ export const View: React.FC = () => {
         project_id: selectedProjectId,
         model_mode: selectedMode,
       });
-      setThreads((prev) => [prev[0], newTh, ...prev.slice(1)]);
+      setThreads((prev) => [newTh, ...prev]);
       setSelectedThreadId(newTh.id);
+      setMessages([]);
       setIsMobileSidebarOpen(false);
     } catch (err) {
-      console.error(err);
+      reportError(err, 'err_send');
     }
   };
 
   const handleTogglePin = async (th: Thread) => {
-    if (th.id === 'th_live_voice_port80') return;
     try {
       const updated = await api.updateThread(th.id, { pinned: !th.pinned });
       setThreads((prev) => prev.map((tItem) => (tItem.id === th.id ? updated : tItem)));
-    } catch (err) { console.error(err); }
+    } catch (err) { reportError(err, 'err_send'); }
   };
 
   const handleForkThread = async () => {
-    if (!selectedThreadId || selectedThreadId === 'th_live_voice_port80') return;
+    if (!selectedThreadId || selectedThreadId === VOICE_VIEW_ID) return;
     try {
       const forked = await api.forkThread(selectedThreadId);
-      setThreads((prev) => [prev[0], forked, ...prev.slice(1)]);
+      setThreads((prev) => [forked, ...prev]);
       setSelectedThreadId(forked.id);
-    } catch (err) { console.error(err); }
+    } catch (err) { reportError(err, 'err_send'); }
   };
 
   const handleDeleteThread = async (thId: string) => {
-    if (thId === 'th_live_voice_port80') return;
     try {
       await api.deleteThread(thId);
       setThreads((prev) => prev.filter((tItem) => tItem.id !== thId));
-      if (selectedThreadId === thId) setSelectedThreadId('th_live_voice_port80');
-    } catch (err) { console.error(err); }
+      if (selectedThreadId === thId) setSelectedThreadId(VOICE_VIEW_ID);
+    } catch (err) { reportError(err, 'err_send'); }
   };
 
   const handleSendMessage = async (content: string, attachments: Attachment[]) => {
-    let currentThId = selectedThreadId;
+    let currentThId = selectedThreadId === VOICE_VIEW_ID ? null : selectedThreadId;
+    setNotice(null);
     if (!currentThId) {
       try {
         const newTh = await api.createThread({
@@ -201,11 +187,13 @@ export const View: React.FC = () => {
           project_id: selectedProjectId,
           model_mode: selectedMode,
         });
-        setThreads((prev) => [prev[0], newTh, ...prev.slice(1)]);
+        setThreads((prev) => [newTh, ...prev]);
+        freshThread.current = newTh.id;
         setSelectedThreadId(newTh.id);
+        setMessages([]);
         currentThId = newTh.id;
       } catch (err) {
-        console.error(err);
+        reportError(err, 'err_send');
         return;
       }
     }
@@ -245,6 +233,7 @@ export const View: React.FC = () => {
         content,
         attachments,
         activePresetId,
+        selectedMode,
         (token) => {
           setMessages((prev) =>
             prev.map((m) => (m.id === streamingId ? { ...m, content: m.content + token } : m))
@@ -260,15 +249,31 @@ export const View: React.FC = () => {
       if (assistantMsg.artifacts && assistantMsg.artifacts.length > 0) {
         setActiveArtifact(assistantMsg.artifacts[0]);
       }
+      void loadThreads(selectedProjectId);
     } catch (err) {
-      console.error(err);
+      reportError(err, 'err_send');
       setMessages((prev) => prev.filter((m) => m.id !== streamingId));
     } finally {
       setIsThinking(false);
     }
   };
 
+  const isVoiceView = selectedThreadId === VOICE_VIEW_ID;
   const currentThread = threads.find((th) => th.id === selectedThreadId) || null;
+
+  const selectThread = (thId: string) => {
+    setSelectedThreadId(thId);
+    setNotice(null);
+    const th = threads.find((item) => item.id === thId);
+    if (th) setSelectedMode(th.model_mode);
+    setIsMobileSidebarOpen(false);
+  };
+
+  const continueVoiceInChat = (turn: VoiceTurn) => {
+    setSelectedThreadId(null);
+    setMessages([]);
+    void handleSendMessage(turn.said, []);
+  };
   const currentProject = projects.find((p) => p.id === (currentThread?.project_id || selectedProjectId)) || null;
 
   useEffect(() => {
@@ -306,14 +311,7 @@ export const View: React.FC = () => {
   };
 
   const handleExport = () => {
-    if (!currentThread) return;
-    const md = messagesToMarkdown(currentThread.title, messages);
-    const url = URL.createObjectURL(new Blob([md], { type: 'text/markdown;charset=utf-8' }));
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${currentThread.title.replace(/[^\w-]+/g, '_') || 'chat'}.md`;
-    a.click();
-    URL.revokeObjectURL(url);
+    if (currentThread) downloadMarkdown(currentThread.title, messages);
   };
 
   const cycleAccent = () => {
@@ -353,7 +351,7 @@ export const View: React.FC = () => {
       id: `t_${th.id}`,
       group: 'chats',
       label: th.title,
-      run: () => setSelectedThreadId(th.id),
+      run: () => selectThread(th.id),
     })),
   ];
 
@@ -396,10 +394,7 @@ export const View: React.FC = () => {
               setSelectedProjectId(pId);
               loadThreads(pId);
             }}
-            onSelectThread={(tId) => {
-              setSelectedThreadId(tId);
-              setIsMobileSidebarOpen(false);
-            }}
+            onSelectThread={selectThread}
             onNewChat={handleNewChat}
             onNewProject={() => {
               setEditingProject(null);
@@ -419,26 +414,33 @@ export const View: React.FC = () => {
         <ResizeHandle width={sidebarW.width} onChange={sidebarW.setWidth} side="right" label={t('title')} />
 
         <main className="flex-1 flex flex-col h-full min-w-0">
-          <ConversationView
-            thread={currentThread}
-            project={currentProject}
-            messages={messages}
-            isThinking={isThinking}
-            onOpenArtifact={setActiveArtifact}
-            onOpen3DViewer={handleOpen3DViewer}
-            onOpenDiff={handleOpenDiff}
-            onQuickPrompt={(prompt) => handleSendMessage(prompt, [])}
-            onRegenerate={handleRegenerate}
-            onToggleReaction={handleToggleReaction} onVotePoll={handleVotePoll} onSubmitSurvey={handleSubmitSurvey}
-            onFeedback={(msgId, type) => setMessages((prev) => prev.map((m) => (m.id === msgId ? { ...m, feedback: type } : m)))}
-          />
-          <InputOmnibar
-            onSendMessage={handleSendMessage}
-            onOpenSmbPicker={() => setIsSmbPickerOpen(true)}
-            selectedMode={selectedMode}
-            onChangeMode={setSelectedMode}
-            disabled={isThinking}
-          />
+          <StudioNotice message={notice} onDismiss={() => setNotice(null)} />
+          {isVoiceView ? (
+            <VoiceConversationView onContinueInChat={continueVoiceInChat} />
+          ) : (
+            <>
+              <ConversationView
+                thread={currentThread}
+                project={currentProject}
+                messages={messages}
+                isThinking={isThinking}
+                onOpenArtifact={setActiveArtifact}
+                onOpen3DViewer={handleOpen3DViewer}
+                onOpenDiff={handleOpenDiff}
+                onQuickPrompt={(prompt) => handleSendMessage(prompt, [])}
+                onRegenerate={handleRegenerate}
+                onToggleReaction={handleToggleReaction} onVotePoll={handleVotePoll} onSubmitSurvey={handleSubmitSurvey}
+                onFeedback={(msgId, type) => setMessages((prev) => prev.map((m) => (m.id === msgId ? { ...m, feedback: type } : m)))}
+              />
+              <InputOmnibar
+                onSendMessage={handleSendMessage}
+                onOpenSmbPicker={() => setIsSmbPickerOpen(true)}
+                selectedMode={selectedMode}
+                onChangeMode={setSelectedMode}
+                disabled={isThinking}
+              />
+            </>
+          )}
         </main>
 
         {activeArtifact && (

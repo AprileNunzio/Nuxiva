@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "AI Studio: Conversazione Vocale reale con ascolto della tua voce e Nuova Chat che risponde davvero",
+    "en": "AI Studio: a real Voice Conversation where you can replay your voice, and a New Chat that truly answers",
+    "fr": "AI Studio : une vraie Conversation vocale où réécouter ta voix, et une Nouvelle discussion qui répond vraiment",
+    "es": "AI Studio: una Conversación de voz real donde volver a escuchar tu voz y un Nuevo chat que responde de verdad"
+  },
+  "features": [
+    {
+      "it": "Conversazione Vocale mostra ogni interazione della pagina 80: cosa hai detto, cosa ha sentito Nuxiva, cosa ha capito (intento e agente) e cosa ha risposto, con aggiornamento live, filtri, ricerca ed esportazione.",
+      "en": "Voice Conversation shows every page 80 interaction: what you said, what Nuxiva heard, what it understood (intent and agent) and what it answered, with live updates, filters, search and export.",
+      "fr": "Conversation vocale affiche chaque interaction de la page 80 : ce que tu as dit, ce que Nuxiva a entendu, ce qu'elle a compris (intention et agent) et sa réponse, avec mise à jour en direct, filtres, recherche et export.",
+      "es": "Conversación de voz muestra cada interacción de la página 80: lo que dijiste, lo que Nuxiva oyó, lo que entendió (intención y agente) y lo que respondió, con actualización en vivo, filtros, búsqueda y exportación."
+    },
+    {
+      "it": "Puoi riascoltare la tua voce registrata per ogni comando e segnare se Nuxiva ha capito bene o correggerla: la revisione alimenta l'apprendimento dell'ascolto.",
+      "en": "You can replay your recorded voice for every command and mark whether Nuxiva got it right or correct it: the review feeds the listening training.",
+      "fr": "Tu peux réécouter ta voix enregistrée pour chaque commande et indiquer si Nuxiva a bien compris ou la corriger : la révision alimente l'apprentissage de l'écoute.",
+      "es": "Puedes volver a escuchar tu voz grabada en cada comando y marcar si Nuxiva entendió bien o corregirla: la revisión alimenta el aprendizaje de la escucha."
+    },
+    {
+      "it": "Nuova Chat ricorda il contesto della conversazione, dà un titolo automatico alla chat, rispetta la modalità scelta (Veloce, Ragionamento, Creativo, Codice) e permette di continuare in chat un comando vocale.",
+      "en": "New Chat remembers the conversation context, titles the chat automatically, honours the chosen mode (Fast, Reasoning, Creative, Code) and lets you continue a voice command in chat.",
+      "fr": "Nouvelle discussion garde le contexte de la conversation, titre la discussion automatiquement, respecte le mode choisi (Rapide, Raisonnement, Créatif, Code) et permet de continuer une commande vocale en discussion.",
+      "es": "Nuevo chat recuerda el contexto de la conversación, titula el chat automáticamente, respeta el modo elegido (Rápido, Razonamiento, Creativo, Código) y permite continuar un comando de voz en el chat."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Le chat, i progetti, i preset, la conoscenza e la memoria di AI Studio si caricano di nuovo sul pannello :8080 e non sono più leggibili senza accesso dalla porta 80.",
+      "en": "AI Studio chats, projects, presets, knowledge and memory load again on the :8080 panel and can no longer be read without signing in from port 80.",
+      "fr": "Les discussions, projets, préréglages, connaissances et mémoire d'AI Studio se chargent à nouveau sur le panneau :8080 et ne sont plus lisibles sans connexion depuis le port 80.",
+      "es": "Los chats, proyectos, preajustes, conocimiento y memoria de AI Studio vuelven a cargarse en el panel :8080 y ya no se pueden leer sin iniciar sesión desde el puerto 80."
+    },
+    {
+      "it": "Nuova Chat usa davvero i modelli di Nuxiva invece di una risposta fissa; se nessun modello è disponibile lo dice chiaramente.",
+      "en": "New Chat really uses Nuxiva's models instead of a canned reply; when no model is available it says so clearly.",
+      "fr": "Nouvelle discussion utilise vraiment les modèles de Nuxiva au lieu d'une réponse figée ; si aucun modèle n'est disponible, elle le dit clairement.",
+      "es": "Nuevo chat usa de verdad los modelos de Nuxiva en lugar de una respuesta fija; si no hay ningún modelo disponible lo indica claramente."
+    },
+    {
+      "it": "Due chat create nello stesso secondo non si sovrascrivono più, il primo messaggio di una chat nuova non sparisce e l'eliminazione chiede conferma.",
+      "en": "Two chats created in the same second no longer overwrite each other, the first message of a new chat no longer vanishes and deleting asks for confirmation.",
+      "fr": "Deux discussions créées dans la même seconde ne s'écrasent plus, le premier message d'une nouvelle discussion ne disparaît plus et la suppression demande confirmation.",
+      "es": "Dos chats creados en el mismo segundo ya no se sobrescriben, el primer mensaje de un chat nuevo ya no desaparece y eliminar pide confirmación."
+    },
+    {
+      "it": "Le interazioni vocali sono salvate cifrate e restano 30 giorni; l'audio segue la conservazione del registro dell'ascolto.",
+      "en": "Voice interactions are stored encrypted and kept for 30 days; audio follows the listening log retention.",
+      "fr": "Les interactions vocales sont stockées chiffrées et conservées 30 jours ; l'audio suit la conservation du journal d'écoute.",
+      "es": "Las interacciones de voz se guardan cifradas durante 30 días; el audio sigue la conservación del registro de escucha."
+    }
+  ]
+}

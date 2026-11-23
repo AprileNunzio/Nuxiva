@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from typing import Any, Dict
 import json
 import re
@@ -11,7 +12,8 @@ from .audit_service import AuditService
 from .dlp_service import DlpService
 from .execution_service import ExecutionService
 from .knowledge_service import KnowledgeService
-from .preset_service import PresetService
+from .inference_service import build_prompt, infer
+from .preset_service import VALID_MODES, PresetService
 from .models import Artifact, Attachment, Message, Project, Thread
 from .smb_service import SmbStudioService
 from .store import StudioStore
@@ -33,6 +35,8 @@ try:
 except Exception:
     pass
 
+log = logging.getLogger("nuxiva.ai_studio")
+TITLE_MAX = 60
 THOUGHT_RE = re.compile(r"<thought>([\s\S]*?)</thought>")
 
 
@@ -84,7 +88,7 @@ class StudioService:
 
     def create_project(self, name: str, description: str = "", instructions: str = "", smb_folder: str = "") -> Project:
         now = int(time.time())
-        project_id = f"proj_{now}_{name[:10].lower().replace(' ', '_')}"
+        project_id = f"proj_{now}_{uuid.uuid4().hex[:12]}"
         project = Project(
             id=project_id,
             name=name.strip(),
@@ -111,7 +115,7 @@ class StudioService:
 
     def create_thread(self, title: str, project_id: Optional[str] = None, model_mode: str = "reasoning") -> Thread:
         now = int(time.time())
-        thread_id = f"th_{now}_{title[:8].lower().replace(' ', '_')}"
+        thread_id = f"th_{now}_{uuid.uuid4().hex[:12]}"
         thread = Thread(
             id=thread_id,
             project_id=project_id,
@@ -147,17 +151,21 @@ class StudioService:
         return "", text.strip()
 
     async def _execute_inference(self, prompt: str, system: str, model_mode: str) -> str:
-        try:
-            from agenti.brain.llm import ask
-            kind = "deep" if model_mode in ("reasoning", "code") else "chat"
-            return await ask(prompt=prompt, system=system, kind=kind, timeout=60.0)
-        except Exception:
-            return (
-                f"<thought>Elaborazione query nello Studio AI con modalità {model_mode}. "
-                f"Analisi dei vincoli del progetto e integrazione con la memoria.</thought>\n\n"
-                f"Ho elaborato la tua richiesta considerando tutto lo storico e i dettagli salvati. "
-                f"Ecco la soluzione ottimizzata per il tuo flusso di lavoro."
-            )
+        return await infer(prompt, system, model_mode)
+
+    def _prepare_thread(self, thread: Thread, content: str, history: List[Message], model_mode: Optional[str]) -> None:
+        changed = False
+        if model_mode in VALID_MODES and model_mode != thread.model_mode:
+            thread.model_mode = model_mode
+            changed = True
+        if not history:
+            title = " ".join(content.split())[:TITLE_MAX].strip()
+            if title:
+                thread.title = title
+                changed = True
+        if changed:
+            thread.updated_at = int(time.time())
+            self.store.save_thread(thread)
 
     async def send_message(
         self,
@@ -166,11 +174,14 @@ class StudioService:
         attachments: Optional[List[Attachment]] = None,
         preset_id: Optional[str] = None,
         actor: str = "admin",
+        model_mode: Optional[str] = None,
     ) -> Message:
         now = int(time.time())
         thread = self.store.get_thread(thread_id)
         if not thread:
-            thread = self.create_thread(title=content[:30] or "Chat", model_mode="reasoning")
+            thread = self.create_thread(title=content[:30] or "Chat", model_mode=model_mode or "reasoning")
+        history = self.store.list_messages(thread.id)
+        self._prepare_thread(thread, content, history, model_mode)
 
         user_msg = Message(
             id=f"msg_u_{now}_{uuid.uuid4().hex[:6]}",
@@ -199,7 +210,7 @@ class StudioService:
 
         cache_key = ""
         now_ms = int(time.time() * 1000)
-        if _native_studio is not None and not attachments:
+        if _native_studio is not None and not attachments and not history:
             cache_key = _native_studio.cache_derive_key(content, thread.model_mode, thread.project_id)
             cached_raw = _native_studio.cache_get(cache_key, now_ms)
             if cached_raw:
@@ -231,8 +242,8 @@ class StudioService:
                     )
                     self.store.add_message(cached_msg)
                     return cached_msg
-                except Exception:
-                    pass
+                except (ValueError, TypeError, AttributeError) as exc:
+                    log.warning("Risposta in cache di AI Studio non leggibile: %s", exc)
 
         system_parts = [
             "Sei Nuxiva Studio AI, un sistema operativo cognitivo avanzato autonomo.",
@@ -260,7 +271,7 @@ class StudioService:
             att_lines = [f"- {a.name} ({a.kind}, {a.mime_type})" for a in attachments]
             att_summary = "\n[Allegati inclusi]:\n" + "\n".join(att_lines) + "\n"
 
-        prompt = f"{att_summary}\nRichiesta utente: {content}"
+        prompt = build_prompt(content, history, att_summary)
         raw_response = await self._execute_inference(prompt, full_system, thread.model_mode)
 
         thought, clean_content = self._decompose_thought(raw_response)
@@ -280,7 +291,7 @@ class StudioService:
         )
         self.store.add_message(assistant_msg)
 
-        if _native_studio is not None and cache_key:
+        if _native_studio is not None and cache_key and not history:
             art_json = json.dumps([a.to_dict() for a in artifacts])
             _native_studio.cache_put(
                 cache_key,

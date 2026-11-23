@@ -377,7 +377,7 @@ class Session(AttestMixin):
             await self.broadcast(type="caption_drop", utt=caption["utt"])
             await self.set_mode("idle")
             return
-        asyncio.create_task(capture.store(note_error, "command", command, lang, speaker, score, woke, ms, caption, clean))
+        voice_ref = capture.spool(note_error, "command", command, lang, speaker, score, woke, ms, caption, clean)
         enforce_speaker = earconf.flag("NUXIVA_VOICEPRINT_ENFORCE", False)
         if enforce_speaker and voiceprints.ready and len(voiceprints.samples) > 0:
             if not speaker:
@@ -389,7 +389,7 @@ class Session(AttestMixin):
         await self.broadcast(**(turn | {"type": "transcript", "text": command, "ms": ms, "lang": lang,
                                         "followup": followup and not woke and not expected, "speaker": speaker,
                                         "speaker_score": round(score, 3), "voice_known": self._known(speaker),
-                                        "utt": caption["utt"]}))
+                                        "utt": caption["utt"], "voice_ref": voice_ref}))
         auto_followup = earconf.number("NUXIVA_EAR_AUTO_FOLLOWUP", 8.0, 0.0, 30.0)
         if auto_followup > 0.0:
             await self.set_mode("listening", seconds=auto_followup, conversation=True)

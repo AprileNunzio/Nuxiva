@@ -26,10 +26,14 @@ class AiStudioApiTests(unittest.TestCase):
         self.service = StudioService(store=self.store, smb=self.smb, memory=self.memory)
 
         self.app = FastAPI()
-        self.app.include_router(api.public_routes)
         self.app.include_router(api.admin_routes)
         self.app.dependency_overrides[require_admin] = lambda: "admin"
         api.service = self.service
+
+        async def fake_inference(prompt, system, mode):
+            return f"<thought>Analisi in modalità {mode}</thought>Risposta di prova a: {prompt[-60:]}"
+
+        self.service._execute_inference = fake_inference
         self.client = TestClient(self.app)
 
     def test_project_and_thread_lifecycle(self):
@@ -149,8 +153,9 @@ class AiStudioApiTests(unittest.TestCase):
         data1 = msg1.json()
         self.assertFalse(data1.get("cached", False))
 
+        other = self.service.create_thread(title="Cache Test Thread 2", model_mode="fast")
         msg2 = self.client.post(
-            f"/api/ai_studio/threads/{th.id}/messages",
+            f"/api/ai_studio/threads/{other.id}/messages",
             json={"content": "Definisci un mutex in Rust", "attachments": []},
         )
         self.assertEqual(msg2.status_code, 200)

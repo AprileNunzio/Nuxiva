@@ -25,8 +25,6 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
   const { t } = useStudioI18n();
   const [showExportMenu, setShowExportMenu] = useState(false);
 
-  const isLiveVoice = thread?.id === 'th_live_voice_port80';
-
   const handlePrint = () => {
     window.print();
   };
@@ -38,7 +36,7 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
     if (format === 'md') {
       const lines = [`# ${title}\n`];
       messages.forEach((m) => {
-        lines.push(`### ${m.role === 'user' ? 'UTENTE' : 'NUXIVA'} (${new Date(m.created_at * 1000).toLocaleString()})\n${m.thought ? `> **Pensiero:** ${m.thought}\n\n` : ''}${m.content}\n`);
+        lines.push(`### ${m.role === 'user' ? t('export_user') : 'NUXIVA'} (${new Date(m.created_at * 1000).toLocaleString()})\n${m.thought ? `> **${t('export_thought')}:** ${m.thought}\n\n` : ''}${m.content}\n`);
       });
       content = lines.join('\n');
       mime = 'text/markdown';
@@ -62,15 +60,9 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
         <div className="flex items-center gap-2 min-w-0">
           <span className="text-cyan-400 font-semibold text-sm">✦</span>
           <h1 className="text-sm font-semibold text-slate-100 truncate">
-            {isLiveVoice ? 'Conversazione Vocale (Pagina 80 Live)' : (thread?.title || t('title'))}
+            {thread?.title || t('title')}
           </h1>
-          {isLiveVoice && (
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/50 text-[10px] text-cyan-300 font-mono animate-pulse">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-              <span>LIVE DUPLEX</span>
-            </span>
-          )}
-          {project && !isLiveVoice && (
+          {project && (
             <span className="px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-800/60 text-[10px] text-cyan-300 font-medium truncate">
               📁 {project.name}
             </span>
@@ -83,10 +75,10 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
               type="button"
               onClick={() => onOpenDiff(undefined, allDiffs)}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-700/60 text-emerald-300 hover:text-white text-xs font-medium transition-all shadow-sm"
-              title="Visualizza confronto prima/dopo per tutti i file modificati"
+              title={t('hdr_diff_hint')}
             >
               <span>⇄</span>
-              <span>Diff File ({allDiffs.length})</span>
+              <span className="hidden lg:inline">{t('hdr_diff', { count: allDiffs.length })}</span>
             </button>
           )}
 
@@ -94,16 +86,16 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
             <button
               type="button"
               onClick={() => onOpen3DViewer({
-                title: thread?.title ? `Lavorazione 3D · ${thread.title}` : 'Lavorazione 3D CAD & Laser CNC',
+                title: thread?.title ? `${t('hdr_3d')} · ${thread.title}` : t('work3d_default'),
                 format: 'openscad',
                 dimensions_mm: [60, 90, 30],
                 material: 'PLA / Compensato Laser',
               })}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-700/80 text-cyan-300 hover:text-white text-xs font-medium transition-all shadow-sm"
-              title="Apri finestra lavorazione 3D"
+              title={t('work3d_open')}
             >
               <span>🧊</span>
-              <span>Lavorazione 3D</span>
+              <span className="hidden lg:inline">{t('hdr_3d')}</span>
             </button>
           )}
 
@@ -112,10 +104,10 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
               type="button"
               onClick={() => setShowExportMenu((p) => !p)}
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-medium border border-slate-700 transition-colors"
-              title="Opzioni esportazione"
+              title={t('hdr_export')}
             >
               <span>📥</span>
-              <span>Esporta</span>
+              <span className="hidden lg:inline">{t('hdr_export')}</span>
             </button>
 
             {showExportMenu && (
@@ -126,7 +118,7 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
                   className="w-full text-left px-3 py-1.5 text-slate-300 hover:bg-slate-800 hover:text-cyan-300 flex items-center gap-2"
                 >
                   <span>📝</span>
-                  <span>Markdown (.md)</span>
+                  <span>{t('hdr_export_md')}</span>
                 </button>
                 <button
                   type="button"
@@ -134,7 +126,7 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
                   className="w-full text-left px-3 py-1.5 text-slate-300 hover:bg-slate-800 hover:text-cyan-300 flex items-center gap-2"
                 >
                   <span>⚙️</span>
-                  <span>JSON Completo</span>
+                  <span>{t('hdr_export_json')}</span>
                 </button>
               </div>
             )}
@@ -144,57 +136,47 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
             type="button"
             onClick={handlePrint}
             className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-medium border border-slate-700 transition-colors"
-            title="Stampa o esporta PDF"
+            title={t('hdr_print_hint')}
           >
             <span>🖨️</span>
-            <span>Stampa</span>
+            <span className="hidden lg:inline">{t('hdr_print')}</span>
           </button>
         </div>
       </div>
 
       <div className="px-4 py-1.5 bg-slate-900/40 border-b border-slate-800/40 flex items-center gap-2 overflow-x-auto text-[11px] text-slate-400 print:hidden">
         <span className="font-semibold text-cyan-400 uppercase tracking-wider text-[10px]">
-          Strumenti Rapidi:
+          {t('hdr_quick')}
         </span>
         <button
           type="button"
-          onClick={() => onQuickPrompt?.('Genera codice completo modulare e moderno per la richiesta attuale')}
+          onClick={() => onQuickPrompt?.(t('quick_code_prompt'))}
           className="px-2 py-0.5 rounded-full bg-slate-800/60 hover:bg-slate-700 text-slate-300 hover:text-cyan-300 border border-slate-700/60 transition-colors whitespace-nowrap"
         >
-          ⚡ Genera Codice
+          {t('quick_code')}
         </button>
         <button
           type="button"
-          onClick={() => onQuickPrompt?.('Analizza le differenze dei file modificati e crea un report prima/dopo')}
+          onClick={() => onQuickPrompt?.(t('quick_diff_prompt'))}
           className="px-2 py-0.5 rounded-full bg-slate-800/60 hover:bg-slate-700 text-slate-300 hover:text-cyan-300 border border-slate-700/60 transition-colors whitespace-nowrap"
         >
-          🔍 Analisi & Diff
+          {t('quick_diff')}
         </button>
         <button
           type="button"
-          onClick={() => onQuickPrompt?.('Crea un pezzo 3D parametrico CAD per taglio laser o lavorazione CNC')}
+          onClick={() => onQuickPrompt?.(t('quick_3d_prompt'))}
           className="px-2 py-0.5 rounded-full bg-slate-800/60 hover:bg-slate-700 text-slate-300 hover:text-cyan-300 border border-slate-700/60 transition-colors whitespace-nowrap"
         >
-          🧊 CAD 3D & Laser
+          {t('quick_3d')}
         </button>
         <button
           type="button"
-          onClick={() => onQuickPrompt?.('Fai un riassunto esecutivo di tutte le modifiche e passi eseguiti')}
+          onClick={() => onQuickPrompt?.(t('quick_summary_prompt'))}
           className="px-2 py-0.5 rounded-full bg-slate-800/60 hover:bg-slate-700 text-slate-300 hover:text-cyan-300 border border-slate-700/60 transition-colors whitespace-nowrap"
         >
-          📝 Riassunto
+          {t('quick_summary')}
         </button>
       </div>
-
-      {isLiveVoice && (
-        <div className="px-4 py-2 bg-gradient-to-r from-cyan-950/60 to-blue-950/60 border-b border-cyan-900/40 text-xs text-cyan-200 flex items-center justify-between print:hidden">
-          <div className="flex items-center gap-2">
-            <span>🎙️</span>
-            <span>Trascrizione duplex live tra utente e Nuxiva (Porta 80) · Sincronizzazione audio attiva</span>
-          </div>
-          <span className="font-mono text-[10px] text-cyan-400/80">Replay & Feedback Abilitato</span>
-        </div>
-      )}
     </>
   );
 };

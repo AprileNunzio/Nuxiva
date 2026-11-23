@@ -11,13 +11,9 @@ async function handleResponse<T>(res: Response): Promise<T> {
 }
 
 export async function fetchProjects(): Promise<Project[]> {
-  try {
-    const res = await fetch(`${BASE_URL}/projects`);
-    const data = await handleResponse<Project[]>(res);
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
+  const res = await fetch(`${BASE_URL}/projects`, { cache: 'no-store' });
+  const data = await handleResponse<Project[]>(res);
+  return Array.isArray(data) ? data : [];
 }
 
 export async function createProject(data: {
@@ -45,13 +41,9 @@ export async function fetchThreads(projectId?: string | null): Promise<Thread[]>
   const url = projectId
     ? `${BASE_URL}/threads?project_id=${encodeURIComponent(projectId)}`
     : `${BASE_URL}/threads`;
-  try {
-    const res = await fetch(url);
-    const data = await handleResponse<Thread[]>(res);
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
+  const res = await fetch(url, { cache: 'no-store' });
+  const data = await handleResponse<Thread[]>(res);
+  return Array.isArray(data) ? data : [];
 }
 
 export async function createThread(data: {
@@ -87,13 +79,9 @@ export async function deleteThread(threadId: string): Promise<void> {
 }
 
 export async function fetchMessages(threadId: string): Promise<Message[]> {
-  try {
-    const res = await fetch(`${BASE_URL}/threads/${encodeURIComponent(threadId)}/messages`);
-    const data = await handleResponse<Message[]>(res);
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
+  const res = await fetch(`${BASE_URL}/threads/${encodeURIComponent(threadId)}/messages`, { cache: 'no-store' });
+  const data = await handleResponse<Message[]>(res);
+  return Array.isArray(data) ? data : [];
 }
 
 export async function sendMessage(
@@ -112,13 +100,9 @@ export async function sendMessage(
 
 export async function fetchMemoryFacts(query?: string): Promise<MemoryFact[]> {
   const url = query ? `${BASE_URL}/memory/facts?q=${encodeURIComponent(query)}` : `${BASE_URL}/memory/facts`;
-  try {
-    const res = await fetch(url);
-    const data = await handleResponse<MemoryFact[]>(res);
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
+  const res = await fetch(url, { cache: 'no-store' });
+  const data = await handleResponse<MemoryFact[]>(res);
+  return Array.isArray(data) ? data : [];
 }
 
 export async function learnMemory(data: {
@@ -182,13 +166,9 @@ export interface KnowledgeDoc {
 }
 
 export async function fetchKnowledge(projectId: string): Promise<KnowledgeDoc[]> {
-  try {
-    const res = await fetch(`${BASE_URL}/projects/${encodeURIComponent(projectId)}/knowledge`);
-    const data = await handleResponse<KnowledgeDoc[]>(res);
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
+  const res = await fetch(`${BASE_URL}/projects/${encodeURIComponent(projectId)}/knowledge`, { cache: 'no-store' });
+  const data = await handleResponse<KnowledgeDoc[]>(res);
+  return Array.isArray(data) ? data : [];
 }
 
 export async function addKnowledge(projectId: string, name: string, content: string): Promise<KnowledgeDoc> {
@@ -219,13 +199,9 @@ export interface Preset {
 
 export async function fetchPresets(projectId?: string | null): Promise<Preset[]> {
   const url = projectId ? `${BASE_URL}/presets?project_id=${encodeURIComponent(projectId)}` : `${BASE_URL}/presets`;
-  try {
-    const res = await fetch(url);
-    const data = await handleResponse<Preset[]>(res);
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
+  const res = await fetch(url, { cache: 'no-store' });
+  const data = await handleResponse<Preset[]>(res);
+  return Array.isArray(data) ? data : [];
 }
 
 export async function createPreset(data: {
@@ -269,13 +245,14 @@ export async function streamMessage(
   content: string,
   attachments?: Attachment[],
   presetId?: string | null,
+  modelMode?: ModelMode,
   onToken?: (token: string) => void,
   onThoughtDelta?: (delta: string) => void,
 ): Promise<Message> {
   const res = await fetch(`${BASE_URL}/threads/${encodeURIComponent(threadId)}/stream`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content, attachments, preset_id: presetId || undefined }),
+    body: JSON.stringify({ content, attachments, preset_id: presetId || undefined, model_mode: modelMode }),
   });
 
   if (!res.ok) {
@@ -300,16 +277,23 @@ export async function streamMessage(
     for (const chunk of lines) {
       const trimmed = chunk.trim();
       if (!trimmed.startsWith('data:')) continue;
+      let payload: { type?: string; token?: string; message?: Message; code?: string; detail?: string };
       try {
-        const payload = JSON.parse(trimmed.slice(5).trim());
-        if (payload.type === 'token') {
-          onToken?.(payload.token);
-        } else if (payload.type === 'thought_delta') {
-          onThoughtDelta?.(payload.token);
-        } else if (payload.type === 'done') {
-          finalMessage = payload.message as Message;
-        }
-      } catch {}
+        payload = JSON.parse(trimmed.slice(5).trim());
+      } catch (err) {
+        console.error('AI Studio stream frame not parsable', err);
+        continue;
+      }
+      if (payload.type === 'token') {
+        onToken?.(payload.token ?? '');
+      } else if (payload.type === 'thought_delta') {
+        onThoughtDelta?.(payload.token ?? '');
+      } else if (payload.type === 'done' && payload.message) {
+        finalMessage = payload.message;
+      } else if (payload.type === 'error') {
+        await reader.cancel();
+        throw new Error(`${payload.code ?? 'stream_error'}: ${payload.detail ?? ''}`);
+      }
     }
   }
 

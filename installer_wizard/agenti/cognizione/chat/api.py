@@ -25,6 +25,7 @@ from agenti.capabilities import manifest as capabilities
 from agenti.chat import duplex_feed
 from agenti.chat import addressee, assistant, brain_chain, brain_engine, intents, interrupt, personal_memory, speaker, streaming, turns, voice_id, wake
 from agenti.chat.dialogue import dialogue
+from agenti.chat.interactions import trail
 from agenti.chat.journey_flow import ChatJourney
 from agenti.sentinel.collectors import operations
 from agenti.chat.layout import presence
@@ -141,17 +142,6 @@ def _speaker_name(slug: str) -> str:
     return first_name(profile) if profile else ""
 
 
-def _heard(body: dict) -> dict:
-    slug = str(body.get("speaker") or "")
-    known = body.get("voice_known")
-    voices = body.get("voices_active")
-    return {"followup": bool(body.get("followup")), "speaker": slug if SLUG_RE.match(slug) else "",
-            "voice_known": known if isinstance(known, bool) else None,
-            "same_speaker": addressee.flag(body.get("same_speaker")),
-            "mixed_speakers": addressee.flag(body.get("mixed_speakers")),
-            "voices_active": addressee.voices(voices)}
-
-
 async def assistant_chat(text: str, device: str, heard_lang: str | None = None, heard: dict | None = None, internal: bool = False, client_id: str = "") -> JSONResponse:
     heard = heard or {}
     if not internal:
@@ -182,6 +172,7 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
         verdict = addressee.judge(text, device, heard)
         directed, confidence = verdict.directed, verdict.score
         if not verdict.directed:
+            trail.record(device, text, "", {"intent": "ignored", "score": verdict.score}, heard, False, verdict.reason)
             return JSONResponse({"ignored": True, "reason": verdict.reason, "score": verdict.score})
     said, text = text, dialogue.resolve(device, text)
     try:
@@ -237,6 +228,7 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
         result["ui"].setdefault("presence", presence(result["reply"], result["ui"]))
     if not internal:
         dialogue.remember(device, said, result["reply"], result.get("intent", ""), _speaker_name(heard.get("speaker") or ""))
+        trail.record(device, said, text, result, heard)
     result["lang"] = languages.detect(result.get("reply") or "", speech_lang["lang"])
     result["language"] = {**speech_lang, "label": languages.label(speech_lang["lang"])}
     result["identity"] = principal.describe()
@@ -297,7 +289,7 @@ async def public_chat(request: Request):
     request_context.client.set(cid)
     turns.owner.set(turns.request_owner(request))
     return await assistant_chat(body.get("text", ""), "selftest" if internal else device, lang_of(body),
-                                _heard(body) if device == "kiosk" else None, internal=internal, client_id=cid)
+                                trail.heard_for(device, body), internal=internal, client_id=cid)
 
 
 def _sse(event: dict) -> str:
@@ -357,7 +349,7 @@ async def public_chat_stream(request: Request):
     body = await request.json()
     device = _display_chat_device(request)
     cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or device)[:80]
-    heard = _heard(body) if device == "kiosk" else None
+    heard = trail.heard_for(device, body)
     return _streaming_response(_stream_chat(body.get("text", ""), device, lang_of(body), heard,
                                            client_id=cid, owner=turns.request_owner(request)))
 

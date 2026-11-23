@@ -30,10 +30,14 @@ class EnterpriseApiTests(unittest.TestCase):
             memory=CrossMemoryService(store=self.store),
         )
         app = FastAPI()
-        app.include_router(api.public_routes)
         app.include_router(api.admin_routes)
         app.dependency_overrides[require_admin] = lambda: "admin"
         api.service = self.service
+
+        async def fake_inference(prompt, system, mode):
+            return f"<thought>Analisi in modalità {mode}</thought>Risposta di prova a: {prompt[-60:]}"
+
+        self.service._execute_inference = fake_inference
         self.client = TestClient(app)
 
     def test_preset_crud_and_validation(self):

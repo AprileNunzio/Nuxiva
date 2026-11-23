@@ -40,7 +40,6 @@ class KnowledgeApiTests(unittest.TestCase):
             memory=CrossMemoryService(store=store),
         )
         app = FastAPI()
-        app.include_router(api.public_routes)
         app.include_router(api.admin_routes)
         app.dependency_overrides[require_admin] = lambda: "admin"
         api.service = self.service

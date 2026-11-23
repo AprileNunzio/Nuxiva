@@ -111,10 +111,11 @@ class Journal:
         return self.root / f"{entry_id}.clip"
 
     def record(self, kind: str, text: str, lang: str = "", speaker: str | None = None, score: float = 0.0,
-               woke: bool = False, ms: int = 0, live: bool = False, audio: np.ndarray | None = None) -> str:
+               woke: bool = False, ms: int = 0, live: bool = False, audio: np.ndarray | None = None,
+               entry_id: str = "") -> str:
         if kind not in KINDS or not text.strip():
             return ""
-        entry_id = secrets.token_hex(6)
+        entry_id = entry_id if ID.match(entry_id or "") else secrets.token_hex(6)
         who = speaker if speaker and SLUG.match(speaker) else ""
         with self.lock, closing(self._open()) as conn:
             keep = audio is not None and len(audio) > 0
