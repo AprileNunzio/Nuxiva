@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 
 class NodeRuntime(
     private val store: ProfileStore,
@@ -31,6 +32,7 @@ class NodeRuntime(
     private val shareSettings: ShareSettingsStore,
     private val orientation: OrientationMonitor,
     private val multicast: MulticastGuard,
+    private val ledgerFolder: File,
 ) {
     private val handler = CoroutineExceptionHandler { _, error -> Log.e(TAG, "Uncaught runtime error", error) }
     private var scope: CoroutineScope? = null
@@ -96,6 +98,17 @@ class NodeRuntime(
                 guarded("peer ${profile.nodeId}") {
                     PeerWatch(
                         profile,
+                        isOnline = { linkState.value[profile.nodeId] is LinkState.Online },
+                        moveTo = { url -> store.update(profile.nodeId) { it.copy(server = url) } },
+                    ).run()
+                }
+            }
+            launch {
+                guarded("ledger ${profile.nodeId}") {
+                    LedgerWatch(
+                        profile,
+                        http,
+                        LedgerWatch.fileFor(ledgerFolder, profile.nodeId),
                         isOnline = { linkState.value[profile.nodeId] is LinkState.Online },
                         moveTo = { url -> store.update(profile.nodeId) { it.copy(server = url) } },
                     ).run()

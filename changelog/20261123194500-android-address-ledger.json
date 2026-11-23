@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "L'app Android ritrova il server da sola anche dopo un cambio di indirizzo",
+    "en": "The Android app finds the server on its own even after an address change",
+    "fr": "L'application Android retrouve seule le serveur même après un changement d'adresse",
+    "es": "La app de Android encuentra el servidor por sí sola incluso tras un cambio de dirección"
+  },
+  "features": [
+    {
+      "it": "L'app tiene un registro firmato degli indirizzi del server, lo aggiorna mentre è collegata e, se il server cambia indirizzo, prova quelli salvati con attese crescenti; ogni informazione falsa o manomessa viene scartata.",
+      "en": "The app keeps a signed record of the server's addresses, updates it while connected and, if the server changes address, tries the saved ones with growing waits; any forged or tampered information is discarded.",
+      "fr": "L'application conserve un registre signé des adresses du serveur, le met à jour en ligne et, si le serveur change d'adresse, essaie celles enregistrées avec des attentes croissantes ; toute information falsifiée ou altérée est écartée.",
+      "es": "La app guarda un registro firmado de las direcciones del servidor, lo actualiza mientras está conectada y, si el servidor cambia de dirección, prueba las guardadas con esperas crecientes; toda información falsa o alterada se descarta."
+    }
+  ]
+}

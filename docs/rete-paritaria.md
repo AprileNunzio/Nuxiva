@@ -81,6 +81,14 @@ EN: `connection/ledger.py` is the Python port of the ledger verification (same r
 
 Assunzioni / assumptions: i client non annunciano blocchi propri; la porta Kotlin è la 4C-3.
 
+## Fase 4C-3: app Android / Android app
+
+IT: `logic/peer/Ledger*.kt` è la porta Kotlin della verifica del registro, con gli stessi limiti e codici di errore di Rust, confrontata con `ledger.json` in `LedgerTest`. `app/node/LedgerWatch.kt` sincronizza ogni 60 s con `/api/nodes/peer/sync` mentre il nodo è collegato; da scollegato prova al massimo 3 indirizzi salvati (i falliti scalano in fondo alla lista) e, se il server risponde con il certificato fissato, aggiorna il profilo; senza risposta attende in modo esponenziale con jitter. Il file del registro sta nella cartella privata esclusa dai backup dell'app.
+
+EN: `logic/peer/Ledger*.kt` is the Kotlin port of the ledger verification, with the same limits and error codes as Rust, checked against `ledger.json` in `LedgerTest`. `app/node/LedgerWatch.kt` syncs every 60 s through `/api/nodes/peer/sync` while online; offline it tries at most 3 saved addresses (failed ones sink in the list) and, when the server answers with the pinned certificate, updates the profile; with no answer it waits exponentially with jitter. The ledger file lives in the app's private no-backup folder.
+
+Assunzioni / assumptions: la porta Kotlin è stata compilata e provata con il compilatore Kotlin 2.0.21 incluso in Gradle e con un adattatore minimo di `kotlin.test`, perché Gradle non può scaricare i plugin in questo ambiente; la parte `app/` (Android) è verificata dalla CI.
+
 ## Test di carico / load test
 
 `native/crates/peer-core/tests/load_100.rs` simula 100 nodi (1 server, 20 desktop, 79 telefoni con batteria diversa), tutti con messaggi firmati e verificati:
