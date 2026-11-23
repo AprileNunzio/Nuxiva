@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Aggiornamento di sicurezza del ponte Python e del database locale",
+    "en": "Security update of the Python bridge and the local database",
+    "fr": "Mise à jour de sécurité du pont Python et de la base de données locale",
+    "es": "Actualización de seguridad del puente de Python y de la base de datos local"
+  },
+  "fixes": [
+    {
+      "it": "Aggiornati il ponte tra i componenti nativi e Python e il motore del database locale delle creazioni per correggere vulnerabilità note.",
+      "en": "Updated the bridge between native components and Python and the local creations database engine to fix known vulnerabilities.",
+      "fr": "Pont entre composants natifs et Python et moteur de la base de données locale des créations mis à jour pour corriger des vulnérabilités connues.",
+      "es": "Actualizados el puente entre los componentes nativos y Python y el motor de la base de datos local de creaciones para corregir vulnerabilidades conocidas."
+    }
+  ]
+}
