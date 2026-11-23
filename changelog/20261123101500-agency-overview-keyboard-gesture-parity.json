@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-23",
+  "title": {
+    "it": "Panoramica progetti: tastiera, touch e gesti con le stesse azioni",
+    "en": "Project overview: keyboard, touch and gestures share the same actions",
+    "fr": "Vue d'ensemble des projets : clavier, tactile et gestes avec les mêmes actions",
+    "es": "Resumen de proyectos: teclado, táctil y gestos con las mismas acciones"
+  },
+  "features": [
+    {
+      "it": "Ogni azione della panoramica si può fare anche senza microfono o fotocamera, e le scorciatoie da tastiera non scattano più mentre scrivi una nota in un campo di testo.",
+      "en": "Every overview action can be done without a microphone or camera, and keyboard shortcuts no longer fire while you type a note in a text field.",
+      "fr": "Chaque action de la vue d'ensemble se fait aussi sans micro ni caméra, et les raccourcis clavier ne se déclenchent plus quand vous saisissez une note dans un champ de texte.",
+      "es": "Cada acción del resumen también se puede hacer sin micrófono ni cámara, y los atajos de teclado ya no se activan mientras escribes una nota en un campo de texto."
+    }
+  ]
+}

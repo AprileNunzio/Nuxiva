@@ -179,7 +179,7 @@
     if (showing && showing.test(text)) { open(); if (st.focus) backToGalaxy(); say("agency_shown", {}, lang); return true; }
     if (!st.open) return false;
     const closing = pattern("agency_cmd_close");
-    if (closing && closing.test(text)) { shut(); return true; }
+    if (closing && closing.test(text)) { run("close"); return true; }
     const current = view.current;
     for (const action of ["pause", "resume"]) {
       const re = pattern(`agency_cmd_${action}`);
@@ -190,7 +190,7 @@
     }
     for (const [key, delta] of [["agency_cmd_next", 1], ["agency_cmd_prev", -1]]) {
       const re = pattern(key);
-      if (re && re.test(text)) { const id = galaxy.step(delta); if (st.focus && id) openProject(id); return true; }
+      if (re && re.test(text)) { run(delta > 0 ? "next" : "prev"); return true; }
     }
     return false;
   }
@@ -205,30 +205,33 @@
   const setMode = D.setMode;
   D.setMode = (mode) => { if (st.open && mode !== "face") shut(); return setMode(mode); };
 
+  function run(action) {
+    if (action === "next" || action === "prev") {
+      const id = galaxy.step(action === "next" ? 1 : -1);
+      if (st.focus && id) openProject(id);
+    } else if (action === "open") openProject(galaxy.selected);
+    else if (action === "back") backToGalaxy();
+    else if (action === "close") shut();
+    else if (action === "toggle") {
+      const cur = view.current;
+      if (st.focus && cur && ["running", "paused"].includes(cur.status)) {
+        control(cur.id, cur.status === "paused" ? "resume" : "pause");
+      }
+    }
+  }
+
   window.addEventListener("nuxiva-hand-gesture", (event) => {
     if (!st.open || !event.detail) return;
-    const name = event.detail.gesture;
-    if (name === "swipe.left" || name === "swipe.right") {
-      const id = galaxy.step(name === "swipe.left" ? 1 : -1);
-      if (st.focus && id) openProject(id);
-    } else if (name === "swipe.up" && !st.focus) openProject(galaxy.selected);
-    else if (name === "swipe.down") { if (st.focus) backToGalaxy(); else shut(); }
+    const action = window.NuxivaAgencyInput.fromGesture(event.detail.gesture, Boolean(st.focus));
+    if (action) run(action);
   });
 
   window.addEventListener("keydown", (event) => {
     if (!st.open) return;
-    if (event.key === "Escape" || (st.focus && event.key === "Backspace")) {
-      if (st.focus) backToGalaxy(); else shut();
-    } else if (!st.focus && (event.key === "ArrowRight" || event.key === "ArrowLeft")) {
-      galaxy.step(event.key === "ArrowRight" ? 1 : -1);
-    } else if (!st.focus && event.key === "Enter") {
-      openProject(galaxy.selected);
-    } else if (st.focus && (event.key === "p" || event.key === "P")) {
-      const cur = view.current;
-      if (cur && ["running", "paused"].includes(cur.status)) {
-        control(cur.id, cur.status === "paused" ? "resume" : "pause");
-      }
-    }
+    const action = window.NuxivaAgencyInput.fromKey(event, Boolean(st.focus));
+    if (!action) return;
+    event.preventDefault();
+    run(action);
   });
 
   close.addEventListener("click", shut);
@@ -247,5 +250,5 @@
     else if (intent.view === "galaxy") { open(); if (st.focus) backToGalaxy(); }
   }
 
-  D.agency = { open, close: shut, openProject, sync };
+  D.agency = { open, close: shut, openProject, sync, run };
 })();
