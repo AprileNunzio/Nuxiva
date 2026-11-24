@@ -1,0 +1,1 @@
+import"./useResource-CGe4e1CC.js";

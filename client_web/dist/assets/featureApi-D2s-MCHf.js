@@ -1,1 +1,0 @@
-import{o as e}from"./http-DN8x83gm.js";var t=encodeURIComponent,n=(n,r)=>e(`/api/features/${t(n)}`,`PUT`,{mode:r}),r=(n,r)=>e(`/api/features/${t(n)}/settings`,`PUT`,r);export{n,r as t};
