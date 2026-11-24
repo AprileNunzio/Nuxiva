@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Il volto riconosciuto dalla webcam del browser sblocca i widget di quel browser",
+    "en": "A face recognized by the browser webcam unlocks the widgets in that browser",
+    "fr": "Un visage reconnu par la webcam du navigateur déverrouille les widgets de ce navigateur",
+    "es": "Un rostro reconocido por la webcam del navegador desbloquea los widgets de ese navegador"
+  },
+  "features": [
+    {
+      "it": "Con l'anteprima webcam attiva il riconoscimento parte da solo ogni pochi secondi, senza premere il pulsante.",
+      "en": "With the webcam preview on, recognition runs by itself every few seconds, without pressing the button.",
+      "fr": "Avec l'aperçu webcam actif, la reconnaissance se lance seule toutes les quelques secondes, sans appuyer sur le bouton.",
+      "es": "Con la vista previa de la webcam activa, el reconocimiento se ejecuta solo cada pocos segundos, sin pulsar el botón."
+    },
+    {
+      "it": "Il pulsante di verifica mostra sempre l'esito e il motivo: nessun volto, più volti, volto lontano, non riconosciuto, nessun volto registrato, ruolo non autorizzato, foto sospetta o errore del server.",
+      "en": "The check button always shows the result and the reason: no face, several faces, face too far, not recognized, no face enrolled, role not authorized, suspected photo or server error.",
+      "fr": "Le bouton de vérification affiche toujours le résultat et la raison : aucun visage, plusieurs visages, visage trop loin, non reconnu, aucun visage enregistré, rôle non autorisé, photo suspecte ou erreur du serveur.",
+      "es": "El botón de verificación muestra siempre el resultado y el motivo: ningún rostro, varios rostros, rostro lejano, no reconocido, ningún rostro registrado, rol no autorizado, foto sospechosa o error del servidor."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il riconoscimento dal browser rispondeva solo sì o no e non sbloccava mai i widget: ora un titolare o familiare riconosciuto, con accesso amministratore in HTTPS, li apre solo su quel browser per 30 secondi rinnovati, e li richiude se compare un estraneo, più volti o una foto.",
+      "en": "Browser recognition only answered yes or no and never unlocked the widgets: now a recognized owner or family member, signed in as administrator over HTTPS, opens them only in that browser for 30 renewed seconds, and closes them if a stranger, several faces or a photo appear.",
+      "fr": "La reconnaissance du navigateur répondait seulement oui ou non sans déverrouiller les widgets : un titulaire ou proche reconnu, connecté en administrateur en HTTPS, les ouvre seulement dans ce navigateur pour 30 secondes renouvelées, et les referme face à un inconnu, plusieurs visages ou une photo.",
+      "es": "El reconocimiento del navegador solo respondía sí o no y nunca desbloqueaba los widgets: un titular o familiar reconocido, con acceso de administrador por HTTPS, los abre solo en ese navegador 30 segundos renovados, y los cierra si aparece un extraño, varios rostros o una foto."
+    },
+    {
+      "it": "Il fotogramma inviato riempie tutta l'area invece di avere bande nere e accetta volti più piccoli, così il riconoscimento funziona anche con webcam 16:9 a distanza normale.",
+      "en": "The frame sent fills the whole area instead of having black bars and accepts smaller faces, so recognition works with 16:9 webcams at a normal distance too.",
+      "fr": "L'image envoyée remplit toute la zone au lieu d'avoir des bandes noires et accepte des visages plus petits, la reconnaissance fonctionne donc aussi avec les webcams 16:9 à distance normale.",
+      "es": "La imagen enviada llena toda el área en lugar de tener bandas negras y acepta rostros más pequeños, así el reconocimiento funciona también con webcams 16:9 a distancia normal."
+    }
+  ]
+}

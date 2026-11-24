@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 from access import NO_CACHE, require_admin
 from config import env_get
 from agenti.desktop.camera_sessions import SESSION_HEADER, camera_owner, camera_sessions, require_camera_enabled
+from agenti.desktop.remote_presence import judge, probe_session, remote_presence, viewer
 from agenti.vision.proxy import VISION_URL
 from agenti.vision.remote_frame import CONTENT_TYPE, read_frame
 
@@ -33,7 +34,8 @@ async def probe_camera(request: Request):
                 frame = await read_frame(request)
             async with httpx.AsyncClient(timeout=4, trust_env=False) as client:
                 result = await client.post(f"{VISION_URL}/internal/remote-camera/probe", content=frame,
-                                           headers={"Content-Type": CONTENT_TYPE})
+                                           headers={"Content-Type": CONTENT_TYPE,
+                                                    "X-Nuxiva-Probe-Session": probe_session(token)})
             if result.status_code == 429:
                 raise HTTPException(429, "camera.frame.busy")
             result.raise_for_status()
@@ -45,4 +47,18 @@ async def probe_camera(request: Request):
     require_probe_enabled()
     if camera_owner(request) != owner or not camera_sessions.active(token, owner):
         raise HTTPException(404, "camera.session.expired")
-    return JSONResponse({"matched": isinstance(payload, dict) and payload.get("matched") is True}, headers=NO_CACHE)
+    verdict = judge(payload, _role(payload), _liveness_mode())
+    return JSONResponse(remote_presence.settle(viewer(request), verdict), headers=NO_CACHE)
+
+
+def _role(payload) -> str:
+    slug = str(payload.get("slug") or "") if isinstance(payload, dict) else ""
+    if not slug:
+        return ""
+    from agenti.people import people
+    return str((people.load(slug) or {}).get("role") or "guest")
+
+
+def _liveness_mode() -> str:
+    from agenti.vision import selection
+    return selection.liveness_mode()

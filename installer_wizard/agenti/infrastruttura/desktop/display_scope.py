@@ -6,6 +6,7 @@ from config import env_get
 from agenti.authz.access_control import account, allows
 from agenti.desktop.host_origin import is_host_origin
 from agenti.desktop.presence_bridge import gate_enabled
+from agenti.desktop.remote_presence import remote_presence, viewer
 
 
 REMOTE_STATE_KEYS = (
@@ -15,7 +16,7 @@ REMOTE_STATE_KEYS = (
 BACKGROUND_KEYS = ("paused", "finished", "done", "total", "progress", "current")
 BACKGROUND_ITEM_KEYS = ("id", "title", "status", "progress")
 PROXY_HEADERS = ("forwarded", "x-forwarded-for", "x-real-ip")
-RemoteScope = bool | Literal["browser", "signed_in"]
+RemoteScope = bool | Literal["browser", "signed_in", "recognized"]
 
 
 def _select(source: dict, keys: tuple[str, ...]) -> dict:
@@ -41,6 +42,8 @@ def is_remote_kiosk_active() -> bool:
 def remote_display_scope(request) -> RemoteScope:
     if is_host_display(request):
         return False
+    if remote_presence.holder(viewer(request)):
+        return "recognized"
     if is_remote_kiosk_active() and is_private(request) and not any(name in request.headers for name in PROXY_HEADERS):
         return False
     if (env_get("NUXIVA_KIOSK", "1") == "0" and not gate_enabled() and is_private(request)

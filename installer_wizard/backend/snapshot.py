@@ -30,7 +30,7 @@ log = logging.getLogger("nuxiva.snapshot")
 _reported: dict[str, str] = {}
 _shared: dict[bool | str, tuple[int, float, dict, str, int]] = {}
 _builds = {"count": 0}
-_deltas = {key: stream_delta.DeltaCache() for key in (False, True, "remote", "browser", "signed_in")}
+_deltas = {key: stream_delta.DeltaCache() for key in (False, True, "remote", "browser", "signed_in", "recognized")}
 
 
 def _report(section: str, exc: BaseException) -> None:
@@ -114,7 +114,11 @@ def _connected_servers() -> list[dict]:
         return list(_servers_cache["items"])
 
 
-def full_snapshot(admin: bool) -> dict:
+def recognized_audience() -> dict:
+    return {**(store.audience or {}), "kind": "authorized", "nucleus_only": False, "remote_viewer": True}
+
+
+def full_snapshot(admin: bool, recognized: bool = False) -> dict:
     snap = store.snapshot(admin=admin, log_lines=40 if admin else 14)
     snap["catalog"] = step_catalog()
     snap["supervisor_version"] = VERSION
@@ -168,8 +172,10 @@ def full_snapshot(admin: bool) -> dict:
     if admin:
         return snap
     from agenti.desktop import audience_view, planner_bridge, presence_bridge
-    planned = planner_bridge.bridge.apply(snap, store.audience)
-    return audience_view.redact(planned, store.audience, presence_bridge.show_options())
+    audience = recognized_audience() if recognized else store.audience
+    snap["audience"] = audience
+    planned = planner_bridge.bridge.apply(snap, audience)
+    return audience_view.redact(planned, audience, presence_bridge.show_options())
 
 
 def _scope_key(admin: bool, remote: RemoteScope) -> bool | str:
@@ -183,12 +189,12 @@ def _shared_entry(admin: bool, remote: RemoteScope = False) -> tuple[int, float,
     cached = _shared.get(key)
     if cached and cached[0] == version and now - cached[1] < SHARED_MAX_AGE:
         return cached
-    if remote and remote != "signed_in":
+    if remote and remote not in ("signed_in", "recognized"):
         from background import queue
         snap = remote_state({**store.snapshot(), "asset_version": ASSET_VERSION}, queue.snapshot(),
                             face_options(), browser=remote == "browser")
     else:
-        snap = full_snapshot(admin)
+        snap = full_snapshot(admin, recognized=True) if remote == "recognized" else full_snapshot(admin)
     text = json.dumps(snap, ensure_ascii=False, default=str)
     if cached and cached[3] == text:
         entry = (version, now, cached[2], cached[3], cached[4])

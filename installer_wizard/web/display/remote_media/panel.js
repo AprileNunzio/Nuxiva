@@ -1,6 +1,6 @@
 (() => {
   const D = window.NuxivaDisplay;
-  if (D.local || !navigator.mediaDevices?.getUserMedia) return;
+  if (D.local || !navigator.mediaDevices?.getUserMedia || !window.NuxivaRemoteProbe) return;
 
   const panel = document.getElementById("remote-media");
   const camera = document.getElementById("remote-media-camera");
@@ -9,7 +9,10 @@
   const video = document.getElementById("remote-media-preview");
   const status = document.getElementById("remote-media-status");
   let stream = null, pendingStream = null, lease = null, generation = 0, timer = 0, policyGeneration = 0;
-  let probeRequest = null;
+  let probeRequest = null, probeTimer = 0;
+  const Probe = window.NuxivaRemoteProbe;
+  const AUTO_PROBE_MS = 2500;
+  const STOP_STATUSES = new Set([401, 403, 404]);
 
   function cameraSession(method, token, signal) {
     const headers = { "X-Nuxiva-Request": "1" };
@@ -23,6 +26,8 @@
 
   function stopCamera() {
     generation++;
+    clearTimeout(probeTimer);
+    probeTimer = 0;
     probeRequest?.abort();
     const token = lease;
     lease = null;
@@ -43,7 +48,11 @@
     if (!policy.camera_preview && (stream || pendingStream || previous?.camera_preview)) {
       stopCamera();
     }
-    if (previous?.camera_probe && !policy.camera_probe) probeRequest?.abort();
+    if (previous?.camera_probe && !policy.camera_probe) {
+      clearTimeout(probeTimer);
+      probeRequest?.abort();
+    }
+    if (!previous?.camera_probe && policy.camera_probe && lease) scheduleProbe();
     if (previous?.microphone && !policy.microphone) D.Ear.disableRemote();
     panel.hidden = !policy.camera_preview && !policy.microphone;
     camera.hidden = !policy.camera_preview;
@@ -101,7 +110,12 @@
       video.srcObject = next;
       video.hidden = false;
       probe.hidden = !D.remoteMedia.camera_probe;
-      PageText.plain(status, "");
+      if (D.remoteMedia.camera_probe) {
+        PageText.bind(status, "remote_media_probe_auto");
+        scheduleProbe();
+      } else {
+        PageText.plain(status, "");
+      }
     } catch (error) {
       console.warn("remote_media_camera", error.name);
       if (requestGeneration === generation) PageText.bind(status, "remote_media_unavailable");
@@ -114,47 +128,47 @@
     }
   }
 
-  camera.addEventListener("click", openCamera);
-  probe.addEventListener("click", async () => {
-    if (!lease || !D.remoteMedia?.camera_probe || !video.videoWidth) return;
+  function scheduleProbe() {
+    clearTimeout(probeTimer);
+    probeTimer = 0;
+    if (lease && D.remoteMedia?.camera_probe) probeTimer = setTimeout(() => runProbe(false), AUTO_PROBE_MS);
+  }
+
+  async function runProbe(manual) {
+    if (!lease || !D.remoteMedia?.camera_probe) {
+      if (manual) PageText.bind(status, "remote_media_probe_error_session");
+      return;
+    }
+    if (probeRequest) return;
+    const frame = Probe.capture(video);
+    if (!frame) {
+      if (manual) PageText.bind(status, "remote_media_probe_no_frame");
+      scheduleProbe();
+      return;
+    }
     const token = lease;
-    const canvas = document.createElement("canvas");
-    canvas.width = 320;
-    canvas.height = 240;
-    const context = canvas.getContext("2d");
-    if (!context) return;
-    const scale = Math.min(canvas.width / video.videoWidth, canvas.height / video.videoHeight);
-    const width = video.videoWidth * scale, height = video.videoHeight * scale;
-    context.drawImage(video, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
-    probe.disabled = true;
     const controller = new AbortController();
     probeRequest = controller;
+    probe.disabled = true;
+    if (manual) PageText.bind(status, "remote_media_probe_working");
     const timeout = setTimeout(() => controller.abort(), 8000);
+    let result = {};
     try {
-      const response = await fetch("/api/display/remote-media/camera/probe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/octet-stream",
-          "X-Nuxiva-Request": "1",
-          "X-Nuxiva-Camera-Session": token,
-        },
-        body: context.getImageData(0, 0, canvas.width, canvas.height).data,
-        signal: controller.signal,
-      });
-      if (!response.ok) throw new Error("camera_probe_failed");
-      const result = await response.json();
-      if (lease === token && D.remoteMedia?.camera_probe) {
-        PageText.bind(status, result.matched ? "remote_media_probe_match" : "remote_media_probe_no_match");
+      result = await Probe.send(frame, token, controller.signal);
+      const quiet = !manual && result.status === 429;
+      if (!quiet && lease === token && D.remoteMedia?.camera_probe) {
+        PageText.bind(status, result.key, result.name ? { name: result.name } : undefined);
       }
-    } catch (error) {
-      console.warn("remote_media_probe", error.name);
-      if (lease === token && D.remoteMedia?.camera_probe) PageText.bind(status, "remote_media_unavailable");
     } finally {
       clearTimeout(timeout);
       if (probeRequest === controller) probeRequest = null;
       probe.disabled = false;
+      if (lease === token && !STOP_STATUSES.has(result.status)) scheduleProbe();
     }
-  });
+  }
+
+  camera.addEventListener("click", openCamera);
+  probe.addEventListener("click", () => runProbe(true));
   D.openRemoteCamera = () => {
     panel.open = true;
     camera.focus();

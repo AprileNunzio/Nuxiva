@@ -11,6 +11,7 @@ from agenti.desktop.camera_sessions import (
     SESSION_HEADER, TTL_SECONDS, camera_owner, camera_sessions, require_camera_enabled,
 )
 from agenti.desktop.desk import FILES, desk
+from agenti.desktop.remote_presence import remote_presence, viewer
 from agenti.desktop.sources import PROVIDERS, SOURCES
 from agenti.music import karaoke as music_karaoke, music
 from agenti.nodes.display_link import display_node
@@ -59,6 +60,7 @@ async def renew_remote_camera(request: Request):
 async def revoke_remote_camera(request: Request):
     owner = camera_owner(request)
     camera_sessions.update(request.headers.get(SESSION_HEADER, ""), owner, revoke=True)
+    remote_presence.revoke(viewer(request))
     return JSONResponse({"ok": True}, headers=NO_CACHE)
 
 desk.register_source("now_playing", music.watcher.current)
