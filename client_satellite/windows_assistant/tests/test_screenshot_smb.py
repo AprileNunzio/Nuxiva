@@ -6,7 +6,7 @@ from unittest import mock
 
 from intents import screenshot as shot
 from screenshot import clipboard, hotkey, sink, smbauth
-from screenshot.credentials import CredentialError, Vault
+from screenshot.smbvault import CredentialError, Vault
 from screenshot.service import Service
 
 AUTH = {"target": "smb://nas/condivisa", "user": "nuxiva-share", "password": "Batteria-Corretta-42"}

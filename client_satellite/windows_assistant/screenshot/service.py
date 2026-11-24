@@ -10,7 +10,7 @@ from pathlib import Path
 
 from screenshot import capture, rules, sink
 from screenshot.sink import AuthError
-from screenshot.credentials import CredentialError
+from screenshot.smbvault import CredentialError
 from screenshot.spool import Spool
 
 log = logging.getLogger("nuxiva.screenshot")

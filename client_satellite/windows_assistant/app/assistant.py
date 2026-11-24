@@ -39,7 +39,7 @@ from permissions.catalog import Level
 from permissions.gate import Gate
 from permissions.policy import Policy
 from screenshot import clipboard, smbauth
-from screenshot.credentials import Vault as ScreenshotVault
+from screenshot.smbvault import Vault as ScreenshotVault
 from screenshot.hotkey import PrintScreenHotkey
 from screenshot.service import Service as Screenshots
 from senses import places

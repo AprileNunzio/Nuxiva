@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Installer Windows di nuovo compilabile dopo gli screenshot su cartella condivisa",
+    "en": "Windows installer builds again after shared-folder screenshots",
+    "fr": "L'installateur Windows se compile à nouveau après les captures vers le dossier partagé",
+    "es": "El instalador de Windows vuelve a compilarse tras las capturas a la carpeta compartida"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Il componente che custodisce cifrata la password della cartella condivisa non veniva incluso nella versione pubblicata: ora c'è e l'installer Windows torna a essere generato.",
+      "en": "The component that keeps the shared-folder password encrypted was missing from the published version: it is now included and the Windows installer is built again.",
+      "fr": "Le composant qui garde chiffré le mot de passe du dossier partagé manquait dans la version publiée : il est maintenant inclus et l'installateur Windows est de nouveau généré.",
+      "es": "El componente que guarda cifrada la contraseña de la carpeta compartida faltaba en la versión publicada: ahora está incluido y el instalador de Windows vuelve a generarse."
+    }
+  ]
+}
