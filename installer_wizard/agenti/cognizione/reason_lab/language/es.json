@@ -1,0 +1,9 @@
+{
+  "name": "Laboratorio de pruebas",
+  "description": "Las pruebas miden solo los modelos y las preguntas elegidos: los resultados no valen para otros modelos.",
+  "capabilities": [
+    "Las preguntas pueden estar en cualquier idioma y se editan desde el panel.",
+    "Las claves de los servicios quedan solo en memoria durante la prueba y nunca se guardan.",
+    "Las direcciones de los modelos se comprueban: se rechazan los servicios de metadatos y las direcciones no válidas."
+  ]
+}

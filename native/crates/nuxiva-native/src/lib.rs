@@ -66,6 +66,7 @@ mod percept;
 mod planner;
 mod presence;
 mod proactivity;
+mod reason_lab;
 mod reflect;
 mod reflex;
 mod rescue;
@@ -164,6 +165,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     guard::register(m)?;
     compute_lease::register(m)?;
     jev::register(m)?;
+    reason_lab::register(m)?;
     seal::register(m)?;
     brain::register(m)?;
     mcp::register(m)?;

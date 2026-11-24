@@ -1,0 +1,21 @@
+{
+  "id": "reason_lab",
+  "name": "Laboratorio di prova",
+  "icon": "🧪",
+  "category": "cognizione",
+  "description": "Misura quanto i modelli reali capiscono le richieste: domande modificabili, prove in background, risultati dettagliati e file da scaricare.",
+  "capabilities": [
+    "Insiemi di domande in più lingue, importabili, modificabili ed esportabili",
+    "Prove in background su Ollama o su servizi compatibili",
+    "Risultati per lingua, categoria, token e tempi, con confronto tra prove",
+    "Download di risultati, rapporto e tabella CSV"
+  ],
+  "settings": [],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "9QHudN9uBhDv",
+    "url": "https://img.icons8.com/?size=240&id=9QHudN9uBhDv&format=png"
+  }
+}

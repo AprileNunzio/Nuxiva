@@ -1,0 +1,9 @@
+{
+  "name": "Test lab",
+  "description": "Runs measure only the selected models and questions: results do not apply to other models.",
+  "capabilities": [
+    "Questions can be in any language and are edited from the panel.",
+    "Service keys stay in memory only during a run and are never saved.",
+    "Model addresses are checked: metadata services and invalid addresses are refused."
+  ]
+}

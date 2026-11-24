@@ -1,0 +1,9 @@
+{
+  "name": "Laboratoire d'essai",
+  "description": "Les essais ne mesurent que les modèles et les questions choisis : les résultats ne valent pas pour d'autres modèles.",
+  "capabilities": [
+    "Les questions peuvent être dans n'importe quelle langue et se modifient depuis le panneau.",
+    "Les clés des services restent en mémoire pendant l'essai et ne sont jamais enregistrées.",
+    "Les adresses des modèles sont vérifiées : les services de métadonnées et les adresses invalides sont refusés."
+  ]
+}

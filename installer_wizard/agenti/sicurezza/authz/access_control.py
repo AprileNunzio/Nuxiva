@@ -14,14 +14,15 @@ ACCOUNTS_FILE = STATE_DIR / "authz" / "accounts.json"
 ROLE_GRANTS = {
     "administrator": {"*"},
     "operator": {"system.status.read", "logs.read", "logs.export", "devices.read", "mcp.tools.execute",
-                 "mcp.resources.read", "files.share.read", "files.share.write"},
-    "auditor": {"system.status.read", "logs.read", "logs.export", "mcp.resources.read", "files.share.read"},
+                 "mcp.resources.read", "files.share.read", "files.share.write", "lab.read", "lab.run"},
+    "auditor": {"system.status.read", "logs.read", "logs.export", "mcp.resources.read", "files.share.read", "lab.read"},
     "viewer": {"system.status.read"},
 }
 ROLE_PROFILES = {"administrator": "owner", "operator": "family", "auditor": "family", "viewer": "guest"}
 CAPABILITY_RISKS = {"system.status.read": Risk.INFO, "devices.read": Risk.INFO, "logs.read": Risk.FILES,
                     "logs.export": Risk.FILES, "mcp.tools.execute": Risk.HOME, "mcp.resources.read": Risk.FILES,
-                    "files.share.read": Risk.FILES, "files.share.write": Risk.FILES}
+                    "files.share.read": Risk.FILES, "files.share.write": Risk.FILES, "lab.read": Risk.FILES,
+                    "lab.edit": Risk.FILES, "lab.run": Risk.PERSONAL}
 
 
 def bindings() -> dict:

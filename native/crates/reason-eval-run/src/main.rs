@@ -4,7 +4,7 @@ use std::process::ExitCode;
 use std::time::{Duration, Instant};
 
 use nuxiva_llm_client::LlmClient;
-use reason_eval_run::{Backend, to_outcome};
+use reason_lab::{Backend, to_outcome};
 
 const KEY_VARIABLE: &str = "NUXIVA_EVAL_KEY";
 
@@ -41,7 +41,7 @@ async fn run(args: &[String]) -> Result<usize, String> {
         let latency = u64::try_from(started.elapsed().as_millis()).unwrap_or(u64::MAX);
         let extracted = reply.and_then(|r| backend.extract(&r.body));
         let (content, tokens) = extracted.map_or((None, 0), |(c, t)| (Some(c), t));
-        let outcome = to_outcome(case, content.as_deref(), tokens, latency);
+        let outcome = to_outcome(&case.id, &case.text, content.as_deref(), tokens, latency);
         let line = serde_json::to_string(&outcome).map_err(|e| e.to_string())?;
         writeln!(file, "{line}").map_err(|e| e.to_string())?;
         written = written.saturating_add(1);

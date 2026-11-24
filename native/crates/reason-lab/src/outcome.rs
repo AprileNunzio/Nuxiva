@@ -1,7 +1,7 @@
 use std::collections::BTreeSet;
 
 use capability_registry::Effect as Declared;
-use reason_eval::{Case, Effect, Outcome};
+use reason_eval::{Effect, Outcome};
 use reason_understand::{Goal, parse};
 
 fn effects_of(goal: &Goal) -> BTreeSet<Effect> {
@@ -18,11 +18,17 @@ fn effects_of(goal: &Goal) -> BTreeSet<Effect> {
 }
 
 #[must_use]
-pub fn to_outcome(case: &Case, content: Option<&str>, tokens: u64, latency_ms: u64) -> Outcome {
-    let goal = content.and_then(|raw| parse(raw, &case.text).ok());
+pub fn to_outcome(
+    case_id: &str,
+    user_text: &str,
+    content: Option<&str>,
+    tokens: u64,
+    latency_ms: u64,
+) -> Outcome {
+    let goal = content.and_then(|raw| parse(raw, user_text).ok());
     match goal {
         Some(goal) => Outcome {
-            case_id: case.id.clone(),
+            case_id: case_id.to_owned(),
             effects: effects_of(&goal),
             intent: goal.intent,
             completed: true,
@@ -30,7 +36,7 @@ pub fn to_outcome(case: &Case, content: Option<&str>, tokens: u64, latency_ms: u
             latency_ms,
         },
         None => Outcome {
-            case_id: case.id.clone(),
+            case_id: case_id.to_owned(),
             intent: String::new(),
             effects: BTreeSet::new(),
             completed: false,

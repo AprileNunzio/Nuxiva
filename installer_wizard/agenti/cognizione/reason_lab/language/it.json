@@ -1,0 +1,9 @@
+{
+  "name": "Laboratorio di prova",
+  "description": "Le prove misurano solo i modelli e le domande selezionati: i risultati non valgono per altri modelli.",
+  "capabilities": [
+    "Le domande possono essere in qualsiasi lingua e si modificano dal pannello.",
+    "Le chiavi dei servizi restano solo in memoria durante la prova e non vengono salvate.",
+    "Gli indirizzi dei modelli sono controllati: non sono ammessi servizi di metadati o indirizzi non validi."
+  ]
+}

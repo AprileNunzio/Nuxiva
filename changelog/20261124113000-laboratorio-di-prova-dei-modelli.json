@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Nuovo Laboratorio di prova nel pannello di controllo per misurare i modelli",
+    "en": "New Test Lab in the control panel to measure models",
+    "fr": "Nouveau Laboratoire d'essai dans le panneau de contrôle pour mesurer les modèles",
+    "es": "Nuevo Laboratorio de pruebas en el panel de control para medir los modelos"
+  },
+  "features": [
+    {
+      "it": "Dal pannello di controllo si caricano o si scrivono le domande in qualsiasi lingua, si avvia la prova in background su Ollama o su un servizio compatibile e, a lavoro finito, si scaricano risultati, rapporto e tabella.",
+      "en": "From the control panel you upload or write questions in any language, start the run in the background on Ollama or a compatible service and, when it is done, download the results, report and table.",
+      "fr": "Depuis le panneau de contrôle on charge ou on écrit des questions dans n'importe quelle langue, on lance l'essai en arrière-plan sur Ollama ou un service compatible et, une fois terminé, on télécharge résultats, rapport et tableau.",
+      "es": "Desde el panel de control se cargan o escriben preguntas en cualquier idioma, se inicia la prueba en segundo plano en Ollama o en un servicio compatible y, al terminar, se descargan resultados, informe y tabla."
+    },
+    {
+      "it": "I risultati si leggono per lingua e categoria, con token, tempi, azioni sbagliate e confronto tra due prove; le chiavi dei servizi non vengono mai salvate e gli indirizzi pericolosi sono rifiutati.",
+      "en": "Results are read by language and category, with tokens, times, wrong actions and a comparison between two runs; service keys are never saved and dangerous addresses are refused.",
+      "fr": "Les résultats se lisent par langue et par catégorie, avec jetons, temps, actions erronées et comparaison entre deux essais ; les clés des services ne sont jamais enregistrées et les adresses dangereuses sont refusées.",
+      "es": "Los resultados se leen por idioma y categoría, con tokens, tiempos, acciones erróneas y comparación entre dos pruebas; las claves de los servicios nunca se guardan y las direcciones peligrosas se rechazan."
+    }
+  ],
+  "fixes": []
+}

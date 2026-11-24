@@ -1,0 +1,41 @@
+{
+  "id": "reason_lab",
+  "name": "Test Lab",
+  "scope": "apps/reason_lab",
+  "kind": "app",
+  "category": "system",
+  "target": "universal",
+  "icon3d": "./icon.png",
+  "version": "1.0.0",
+  "window": {
+    "defaultWidth": 1180,
+    "defaultHeight": 780,
+    "minWidth": 480,
+    "resizable": true,
+    "minHeight": 360,
+    "maximizable": true,
+    "singleton": false,
+    "mobileMode": "fullscreen"
+  },
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "9QHudN9uBhDv",
+    "url": "https://img.icons8.com/?size=240&id=9QHudN9uBhDv&format=png"
+  },
+  "featureIds": ["reason_lab"],
+  "i18nScope": "reason_lab",
+  "capabilities": ["lab.read", "lab.run", "lab.edit"],
+  "ui": {
+    "tabs": [
+      { "id": "runs", "labelKey": "tab_runs", "icon": "overview" },
+      { "id": "datasets", "labelKey": "tab_datasets", "icon": "changes" },
+      { "id": "models", "labelKey": "tab_models", "icon": "settings" },
+      { "id": "results", "labelKey": "tab_results", "icon": "diagnostics" }
+    ],
+    "actions": [
+      { "id": "refresh", "labelKey": "os_refresh", "icon": "refresh-cw" }
+    ],
+    "statusBar": { "showConnectionState": true, "showItemCount": true }
+  }
+}

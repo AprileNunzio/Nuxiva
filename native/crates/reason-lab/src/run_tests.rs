@@ -55,7 +55,7 @@ fn replies_are_read_with_their_token_counts() {
 
 #[test]
 fn a_valid_goal_becomes_a_completed_outcome() {
-    let outcome = to_outcome(&case(), Some(GOOD), 30, 800);
+    let outcome = to_outcome(&case().id, &case().text, Some(GOOD), 30, 800);
     assert!(outcome.completed);
     assert_eq!(outcome.intent, "find_image");
     assert!(outcome.effects.contains(&Effect::Read));
@@ -65,10 +65,10 @@ fn a_valid_goal_becomes_a_completed_outcome() {
 #[test]
 fn invalid_or_missing_replies_count_as_not_completed_with_no_effects() {
     for content in [None, Some("not json"), Some(r#"{"intent":"x"}"#)] {
-        let outcome = to_outcome(&case(), content, 0, 5);
+        let outcome = to_outcome(&case().id, &case().text, content, 0, 5);
         assert!(!outcome.completed);
         assert!(outcome.effects.is_empty());
     }
     let invented = GOOD.replace("San Bernardo", "Labrador");
-    assert!(!to_outcome(&case(), Some(&invented), 0, 5).completed);
+    assert!(!to_outcome(&case().id, &case().text, Some(&invented), 0, 5).completed);
 }

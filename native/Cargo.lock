@@ -2486,6 +2486,7 @@ dependencies = [
  "nuxiva-percept-core",
  "nuxiva-presence-core",
  "nuxiva-proactivity-core",
+ "nuxiva-reason-lab",
  "nuxiva-reflect-core",
  "nuxiva-reflex-core",
  "nuxiva-rescue-core",
@@ -2638,9 +2639,9 @@ dependencies = [
 name = "nuxiva-reason-eval-run"
 version = "5.8.23"
 dependencies = [
- "nuxiva-capability-registry",
  "nuxiva-llm-client",
  "nuxiva-reason-eval",
+ "nuxiva-reason-lab",
  "nuxiva-reason-understand",
  "serde_json",
  "tokio",
@@ -2654,6 +2655,17 @@ dependencies = [
  "nuxiva-capability-registry",
  "nuxiva-reason-plan",
  "nuxiva-reason-understand",
+]
+
+[[package]]
+name = "nuxiva-reason-lab"
+version = "5.8.23"
+dependencies = [
+ "nuxiva-capability-registry",
+ "nuxiva-reason-eval",
+ "nuxiva-reason-understand",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

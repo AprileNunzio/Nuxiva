@@ -1,0 +1,21 @@
+[package]
+name = "nuxiva-reason-lab"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "reason_lab"
+path = "src/lib.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+nuxiva-reason-eval = { path = "../reason-eval" }
+nuxiva-reason-understand = { path = "../reason-understand" }
+nuxiva-capability-registry = { path = "../capability-registry" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
