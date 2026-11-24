@@ -39,7 +39,7 @@ PROVIDERS = [
     Provider("deepseek", "DeepSeek", "https://api.deepseek.com/v1", key_url="https://platform.deepseek.com/api_keys",
              models=("deepseek-chat", "deepseek-reasoner", "deepseek-v3")),
     Provider("groq", "Groq", "https://api.groq.com/openai/v1", key_url="https://console.groq.com/keys",
-             models=("llama-3.3-70b-versatile", "openai/gpt-oss-120b", "qwen/qwen3-32b", "llama-3.1-8b-instant"),
+             models=("openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"),
              notes="Inferenza velocissima su hardware LPU."),
     Provider("cerebras", "Cerebras", "https://api.cerebras.ai/v1", key_url="https://cloud.cerebras.ai",
              models=("gpt-oss-120b", "llama-3.3-70b", "qwen-3-32b")),
@@ -121,6 +121,15 @@ REASONING_BUDGET = {"minimal": 1024, "low": 2048, "medium": 8192, "high": 24576}
 
 PREFIX = "cloud:"
 
+RETIRED = {
+    "groq": {"llama-3.3-70b-versatile": "openai/gpt-oss-120b", "llama-3.1-8b-instant": "openai/gpt-oss-20b",
+             "qwen/qwen3-32b": "openai/gpt-oss-120b", "qwen/qwen3.6-27b": "qwen/qwen3.8-27b"},
+}
+
+
+def current_model(provider: str, model: str) -> str:
+    return RETIRED.get(provider, {}).get(model, model)
+
 
 SERVER = "srv-"
 FLAVORS = {"ollama": "Ollama", "openai": "Compatibile OpenAI"}
@@ -152,7 +161,7 @@ def parse_ref(ref: str) -> tuple[str, str]:
         vault.get(provider)
     if provider not in BY_ID or not model:
         raise ValueError(f"riferimento cloud non valido: {ref}")
-    return provider, model
+    return provider, current_model(provider, model)
 
 
 def make_ref(provider: str, model: str) -> str:

@@ -74,8 +74,10 @@ class Runner:
             async with gate:
                 if identifier in self.stop or streak["abort"]:
                     return
-                status, outcome = await self.call(meta, key, case)
+                status, outcome, failure = await self.call(meta, key, case)
                 async with lock:
+                    if failure:
+                        meta["last_failure"] = failure
                     store.append_outcome(identifier, json.dumps(outcome, ensure_ascii=False))
                     meta["done"] += 1
                     meta["failed_calls"] += 0 if status == 200 else 1
@@ -102,14 +104,14 @@ class Runner:
             store.save_run(meta)
             self.stop.discard(identifier)
 
-    async def call(self, meta: dict, key: str | None, case: dict) -> tuple[int, dict]:
+    async def call(self, meta: dict, key: str | None, case: dict) -> tuple[int, dict, dict | None]:
         try:
             raw = await asyncio.to_thread(lab.native("reason_lab_run_case"), meta["backend"], meta["base_url"], meta["model"], key,
                                           case["id"], case["text"], case.get("external_content"), meta["timeout_seconds"])
             answer = json.loads(raw)
-            return int(answer["status"]), answer["outcome"]
+            return int(answer["status"]), answer["outcome"], answer.get("failure")
         except (ValueError, KeyError, TypeError):
-            return 0, {"case_id": case["id"], "intent": "", "effects": [], "completed": False, "tokens": 0, "latency_ms": 0}
+            return 0, {"case_id": case["id"], "intent": "", "effects": [], "completed": False, "tokens": 0, "latency_ms": 0}, None
 
     @staticmethod
     def finish_report(meta: dict, scenarios: list) -> None:

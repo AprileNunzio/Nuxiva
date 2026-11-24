@@ -69,9 +69,16 @@ export interface Run {
   started: number;
   finished: number | null;
   error: string | null;
+  last_failure?: Failure | null;
   label: string;
   source?: 'brain' | 'custom';
   concurrency: number;
+}
+
+export interface Failure {
+  status: number;
+  url: string;
+  message: string;
 }
 
 export interface Slice {

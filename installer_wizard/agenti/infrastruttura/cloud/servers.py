@@ -2,6 +2,7 @@ import asyncio
 
 import httpx
 
+from agenti.cloud.address import normalize
 from agenti.cloud.catalog import BY_ID, FLAVORS, Provider
 from agenti.cloud.client import CloudError, endpoint, headers
 from agenti.cloud.models import _ids
@@ -20,7 +21,7 @@ def addresses(flavor: str, url: str) -> tuple[str, str]:
         if ":" not in host:
             root += ":11434"
         return root, f"{root}/v1"
-    return root, root if root.endswith("/v1") else f"{root}/v1"
+    return root, normalize(root)
 
 
 async def probe(flavor: str, base_url: str, key: str = "") -> list[str]:

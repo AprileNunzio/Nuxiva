@@ -49,6 +49,8 @@
     "state_interrupted": "Interrotta",
     "error_authentication_failed": "Il servizio ha rifiutato la chiave.",
     "error_model_unreachable": "Il modello non ha risposto.",
+    "last_failure": "Ultima chiamata fallita: {status} su {url} — {message}",
+    "last_failure_unreachable": "Ultima chiamata senza risposta da {url}",
     "error_interrupted": "Il server si è riavviato durante la prova.",
     "error_internal_error": "Errore interno durante la prova.",
     "error_native_unavailable": "Il motore nativo non è disponibile.",

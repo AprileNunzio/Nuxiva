@@ -49,6 +49,8 @@
     "state_interrupted": "Interrompu",
     "error_authentication_failed": "Le service a refusé la clé.",
     "error_model_unreachable": "Le modèle n'a pas répondu.",
+    "last_failure": "Dernier appel échoué : {status} sur {url} — {message}",
+    "last_failure_unreachable": "Le dernier appel n'a reçu aucune réponse de {url}",
     "error_interrupted": "Le serveur a redémarré pendant l'essai.",
     "error_internal_error": "Erreur interne pendant l'essai.",
     "error_native_unavailable": "Le moteur natif n'est pas disponible.",

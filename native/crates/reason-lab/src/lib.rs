@@ -2,6 +2,7 @@
 
 mod backend;
 mod custom;
+mod endpoint;
 pub mod facade;
 mod outcome;
 
@@ -10,6 +11,7 @@ pub use custom::{
     Inspection, MAX_DATASET_BYTES, MAX_LANGUAGES, MAX_SCENARIOS, expand_custom, inspect,
     parse_scenarios,
 };
+pub use endpoint::url as endpoint_url;
 pub use outcome::to_outcome;
 
 #[cfg(test)]
@@ -29,3 +31,7 @@ mod run_tests;
     clippy::arithmetic_side_effects
 )]
 mod tests;
+
+#[cfg(test)]
+#[allow(clippy::expect_used, clippy::panic)]
+mod endpoint_tests;

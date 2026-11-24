@@ -19,7 +19,7 @@ BRAIN_STATE = {
         {"id": "anthropic/claude-sonnet-5-5", "name": "Claude Sonnet 5.5", "provider": "Anthropic", "type": "cloud", "status": "connected", "latency_ms": 150},
         {"id": "anthropic/claude-haiku-5-5", "name": "Claude Haiku 5.5", "provider": "Anthropic", "type": "cloud", "status": "connected", "latency_ms": 70},
         {"id": "deepseek/deepseek-v3", "name": "DeepSeek V3", "provider": "DeepSeek", "type": "cloud", "status": "connected", "latency_ms": 220},
-        {"id": "groq/llama-3.3-70b-versatile", "name": "Groq Llama 3.3 (70B Fast)", "provider": "Groq", "type": "cloud", "status": "connected", "latency_ms": 95},
+        {"id": "groq/openai/gpt-oss-120b", "name": "Groq GPT-OSS 120B (Fast)", "provider": "Groq", "type": "cloud", "status": "connected", "latency_ms": 95},
     ],
     "agent_assignments": {
         "ceo": "anthropic/claude-sonnet-5-5",
@@ -67,7 +67,7 @@ def brain_assign_agent_model(agent_id: str, model_id: str) -> dict:
 
 @tool("brain_assign_device_model", "assegna un modello LLM predefinito a un dispositivo satellite o nodo (es. host_master, studio_pc, tablet_salotto)",
       {"device_id": "identificatore del dispositivo (host_master, studio_pc, tablet_salotto, raspberry_cucina)",
-       "model_id": "ID del modello (es. granite3.3:2b, qwen2.5:7b, groq/llama-3.3-70b-versatile)"},
+       "model_id": "ID del modello (es. granite3.3:2b, qwen2.5:7b, groq/openai/gpt-oss-120b)"},
       agent=OWNER)
 def brain_assign_device_model(device_id: str, model_id: str) -> dict:
     did = device_id.strip().lower()

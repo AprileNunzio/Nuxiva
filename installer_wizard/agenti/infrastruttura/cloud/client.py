@@ -3,7 +3,9 @@ from dataclasses import dataclass
 
 import httpx
 
+from agenti.cloud.address import normalize
 from agenti.cloud.catalog import BY_ID, REASONING_BUDGET, Provider, parse_ref
+from agenti.cloud.failure import describe
 from agenti.cloud.vault import vault
 from agenti.brain.usage.ledger import usage_ledger
 
@@ -24,7 +26,7 @@ class Reply:
 
 
 def endpoint(spec: Provider, entry: dict) -> str:
-    base = (entry.get("base_url") or spec.base_url).rstrip("/")
+    base = (normalize(entry.get("base_url", "")) or spec.base_url).rstrip("/")
     if not base:
         raise CloudError(f"{spec.name}: indirizzo del servizio mancante")
     return base
@@ -175,7 +177,7 @@ async def complete(ref: str, messages: list[dict], system: str = "", max_tokens:
             failed(ref, 503)
         raise CloudError(f"{spec.name}: {type(exc).__name__}", 503) from exc
     if res.status_code >= 400:
-        raise CloudError(f"{spec.name} {res.status_code}", res.status_code, dict(res.headers))
+        raise CloudError(describe(f"{spec.name} · {model}", url, res), res.status_code, dict(res.headers))
     try:
         data = res.json()
     except (ValueError, KeyError) as exc:

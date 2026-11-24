@@ -177,6 +177,11 @@ export function RunsTab({ model: m }: { model: LabModel }) {
                     {item.error && <Pill tone="rose">{t(`error_${item.error}`)}</Pill>}
                   </div>
                   <div className="text-xs text-on-surface-variant">{item.model} · {item.dataset_name} · {m.time(item.started)} · {item.done}/{item.total}</div>
+                  {item.last_failure && (
+                    <p role="status" className="break-all text-xs text-error">
+                      {t(item.last_failure.status === 0 ? 'last_failure_unreachable' : 'last_failure', { status: item.last_failure.status, url: item.last_failure.url, message: item.last_failure.message || '—' })}
+                    </p>
+                  )}
                   <Progress run={item} />
                 </Row>
               );

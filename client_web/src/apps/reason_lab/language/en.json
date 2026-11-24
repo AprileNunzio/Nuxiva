@@ -49,6 +49,8 @@
     "state_interrupted": "Interrupted",
     "error_authentication_failed": "The service refused the key.",
     "error_model_unreachable": "The model did not respond.",
+    "last_failure": "Last failed call: {status} at {url} — {message}",
+    "last_failure_unreachable": "Last call got no answer from {url}",
     "error_interrupted": "The server restarted during the run.",
     "error_internal_error": "Internal error during the run.",
     "error_native_unavailable": "The native engine is not available.",

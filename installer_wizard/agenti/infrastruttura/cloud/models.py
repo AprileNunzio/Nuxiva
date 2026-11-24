@@ -5,6 +5,7 @@ import httpx
 from agenti.cloud import public_catalog
 from agenti.cloud.catalog import BY_ID
 from agenti.cloud.client import CloudError, endpoint, headers
+from agenti.cloud.failure import describe
 from agenti.cloud.vault import vault
 
 _CACHE: dict[str, tuple[float, list[str]]] = {}
@@ -34,7 +35,7 @@ async def live(pid: str) -> list[str]:
     async with httpx.AsyncClient(timeout=20) as client:
         res = await client.get(url, headers=headers(spec, entry))
     if res.status_code >= 400:
-        raise CloudError(f"{spec.name} {res.status_code}: {res.text[:200]}")
+        raise CloudError(describe(spec.name, url, res), res.status_code)
     return sorted(set(_ids(res.json())))
 
 

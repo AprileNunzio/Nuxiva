@@ -22,7 +22,7 @@ impl Backend {
     pub fn path(self) -> &'static str {
         match self {
             Self::Ollama => "api/chat",
-            Self::OpenAiCompatible => "v1/chat/completions",
+            Self::OpenAiCompatible => "chat/completions",
         }
     }
 

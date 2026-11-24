@@ -3,6 +3,7 @@ import re
 from config import ETC_DIR, read_env
 from sealed import SealedFile
 
+from agenti.cloud.address import normalize
 from agenti.cloud.catalog import BY_ID, OPTION_CHOICES, SERVER, sync_servers
 
 KEY_FILE = ETC_DIR / "cloud.key"
@@ -86,7 +87,7 @@ class Vault:
             entry["key"] = key
             entry["key_deleted"] = not bool(key)
         if "base_url" in changes:
-            url = str(changes["base_url"] or "").strip().rstrip("/")
+            url = normalize(str(changes["base_url"] or ""))
             if url and not _URL_RE.match(url):
                 raise ValueError("Indirizzo non valido")
             entry["base_url"] = url

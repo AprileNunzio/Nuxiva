@@ -8,6 +8,7 @@ use serde_json::{Value, json};
 const MAX_REPLY: u64 = 2 * 1024 * 1024;
 const MAX_KEY: usize = 512;
 const MAX_TIMEOUT_SECONDS: u64 = 300;
+const MAX_FAILURE_MESSAGE: usize = 240;
 const BLOCKED_HOSTS: [&str; 2] = ["metadata.google.internal", "metadata"];
 
 fn failed(error: impl std::fmt::Display) -> PyErr {
@@ -65,6 +66,25 @@ fn checked_base(base: &str) -> PyResult<ureq::http::Uri> {
     Ok(uri)
 }
 
+fn failure_message(body: Option<&str>) -> String {
+    let body = body.unwrap_or_default();
+    let parsed: Option<Value> = serde_json::from_str(body).ok();
+    let message = parsed
+        .as_ref()
+        .and_then(|v| {
+            v.pointer("/error/message")
+                .or_else(|| v.get("error"))
+                .or_else(|| v.get("message"))
+        })
+        .and_then(Value::as_str)
+        .unwrap_or(body);
+    message
+        .chars()
+        .filter(|c| !c.is_control())
+        .take(MAX_FAILURE_MESSAGE)
+        .collect()
+}
+
 #[pyfunction]
 fn reason_lab_inspect(dataset: &str) -> PyResult<String> {
     reason_lab::facade::inspect_dataset(dataset.as_bytes()).map_err(failed)
@@ -109,18 +129,19 @@ fn reason_lab_run_case(
     }
     let timeout = Duration::from_secs(timeout_seconds.clamp(1, MAX_TIMEOUT_SECONDS));
     py.detach(move || {
-        let uri = checked_base(&base)?;
+        checked_base(&base)?;
         let prepared: Value = serde_json::from_str(
-            &reason_lab::facade::request(&backend, &model, &text, external.as_deref())
+            &reason_lab::facade::request(&backend, &base, &model, &text, external.as_deref())
                 .map_err(failed)?,
         )
         .map_err(failed)?;
-        let path = prepared
-            .get("path")
+        let url = prepared
+            .get("url")
             .and_then(Value::as_str)
-            .unwrap_or_default();
+            .unwrap_or_default()
+            .to_owned();
+        checked_base(&url)?;
         let payload = prepared.get("body").cloned().unwrap_or(Value::Null);
-        let url = format!("{}/{path}", uri.to_string().trim_end_matches('/'));
         let agent: ureq::Agent = ureq::Agent::config_builder()
             .max_redirects(0)
             .http_status_as_error(false)
@@ -152,7 +173,10 @@ fn reason_lab_run_case(
             .map_err(failed)?;
         let outcome: Value =
             serde_json::from_str(&outcome).map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
-        serde_json::to_string(&json!({"status": status, "outcome": outcome}))
+        let failure = (status != 200).then(
+            || json!({"status": status, "url": url, "message": failure_message(body.as_deref())}),
+        );
+        serde_json::to_string(&json!({"status": status, "outcome": outcome, "failure": failure}))
             .map_err(|e| PyRuntimeError::new_err(e.to_string()))
     })
 }
@@ -169,13 +193,22 @@ pub(crate) fn register(module: &Bound<'_, PyModule>) -> PyResult<()> {
 #[cfg(test)]
 #[allow(clippy::expect_used, clippy::panic)]
 mod tests {
-    use super::checked_base;
+    use super::{checked_base, failure_message};
 
     #[test]
     fn local_and_lan_endpoints_are_allowed() {
         assert!(checked_base("http://127.0.0.1:11434").is_ok());
         assert!(checked_base("http://localhost:11434").is_ok());
         assert!(checked_base("http://10.0.0.5:11434").is_ok());
+    }
+
+    #[test]
+    fn failure_messages_come_from_the_provider_error() {
+        let groq =
+            r#"{"error":{"message":"The model `x` does not exist","code":"model_not_found"}}"#;
+        assert_eq!(failure_message(Some(groq)), "The model `x` does not exist");
+        assert_eq!(failure_message(Some("not found\n")), "not found");
+        assert_eq!(failure_message(None), "");
     }
 
     #[test]

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Groq funziona di nuovo inserendo solo la chiave e gli errori dei servizi cloud spiegano la causa",
+    "en": "Groq works again by entering only the key and cloud service errors explain the cause",
+    "fr": "Groq fonctionne à nouveau en saisissant seulement la clé et les erreurs des services cloud expliquent la cause",
+    "es": "Groq vuelve a funcionar introduciendo solo la clave y los errores de los servicios en la nube explican la causa"
+  },
+  "features": [
+    {
+      "it": "I modelli Groq predefiniti sono ora quelli attivi (GPT-OSS 120B, GPT-OSS 20B, Qwen 3.8 27B) e chi aveva scelto un modello ritirato passa da solo al suo sostituto.",
+      "en": "The default Groq models are now the active ones (GPT-OSS 120B, GPT-OSS 20B, Qwen 3.8 27B) and anyone who had picked a retired model moves to its replacement automatically.",
+      "fr": "Les modèles Groq par défaut sont désormais les modèles actifs (GPT-OSS 120B, GPT-OSS 20B, Qwen 3.8 27B) et ceux qui avaient choisi un modèle retiré passent automatiquement à son remplaçant.",
+      "es": "Los modelos Groq predeterminados son ahora los activos (GPT-OSS 120B, GPT-OSS 20B, Qwen 3.8 27B) y quien había elegido un modelo retirado pasa solo a su sustituto."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Cervello: aggiungendo la chiave Groq la prova non dà più 404, perché usava un modello che Groq ha ritirato ad agosto.",
+      "en": "Brain: adding the Groq key no longer gives a 404 on the test, because it used a model Groq retired in August.",
+      "fr": "Cerveau : en ajoutant la clé Groq le test ne renvoie plus 404, car il utilisait un modèle que Groq a retiré en août.",
+      "es": "Cerebro: al añadir la clave de Groq la prueba ya no da 404, porque usaba un modelo que Groq retiró en agosto."
+    },
+    {
+      "it": "Gli indirizzi dei servizi cloud vengono corretti da soli (slash finale, percorso completo incollato, prefisso mancante come /openai/v1 di Groq).",
+      "en": "Cloud service addresses are fixed automatically (trailing slash, full path pasted, missing prefix such as Groq's /openai/v1).",
+      "fr": "Les adresses des services cloud sont corrigées automatiquement (barre finale, chemin complet collé, préfixe manquant comme /openai/v1 de Groq).",
+      "es": "Las direcciones de los servicios en la nube se corrigen solas (barra final, ruta completa pegada, prefijo que falta como /openai/v1 de Groq)."
+    },
+    {
+      "it": "Laboratorio di prova: con un cervello cloud non chiama più un indirizzo con /v1 doppio e mostra l'ultimo errore con codice, indirizzo e messaggio del servizio.",
+      "en": "Test Lab: with a cloud brain it no longer calls an address with a double /v1 and shows the last error with code, address and service message.",
+      "fr": "Laboratoire d'essai : avec un cerveau cloud il n'appelle plus une adresse avec un double /v1 et affiche la dernière erreur avec code, adresse et message du service.",
+      "es": "Laboratorio de pruebas: con un cerebro en la nube ya no llama a una dirección con /v1 doble y muestra el último error con código, dirección y mensaje del servicio."
+    },
+    {
+      "it": "Gli errori dei servizi cloud indicano modello, codice HTTP, indirizzo chiamato e messaggio del fornitore invece del solo numero.",
+      "en": "Cloud service errors show model, HTTP code, called address and provider message instead of just the number.",
+      "fr": "Les erreurs des services cloud indiquent modèle, code HTTP, adresse appelée et message du fournisseur au lieu du seul numéro.",
+      "es": "Los errores de los servicios en la nube indican modelo, código HTTP, dirección llamada y mensaje del proveedor en lugar del número solo."
+    }
+  ]
+}

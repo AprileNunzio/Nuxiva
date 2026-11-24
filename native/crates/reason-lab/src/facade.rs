@@ -37,6 +37,7 @@ pub fn list_cases(dataset: &[u8]) -> EvalResult<String> {
 
 pub fn request(
     backend: &str,
+    base: &str,
     model: &str,
     user: &str,
     external: Option<&str>,
@@ -44,7 +45,7 @@ pub fn request(
     let backend = Backend::parse(backend).ok_or(EvalError::Invalid("backend"))?;
     let prompt = reason_understand::build(user, external);
     to_json(&json!({
-        "path": backend.path(),
+        "url": crate::endpoint_url(backend, base),
         "body": backend.body(model, &prompt),
     }))
 }
