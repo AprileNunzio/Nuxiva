@@ -1,0 +1,1 @@
+import"./rolldown-runtime-XKyaHtl9.js";import{r as e,s as t}from"./I18nContext-BdxLbVXf.js";import{t as n}from"./neural_mesh-0thp8e4D.js";t();var r=e(),i=()=>(0,r.jsx)(n,{onOpenCore:()=>window.NuxivaOS.openWindow({appId:`features_hub`}),onOpenNeuron:e=>window.NuxivaOS.openWindow({appId:`node_apps/console`,targetNodeId:e.id,initialPayload:{name:e.name}})});export{i as View};
