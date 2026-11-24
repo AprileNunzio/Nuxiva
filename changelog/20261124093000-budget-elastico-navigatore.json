@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Budget di memoria del Navigatore che segue la RAM libera",
+    "en": "Browser memory budget that follows free RAM",
+    "fr": "Budget mémoire du Navigateur qui suit la RAM libre",
+    "es": "Presupuesto de memoria del Navegador que sigue la RAM libre"
+  },
+  "fixes": [
+    {
+      "it": "In Nodi e Server il Navigatore non risulta più fuori budget solo perché un modello è caricato: il suo budget cresce con la RAM libera, lasciando sempre una riserva ai modelli.",
+      "en": "In Nodes and Servers the browser no longer shows as over budget just because a model is loaded: its budget grows with free RAM while always keeping a reserve for the models.",
+      "fr": "Dans Nœuds et Serveurs, le Navigateur n'apparaît plus hors budget simplement parce qu'un modèle est chargé : son budget suit la RAM libre tout en gardant une réserve pour les modèles.",
+      "es": "En Nodos y Servidores el Navegador ya no aparece fuera de presupuesto solo porque hay un modelo cargado: su presupuesto crece con la RAM libre y siempre deja una reserva para los modelos."
+    }
+  ]
+}

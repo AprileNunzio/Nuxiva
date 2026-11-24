@@ -19,6 +19,7 @@ CLIENT_TTL = 90.0
 MAX_DEVICES = 16
 MAX_SURFACES = 64
 KEEPALIVE_S = 300.0
+MODEL_RESERVE_PCT = 10
 ID_RE = re.compile(r"^[a-z0-9_.:-]{1,64}$")
 DEVICE_RE = re.compile(r"^[A-Za-z0-9_-]{6,40}$")
 PROTECTED_SURFACES = frozenset({"voice", "rescue", "defense-alert", "captions"})
@@ -43,6 +44,13 @@ def device_scale(cores: int, memory_gb: float) -> float:
     if memory_gb >= 2 or (memory_gb == 0 and cores >= 4):
         return 1.0
     return 0.5
+
+
+def browser_budget(total: int, avail: int, models_loaded: bool) -> int | None:
+    if total <= 0 or avail <= 0:
+        return None
+    reserve = total * MODEL_RESERVE_PCT // 100 if models_loaded else 0
+    return total // 10 + max(0, min(avail, total) - reserve) // 2
 
 
 def clean_report(body: object) -> dict | None:
@@ -80,7 +88,7 @@ class ResourceManager:
         models = loaded_models()
         avail = sample.get("mem_available", 0) if isinstance(sample, dict) else 0
         total = sample.get("mem_total", 0) if isinstance(sample, dict) else 0
-        elastic_browser_budget = (total // 10 + avail // 2) if (avail > 0 and not models and total > 0) else None
+        elastic_browser_budget = browser_budget(total, avail, bool(models))
         for key, entry in groups(self.pid).items():
             cls, reclaim = PROCESS_CLASS[key]
             item = {"id": key, "kind": "process", "class": cls, "rss": entry["rss"], "idle_ms": 0,

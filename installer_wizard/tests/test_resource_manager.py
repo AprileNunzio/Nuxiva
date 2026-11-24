@@ -60,20 +60,32 @@ class Reports(unittest.TestCase):
         for c in m.clients.values():
             c["at"] = time.monotonic() - rm.CLIENT_TTL - 1
         m.evaluate()
+
     def test_browser_budget_adapts_elastically(self):
         sample = {"mem_total": 16 << 30, "mem_available": 10 << 30}
         m = manager(groups={"browser": {"rss": 1 << 30, "cpu_percent": 5.0, "count": 1}}, models=[])
-        comps_idle = m.collect(sample)
-        browser_idle = next(c for c in comps_idle if c["id"] == "browser")
-        expected_budget = (16 << 30) // 10 + (10 << 30) // 2
-        self.assertEqual(browser_idle.get("budget"), expected_budget)
-
-        # When an Ollama model is loaded, browser budget reverts to None (falling back to standard quota)
+        browser_idle = next(c for c in m.collect(sample) if c["id"] == "browser")
+        self.assertEqual(browser_idle.get("budget"), (16 << 30) // 10 + (10 << 30) // 2)
         m_busy = manager(groups={"browser": {"rss": 1 << 30, "cpu_percent": 5.0, "count": 1}},
                          models=[{"name": "llama3:8b", "size": 4 << 30, "expires_at": "2030-01-01T00:00:00Z"}])
-        comps_busy = m_busy.collect(sample)
-        browser_busy = next(c for c in comps_busy if c["id"] == "browser")
-        self.assertIsNone(browser_busy.get("budget"))
+        browser_busy = next(c for c in m_busy.collect(sample) if c["id"] == "browser")
+        reserve = (16 << 30) * rm.MODEL_RESERVE_PCT // 100
+        self.assertEqual(browser_busy.get("budget"), (16 << 30) // 10 + ((10 << 30) - reserve) // 2)
+        self.assertLess(browser_busy["budget"], browser_idle["budget"])
+
+    def test_browser_budget_bounds(self):
+        total = 7 << 30
+        self.assertIsNone(rm.browser_budget(0, 1 << 30, False))
+        self.assertIsNone(rm.browser_budget(total, 0, True))
+        self.assertEqual(rm.browser_budget(total, 1 << 20, True), total // 10)
+        self.assertEqual(rm.browser_budget(total, 99 << 30, False), total // 10 + total // 2)
+        self.assertGreater(rm.browser_budget(total, 2 << 30, True), total // 10)
+
+    def test_browser_never_reclaimed(self):
+        m = manager(groups={"browser": {"rss": 12 << 30, "cpu_percent": 5.0, "count": 4}},
+                    models=[{"name": "qwen2.5:1.5b", "size": 1 << 30, "expires_at": "2030-01-01T00:00:00Z"}])
+        out = m.evaluate()
+        self.assertFalse(any(a["id"] == "browser" for a in out["applied"]))
 
 
 if __name__ == "__main__":
