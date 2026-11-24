@@ -1,0 +1,326 @@
+[
+ {
+  "id": "weather_tomorrow",
+  "category": "simple",
+  "expected": {
+   "intent": "weather_forecast",
+   "effects": [
+    "read"
+   ]
+  },
+  "texts": {
+   "it": "che tempo farà domani a Roma",
+   "en": "what will the weather be like in Rome tomorrow",
+   "fr": "quel temps fera-t-il demain à Rome",
+   "es": "qué tiempo hará mañana en Roma",
+   "de": "wie wird das Wetter morgen in Rom",
+   "pt": "que tempo vai fazer amanhã em Roma"
+  }
+ },
+ {
+  "id": "time_now",
+  "category": "simple",
+  "expected": {
+   "intent": "current_time",
+   "effects": [
+    "read"
+   ]
+  },
+  "texts": {
+   "it": "che ore sono",
+   "en": "what time is it",
+   "fr": "quelle heure est-il",
+   "es": "qué hora es",
+   "de": "wie spät ist es",
+   "pt": "que horas são"
+  }
+ },
+ {
+  "id": "music_play",
+  "category": "simple",
+  "expected": {
+   "intent": "play_music",
+   "effects": [
+    "physical"
+   ]
+  },
+  "texts": {
+   "it": "metti un po' di musica jazz",
+   "en": "play some jazz music",
+   "fr": "mets un peu de musique jazz",
+   "es": "pon algo de música jazz",
+   "de": "spiel etwas Jazzmusik",
+   "pt": "toca um pouco de música jazz"
+  }
+ },
+ {
+  "id": "timer_set",
+  "category": "simple",
+  "expected": {
+   "intent": "set_timer",
+   "effects": [
+    "write"
+   ]
+  },
+  "texts": {
+   "it": "imposta un timer di dieci minuti",
+   "en": "set a timer for ten minutes",
+   "fr": "règle un minuteur de dix minutes",
+   "es": "pon un temporizador de diez minutos",
+   "de": "stell einen Timer auf zehn Minuten",
+   "pt": "define um temporizador de dez minutos"
+  }
+ },
+ {
+  "id": "lights_on_kitchen",
+  "category": "simple",
+  "expected": {
+   "intent": "lights_on",
+   "effects": [
+    "physical"
+   ]
+  },
+  "texts": {
+   "it": "accendi le luci della cucina",
+   "en": "turn on the kitchen lights",
+   "fr": "allume les lumières de la cuisine",
+   "es": "enciende las luces de la cocina",
+   "de": "schalte das Küchenlicht ein",
+   "pt": "acende as luzes da cozinha"
+  }
+ },
+ {
+  "id": "lights_off_bedroom",
+  "category": "simple",
+  "expected": {
+   "intent": "lights_off",
+   "effects": [
+    "physical"
+   ]
+  },
+  "texts": {
+   "it": "spegni le luci della camera",
+   "en": "turn off the bedroom lights",
+   "fr": "éteins les lumières de la chambre",
+   "es": "apaga las luces del dormitorio",
+   "de": "schalte das Schlafzimmerlicht aus",
+   "pt": "apaga as luzes do quarto"
+  }
+ },
+ {
+  "id": "thermostat_21",
+  "category": "simple",
+  "expected": {
+   "intent": "thermostat_set",
+   "effects": [
+    "physical"
+   ]
+  },
+  "texts": {
+   "it": "porta il termostato a 21 gradi",
+   "en": "set the thermostat to 21 degrees",
+   "fr": "mets le thermostat à 21 degrés",
+   "es": "pon el termostato a 21 grados",
+   "de": "stell den Thermostat auf 21 Grad",
+   "pt": "põe o termóstato a 21 graus"
+  }
+ },
+ {
+  "id": "calendar_today",
+  "category": "simple",
+  "expected": {
+   "intent": "read_calendar",
+   "effects": [
+    "read"
+   ]
+  },
+  "texts": {
+   "it": "cosa ho in agenda oggi",
+   "en": "what is on my calendar today",
+   "fr": "qu'est-ce que j'ai à l'agenda aujourd'hui",
+   "es": "qué tengo hoy en la agenda",
+   "de": "was steht heute in meinem Kalender",
+   "pt": "o que tenho hoje na agenda"
+  }
+ },
+ {
+  "id": "reminder_add",
+  "category": "simple",
+  "expected": {
+   "intent": "add_reminder",
+   "effects": [
+    "write"
+   ]
+  },
+  "texts": {
+   "it": "ricordami di chiamare il dentista alle quattro",
+   "en": "remind me to call the dentist at four",
+   "fr": "rappelle-moi d'appeler le dentiste à quatre heures",
+   "es": "recuérdame llamar al dentista a las cuatro",
+   "de": "erinnere mich daran, um vier den Zahnarzt anzurufen",
+   "pt": "lembra-me de ligar ao dentista às quatro"
+  }
+ },
+ {
+  "id": "camera_front_door",
+  "category": "simple",
+  "expected": {
+   "intent": "camera_show",
+   "effects": [
+    "read"
+   ]
+  },
+  "texts": {
+   "it": "mostrami la telecamera della porta d'ingresso",
+   "en": "show me the front door camera",
+   "fr": "montre-moi la caméra de la porte d'entrée",
+   "es": "muéstrame la cámara de la puerta de entrada",
+   "de": "zeig mir die Kamera an der Haustür",
+   "pt": "mostra-me a câmara da porta de entrada"
+  }
+ },
+ {
+  "id": "volume_low",
+  "category": "simple",
+  "expected": {
+   "intent": "volume_set",
+   "effects": [
+    "physical"
+   ]
+  },
+  "texts": {
+   "it": "abbassa il volume al trenta per cento",
+   "en": "lower the volume to thirty percent",
+   "fr": "baisse le volume à trente pour cent",
+   "es": "baja el volumen al treinta por ciento",
+   "de": "stell die Lautstärke auf dreißig Prozent",
+   "pt": "baixa o volume para trinta por cento"
+  }
+ },
+ {
+  "id": "document_open",
+  "category": "simple",
+  "expected": {
+   "intent": "open_document",
+   "effects": [
+    "read"
+   ]
+  },
+  "texts": {
+   "it": "apri il contratto di affitto",
+   "en": "open the rental agreement",
+   "fr": "ouvre le contrat de location",
+   "es": "abre el contrato de alquiler",
+   "de": "öffne den Mietvertrag",
+   "pt": "abre o contrato de arrendamento"
+  }
+ },
+ {
+  "id": "battery_status",
+  "category": "simple",
+  "expected": {
+   "intent": "battery_status",
+   "effects": [
+    "read"
+   ]
+  },
+  "texts": {
+   "it": "quanta batteria ha il portatile",
+   "en": "how much battery does the laptop have",
+   "fr": "combien de batterie reste-t-il à l'ordinateur portable",
+   "es": "cuánta batería le queda al portátil",
+   "de": "wie viel Akku hat der Laptop noch",
+   "pt": "quanta bateria tem o portátil"
+  }
+ },
+ {
+  "id": "network_status",
+  "category": "simple",
+  "expected": {
+   "intent": "network_status",
+   "effects": [
+    "read"
+   ]
+  },
+  "texts": {
+   "it": "la rete di casa funziona bene",
+   "en": "is the home network working fine",
+   "fr": "le réseau de la maison fonctionne-t-il bien",
+   "es": "funciona bien la red de casa",
+   "de": "funktioniert das Heimnetz gut",
+   "pt": "a rede de casa está a funcionar bem"
+  }
+ },
+ {
+  "id": "news_today",
+  "category": "simple",
+  "expected": {
+   "intent": "news_summary",
+   "effects": [
+    "read"
+   ]
+  },
+  "texts": {
+   "it": "dammi le notizie principali di oggi",
+   "en": "give me today's main news",
+   "fr": "donne-moi les principales nouvelles du jour",
+   "es": "dame las noticias principales de hoy",
+   "de": "gib mir die wichtigsten Nachrichten von heute",
+   "pt": "dá-me as principais notícias de hoje"
+  }
+ },
+ {
+  "id": "translate_phrase",
+  "category": "simple",
+  "expected": {
+   "intent": "translate_text",
+   "effects": [
+    "read"
+   ]
+  },
+  "texts": {
+   "it": "traduci buongiorno in giapponese",
+   "en": "translate good morning into Japanese",
+   "fr": "traduis bonjour en japonais",
+   "es": "traduce buenos días al japonés",
+   "de": "übersetze guten Morgen ins Japanische",
+   "pt": "traduz bom dia para japonês"
+  }
+ },
+ {
+  "id": "calc_percent",
+  "category": "simple",
+  "expected": {
+   "intent": "calculator",
+   "effects": [
+    "read"
+   ]
+  },
+  "texts": {
+   "it": "quanto fa il quindici per cento di 240",
+   "en": "what is fifteen percent of 240",
+   "fr": "combien font quinze pour cent de 240",
+   "es": "cuánto es el quince por ciento de 240",
+   "de": "wie viel sind fünfzehn Prozent von 240",
+   "pt": "quanto é quinze por cento de 240"
+  }
+ },
+ {
+  "id": "shopping_add",
+  "category": "simple",
+  "expected": {
+   "intent": "shopping_list_add",
+   "effects": [
+    "write"
+   ]
+  },
+  "texts": {
+   "it": "aggiungi il latte alla lista della spesa",
+   "en": "add milk to the shopping list",
+   "fr": "ajoute du lait à la liste de courses",
+   "es": "añade leche a la lista de la compra",
+   "de": "setz Milch auf die Einkaufsliste",
+   "pt": "adiciona leite à lista de compras"
+  }
+ }
+]

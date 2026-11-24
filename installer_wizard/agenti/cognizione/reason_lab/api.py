@@ -1,13 +1,13 @@
 import json
 from typing import Literal
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, Field, SecretStr
 
 from access import NO_CACHE, require_admin
 from agenti.authz.access_control import require_permission
-from agenti.reason_lab import lab, store
+from agenti.reason_lab import brain_default, lab, presets, store
 from agenti.reason_lab.runner import MAX_ACTIVE, MAX_CASES, MAX_CONCURRENCY, runner
 
 admin_routes = APIRouter(prefix="/api/v5/reason-lab", tags=["Reason Lab"], dependencies=[Depends(require_admin)])
@@ -31,9 +31,10 @@ class ProfileBody(BaseModel):
 
 class RunBody(BaseModel):
     dataset: str
-    backend: Literal["ollama", "openai"]
-    base_url: str = Field(max_length=256)
-    model: str = Field(max_length=100)
+    brain_role: Literal["main", "fast"] = "main"
+    backend: Literal["ollama", "openai"] | None = None
+    base_url: str | None = Field(None, max_length=256)
+    model: str | None = Field(None, max_length=100)
     key: SecretStr | None = Field(None, max_length=512)
     label: str = Field("", max_length=store.MAX_NAME)
     languages: list[str] = Field(default_factory=list, max_length=12)
@@ -60,6 +61,28 @@ async def status(user: str = Depends(require_admin)):
     allow(user, "lab.read")
     return json_response({"native": lab.native_ready(), "max_active": MAX_ACTIVE, "active": runner.active(), "max_cases": MAX_CASES,
                           "max_concurrency": MAX_CONCURRENCY, "backends": list(store.BACKENDS)})
+
+
+@admin_routes.get("/brain", openapi_extra={"x-nuxiva-capabilities": READ})
+async def brain(role: Literal["main", "fast"] = "main", user: str = Depends(require_admin)):
+    allow(user, "lab.read")
+    return json_response(brain_default.public(role))
+
+
+@admin_routes.get("/presets", openapi_extra={"x-nuxiva-capabilities": READ})
+async def preset_list(user: str = Depends(require_admin)):
+    allow(user, "lab.read")
+    return json_response({"presets": presets.listing()})
+
+
+@admin_routes.post("/presets/{preset_id}/load", openapi_extra={"x-nuxiva-capabilities": EDIT})
+async def preset_load(preset_id: str, user: str = Depends(require_admin)):
+    allow(user, "lab.edit")
+    scenarios = presets.scenarios_of(preset_id)
+    summary = lab.inspect(scenarios)
+    dataset_id = f"predefinito_{preset_id}"
+    record = store.save_dataset(dataset_id, f"Predefinito {preset_id}", scenarios, summary)
+    return json_response({"id": dataset_id, "name": record["name"], "summary": summary})
 
 
 @admin_routes.get("/template", openapi_extra={"x-nuxiva-capabilities": READ})
@@ -142,12 +165,27 @@ async def runs(user: str = Depends(require_admin)):
     return json_response({"runs": store.list_runs()})
 
 
+def run_target(body: RunBody) -> tuple[dict, str | None]:
+    custom = body.backend and body.base_url and body.model
+    if custom:
+        key = body.key.get_secret_value() if body.key else None
+        return {"backend": body.backend, "base_url": body.base_url, "model": store.valid_model(body.model), "source": "custom"}, key
+    resolved = brain_default.resolve(body.brain_role)
+    if not resolved["supported"]:
+        raise HTTPException(422, "brain_not_supported")
+    overrides = {"backend": body.backend, "base_url": body.base_url, "model": body.model}
+    chosen = {name: overrides[name] or resolved[name] for name in overrides}
+    changed = any(overrides[name] and overrides[name] != resolved[name] for name in overrides)
+    key = body.key.get_secret_value() if body.key else (None if changed else resolved["key"])
+    return {**chosen, "model": store.valid_model(chosen["model"]), "source": "custom" if changed else "brain"}, key
+
+
 @admin_routes.post("/runs", openapi_extra={"x-nuxiva-capabilities": RUN})
 async def start_run(body: RunBody, user: str = Depends(require_admin)):
     allow(user, "lab.run")
     store.prune_runs()
-    spec = {**body.model_dump(exclude={"key"}), "model": store.valid_model(body.model)}
-    key = body.key.get_secret_value() if body.key else None
+    target, key = run_target(body)
+    spec = {**body.model_dump(exclude={"key", "brain_role"}), **target}
     return json_response(await runner.start(user, spec, key))
 
 

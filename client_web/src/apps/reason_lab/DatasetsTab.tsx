@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Btn, Empty, Field, List, Panel, Pill, Row, Stat, StatRow, inputClass } from '../shared/kit';
-import { exportDataset, inspectDataset, loadDataset, loadTemplate, removeDataset, saveDataset } from './api';
+import { exportDataset, inspectDataset, loadDataset, loadPreset, loadTemplate, removeDataset, saveDataset } from './api';
 import { ScenarioEditor } from './ScenarioEditor';
 import type { Scenario, Summary } from './types';
 import type { LabModel } from './useLab';
@@ -61,8 +61,25 @@ export function DatasetsTab({ model: m }: { model: LabModel }) {
     try { edit(scenariosFrom(JSON.parse(raw ?? ''))); setRaw(null); } catch { setProblem(t('import_invalid')); }
   };
 
+  const addPreset = async (preset: string) => {
+    const loaded = await m.run(() => loadPreset(preset));
+    if (loaded) { m.datasetsResource.reload(); m.setNotice(t('preset_loaded')); }
+  };
+
   return (
     <div className="flex flex-col gap-4">
+      <Panel title={t('presets')}>
+        <p className="mb-2 text-xs text-on-surface-variant">{t('presets_hint')}</p>
+        <List>
+          {m.presets.map(item => (
+            <Row key={item.id} actions={<Btn tone="emerald" busy={m.busy} onClick={() => void addPreset(item.id)}>{t('load_preset')}</Btn>}>
+              <strong>{t(`preset_${item.id}`)}</strong>
+              <div className="text-xs text-on-surface-variant">{t(`preset_${item.id}_hint`)} · {t('preset_count', { scenarios: item.scenarios })}</div>
+            </Row>
+          ))}
+        </List>
+        {m.notice && <span role="status" className="text-xs text-on-surface-variant">{m.notice}</span>}
+      </Panel>
       <Panel title={t('datasets')} actions={<div className="flex gap-2"><Btn onClick={() => void fromTemplate()}>{t('from_template')}</Btn><Btn onClick={() => file.current?.click()}>{t('import_file')}</Btn></div>}>
         <input ref={file} type="file" accept="application/json,.json" hidden onChange={event => void importFile(event.target.files?.[0])} />
         {m.datasets.length === 0 ? <Empty>{t('no_datasets')}</Empty> : (

@@ -10,7 +10,7 @@ from fastapi.testclient import TestClient
 
 from access import require_admin
 from agenti.authz import access_control
-from agenti.reason_lab import api, lab, runner, store
+from agenti.reason_lab import api, lab, presets, runner, store
 
 SCENARIOS = [
     {"id": "weather", "category": "simple", "expected": {"intent": "weather_forecast", "effects": ["read"]},
@@ -18,6 +18,10 @@ SCENARIOS = [
     {"id": "photo", "category": "composite", "expected": {"intent": "send_image", "effects": ["read", "send_external"]},
      "texts": {"it": "cerca un cane e inviamelo"}},
 ]
+
+
+def presets_all():
+    return presets.scenarios_of(presets.ALL)
 
 
 class FakeNative:
@@ -173,6 +177,58 @@ class LabTests(unittest.IsolatedAsyncioTestCase):
             self.assertFalse(self.client.get("/api/v5/reason-lab/status").json()["native"])
             response = self.client.post("/api/v5/reason-lab/datasets/inspect", json={"name": "x", "scenarios": SCENARIOS})
         self.assertEqual(response.status_code, 503)
+
+    def brain(self, **changes):
+        base = {"role": "main", "ref": "granite3.3:2b", "backend": "ollama", "base_url": "http://127.0.0.1:11434", "model": "granite3.3:2b",
+                "key": "vault-secret", "provider": "ollama", "supported": True}
+        return mock.patch.object(api.brain_default, "resolve", return_value={**base, **changes})
+
+    def test_the_brain_settings_are_shown_without_the_key(self):
+        with self.brain():
+            body = self.client.get("/api/v5/reason-lab/brain").json()
+        self.assertEqual((body["model"], body["has_key"]), ("granite3.3:2b", True))
+        self.assertNotIn("key", body)
+        self.assertNotIn("vault-secret", json.dumps(body))
+
+    async def started(self, **fields):
+        body = api.RunBody(dataset="main_set", **fields)
+        target, key = api.run_target(body)
+        spec = {**body.model_dump(exclude={"key", "brain_role"}), **target}
+        meta = await self.runner.start("root", spec, key)
+        return await self.finished(meta["id"])
+
+    async def test_a_run_uses_the_brain_by_default_and_keeps_its_key_hidden(self):
+        self.save()
+        with self.brain():
+            done = await self.started()
+        self.assertEqual((done["source"], done["model"], done["backend"], done["state"]), ("brain", "granite3.3:2b", "ollama", "completed"))
+        self.assertEqual(set(lab.native_core.keys), {"vault-secret"})
+        for path in Path(self.temp.name).rglob("*"):
+            if path.is_file():
+                self.assertNotIn("vault-secret", path.read_text())
+
+    async def test_a_single_run_can_override_the_brain_model_without_sending_its_key(self):
+        self.save()
+        with self.brain(backend="openai", base_url="https://api.example.com/v1"):
+            done = await self.started(model="other")
+        self.assertEqual((done["source"], done["model"]), ("custom", "other"))
+        self.assertEqual(set(lab.native_core.keys), {None})
+
+    def test_an_unsupported_brain_is_refused_clearly(self):
+        self.save()
+        with self.brain(supported=False):
+            response = self.client.post("/api/v5/reason-lab/runs", json={"dataset": "main_set"})
+        self.assertEqual((response.status_code, response.json()["detail"]), (422, "brain_not_supported"))
+
+    def test_presets_can_be_loaded_with_one_click_and_are_valid(self):
+        listing = self.client.get("/api/v5/reason-lab/presets").json()["presets"]
+        self.assertEqual([p["id"] for p in listing], ["simple", "composite", "novel", "adversarial", "all"])
+        self.assertTrue(all(p["scenarios"] > 0 for p in listing))
+        loaded = self.client.post("/api/v5/reason-lab/presets/all/load")
+        self.assertEqual(loaded.status_code, 200)
+        self.assertEqual(loaded.json()["id"], "predefinito_all")
+        self.assertEqual(self.client.get("/api/v5/reason-lab/datasets/predefinito_all").json()["scenarios"], presets_all())
+        self.assertEqual(self.client.post("/api/v5/reason-lab/presets/nope/load").status_code, 404)
 
     def test_a_viewer_cannot_run_or_edit(self):
         accounts = {"root": {"role": "viewer", "nodes": ["*"]}}

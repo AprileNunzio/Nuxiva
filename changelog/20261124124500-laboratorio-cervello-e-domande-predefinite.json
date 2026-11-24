@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Il Laboratorio di prova usa il cervello impostato e offre domande predefinite",
+    "en": "The Test Lab uses the configured brain and offers default questions",
+    "fr": "Le Laboratoire d'essai utilise le cerveau configuré et propose des questions par défaut",
+    "es": "El Laboratorio de pruebas usa el cerebro configurado y ofrece preguntas predeterminadas"
+  },
+  "features": [
+    {
+      "it": "Di default la prova usa il cervello già impostato dall'utente (modello, servizio, indirizzo e chiave gestiti dal sistema senza mostrare la chiave) e si può cambiare per la singola prova.",
+      "en": "By default the run uses the brain already set by the user (model, service, address and key managed by the system without showing the key) and it can be changed for a single run.",
+      "fr": "Par défaut l'essai utilise le cerveau déjà défini par l'utilisateur (modèle, service, adresse et clé gérés par le système sans afficher la clé) et on peut le changer pour un seul essai.",
+      "es": "Por defecto la prueba usa el cerebro ya configurado por el usuario (modelo, servicio, dirección y clave gestionados por el sistema sin mostrar la clave) y se puede cambiar para una sola prueba."
+    },
+    {
+      "it": "Tra le domande ci sono elenchi predefiniti (semplici, composte, nuove, avversarie e tutte insieme) da caricare con un clic per verificare ragionamento e funzionalità.",
+      "en": "The questions include default lists (simple, composite, novel, adversarial and all together) to load with one click to check reasoning and features.",
+      "fr": "Parmi les questions figurent des listes par défaut (simples, composées, nouvelles, adverses et toutes ensemble) à charger en un clic pour vérifier le raisonnement et les fonctions.",
+      "es": "Entre las preguntas hay listas predeterminadas (simples, compuestas, nuevas, adversarias y todas juntas) para cargar con un clic y comprobar el razonamiento y las funciones."
+    }
+  ],
+  "fixes": []
+}

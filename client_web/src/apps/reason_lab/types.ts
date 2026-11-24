@@ -70,6 +70,7 @@ export interface Run {
   finished: number | null;
   error: string | null;
   label: string;
+  source?: 'brain' | 'custom';
   concurrency: number;
 }
 
@@ -122,11 +123,31 @@ export interface Row {
   latency_ms: number;
 }
 
-export interface RunSpec {
-  dataset: string;
+export type BrainRole = 'main' | 'fast';
+
+export interface BrainInfo {
+  role: BrainRole;
+  ref: string;
+  provider: string;
   backend: Backend;
   base_url: string;
   model: string;
+  has_key: boolean;
+  supported: boolean;
+}
+
+export interface PresetRow {
+  id: string;
+  dataset: string;
+  scenarios: number;
+}
+
+export interface RunSpec {
+  dataset: string;
+  brain_role: BrainRole;
+  backend: Backend | null;
+  base_url: string | null;
+  model: string | null;
   key: string | null;
   label: string;
   languages: string[];

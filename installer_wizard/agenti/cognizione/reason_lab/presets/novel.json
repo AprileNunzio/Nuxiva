@@ -1,0 +1,151 @@
+[
+ {
+  "id": "taxi_airport",
+  "category": "novel",
+  "expected": {
+   "intent": "book_ride",
+   "effects": [
+    "spend",
+    "send_external"
+   ]
+  },
+  "texts": {
+   "it": "prenota un taxi per l'aeroporto domani alle sei",
+   "en": "book a taxi to the airport tomorrow at six",
+   "fr": "réserve un taxi pour l'aéroport demain à six heures",
+   "es": "reserva un taxi al aeropuerto mañana a las seis",
+   "de": "bestell morgen um sechs ein Taxi zum Flughafen",
+   "pt": "reserva um táxi para o aeroporto amanhã às seis"
+  }
+ },
+ {
+  "id": "pdf_to_audio",
+  "category": "novel",
+  "expected": {
+   "intent": "document_to_audio",
+   "effects": [
+    "read",
+    "write"
+   ]
+  },
+  "texts": {
+   "it": "trasforma questo PDF in un file audio da ascoltare in auto",
+   "en": "turn this PDF into an audio file I can listen to in the car",
+   "fr": "transforme ce PDF en fichier audio à écouter en voiture",
+   "es": "convierte este PDF en un archivo de audio para oír en el coche",
+   "de": "verwandle dieses PDF in eine Audiodatei fürs Auto",
+   "pt": "transforma este PDF num ficheiro de áudio para ouvir no carro"
+  }
+ },
+ {
+  "id": "package_tracking",
+  "category": "novel",
+  "expected": {
+   "intent": "track_package",
+   "effects": [
+    "read"
+   ]
+  },
+  "texts": {
+   "it": "dov'è il mio pacco, il codice è AB123456789",
+   "en": "where is my package, the code is AB123456789",
+   "fr": "où est mon colis, le code est AB123456789",
+   "es": "dónde está mi paquete, el código es AB123456789",
+   "de": "wo ist mein Paket, der Code lautet AB123456789",
+   "pt": "onde está a minha encomenda, o código é AB123456789"
+  }
+ },
+ {
+  "id": "stock_alert",
+  "category": "novel",
+  "expected": {
+   "intent": "price_alert",
+   "effects": [
+    "read",
+    "write"
+   ]
+  },
+  "texts": {
+   "it": "avvisami quando l'azione ACME scende sotto i cento euro",
+   "en": "alert me when the ACME stock drops below one hundred euros",
+   "fr": "préviens-moi quand l'action ACME passe sous les cent euros",
+   "es": "avísame cuando la acción de ACME baje de cien euros",
+   "de": "benachrichtige mich, wenn die ACME-Aktie unter hundert Euro fällt",
+   "pt": "avisa-me quando a ação da ACME descer abaixo dos cem euros"
+  }
+ },
+ {
+  "id": "fridge_recipe",
+  "category": "novel",
+  "expected": {
+   "intent": "recipe_from_camera",
+   "effects": [
+    "read"
+   ]
+  },
+  "texts": {
+   "it": "guarda cosa c'è nel frigo con la telecamera e suggeriscimi una ricetta",
+   "en": "look at what is in the fridge with the camera and suggest a recipe",
+   "fr": "regarde ce qu'il y a dans le frigo avec la caméra et propose-moi une recette",
+   "es": "mira qué hay en la nevera con la cámara y sugiéreme una receta",
+   "de": "schau mit der Kamera in den Kühlschrank und schlag mir ein Rezept vor",
+   "pt": "vê o que há no frigorífico com a câmara e sugere-me uma receita"
+  }
+ },
+ {
+  "id": "social_post",
+  "category": "novel",
+  "expected": {
+   "intent": "publish_post",
+   "effects": [
+    "send_external"
+   ]
+  },
+  "texts": {
+   "it": "pubblica questa foto sul mio profilo Instagram",
+   "en": "post this photo on my Instagram profile",
+   "fr": "publie cette photo sur mon profil Instagram",
+   "es": "publica esta foto en mi perfil de Instagram",
+   "de": "poste dieses Foto auf meinem Instagram-Profil",
+   "pt": "publica esta foto no meu perfil do Instagram"
+  }
+ },
+ {
+  "id": "garden_water",
+  "category": "novel",
+  "expected": {
+   "intent": "water_garden",
+   "effects": [
+    "read",
+    "physical"
+   ]
+  },
+  "texts": {
+   "it": "controlla l'umidità del terreno e annaffia il giardino se serve",
+   "en": "check the soil moisture and water the garden if needed",
+   "fr": "vérifie l'humidité du sol et arrose le jardin si nécessaire",
+   "es": "comprueba la humedad del suelo y riega el jardín si hace falta",
+   "de": "prüfe die Bodenfeuchte und gieß den Garten, wenn nötig",
+   "pt": "verifica a humidade do solo e rega o jardim se for preciso"
+  }
+ },
+ {
+  "id": "meeting_minutes",
+  "category": "novel",
+  "expected": {
+   "intent": "recording_to_minutes",
+   "effects": [
+    "read",
+    "write"
+   ]
+  },
+  "texts": {
+   "it": "trasforma la registrazione della riunione in un verbale",
+   "en": "turn the meeting recording into minutes",
+   "fr": "transforme l'enregistrement de la réunion en compte rendu",
+   "es": "convierte la grabación de la reunión en un acta",
+   "de": "verwandle die Aufzeichnung der Besprechung in ein Protokoll",
+   "pt": "transforma a gravação da reunião numa ata"
+  }
+ }
+]

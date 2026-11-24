@@ -1,17 +1,21 @@
 import { download } from '../../shared/http/download';
 import { getJson, sendJson } from '../shared/http';
-import type { Dataset, Profile, Row, Run, RunReport, RunSpec, Scenario, Summary } from './types';
+import type { BrainRole, Dataset, Profile, Row, Run, RunReport, RunSpec, Scenario, Summary } from './types';
 
 export const BASE = '/api/v5/reason-lab';
 export const statusUrl = `${BASE}/status`;
 export const datasetsUrl = `${BASE}/datasets`;
 export const profilesUrl = `${BASE}/profiles`;
+export const presetsUrl = `${BASE}/presets`;
+export const brainUrl = (role: BrainRole) => `${BASE}/brain?role=${role}`;
 export const runsUrl = `${BASE}/runs`;
 export const reportUrl = (id: string) => `${runsUrl}/${encodeURIComponent(id)}/report`;
 export const rowsUrl = (id: string, only: string, lang: string, offset: number, limit: number) =>
   `${runsUrl}/${encodeURIComponent(id)}/rows?${new URLSearchParams({ only, lang, offset: String(offset), limit: String(limit) })}`;
 
 export const loadDataset = (id: string) => getJson<Dataset>(`${datasetsUrl}/${encodeURIComponent(id)}`);
+export const loadPreset = (id: string) =>
+  sendJson<{ id: string; name: string; summary: Summary }>(`${presetsUrl}/${encodeURIComponent(id)}/load`, 'POST');
 export const loadTemplate = () => getJson<{ scenarios: Scenario[] }>(`${BASE}/template`);
 export const inspectDataset = (name: string, scenarios: Scenario[]) =>
   sendJson<Summary>(`${datasetsUrl}/inspect`, 'POST', { name, scenarios });

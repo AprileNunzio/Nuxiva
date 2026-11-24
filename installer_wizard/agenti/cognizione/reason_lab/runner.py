@@ -45,7 +45,7 @@ class Runner:
         meta = {"id": store.new_run_id(), "dataset": spec["dataset"], "dataset_name": dataset["name"], "backend": spec["backend"],
                 "base_url": spec["base_url"], "model": spec["model"], "state": "queued", "total": len(chosen), "done": 0,
                 "failed_calls": 0, "started": int(time.time()), "finished": None, "error": None, "user": user,
-                "concurrency": spec["concurrency"], "timeout_seconds": spec["timeout_seconds"], "label": spec["label"]}
+                "source": spec.get("source", "custom"), "concurrency": spec["concurrency"], "timeout_seconds": spec["timeout_seconds"], "label": spec["label"]}
         store.save_run(meta)
         self.tasks[meta["id"]] = asyncio.create_task(self.execute(meta, chosen, dataset["scenarios"], key))
         return meta
