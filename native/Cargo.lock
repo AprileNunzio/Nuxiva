@@ -2571,6 +2571,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-reason-eval"
+version = "5.8.23"
+dependencies = [
+ "nuxiva-bench-core",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-reflect-core"
 version = "5.8.23"
 dependencies = [

@@ -1,0 +1,230 @@
+[
+ {
+  "id": "dog_photo_telegram_email",
+  "category": "composite",
+  "expected": {
+   "intent": "deliver_media",
+   "effects": [
+    "read",
+    "send_external"
+   ]
+  },
+  "texts": {
+   "it": "cerca una foto di un San Bernardo e inviamela su Telegram ed email",
+   "en": "find a photo of a Saint Bernard and send it to me on Telegram and email",
+   "fr": "cherche une photo d'un Saint-Bernard et envoie-la-moi sur Telegram et par e-mail",
+   "es": "busca una foto de un San Bernardo y envíamela por Telegram y por correo",
+   "de": "suche ein Foto von einem Bernhardiner und schick es mir per Telegram und E-Mail",
+   "pt": "procura uma foto de um São Bernardo e envia-ma por Telegram e por email"
+  }
+ },
+ {
+  "id": "summarize_email_boss",
+  "category": "composite",
+  "expected": {
+   "intent": "summarize_and_send",
+   "effects": [
+    "read",
+    "send_external"
+   ]
+  },
+  "texts": {
+   "it": "riassumi il documento del budget e mandalo via email al mio capo",
+   "en": "summarize the budget document and email it to my boss",
+   "fr": "résume le document du budget et envoie-le par e-mail à mon chef",
+   "es": "resume el documento del presupuesto y envíalo por correo a mi jefe",
+   "de": "fasse das Budgetdokument zusammen und schick es per E-Mail an meinen Chef",
+   "pt": "resume o documento do orçamento e envia-o por email ao meu chefe"
+  }
+ },
+ {
+  "id": "calendar_to_telegram",
+  "category": "composite",
+  "expected": {
+   "intent": "schedule_digest",
+   "effects": [
+    "read",
+    "send_external"
+   ]
+  },
+  "texts": {
+   "it": "controlla gli impegni di domani e mandami un riepilogo su Telegram",
+   "en": "check tomorrow's appointments and send me a summary on Telegram",
+   "fr": "vérifie les rendez-vous de demain et envoie-moi un résumé sur Telegram",
+   "es": "revisa las citas de mañana y envíame un resumen por Telegram",
+   "de": "prüfe die Termine von morgen und schick mir eine Zusammenfassung per Telegram",
+   "pt": "verifica os compromissos de amanhã e envia-me um resumo por Telegram"
+  }
+ },
+ {
+  "id": "backup_notify",
+  "category": "composite",
+  "expected": {
+   "intent": "backup_and_notify",
+   "effects": [
+    "write",
+    "send_external"
+   ]
+  },
+  "texts": {
+   "it": "fai il backup della cartella documenti e avvisami quando hai finito",
+   "en": "back up the documents folder and notify me when it is done",
+   "fr": "sauvegarde le dossier documents et préviens-moi quand c'est fini",
+   "es": "haz una copia de seguridad de la carpeta documentos y avísame cuando termines",
+   "de": "sichere den Dokumentenordner und benachrichtige mich, wenn du fertig bist",
+   "pt": "faz uma cópia de segurança da pasta documentos e avisa-me quando acabares"
+  }
+ },
+ {
+  "id": "rain_reminder_light",
+  "category": "composite",
+  "expected": {
+   "intent": "conditional_home_action",
+   "effects": [
+    "read",
+    "write"
+   ]
+  },
+  "texts": {
+   "it": "se domani piove ricordami di prendere l'ombrello",
+   "en": "if it rains tomorrow remind me to take an umbrella",
+   "fr": "s'il pleut demain rappelle-moi de prendre un parapluie",
+   "es": "si mañana llueve recuérdame llevar el paraguas",
+   "de": "wenn es morgen regnet, erinnere mich an den Regenschirm",
+   "pt": "se amanhã chover lembra-me de levar o guarda-chuva"
+  }
+ },
+ {
+  "id": "groceries_order",
+  "category": "composite",
+  "expected": {
+   "intent": "order_groceries",
+   "effects": [
+    "write",
+    "spend"
+   ]
+  },
+  "texts": {
+   "it": "aggiungi latte e uova alla lista e ordinali al supermercato online",
+   "en": "add milk and eggs to the list and order them from the online supermarket",
+   "fr": "ajoute du lait et des œufs à la liste et commande-les au supermarché en ligne",
+   "es": "añade leche y huevos a la lista y pídelos al supermercado en línea",
+   "de": "setz Milch und Eier auf die Liste und bestell sie im Online-Supermarkt",
+   "pt": "adiciona leite e ovos à lista e encomenda-os no supermercado online"
+  }
+ },
+ {
+  "id": "flights_calendar",
+  "category": "composite",
+  "expected": {
+   "intent": "plan_trip",
+   "effects": [
+    "read",
+    "write"
+   ]
+  },
+  "texts": {
+   "it": "trova i voli per Lisbona venerdì prossimo e segna il migliore in agenda",
+   "en": "find flights to Lisbon next Friday and put the best one in my calendar",
+   "fr": "trouve les vols pour Lisbonne vendredi prochain et note le meilleur dans mon agenda",
+   "es": "busca vuelos a Lisboa el próximo viernes y apunta el mejor en mi agenda",
+   "de": "finde Flüge nach Lissabon für nächsten Freitag und trag den besten in meinen Kalender ein",
+   "pt": "procura voos para Lisboa na próxima sexta e marca o melhor na minha agenda"
+  }
+ },
+ {
+  "id": "print_invoice",
+  "category": "composite",
+  "expected": {
+   "intent": "find_and_print",
+   "effects": [
+    "read",
+    "physical"
+   ]
+  },
+  "texts": {
+   "it": "trova la fattura PDF di ottobre e stampala",
+   "en": "find the October invoice PDF and print it",
+   "fr": "trouve la facture PDF d'octobre et imprime-la",
+   "es": "busca la factura PDF de octubre e imprímela",
+   "de": "finde die Oktober-Rechnung als PDF und drucke sie aus",
+   "pt": "procura a fatura PDF de outubro e imprime-a"
+  }
+ },
+ {
+  "id": "night_routine",
+  "category": "composite",
+  "expected": {
+   "intent": "night_routine",
+   "effects": [
+    "physical"
+   ]
+  },
+  "texts": {
+   "it": "chiudi le tapparelle, blocca la porta e spegni tutte le luci",
+   "en": "close the shutters, lock the door and turn off all the lights",
+   "fr": "ferme les volets, verrouille la porte et éteins toutes les lumières",
+   "es": "cierra las persianas, bloquea la puerta y apaga todas las luces",
+   "de": "schließ die Rollläden, verriegle die Tür und schalte alle Lichter aus",
+   "pt": "fecha os estores, tranca a porta e apaga todas as luzes"
+  }
+ },
+ {
+  "id": "research_solar",
+  "category": "composite",
+  "expected": {
+   "intent": "research_and_write",
+   "effects": [
+    "read",
+    "write"
+   ]
+  },
+  "texts": {
+   "it": "cerca i prezzi dei pannelli solari e scrivi un riassunto di una pagina",
+   "en": "research solar panel prices and write a one page summary",
+   "fr": "recherche les prix des panneaux solaires et rédige un résumé d'une page",
+   "es": "investiga los precios de los paneles solares y escribe un resumen de una página",
+   "de": "recherchiere die Preise für Solarmodule und schreib eine einseitige Zusammenfassung",
+   "pt": "pesquisa os preços dos painéis solares e escreve um resumo de uma página"
+  }
+ },
+ {
+  "id": "album_share",
+  "category": "composite",
+  "expected": {
+   "intent": "collect_and_share",
+   "effects": [
+    "read",
+    "write",
+    "send_external"
+   ]
+  },
+  "texts": {
+   "it": "raccogli le foto dello scorso weekend in un album e manda il link alla famiglia",
+   "en": "collect last weekend's photos into an album and send the link to the family",
+   "fr": "rassemble les photos du week-end dernier dans un album et envoie le lien à la famille",
+   "es": "reúne las fotos del fin de semana pasado en un álbum y manda el enlace a la familia",
+   "de": "sammle die Fotos vom letzten Wochenende in einem Album und schick der Familie den Link",
+   "pt": "reúne as fotos do último fim de semana num álbum e envia o link à família"
+  }
+ },
+ {
+  "id": "receipts_sheet",
+  "category": "composite",
+  "expected": {
+   "intent": "extract_to_spreadsheet",
+   "effects": [
+    "read",
+    "write"
+   ]
+  },
+  "texts": {
+   "it": "leggi gli scontrini nella cartella spese e crea un foglio di calcolo",
+   "en": "read the receipts in the expenses folder and make a spreadsheet",
+   "fr": "lis les tickets du dossier dépenses et crée une feuille de calcul",
+   "es": "lee los recibos de la carpeta de gastos y crea una hoja de cálculo",
+   "de": "lies die Belege im Ausgabenordner und erstelle eine Tabelle",
+   "pt": "lê os recibos da pasta de despesas e cria uma folha de cálculo"
+  }
+ }
+]

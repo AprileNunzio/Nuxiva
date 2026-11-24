@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Banco di prova per il nuovo motore di ragionamento",
+    "en": "Test bench for the new reasoning engine",
+    "fr": "Banc d'essai pour le nouveau moteur de raisonnement",
+    "es": "Banco de pruebas para el nuevo motor de razonamiento"
+  },
+  "features": [
+    {
+      "it": "Un set di 300 richieste in sei lingue misura quanto Nuxiva capisce ed esegue correttamente, quanti token consuma e quanto impiega, anche con richieste composte, nuove o ingannevoli.",
+      "en": "A set of 300 requests in six languages measures how well Nuxiva understands and carries them out, how many tokens it uses and how long it takes, including composite, new and deceptive requests.",
+      "fr": "Un jeu de 300 demandes en six langues mesure la qualité de compréhension et d'exécution de Nuxiva, les jetons consommés et le temps nécessaire, y compris pour les demandes composées, nouvelles ou trompeuses.",
+      "es": "Un conjunto de 300 peticiones en seis idiomas mide qué tan bien Nuxiva las entiende y ejecuta, cuántos tokens consume y cuánto tarda, incluidas peticiones compuestas, nuevas o engañosas."
+    }
+  ],
+  "fixes": []
+}
