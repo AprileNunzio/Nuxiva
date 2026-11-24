@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Screenshot dalla pagina 80 sempre attivi, anche se il servizio nativo non è ancora pronto",
+    "en": "Page 80 screenshots always on, even when the native service is not ready yet",
+    "fr": "Captures depuis la page 80 toujours actives, même si le service natif n'est pas encore prêt",
+    "es": "Capturas desde la página 80 siempre activas, aunque el servicio nativo aún no esté listo"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Il messaggio «Servizio screenshot non attivo su questo server» non compare più: se il servizio nativo manca o non risponde, Nuxiva cattura lo schermo da sola e lo salva nella cartella condivisa.",
+      "en": "The message «Screenshot service is not running on this server» no longer appears: when the native service is missing or silent, Nuxiva captures the screen itself and saves it to the shared folder.",
+      "fr": "Le message « Service de capture inactif sur ce serveur » n'apparaît plus : si le service natif manque ou ne répond pas, Nuxiva capture l'écran elle-même et l'enregistre dans le dossier partagé.",
+      "es": "El mensaje «Servicio de capturas inactivo en este servidor» ya no aparece: si el servicio nativo falta o no responde, Nuxiva captura la pantalla por sí misma y la guarda en la carpeta compartida."
+    }
+  ]
+}

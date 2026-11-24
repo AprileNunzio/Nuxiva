@@ -11,6 +11,7 @@ MAX_STATUS = 4096
 STATUSES = frozenset({"saved", "queued", "blocked", "failed", "disabled", "no_target", "delivered_later"})
 NAME = re.compile(r"^[a-z0-9-]{1,40}_\d{8}-\d{6}_\d{3}\.png$")
 _cache: dict = {"mtime": None, "value": None}
+_memory: dict = {"value": None}
 
 
 class BridgeUnavailable(OSError):
@@ -42,7 +43,23 @@ def _clean(raw) -> dict | None:
             "folder": folder, "count": max(0, min(count, 10_000))}
 
 
+def record(raw: dict) -> dict:
+    value = _clean(raw)
+    if value is None:
+        raise ValueError("screenshot_status")
+    _memory["value"] = value
+    return value
+
+
 def latest(root: Path | None = None) -> dict | None:
+    found = _from_file(root)
+    memory = _memory["value"] if root is None else None
+    if memory and (not found or memory["id"] > found["id"]):
+        return memory
+    return found
+
+
+def _from_file(root: Path | None) -> dict | None:
     path = (root or RUNTIME) / STATUS
     try:
         info = os.lstat(path)

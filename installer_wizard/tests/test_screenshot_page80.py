@@ -12,7 +12,7 @@ for p in (str(_ROOT), str(_ROOT / "installer_wizard"), str(_ROOT / "installer_wi
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from agenti.nodes import commands, screenshot_bridge, screenshot_intent
+from agenti.nodes import commands, screenshot_bridge, screenshot_intent, screenshot_local, screenshot_service
 
 NODES = _ROOT / "installer_wizard" / "agenti" / "infrastruttura" / "nodes"
 DISPLAY = _ROOT / "installer_wizard" / "web" / "display"
@@ -62,14 +62,16 @@ class VoiceTests(unittest.TestCase):
                         {"id": 2, "status": "saved", "name": "", "folder": "/srv/condivisa/05 Scambio/Screenshot", "count": 0}])
         with mock.patch.object(screenshot_bridge, "latest", side_effect=lambda: next(reports)), \
                 mock.patch.object(screenshot_bridge, "request") as request, \
-                mock.patch.object(commands, "STEP", 0), \
+                mock.patch.object(screenshot_service, "STEP", 0), \
+                mock.patch.object(screenshot_local, "capture") as local, \
                 mock.patch.object(commands, "read_env", return_value={"NUXIVA_UI_LANG": "it"}):
             speech, ui = asyncio.run(commands.answer("fai uno screenshot"))
         request.assert_called_once_with()
+        local.assert_not_called()
         self.assertIn("/srv/condivisa/05 Scambio/Screenshot", speech)
         self.assertEqual(ui, {"mode": "face"})
 
-    def test_remote_browser_and_missing_service_are_explained(self):
+    def test_remote_browser_is_explained(self):
         from agenti.chat import context
         with mock.patch.object(commands, "read_env", return_value={"NUXIVA_UI_LANG": "en"}):
             token = context.device.set("remote")
@@ -77,11 +79,47 @@ class VoiceTests(unittest.TestCase):
                 speech, _ = asyncio.run(commands.answer("take a screenshot"))
             finally:
                 context.device.reset(token)
-            self.assertEqual(speech, commands.phrase("remote", "en"))
-            with mock.patch.object(screenshot_bridge, "latest", return_value=None), \
-                    mock.patch.object(screenshot_bridge, "request", side_effect=screenshot_bridge.BridgeUnavailable("x")):
-                speech, _ = asyncio.run(commands.answer("take a screenshot"))
-            self.assertEqual(speech, commands.phrase("service", "en"))
+        self.assertEqual(speech, commands.phrase("remote", "en"))
+
+
+class FallbackTests(unittest.TestCase):
+    def setUp(self):
+        screenshot_bridge._memory["value"] = None
+
+    def test_missing_native_service_falls_back_to_a_direct_capture(self):
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            root = Path(tmp)
+            env = {"NUXIVA_SCREENSHOT_TARGET": str(root)}
+            with mock.patch.object(screenshot_local, "ALLOWED_ROOTS", (str(root),)), \
+                    mock.patch.object(screenshot_local, "read_env", return_value=env), \
+                    mock.patch.object(screenshot_local, "grab", return_value=screenshot_local.PNG + b"data"), \
+                    mock.patch.object(screenshot_local, "GUEST_FLAG", root / "none"), \
+                    mock.patch.object(screenshot_bridge, "RUNTIME", root / "missing"):
+                report = asyncio.run(screenshot_service.take())
+            self.assertEqual(report["status"], "saved", report)
+            stored = list((root / "05 Scambio" / "Screenshot").iterdir())
+            self.assertEqual([p.name for p in stored], [report["name"]])
+            self.assertEqual(stored[0].read_bytes(), screenshot_local.PNG + b"data")
+            self.assertEqual(screenshot_bridge.latest()["id"], report["id"])
+
+    def test_fallback_respects_settings_and_privacy(self):
+        with self.assertRaises(screenshot_local.LocalError) as off:
+            screenshot_local.settings({"NUXIVA_SCREENSHOT": "0"})
+        self.assertEqual(off.exception.status, "disabled")
+        with self.assertRaises(screenshot_local.LocalError) as masked:
+            screenshot_local.settings({"NUXIVA_SCREENSHOT_MASK": "0,0,10,10"})
+        self.assertEqual(masked.exception.status, "blocked")
+        for bad in ({"NUXIVA_SCREENSHOT_TARGET": "/etc"}, {"NUXIVA_SCREENSHOT_SUBDIR": "../x"}):
+            with self.assertRaises(screenshot_local.LocalError):
+                screenshot_local.settings(bad)
+        self.assertEqual(screenshot_local.settings({})[1], "05 Scambio/Screenshot")
+        self.assertTrue(screenshot_bridge.NAME.match(screenshot_local.file_name(3, 0)))
+
+    def test_symlinked_subfolder_is_refused(self):
+        with tempfile.TemporaryDirectory() as tmp, tempfile.TemporaryDirectory() as outside:
+            os.symlink(outside, Path(tmp) / "05 Scambio")
+            with self.assertRaises(screenshot_local.LocalError):
+                screenshot_local.directory(Path(tmp), "05 Scambio/Screenshot")
 
 
 class TranslationTests(unittest.TestCase):

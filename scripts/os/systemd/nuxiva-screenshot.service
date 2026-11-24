@@ -15,6 +15,7 @@ StateDirectory=nuxiva-screenshot
 StateDirectoryMode=0700
 RuntimeDirectory=nuxiva-screenshot
 RuntimeDirectoryMode=0755
+RuntimeDirectoryPreserve=yes
 NoNewPrivileges=yes
 CapabilityBoundingSet=CAP_SETUID CAP_SETGID CAP_DAC_OVERRIDE
 AmbientCapabilities=
