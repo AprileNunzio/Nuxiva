@@ -1,0 +1,3226 @@
+{
+ "schema": 1,
+ "capabilities": [
+  {
+   "id": "red_alert",
+   "version": 1,
+   "origin": "local",
+   "summary": "Flash every home light red and repeat an urgent spoken alert.",
+   "inputs": [
+    {
+     "name": "message",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "seconds",
+     "ty": "number",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "stop_red_alert",
+   "version": 1,
+   "origin": "local",
+   "summary": "Stop the red alert and restore the previous light state.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "vpn_status",
+   "version": 1,
+   "origin": "local",
+   "summary": "List configured VPNs with their connection state.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "vpn_connect",
+   "version": 1,
+   "origin": "local",
+   "summary": "Connect a configured VPN.",
+   "inputs": [
+    {
+     "name": "name",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "vpn_disconnect",
+   "version": 1,
+   "origin": "local",
+   "summary": "Disconnect a VPN.",
+   "inputs": [
+    {
+     "name": "name",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "firewall_status",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show firewall mode, rules, active blocks and recent attacks.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "firewall_block",
+   "version": 1,
+   "origin": "local",
+   "summary": "Block an IP address, network or MAC for a number of minutes.",
+   "inputs": [
+    {
+     "name": "address",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "minutes",
+     "ty": "number",
+     "required": false
+    },
+    {
+     "name": "reason",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "firewall_unblock",
+   "version": 1,
+   "origin": "local",
+   "summary": "Remove a block on an IP address, network or MAC.",
+   "inputs": [
+    {
+     "name": "address",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "firewall_trusted",
+   "version": 1,
+   "origin": "local",
+   "summary": "List trusted devices that the firewall never blocks.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "firewall_trust",
+   "version": 1,
+   "origin": "local",
+   "summary": "Add a home device to the firewall trusted list.",
+   "inputs": [
+    {
+     "name": "address",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "label",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "firewall_untrust",
+   "version": 1,
+   "origin": "local",
+   "summary": "Remove a device from the firewall trusted list.",
+   "inputs": [
+    {
+     "name": "address",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "firewall_incidents",
+   "version": 1,
+   "origin": "local",
+   "summary": "List ongoing or recent attacks seen by the firewall.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "firewall_show_view",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show the full screen 3D defense view.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "firewall_hide_view",
+   "version": 1,
+   "origin": "local",
+   "summary": "Close the 3D defense view.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "firewall_defend",
+   "version": 1,
+   "origin": "local",
+   "summary": "Enable a temporary reversible defense against an address or country.",
+   "inputs": [
+    {
+     "name": "kind",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "target",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "minutes",
+     "ty": "number",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "firewall_defense_revoke",
+   "version": 1,
+   "origin": "local",
+   "summary": "Revoke an active firewall defense.",
+   "inputs": [
+    {
+     "name": "key",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "who_is",
+   "version": 1,
+   "origin": "local",
+   "summary": "Identify an IP or MAC address on the home network.",
+   "inputs": [
+    {
+     "name": "address",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "ha_get_state",
+   "version": 1,
+   "origin": "local",
+   "summary": "Read the current state and attributes of a Home Assistant entity.",
+   "inputs": [
+    {
+     "name": "entity_id",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "ha_call_service",
+   "version": 1,
+   "origin": "local",
+   "summary": "Run a Home Assistant service such as turning on a light or setting a thermostat.",
+   "inputs": [
+    {
+     "name": "domain",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "service",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "entity_id",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "service_data",
+     "ty": "json",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": false,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "ha_list_entities",
+   "version": 1,
+   "origin": "local",
+   "summary": "List Home Assistant entities filtered by domain or area.",
+   "inputs": [
+    {
+     "name": "domain",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "area_id",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "ha_ask_assist",
+   "version": 1,
+   "origin": "local",
+   "summary": "Send a sentence to Home Assistant Assist.",
+   "inputs": [
+    {
+     "name": "text",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "language",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": false,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "ha_energy_consumption",
+   "version": 1,
+   "origin": "local",
+   "summary": "Read instant power use, solar production and grid exchange.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "ha_devices_by_room",
+   "version": 1,
+   "origin": "local",
+   "summary": "List all home devices grouped by floor and room.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "tv_list_channels",
+   "version": 1,
+   "origin": "local",
+   "summary": "List or search available TV and IPTV channels.",
+   "inputs": [
+    {
+     "name": "query",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "group",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "favorite_only",
+     "ty": "bool",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "guest",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "tv_play_channel",
+   "version": 1,
+   "origin": "local",
+   "summary": "Play a TV or IPTV channel on a screen or device.",
+   "inputs": [
+    {
+     "name": "channel",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "target",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "guest",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "tv_get_epg",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show the program guide for a TV channel.",
+   "inputs": [
+    {
+     "name": "channel",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "guest",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "tv_list_tuners",
+   "version": 1,
+   "origin": "local",
+   "summary": "List detected and configured TV tuners.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "tv_add_tuner",
+   "version": 1,
+   "origin": "local",
+   "summary": "Add a TV tuner or source.",
+   "inputs": [
+    {
+     "name": "name",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "tuner_type",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "device",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "frequency_band",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "tv_scan_tuner",
+   "version": 1,
+   "origin": "local",
+   "summary": "Scan frequencies on a TV tuner to find channels.",
+   "inputs": [
+    {
+     "name": "tuner_id",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "tv_set_vpn_policy",
+   "version": 1,
+   "origin": "local",
+   "summary": "Require a VPN for all IPTV streams.",
+   "inputs": [
+    {
+     "name": "vpn_required",
+     "ty": "bool",
+     "required": true
+    },
+    {
+     "name": "vpn_profile",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "studio_voices",
+   "version": 1,
+   "origin": "local",
+   "summary": "List voices created in the voice studio.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "transcribe_audio",
+   "version": 1,
+   "origin": "local",
+   "summary": "Transcribe an audio or video file into text.",
+   "inputs": [
+    {
+     "name": "path",
+     "ty": "file",
+     "required": true
+    },
+    {
+     "name": "language",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read",
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "speak_to_file",
+   "version": 1,
+   "origin": "local",
+   "summary": "Read a text or document aloud with a studio voice and save the audio file.",
+   "inputs": [
+    {
+     "name": "text",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "path",
+     "ty": "file",
+     "required": false
+    },
+    {
+     "name": "voice",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "name",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "studio_design_voice",
+   "version": 1,
+   "origin": "local",
+   "summary": "Invent a new studio voice from a description.",
+   "inputs": [
+    {
+     "name": "name",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "description",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "sport_query",
+   "version": 1,
+   "origin": "local",
+   "summary": "Answer a question about sports.",
+   "inputs": [
+    {
+     "name": "question",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "guest",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "medico_parametri",
+   "version": 1,
+   "origin": "local",
+   "summary": "Read recent health parameters of a household member.",
+   "inputs": [
+    {
+     "name": "person",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "camsense_list",
+   "version": 1,
+   "origin": "local",
+   "summary": "List virtual sensors based on cameras.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "camsense_state",
+   "version": 1,
+   "origin": "local",
+   "summary": "Tell the state of a camera based sensor such as an open door.",
+   "inputs": [
+    {
+     "name": "sensor",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "camsense_create",
+   "version": 1,
+   "origin": "local",
+   "summary": "Create a camera sensor over an image zone.",
+   "inputs": [
+    {
+     "name": "name",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "camera",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "x",
+     "ty": "number",
+     "required": false
+    },
+    {
+     "name": "y",
+     "ty": "number",
+     "required": false
+    },
+    {
+     "name": "w",
+     "ty": "number",
+     "required": false
+    },
+    {
+     "name": "h",
+     "ty": "number",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "camsense_learn",
+   "version": 1,
+   "origin": "local",
+   "summary": "Teach a camera sensor what a state looks like from the current image.",
+   "inputs": [
+    {
+     "name": "sensor",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "label",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "spatial_hud_status",
+   "version": 1,
+   "origin": "local",
+   "summary": "Read the state of the 3D spatial gesture display.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "spatial_hud_set_mode",
+   "version": 1,
+   "origin": "local",
+   "summary": "Turn the 3D spatial gesture display on or off.",
+   "inputs": [
+    {
+     "name": "enabled",
+     "ty": "bool",
+     "required": false
+    },
+    {
+     "name": "auto_close_s",
+     "ty": "number",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "spatial_hud_set_shape",
+   "version": 1,
+   "origin": "local",
+   "summary": "Set the holographic 3D shape of the gesture display.",
+   "inputs": [
+    {
+     "name": "shape",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "spatial_hud_generate_object",
+   "version": 1,
+   "origin": "local",
+   "summary": "Generate any requested 3D object in real time.",
+   "inputs": [
+    {
+     "name": "subject",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "fidelity",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical",
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "spatial_hud_set_fidelity",
+   "version": 1,
+   "origin": "local",
+   "summary": "Change the render quality of the current 3D object.",
+   "inputs": [
+    {
+     "name": "fidelity",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "spatial_hud_bind_gesture_action",
+   "version": 1,
+   "origin": "local",
+   "summary": "Bind a spatial gesture to an action.",
+   "inputs": [
+    {
+     "name": "gesture",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "action",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "person_learn",
+   "version": 1,
+   "origin": "local",
+   "summary": "Remember a stable fact learned about a household member.",
+   "inputs": [
+    {
+     "name": "person",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "fact",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "person_mood",
+   "version": 1,
+   "origin": "local",
+   "summary": "Note the mood a person expressed.",
+   "inputs": [
+    {
+     "name": "person",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "mood",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "intensity",
+     "ty": "number",
+     "required": false
+    },
+    {
+     "name": "note",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "person_profile",
+   "version": 1,
+   "origin": "local",
+   "summary": "Summarize what is known about a household member.",
+   "inputs": [
+    {
+     "name": "person",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "web_research",
+   "version": 1,
+   "origin": "local",
+   "summary": "Search the internet for recent facts from reliable sources.",
+   "inputs": [
+    {
+     "name": "question",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "days",
+     "ty": "number",
+     "required": false
+    },
+    {
+     "name": "limit",
+     "ty": "number",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "guest",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "create_document",
+   "version": 1,
+   "origin": "local",
+   "summary": "Create a professional Word, Excel or PowerPoint document.",
+   "inputs": [
+    {
+     "name": "request",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "cloud_catalog",
+   "version": 1,
+   "origin": "local",
+   "summary": "List cloud language model providers and available models.",
+   "inputs": [
+    {
+     "name": "provider",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "proxmox_status",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show Proxmox nodes, virtual machines and containers.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "proxmox_power",
+   "version": 1,
+   "origin": "local",
+   "summary": "Start, stop, restart or suspend a virtual machine or container.",
+   "inputs": [
+    {
+     "name": "vmid",
+     "ty": "number",
+     "required": true
+    },
+    {
+     "name": "action",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "collaudo_describe",
+   "version": 1,
+   "origin": "local",
+   "summary": "Describe the structured event stream of sentinel, hearing and vision.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "nuxiva_ideas",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show ideas Nuxiva proposed on its own.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "nuxiva_proactive",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show initiatives Nuxiva took on its own and why.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "schedule_task",
+   "version": 1,
+   "origin": "local",
+   "summary": "Schedule a task that Nuxiva will run on its own at a given time.",
+   "inputs": [
+    {
+     "name": "title",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "when",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "prompt",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "list_tasks",
+   "version": 1,
+   "origin": "local",
+   "summary": "List scheduled tasks.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "cancel_task",
+   "version": 1,
+   "origin": "local",
+   "summary": "Cancel a scheduled task.",
+   "inputs": [
+    {
+     "name": "task",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "run_task_now",
+   "version": 1,
+   "origin": "local",
+   "summary": "Run a scheduled task immediately.",
+   "inputs": [
+    {
+     "name": "task",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "team_health",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show the health of the agent team and its memory.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "team_roster",
+   "version": 1,
+   "origin": "local",
+   "summary": "List all agents with priority, tools and current activity.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "agent_info",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show the full profile of an agent.",
+   "inputs": [
+    {
+     "name": "agent",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "agent_tell",
+   "version": 1,
+   "origin": "local",
+   "summary": "Leave a message for another agent.",
+   "inputs": [
+    {
+     "name": "to",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "text",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "agent_inbox",
+   "version": 1,
+   "origin": "local",
+   "summary": "Read and empty the messages received by an agent.",
+   "inputs": [
+    {
+     "name": "agent",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "agent_ask",
+   "version": 1,
+   "origin": "local",
+   "summary": "Ask an agent to run one of its own tools.",
+   "inputs": [
+    {
+     "name": "agent",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "tool",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "args",
+     "ty": "json",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "agent_set",
+   "version": 1,
+   "origin": "local",
+   "summary": "Change a setting declared by an agent.",
+   "inputs": [
+    {
+     "name": "agent",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "key",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "value",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "ceo_overview",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show the CEO overview of the scanned agent team.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "ceo_delegate",
+   "version": 1,
+   "origin": "local",
+   "summary": "Assign an explicit task to an agent of the team.",
+   "inputs": [
+    {
+     "name": "agent",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "task",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "agent_valuta",
+   "version": 1,
+   "origin": "local",
+   "summary": "Check whether an agent already exists before creating a new one.",
+   "inputs": [
+    {
+     "name": "id",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "category",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "description",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "capabilities",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "nouns",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "agent_nuovo",
+   "version": 1,
+   "origin": "local",
+   "summary": "Create a new agent with the standard structure.",
+   "inputs": [
+    {
+     "name": "id",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "category",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "description",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "capabilities",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "nouns",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "phrases",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "motive",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "what_i_am_doing",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show what Nuxiva is doing in the background right now.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "send_email",
+   "version": 1,
+   "origin": "local",
+   "summary": "Send an email with optional file attachments.",
+   "inputs": [
+    {
+     "name": "to",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "subject",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "body",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "attachments",
+     "ty": "json",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "send_external"
+   ],
+   "reversible": false,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "share_folder",
+   "version": 1,
+   "origin": "local",
+   "summary": "Create or verify an SMB shared folder on the home network.",
+   "inputs": [
+    {
+     "name": "name",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "create_site",
+   "version": 1,
+   "origin": "local",
+   "summary": "Create and publish a complete website on the home network.",
+   "inputs": [
+    {
+     "name": "request",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write",
+    "send_external"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "copy_to_share",
+   "version": 1,
+   "origin": "local",
+   "summary": "Copy a file or folder into an SMB share.",
+   "inputs": [
+    {
+     "name": "path",
+     "ty": "file",
+     "required": true
+    },
+    {
+     "name": "share",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "find_contact",
+   "version": 1,
+   "origin": "local",
+   "summary": "Look up a person in the contact book and return their addresses.",
+   "inputs": [
+    {
+     "name": "name",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "list_widgets",
+   "version": 1,
+   "origin": "local",
+   "summary": "List available and open widgets with their screens.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "show_widget",
+   "version": 1,
+   "origin": "local",
+   "summary": "Open a widget on the display.",
+   "inputs": [
+    {
+     "name": "id",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "data",
+     "ty": "json",
+     "required": false
+    },
+    {
+     "name": "seconds",
+     "ty": "number",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "hide_widget",
+   "version": 1,
+   "origin": "local",
+   "summary": "Close a widget.",
+   "inputs": [
+    {
+     "name": "id",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "move_widget",
+   "version": 1,
+   "origin": "local",
+   "summary": "Move a widget to another screen.",
+   "inputs": [
+    {
+     "name": "id",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "screen",
+     "ty": "number",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "avatar",
+   "version": 1,
+   "origin": "local",
+   "summary": "Command the 3D avatar actions, expressions and accessories.",
+   "inputs": [
+    {
+     "name": "action",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "express",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "shot",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "accessory",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "state",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "color",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "avatar_catalog",
+   "version": 1,
+   "origin": "local",
+   "summary": "List avatar actions, expressions, shots and accessories.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "create_3d",
+   "version": 1,
+   "origin": "local",
+   "summary": "Design a 3D object and show it.",
+   "inputs": [
+    {
+     "name": "subject",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write",
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "list_models",
+   "version": 1,
+   "origin": "local",
+   "summary": "List saved 3D models.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "show_model",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show a saved 3D model.",
+   "inputs": [
+    {
+     "name": "name",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "now",
+   "version": 1,
+   "origin": "local",
+   "summary": "Give the current date and time.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "guest",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "rpa_run",
+   "version": 1,
+   "origin": "local",
+   "summary": "Control a connected computer like a person: find on-screen elements, click and type.",
+   "inputs": [
+    {
+     "name": "node",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "steps",
+     "ty": "json",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical",
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "run_command",
+   "version": 1,
+   "origin": "local",
+   "summary": "Run a terminal command in a sandbox with a two minute limit.",
+   "inputs": [
+    {
+     "name": "command",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "http_get",
+   "version": 1,
+   "origin": "local",
+   "summary": "Download the text of a web page or public API.",
+   "inputs": [
+    {
+     "name": "url",
+     "ty": "url",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "list_dir",
+   "version": 1,
+   "origin": "local",
+   "summary": "List the contents of a folder.",
+   "inputs": [
+    {
+     "name": "path",
+     "ty": "file",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "read_file",
+   "version": 1,
+   "origin": "local",
+   "summary": "Read a text, Word, Excel or PowerPoint file.",
+   "inputs": [
+    {
+     "name": "path",
+     "ty": "file",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "write_file",
+   "version": 1,
+   "origin": "local",
+   "summary": "Create or overwrite a text file.",
+   "inputs": [
+    {
+     "name": "path",
+     "ty": "file",
+     "required": true
+    },
+    {
+     "name": "content",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "append",
+     "ty": "bool",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "make_dir",
+   "version": 1,
+   "origin": "local",
+   "summary": "Create a folder, including nested ones.",
+   "inputs": [
+    {
+     "name": "path",
+     "ty": "file",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "copy",
+   "version": 1,
+   "origin": "local",
+   "summary": "Copy a file or folder.",
+   "inputs": [
+    {
+     "name": "src",
+     "ty": "file",
+     "required": true
+    },
+    {
+     "name": "dst",
+     "ty": "file",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "move",
+   "version": 1,
+   "origin": "local",
+   "summary": "Move or rename a file or folder.",
+   "inputs": [
+    {
+     "name": "src",
+     "ty": "file",
+     "required": true
+    },
+    {
+     "name": "dst",
+     "ty": "file",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "delete",
+   "version": 1,
+   "origin": "local",
+   "summary": "Move a file or folder to the recoverable trash.",
+   "inputs": [
+    {
+     "name": "path",
+     "ty": "file",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "zip",
+   "version": 1,
+   "origin": "local",
+   "summary": "Compress a file or folder into a zip archive.",
+   "inputs": [
+    {
+     "name": "path",
+     "ty": "file",
+     "required": true
+    },
+    {
+     "name": "dst",
+     "ty": "file",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "find_files",
+   "version": 1,
+   "origin": "local",
+   "summary": "Search files and folders by name.",
+   "inputs": [
+    {
+     "name": "pattern",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "root",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "file_info",
+   "version": 1,
+   "origin": "local",
+   "summary": "Give the size and date of a file.",
+   "inputs": [
+    {
+     "name": "path",
+     "ty": "file",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "packages",
+   "version": 1,
+   "origin": "local",
+   "summary": "List, install or remove Nuxiva packages.",
+   "inputs": [
+    {
+     "name": "action",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "package",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "debian_status",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show server system, kernel, uptime, load and memory.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "debian_logs",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show the latest system log lines filtered by severity.",
+   "inputs": [
+    {
+     "name": "unit",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "level",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "lines",
+     "ty": "number",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "debian_service",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show the detailed state of a systemd service.",
+   "inputs": [
+    {
+     "name": "unit",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "apt_upgradable",
+   "version": 1,
+   "origin": "local",
+   "summary": "List upgradable Debian packages and how many are security updates.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "football_scores",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show football scores and matches for a league on a day.",
+   "inputs": [
+    {
+     "name": "league",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "day",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "guest",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "football_table",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show the current standings of a football league.",
+   "inputs": [
+    {
+     "name": "league",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "guest",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "football_team",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show the latest results and next matches of a football team.",
+   "inputs": [
+    {
+     "name": "team",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "league",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "guest",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "expert_list",
+   "version": 1,
+   "origin": "local",
+   "summary": "List team experts with name, role and specialty.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "expert_ask",
+   "version": 1,
+   "origin": "local",
+   "summary": "Ask the right expert a question and return the answer.",
+   "inputs": [
+    {
+     "name": "expert",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "question",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "expert_create",
+   "version": 1,
+   "origin": "local",
+   "summary": "Create a new expert from a template or role.",
+   "inputs": [
+    {
+     "name": "template",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "role",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "specialty",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "apt_install",
+   "version": 1,
+   "origin": "local",
+   "summary": "Install Debian packages with apt.",
+   "inputs": [
+    {
+     "name": "packages",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "apt_remove",
+   "version": 1,
+   "origin": "local",
+   "summary": "Remove Debian packages with optional purge.",
+   "inputs": [
+    {
+     "name": "packages",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "purge",
+     "ty": "bool",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "apt_maintain",
+   "version": 1,
+   "origin": "local",
+   "summary": "Run apt maintenance such as update, upgrade or cleanup.",
+   "inputs": [
+    {
+     "name": "action",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "apt_search",
+   "version": 1,
+   "origin": "local",
+   "summary": "Search Debian packages by name or description.",
+   "inputs": [
+    {
+     "name": "query",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "service_control",
+   "version": 1,
+   "origin": "local",
+   "summary": "Start, stop, restart or reload a systemd service.",
+   "inputs": [
+    {
+     "name": "unit",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "action",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "power_control",
+   "version": 1,
+   "origin": "local",
+   "summary": "Restart, shut down, halt or suspend the server.",
+   "inputs": [
+    {
+     "name": "action",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "minutes",
+     "ty": "number",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "physical"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "ssh_exec",
+   "version": 1,
+   "origin": "local",
+   "summary": "Run a command on another computer over SSH.",
+   "inputs": [
+    {
+     "name": "host",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "command",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "user",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "port",
+     "ty": "number",
+     "required": false
+    },
+    {
+     "name": "timeout",
+     "ty": "number",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "ssh_public_key",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show the Nuxiva SSH public key.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "debian_shell",
+   "version": 1,
+   "origin": "local",
+   "summary": "Run any bash command as administrator on the server.",
+   "inputs": [
+    {
+     "name": "command",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "timeout",
+     "ty": "number",
+     "required": false
+    },
+    {
+     "name": "workdir",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "system_file_read",
+   "version": 1,
+   "origin": "local",
+   "summary": "Read a system text file by absolute path.",
+   "inputs": [
+    {
+     "name": "path",
+     "ty": "file",
+     "required": true
+    },
+    {
+     "name": "limit",
+     "ty": "number",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "system_file_write",
+   "version": 1,
+   "origin": "local",
+   "summary": "Write a system text file keeping a backup copy.",
+   "inputs": [
+    {
+     "name": "path",
+     "ty": "file",
+     "required": true
+    },
+    {
+     "name": "content",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "mode",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "debian_processes",
+   "version": 1,
+   "origin": "local",
+   "summary": "List running processes sorted by CPU or memory use.",
+   "inputs": [
+    {
+     "name": "sort",
+     "ty": "text",
+     "required": false
+    },
+    {
+     "name": "limit",
+     "ty": "number",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "process_kill",
+   "version": 1,
+   "origin": "local",
+   "summary": "Send a signal to a process.",
+   "inputs": [
+    {
+     "name": "pid",
+     "ty": "number",
+     "required": true
+    },
+    {
+     "name": "signal",
+     "ty": "text",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "debian_network",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show server interfaces, routes and listening ports.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "owner",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "what_i_learned",
+   "version": 1,
+   "origin": "local",
+   "summary": "Show what Nuxiva learned about habits and preferences.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "create_automation",
+   "version": 1,
+   "origin": "local",
+   "summary": "Create a complex automation with triggers, conditions and multi stage actions.",
+   "inputs": [
+    {
+     "name": "description",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "list_automations",
+   "version": 1,
+   "origin": "local",
+   "summary": "List automations with state and last run.",
+   "inputs": [],
+   "output": "text",
+   "effects": [
+    "read"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "run_automation",
+   "version": 1,
+   "origin": "local",
+   "summary": "Run an automation immediately.",
+   "inputs": [
+    {
+     "name": "automation",
+     "ty": "text",
+     "required": true
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "toggle_automation",
+   "version": 1,
+   "origin": "local",
+   "summary": "Enable or disable an automation.",
+   "inputs": [
+    {
+     "name": "automation",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "enabled",
+     "ty": "bool",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": true,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  },
+  {
+   "id": "emit_event",
+   "version": 1,
+   "origin": "local",
+   "summary": "Emit a custom event that can start automations.",
+   "inputs": [
+    {
+     "name": "name",
+     "ty": "text",
+     "required": true
+    },
+    {
+     "name": "data",
+     "ty": "json",
+     "required": false
+    }
+   ],
+   "output": "text",
+   "effects": [
+    "write"
+   ],
+   "reversible": false,
+   "min_role": "family",
+   "nodes": [
+    "server"
+   ]
+  }
+ ]
+}

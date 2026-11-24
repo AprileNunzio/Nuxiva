@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Registro unico delle capacità con contratti leggibili dalla macchina",
+    "en": "Single capability registry with machine-readable contracts",
+    "fr": "Registre unique des capacités avec contrats lisibles par la machine",
+    "es": "Registro único de capacidades con contratos legibles por máquina"
+  },
+  "features": [
+    {
+      "it": "Ognuno dei 132 strumenti di Nuxiva ha ora un contratto con effetti, ruolo minimo e reversibilità; la ricerca trova gli strumenti giusti per una richiesta e non mostra mai quelli che il ruolo non può usare.",
+      "en": "Each of Nuxiva's 132 tools now has a contract with effects, minimum role and reversibility; the search finds the right tools for a request and never shows those the role cannot use.",
+      "fr": "Chacun des 132 outils de Nuxiva a désormais un contrat avec effets, rôle minimal et réversibilité ; la recherche trouve les bons outils pour une demande et ne montre jamais ceux que le rôle ne peut pas utiliser.",
+      "es": "Cada una de las 132 herramientas de Nuxiva tiene ahora un contrato con efectos, rol mínimo y reversibilidad; la búsqueda encuentra las herramientas adecuadas para una petición y nunca muestra las que el rol no puede usar."
+    },
+    {
+      "it": "Le capacità che arrivano da server esterni o generate entrano come non fidate, con tutti gli effetti dichiarati, e diventano utilizzabili solo dopo una verifica esplicita.",
+      "en": "Capabilities coming from external servers or generated ones enter as untrusted, with every effect declared, and become usable only after an explicit check.",
+      "fr": "Les capacités venant de serveurs externes ou générées entrent comme non fiables, avec tous les effets déclarés, et ne deviennent utilisables qu'après une vérification explicite.",
+      "es": "Las capacidades que llegan de servidores externos o generadas entran como no fiables, con todos los efectos declarados, y solo se pueden usar tras una verificación explícita."
+    }
+  ],
+  "fixes": []
+}

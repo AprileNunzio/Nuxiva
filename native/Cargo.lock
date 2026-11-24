@@ -1960,6 +1960,14 @@ name = "nuxiva-bus-core"
 version = "5.8.23"
 
 [[package]]
+name = "nuxiva-capability-registry"
+version = "5.8.23"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-chat-core"
 version = "5.8.23"
 dependencies = [
