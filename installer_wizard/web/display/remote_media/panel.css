@@ -119,3 +119,7 @@
 .remote-media p:empty {
   display: none;
 }
+
+.remote-media [hidden] {
+  display: none !important;
+}

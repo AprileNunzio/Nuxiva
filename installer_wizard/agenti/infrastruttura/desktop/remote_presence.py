@@ -3,7 +3,8 @@ import threading
 import time
 
 import auth
-from access import session_user
+from access import is_private, session_user
+from config import env_get
 
 TTL_SECONDS = 30.0
 MAX_LEASES = 64
@@ -14,16 +15,51 @@ OUTCOMES = frozenset({
 })
 REVOKING = frozenset({"unknown", "many_faces", "spoof", "not_authorized", "ambiguous"})
 NAME_LIMIT = 64
+PROXY_HEADERS = ("forwarded", "x-forwarded-for", "x-real-ip")
+
+
+def _digest(value: str) -> str:
+    return hashlib.sha256(value.encode()).hexdigest()
+
+
+def _admin(request) -> bool:
+    user = session_user(request) if request.url.scheme == "https" else None
+    if not user:
+        return False
+    from agenti.authz.access_control import account, allows
+    return allows(account(user)["role"], "api.admin")
+
+
+def _kiosk(request) -> bool:
+    from agenti.desktop.camera_sessions import is_remote_kiosk_camera_enabled
+    return (is_remote_kiosk_camera_enabled() and is_private(request)
+            and not any(name in request.headers for name in PROXY_HEADERS)
+            and bool(auth.verify(request.cookies.get(auth.DISPLAY_COOKIE))))
+
+
+def probe_kind(request) -> str | None:
+    if env_get("NUXIVA_REMOTE_CAMERA_PROBE", "1") == "0":
+        return None
+    if _admin(request):
+        return "admin"
+    return "kiosk" if _kiosk(request) else None
 
 
 def viewer(request) -> str | None:
-    if request.url.scheme != "https" or not session_user(request):
-        return None
-    return hashlib.sha256(("viewer:" + request.cookies[auth.SESSION_COOKIE]).encode()).hexdigest()
+    if request.url.scheme == "https" and session_user(request):
+        return _digest("viewer:" + request.cookies[auth.SESSION_COOKIE])
+    if _kiosk(request):
+        peer = request.client.host if request.client else ""
+        return _digest(f"kiosk:{peer}:{request.cookies[auth.DISPLAY_COOKIE]}")
+    return None
 
 
 def probe_session(token: str) -> str:
-    return hashlib.sha256(("probe:" + token).encode()).hexdigest()
+    return _digest("probe:" + token)
+
+
+def liveness_for(kind: str | None, configured: str) -> str:
+    return configured if kind == "admin" else "strict"
 
 
 def judge(payload, role: str, liveness_mode: str) -> dict:
@@ -63,6 +99,9 @@ class RemotePresence:
                 return False
             self._leases[holder] = (slug, now + TTL_SECONDS)
             return True
+
+    def occupied(self) -> bool:
+        return bool(self._leases)
 
     def revoke(self, holder: str | None) -> None:
         if holder:

@@ -9,7 +9,9 @@ from starlette.requests import Request
 
 import snapshot
 from agenti.desktop import display_scope
+from agenti.desktop import remote_presence as presence_module
 from agenti.desktop.remote_presence import (
+    liveness_for, probe_kind,
     OUTCOMES, TTL_SECONDS, RemotePresence, judge, probe_session, viewer,
 )
 
@@ -145,7 +147,8 @@ class ViewerScopeTest(unittest.TestCase):
         with patch("agenti.desktop.remote_presence.session_user", return_value="nunzio"):
             self.assertRegex(viewer(https_request()), r"^[0-9a-f]{64}$")
             self.assertNotEqual(viewer(https_request("one")), viewer(https_request("two")))
-        with patch("agenti.desktop.remote_presence.session_user", return_value=None):
+        with patch("agenti.desktop.remote_presence.session_user", return_value=None), \
+                patch.object(presence_module, "_kiosk", return_value=False):
             self.assertIsNone(viewer(https_request()))
 
     def test_recognized_viewer_gets_the_authorized_scope(self):
@@ -158,6 +161,45 @@ class ViewerScopeTest(unittest.TestCase):
             presence.grant(viewer(request), "nunzio")
             self.assertEqual(display_scope.remote_display_scope(request), "recognized")
             self.assertNotEqual(display_scope.remote_display_scope(https_request("other")), "recognized")
+
+
+class KioskProbeTest(unittest.TestCase):
+    def kiosk_request(self, cookie="signed", headers=None):
+        request = https_request(None)
+        request._cookies = {"nuxiva_display": cookie}
+        for name, value in (headers or {}).items():
+            request.scope["headers"].append((name.encode(), value.encode()))
+        if hasattr(request, "_headers"):
+            del request._headers
+        return request
+
+    def test_probe_is_on_by_default_for_admins_and_kiosk_viewers(self):
+        with patch.object(presence_module, "_admin", return_value=True), \
+                patch.object(presence_module, "env_get", return_value="1"):
+            self.assertEqual(probe_kind(https_request()), "admin")
+        with patch.object(presence_module, "_admin", return_value=False), \
+                patch.object(presence_module, "_kiosk", return_value=True), \
+                patch.object(presence_module, "env_get", return_value="1"):
+            self.assertEqual(probe_kind(https_request()), "kiosk")
+        with patch.object(presence_module, "_admin", return_value=True), \
+                patch.object(presence_module, "env_get", return_value="0"):
+            self.assertIsNone(probe_kind(https_request()))
+
+    def test_kiosk_viewer_needs_kiosk_mode_private_network_and_signed_display_cookie(self):
+        with patch("agenti.desktop.camera_sessions.is_remote_kiosk_camera_enabled", return_value=True), \
+                patch.object(presence_module.auth, "verify", side_effect=lambda value: value == "signed"):
+            self.assertTrue(presence_module._kiosk(self.kiosk_request()))
+            self.assertFalse(presence_module._kiosk(self.kiosk_request("forged")))
+            self.assertFalse(presence_module._kiosk(self.kiosk_request(headers={"x-forwarded-for": "8.8.8.8"})))
+            with patch.object(presence_module, "session_user", return_value=None):
+                self.assertRegex(viewer(self.kiosk_request()), r"^[0-9a-f]{64}$")
+        with patch("agenti.desktop.camera_sessions.is_remote_kiosk_camera_enabled", return_value=False), \
+                patch.object(presence_module.auth, "verify", return_value=True):
+            self.assertFalse(presence_module._kiosk(self.kiosk_request()))
+
+    def test_kiosk_viewers_always_need_a_live_face(self):
+        self.assertEqual(liveness_for("kiosk", "advisory"), "strict")
+        self.assertEqual(liveness_for("admin", "advisory"), "advisory")
 
 
 class RecognizedSnapshotTest(unittest.TestCase):

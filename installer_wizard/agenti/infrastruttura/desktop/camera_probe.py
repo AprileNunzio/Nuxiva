@@ -4,26 +4,26 @@ import httpx
 from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
 
-from access import NO_CACHE, require_admin
-from config import env_get
+from access import NO_CACHE
 from agenti.desktop.camera_sessions import SESSION_HEADER, camera_owner, camera_sessions, require_camera_enabled
-from agenti.desktop.remote_presence import judge, probe_session, remote_presence, viewer
+from agenti.desktop.remote_presence import judge, liveness_for, probe_kind, probe_session, remote_presence, viewer
 from agenti.vision.proxy import VISION_URL
 from agenti.vision.remote_frame import CONTENT_TYPE, read_frame
 
 _probe_slot = asyncio.Lock()
 
 
-def require_probe_enabled() -> None:
+def require_probe_enabled(request: Request) -> str:
     require_camera_enabled()
-    if env_get("NUXIVA_REMOTE_CAMERA_PROBE", "0") != "1":
+    kind = probe_kind(request)
+    if kind is None:
         raise HTTPException(403, "camera.frame.disabled")
+    return kind
 
 
 async def probe_camera(request: Request):
-    require_admin(request)
     owner = camera_owner(request)
-    require_probe_enabled()
+    kind = require_probe_enabled(request)
     token = request.headers.get(SESSION_HEADER, "")
     camera_sessions.admit_frame(token, owner)
     if _probe_slot.locked():
@@ -44,10 +44,10 @@ async def probe_camera(request: Request):
             raise HTTPException(408, "camera.frame.timeout") from exc
         except (httpx.HTTPError, ValueError) as exc:
             raise HTTPException(503, "camera.frame.unavailable") from exc
-    require_probe_enabled()
+    require_probe_enabled(request)
     if camera_owner(request) != owner or not camera_sessions.active(token, owner):
         raise HTTPException(404, "camera.session.expired")
-    verdict = judge(payload, _role(payload), _liveness_mode())
+    verdict = judge(payload, _role(payload), liveness_for(kind, _liveness_mode()))
     return JSONResponse(remote_presence.settle(viewer(request), verdict), headers=NO_CACHE)
 
 

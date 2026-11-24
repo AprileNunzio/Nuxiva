@@ -42,7 +42,7 @@ def is_remote_kiosk_active() -> bool:
 def remote_display_scope(request) -> RemoteScope:
     if is_host_display(request):
         return False
-    if remote_presence.holder(viewer(request)):
+    if remote_presence.occupied() and remote_presence.holder(viewer(request)):
         return "recognized"
     if is_remote_kiosk_active() and is_private(request) and not any(name in request.headers for name in PROXY_HEADERS):
         return False

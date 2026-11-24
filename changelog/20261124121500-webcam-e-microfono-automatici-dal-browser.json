@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Webcam e microfono del browser partono da soli e il riconoscimento funziona anche in modalità kiosk",
+    "en": "Browser webcam and microphone start by themselves and recognition also works in kiosk mode",
+    "fr": "La webcam et le micro du navigateur démarrent seuls et la reconnaissance fonctionne aussi en mode kiosque",
+    "es": "La webcam y el micrófono del navegador arrancan solos y el reconocimiento funciona también en modo kiosco"
+  },
+  "features": [
+    {
+      "it": "Aprendo la pagina da un altro PC, webcam e microfono si attivano da soli; se premi Interrompi, il browser lo ricorda finché non li riattivi.",
+      "en": "When the page is opened from another PC, webcam and microphone turn on by themselves; if you press Stop, the browser remembers it until you turn them on again.",
+      "fr": "En ouvrant la page depuis un autre PC, la webcam et le micro s'activent seuls ; si vous appuyez sur Arrêter, le navigateur s'en souvient jusqu'à ce que vous les réactiviez.",
+      "es": "Al abrir la página desde otro PC, la webcam y el micrófono se activan solos; si pulsas Detener, el navegador lo recuerda hasta que los vuelvas a activar."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il pulsante di verifica restava visibile anche quando il riconoscimento dal browser era spento e diceva sessione scaduta: ora il riconoscimento è attivo di base per gli amministratori e per i browser in modalità kiosk sulla rete locale, che devono girare la testa per provare di essere dal vivo.",
+      "en": "The check button stayed visible even when browser recognition was off and reported an expired session: recognition is now on by default for administrators and for kiosk browsers on the local network, which must turn their head to prove they are live.",
+      "fr": "Le bouton de vérification restait visible même avec la reconnaissance éteinte et annonçait une session expirée : elle est désormais active par défaut pour les administrateurs et les navigateurs en mode kiosque du réseau local, qui doivent tourner la tête pour prouver leur présence.",
+      "es": "El botón de verificación seguía visible aunque el reconocimiento estuviera apagado y decía sesión caducada: ahora está activo por defecto para administradores y navegadores en modo kiosco de la red local, que deben girar la cabeza para probar que están en vivo."
+    }
+  ]
+}

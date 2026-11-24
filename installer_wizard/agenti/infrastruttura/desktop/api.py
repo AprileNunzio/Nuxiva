@@ -5,13 +5,12 @@ from fastapi.responses import FileResponse, JSONResponse
 
 from access import NO_CACHE, is_local, is_private, require_admin, require_display, require_internal, session_user
 from config import env_get
-from agenti.authz.access_control import account, allows
 from agenti.desktop.camera_probe import probe_camera
 from agenti.desktop.camera_sessions import (
     SESSION_HEADER, TTL_SECONDS, camera_owner, camera_sessions, require_camera_enabled,
 )
 from agenti.desktop.desk import FILES, desk
-from agenti.desktop.remote_presence import remote_presence, viewer
+from agenti.desktop.remote_presence import probe_kind, remote_presence, viewer
 from agenti.desktop.sources import PROVIDERS, SOURCES
 from agenti.music import karaoke as music_karaoke, music
 from agenti.nodes.display_link import display_node
@@ -29,8 +28,7 @@ async def remote_media(request: Request):
     kiosk_active = is_remote_kiosk_active() and is_private(request)
     authorized = (request.url.scheme == "https" and bool(user or display_node(request))) or kiosk_active
     camera = (authorized and (kiosk_active or env_get("NUXIVA_REMOTE_CAMERA_PREVIEW", "0") == "1"))
-    probe = bool(camera and user and env_get("NUXIVA_REMOTE_CAMERA_PROBE", "0") == "1"
-                 and allows(account(user)["role"], "api.admin"))
+    probe = bool(camera and probe_kind(request))
     microphone = (authorized and (kiosk_active or env_get("NUXIVA_REMOTE_MIC_INPUT", "0") == "1"))
     return JSONResponse({
         "camera_preview": camera,

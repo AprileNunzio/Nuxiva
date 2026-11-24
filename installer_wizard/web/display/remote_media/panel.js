@@ -13,6 +13,38 @@
   const Probe = window.NuxivaRemoteProbe;
   const AUTO_PROBE_MS = 2500;
   const STOP_STATUSES = new Set([401, 403, 404]);
+  const AUTO_KEY = "nuxiva.remote_media.auto";
+  let autoStarted = false;
+
+  function autoWanted() {
+    try {
+      return localStorage.getItem(AUTO_KEY) !== "off";
+    } catch (error) {
+      console.warn("remote_media_auto_read", error.name);
+      return true;
+    }
+  }
+
+  function rememberAuto(enabled) {
+    try {
+      localStorage.setItem(AUTO_KEY, enabled ? "on" : "off");
+    } catch (error) {
+      console.warn("remote_media_auto_write", error.name);
+    }
+  }
+
+  function autoStart(policy) {
+    if (autoStarted || (!policy.camera_preview && !policy.microphone)) return;
+    autoStarted = true;
+    if (!autoWanted()) return;
+    if (policy.camera_preview) {
+      panel.open = true;
+      openCamera();
+    }
+    if (policy.microphone) {
+      D.Ear.enableRemote().catch((error) => console.warn("remote_media_auto_mic", error.name));
+    }
+  }
 
   function cameraSession(method, token, signal) {
     const headers = { "X-Nuxiva-Request": "1" };
@@ -58,6 +90,7 @@
     camera.hidden = !policy.camera_preview;
     probe.hidden = !policy.camera_probe || !stream;
     microphone.hidden = !policy.microphone;
+    autoStart(policy);
   }
 
   async function refresh() {
@@ -135,7 +168,11 @@
   }
 
   async function runProbe(manual) {
-    if (!lease || !D.remoteMedia?.camera_probe) {
+    if (!D.remoteMedia?.camera_probe) {
+      if (manual) PageText.bind(status, "remote_media_probe_error_disabled");
+      return;
+    }
+    if (!lease) {
       if (manual) PageText.bind(status, "remote_media_probe_error_session");
       return;
     }
@@ -167,7 +204,10 @@
     }
   }
 
-  camera.addEventListener("click", openCamera);
+  camera.addEventListener("click", () => {
+    rememberAuto(true);
+    openCamera();
+  });
   probe.addEventListener("click", () => runProbe(true));
   D.openRemoteCamera = () => {
     panel.open = true;
@@ -175,6 +215,7 @@
   };
 
   microphone.addEventListener("click", async () => {
+    rememberAuto(true);
     microphone.disabled = true;
     try {
       if (await D.Ear.enableRemote()) PageText.bind(status, "remote_media_mic_active");
@@ -185,6 +226,7 @@
   });
 
   document.getElementById("remote-media-stop").addEventListener("click", () => {
+    rememberAuto(false);
     stopCamera();
     D.Ear.disableRemote();
     PageText.plain(status, "");
