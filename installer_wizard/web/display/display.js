@@ -199,6 +199,7 @@
     if (window.NuxivaParticles) window.NuxivaParticles.update(s.particles, 0);
     if (D.Director) D.Director.poke();
     if (D.Sounds) { D.Sounds.update(s.sounds); D.Sounds.desk(s.desk); }
+    if (D.screenshotNotice) D.screenshotNotice(s.screenshot);
   function renderUpdateProgress(s) {
     if (window.NuxivaUpdateScreen) window.NuxivaUpdateScreen.render(s);
   }

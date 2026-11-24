@@ -17,5 +17,16 @@
     "NUXIVA_SCREENSHOT_BLOCK_LOCKED": "Non catturare con lo schermo bloccato",
     "NUXIVA_SCREENSHOT_BLOCK_GUESTS": "Non catturare quando ci sono ospiti presenti",
     "NUXIVA_SCREENSHOT_NOTICE": "Mostra una notifica a ogni cattura"
+  },
+  "screenshot_voice": {
+    "saved": "Fatto: screenshot salvato in {folder}",
+    "queued": "Ho fatto lo screenshot ma la cartella condivisa {folder} non risponde: lo tengo in coda e lo invio da solo",
+    "blocked": "Non ho fatto lo screenshot: lo blocca la privacy, schermo bloccato o ospiti presenti",
+    "failed": "Lo screenshot non è riuscito: lo schermo non si lascia catturare",
+    "disabled": "Gli screenshot sono spenti: attivali nel pannello Nodi",
+    "no_target": "Non c'è una cartella per gli screenshot: impostala nel pannello Nodi",
+    "remote": "Lo screenshot a voce lo faccio sul display di questo server; sugli altri PC premi Stamp",
+    "service": "Il servizio screenshot non è attivo su questo server: si avvia con il prossimo aggiornamento",
+    "timeout": "Ho chiesto lo screenshot ma il servizio non ha risposto in tempo"
   }
 }

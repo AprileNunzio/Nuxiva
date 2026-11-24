@@ -17,5 +17,16 @@
     "NUXIVA_SCREENSHOT_BLOCK_LOCKED": "Do not capture while the screen is locked",
     "NUXIVA_SCREENSHOT_BLOCK_GUESTS": "Do not capture while guests are present",
     "NUXIVA_SCREENSHOT_NOTICE": "Show a notification on every capture"
+  },
+  "screenshot_voice": {
+    "saved": "Done: screenshot saved in {folder}",
+    "queued": "I took the screenshot but the shared folder {folder} is not answering: it stays queued and I will send it on my own",
+    "blocked": "I did not take the screenshot: privacy blocks it, the screen is locked or guests are present",
+    "failed": "The screenshot failed: the screen could not be captured",
+    "disabled": "Screenshots are off: turn them on in the Nodes panel",
+    "no_target": "There is no folder for screenshots: set it in the Nodes panel",
+    "remote": "Voice screenshots work on this server's display; on other PCs press Print Screen",
+    "service": "The screenshot service is not running on this server: it starts with the next update",
+    "timeout": "I asked for the screenshot but the service did not answer in time"
   }
 }

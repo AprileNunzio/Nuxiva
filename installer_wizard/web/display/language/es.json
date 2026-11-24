@@ -621,6 +621,14 @@
     "wx_st_out_of_season": "fuera de temporada o zona no cubierta",
     "wx_st_fallback": "inalcanzable, uso el modelo general",
     "rl_via_wifi": "teléfono conectado en casa",
-    "rl_via_camera": "aquí ahora"
+    "rl_via_camera": "aquí ahora",
+    "screenshot_saved": "📸 Captura guardada: {{name}} en {{folder}}",
+    "screenshot_delivered_later": "📸 Red disponible: {{count}} capturas guardadas en {{folder}}",
+    "screenshot_queued": "📸 Carpeta {{folder}} inaccesible: captura en cola, reintento solo",
+    "screenshot_blocked": "📸 Captura no realizada: bloqueada por privacidad",
+    "screenshot_disabled": "📸 Capturas desactivadas: actívalas en el panel Nodos",
+    "screenshot_no_target": "📸 No hay carpeta para capturas: configúrala en el panel Nodos",
+    "screenshot_failed": "📸 Captura fallida: no se pudo capturar la pantalla",
+    "screenshot_service": "📸 Servicio de capturas inactivo en este servidor"
   }
 }

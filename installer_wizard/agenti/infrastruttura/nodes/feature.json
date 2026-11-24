@@ -6,6 +6,8 @@
   "order": 170,
   "panel": "nodes",
   "pinned": true,
+  "connector": "commands.py",
+  "connector_risk": "personal",
   "description": "Il server principale e tutti i nodi di Nuxiva (satelliti audio, display, altri server, microcontrollori): stato in tempo reale, abbinamento sicuro e comandi.",
   "capabilities": [
     "Stato del server principale e dei suoi sottosistemi",

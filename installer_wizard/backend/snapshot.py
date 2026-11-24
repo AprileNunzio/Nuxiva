@@ -135,6 +135,12 @@ def full_snapshot(admin: bool, recognized: bool = False) -> dict:
     snap["face"] = face_options()
     snap["node_faces"] = _node_faces()
     snap["mic_reset"] = getattr(store, "mic_reset", 0)
+    try:
+        from agenti.nodes import screenshot_bridge
+        snap["screenshot"] = screenshot_bridge.latest()
+    except OSError as exc:
+        _report("screenshot", exc)
+        snap["screenshot"] = None
     snap["now_playing"] = music.watcher.current()
     snap["home"] = home.brain.brief()
     snap["selftest"] = getattr(store, "selftest", None)

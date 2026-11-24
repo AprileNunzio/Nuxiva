@@ -9,6 +9,7 @@ use crate::session::{Kind, Session, valid_display, wayland_socket, xauthority};
 
 const BIN_DIRS: &[&str] = &["/usr/bin", "/usr/local/bin", "/bin"];
 const PATH_VALUE: &str = "/usr/local/bin:/usr/bin:/bin";
+const KIOSK_DISPLAY: &str = ":0";
 const PNG_MAGIC: &[u8] = &[0x89, b'P', b'N', b'G', 0x0d, 0x0a, 0x1a, 0x0a];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -109,9 +110,44 @@ pub fn from_framebuffer() -> Result<Vec<u8>> {
     fb::capture(Path::new("/sys/class/graphics"), Path::new("/dev"), 0)?.encode()
 }
 
+#[must_use]
+pub fn kiosk_session(session: Option<&Session>) -> Session {
+    let base = session.cloned().unwrap_or_else(|| Session {
+        id: String::new(),
+        uid: 0,
+        gid: 0,
+        home: PathBuf::from("/root"),
+        kind: Kind::X11,
+        locked: false,
+        display: None,
+    });
+    Session {
+        kind: Kind::X11,
+        display: Some(KIOSK_DISPLAY.to_owned()),
+        ..base
+    }
+}
+
+#[must_use]
+pub fn candidates(session: Option<&Session>) -> Vec<Session> {
+    let mut out: Vec<Session> = session
+        .filter(|s| matches!(s.kind, Kind::Wayland | Kind::X11))
+        .cloned()
+        .into_iter()
+        .collect();
+    let kiosk = kiosk_session(session.filter(|s| !matches!(s.kind, Kind::Wayland)));
+    if !out.contains(&kiosk) {
+        out.push(kiosk);
+    }
+    if session.is_some_and(|s| s.uid != 0) {
+        out.push(kiosk_session(None));
+    }
+    out
+}
+
 pub fn grab(session: Option<&Session>) -> Result<Vec<u8>> {
-    if let Some(session) = session {
-        if let Ok(bytes) = from_session(session) {
+    for candidate in candidates(session) {
+        if let Ok(bytes) = from_session(&candidate) {
             return Ok(bytes);
         }
     }

@@ -17,5 +17,16 @@
     "NUXIVA_SCREENSHOT_BLOCK_LOCKED": "No capturar con la pantalla bloqueada",
     "NUXIVA_SCREENSHOT_BLOCK_GUESTS": "No capturar con invitados presentes",
     "NUXIVA_SCREENSHOT_NOTICE": "Mostrar una notificación en cada captura"
+  },
+  "screenshot_voice": {
+    "saved": "Hecho: captura guardada en {folder}",
+    "queued": "Hice la captura pero la carpeta compartida {folder} no responde: queda en cola y la envío sola",
+    "blocked": "No hice la captura: la privacidad la bloquea, pantalla bloqueada o invitados presentes",
+    "failed": "La captura falló: no se pudo capturar la pantalla",
+    "disabled": "Las capturas están desactivadas: actívalas en el panel Nodos",
+    "no_target": "No hay carpeta para las capturas: configúrala en el panel Nodos",
+    "remote": "La captura por voz se hace en la pantalla de este servidor; en otros PC pulsa Impr Pant",
+    "service": "El servicio de capturas no está activo en este servidor: arranca con la próxima actualización",
+    "timeout": "Pedí la captura pero el servicio no respondió a tiempo"
   }
 }

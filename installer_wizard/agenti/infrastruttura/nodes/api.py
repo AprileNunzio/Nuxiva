@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse
 from state import store
 from config import PUBLIC_PORT
 
-from agenti.nodes import compute_routes, deviceauth, enroll_routes, esp32_routes, screenshot, sensor_routes, server, sync_routes, trust_routes
+from agenti.nodes import compute_routes, deviceauth, enroll_routes, esp32_routes, screenshot, screenshot_routes, sensor_routes, server, sync_routes, trust_routes
 from agenti.nodes.audit import audit
 from agenti.nodes.beacon import beacon
 from agenti.nodes.requests import requests
@@ -29,6 +29,7 @@ public_routes.include_router(compute_routes.public_routes)
 public_routes.include_router(esp32_routes.public_routes)
 public_routes.include_router(sync_routes.public_routes)
 public_routes.include_router(sensor_routes.public_routes)
+public_routes.include_router(screenshot_routes.public_routes)
 admin_routes.include_router(compute_routes.admin_routes)
 admin_routes.include_router(enroll_routes.admin_routes)
 admin_routes.include_router(esp32_routes.admin_routes)

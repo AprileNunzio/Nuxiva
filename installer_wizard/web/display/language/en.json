@@ -621,6 +621,14 @@
     "wx_st_out_of_season": "out of season or area not covered",
     "wx_st_fallback": "unreachable, using the general model",
     "rl_via_wifi": "phone connected at home",
-    "rl_via_camera": "here now"
+    "rl_via_camera": "here now",
+    "screenshot_saved": "📸 Screenshot saved: {{name}} in {{folder}}",
+    "screenshot_delivered_later": "📸 Network back: {{count}} screenshots saved in {{folder}}",
+    "screenshot_queued": "📸 Folder {{folder}} unreachable: screenshot queued, retrying on my own",
+    "screenshot_blocked": "📸 Screenshot not taken: blocked for privacy",
+    "screenshot_disabled": "📸 Screenshots are off: turn them on in the Nodes panel",
+    "screenshot_no_target": "📸 No folder for screenshots: set it in the Nodes panel",
+    "screenshot_failed": "📸 Screenshot failed: the screen could not be captured",
+    "screenshot_service": "📸 Screenshot service is not running on this server"
   }
 }

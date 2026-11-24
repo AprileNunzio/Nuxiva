@@ -17,5 +17,16 @@
     "NUXIVA_SCREENSHOT_BLOCK_LOCKED": "Ne pas capturer lorsque l'écran est verrouillé",
     "NUXIVA_SCREENSHOT_BLOCK_GUESTS": "Ne pas capturer en présence d'invités",
     "NUXIVA_SCREENSHOT_NOTICE": "Afficher une notification à chaque capture"
+  },
+  "screenshot_voice": {
+    "saved": "C'est fait : capture enregistrée dans {folder}",
+    "queued": "J'ai pris la capture mais le dossier partagé {folder} ne répond pas : elle reste en file et je l'envoie tout seul",
+    "blocked": "Je n'ai pas pris la capture : la confidentialité la bloque, écran verrouillé ou invités présents",
+    "failed": "La capture a échoué : l'écran ne peut pas être capturé",
+    "disabled": "Les captures sont désactivées : activez-les dans le panneau Nœuds",
+    "no_target": "Aucun dossier pour les captures : définissez-le dans le panneau Nœuds",
+    "remote": "La capture à la voix se fait sur l'écran de ce serveur ; sur les autres PC appuyez sur Impr écran",
+    "service": "Le service de capture n'est pas actif sur ce serveur : il démarre avec la prochaine mise à jour",
+    "timeout": "J'ai demandé la capture mais le service n'a pas répondu à temps"
   }
 }

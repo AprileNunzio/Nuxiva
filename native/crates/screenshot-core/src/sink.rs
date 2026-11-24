@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::time::Duration;
 
-use crate::config::{Config, SMB_AUTH_FILE, Target};
+use crate::config::{Config, Target};
 use crate::error::{Error, Result};
 use crate::naming::{is_managed, stamp_secs};
 use crate::pathguard::{ALLOWED_ROOTS, resolve_dir_in};
@@ -141,12 +141,12 @@ const SMB_TIMEOUT: Duration = Duration::from_mins(1);
 
 impl SmbSink {
     #[must_use]
-    pub fn new(host: String, share: String, subdir: String) -> Self {
+    pub fn new(host: String, share: String, subdir: String, auth: PathBuf) -> Self {
         Self {
             host,
             share,
             subdir,
-            auth: PathBuf::from(SMB_AUTH_FILE),
+            auth,
         }
     }
 
@@ -256,6 +256,7 @@ pub fn build(config: &Config) -> Option<Box<dyn Sink>> {
             host.clone(),
             share.clone(),
             config.subdir.clone(),
+            config.smb_auth.clone(),
         ))),
     }
 }

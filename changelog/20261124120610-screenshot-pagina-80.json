@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Screenshot con Stamp e a voce anche dalla pagina 80 di server e nodi",
+    "en": "Print Screen and voice screenshots also from page 80 on servers and nodes",
+    "fr": "Captures avec Impr écran et à la voix aussi depuis la page 80 des serveurs et nœuds",
+    "es": "Capturas con Impr Pant y por voz también desde la página 80 de servidores y nodos"
+  },
+  "features": [
+    {
+      "it": "Davanti al display dite «fai uno screenshot di quello che vedi»: Nuxiva cattura lo schermo, lo salva nella cartella condivisa e vi dice dove l'ha messo o perché non ha potuto.",
+      "en": "In front of the display say «take a screenshot of what you see»: Nuxiva captures the screen, saves it to the shared folder and tells you where it went or why it could not.",
+      "fr": "Devant l'écran dites « fais une capture d'écran de ce que tu vois » : Nuxiva capture l'écran, l'enregistre dans le dossier partagé et vous dit où elle est ou pourquoi elle n'a pas pu.",
+      "es": "Delante de la pantalla di «haz una captura de pantalla de lo que ves»: Nuxiva captura la pantalla, la guarda en la carpeta compartida y te dice dónde está o por qué no pudo."
+    },
+    {
+      "it": "Ogni screenshot mostra sulla pagina 80 un avviso con esito, nome del file e cartella; se la rete manca resta in coda e vi avvisa quando arriva.",
+      "en": "Every screenshot shows a notice on page 80 with the result, file name and folder; without network it waits in a queue and tells you when it arrives.",
+      "fr": "Chaque capture affiche sur la page 80 un avis avec le résultat, le nom du fichier et le dossier ; sans réseau elle attend en file et vous prévient à son arrivée.",
+      "es": "Cada captura muestra en la página 80 un aviso con el resultado, el nombre del archivo y la carpeta; sin red espera en cola y te avisa cuando llega."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il tasto Stamp sui server e sui nodi con la pagina 80 ora salva davvero l'immagine dello schermo: il servizio è attivo di default e cattura la sessione del display invece di una schermata vuota.",
+      "en": "The Print Screen key on servers and nodes with page 80 now really saves the screen image: the service is on by default and captures the display session instead of a blank frame.",
+      "fr": "La touche Impr écran sur les serveurs et nœuds avec la page 80 enregistre maintenant vraiment l'image de l'écran : le service est actif par défaut et capture la session de l'écran au lieu d'une image vide.",
+      "es": "La tecla Impr Pant en servidores y nodos con la página 80 ahora guarda de verdad la imagen de la pantalla: el servicio está activo por defecto y captura la sesión de la pantalla en lugar de una imagen vacía."
+    }
+  ]
+}

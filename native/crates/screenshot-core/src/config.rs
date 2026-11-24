@@ -63,6 +63,7 @@ pub struct Config {
     pub lang: String,
     pub spool: PathBuf,
     pub guest_flag: PathBuf,
+    pub smb_auth: PathBuf,
 }
 
 impl Default for Config {
@@ -79,6 +80,7 @@ impl Default for Config {
             lang: "it".to_owned(),
             spool: PathBuf::from(DEFAULT_SPOOL),
             guest_flag: PathBuf::from(DEFAULT_GUEST_FLAG),
+            smb_auth: PathBuf::from(SMB_AUTH_FILE),
         }
     }
 }
@@ -110,7 +112,7 @@ impl Config {
         if !matches!(self.lang.as_str(), "it" | "en" | "fr" | "es") {
             return Err(Error::Config("lang"));
         }
-        for path in [&self.spool, &self.guest_flag] {
+        for path in [&self.spool, &self.guest_flag, &self.smb_auth] {
             if !path.is_absolute() || path.components().any(|c| c.as_os_str() == "..") {
                 return Err(Error::Config("path"));
             }
@@ -148,7 +150,7 @@ impl Config {
             _ => default,
         };
         let mut config = Self {
-            enabled: flag("NUXIVA_SCREENSHOT", false),
+            enabled: flag("NUXIVA_SCREENSHOT", get("NUXIVA_SHARES") != "0"),
             block_locked: flag("NUXIVA_SCREENSHOT_BLOCK_LOCKED", true),
             block_guests: flag("NUXIVA_SCREENSHOT_BLOCK_GUESTS", true),
             notice: flag("NUXIVA_SCREENSHOT_NOTICE", true),
@@ -233,7 +235,9 @@ pub fn parse_env_text(text: &str) -> HashMap<String, String> {
         .filter(|l| !l.starts_with('#'))
         .filter_map(|l| l.strip_prefix("export ").or(Some(l)))
         .filter_map(|l| l.split_once('='))
-        .filter(|(k, _)| k.starts_with("NUXIVA_SCREENSHOT") || *k == "NUXIVA_UI_LANG")
+        .filter(|(k, _)| {
+            k.starts_with("NUXIVA_SCREENSHOT") || *k == "NUXIVA_UI_LANG" || *k == "NUXIVA_SHARES"
+        })
         .map(|(k, v)| {
             let v = v.trim();
             let v = v
