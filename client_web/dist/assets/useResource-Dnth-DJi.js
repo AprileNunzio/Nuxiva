@@ -1,0 +1,1 @@
+import"./useResource-CGHJSIzJ.js";
