@@ -75,6 +75,16 @@ class Interface:
         self.panel.place(self.orb.x, self.orb.y, self.orb.size)
         self.panel.show(focus)
 
+    def hide_panel(self) -> None:
+        if self.panel.visible:
+            self.panel.hide()
+            self.root.update_idletasks()
+
+    def toast(self, text: str, tone: str = "ok") -> None:
+        self.show_panel()
+        self.panel.last_activity = time.time()
+        self.panel.note(text, {"ok": theme.GREEN, "warn": theme.AMBER, "error": theme.RED}.get(tone, theme.DIM))
+
     def toggle_panel(self) -> None:
         if self.panel.visible:
             self.panel.hide()

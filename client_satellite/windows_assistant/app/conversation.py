@@ -3,6 +3,7 @@ import getpass
 import logging
 import socket
 import threading
+import time
 import uuid
 
 from actions.executor import Executor
@@ -10,6 +11,7 @@ from app import report
 from connection import tls
 from connection.client import Client, ServerError, Unauthorized
 from i18n.strings import t
+from intents import screenshot as shot
 from intents import senses, site
 from permissions.gate import Denied, Gate, Request
 from permissions.policy import Policy
@@ -18,13 +20,15 @@ from senses.windows import Focus
 
 log = logging.getLogger("nuxiva.conversation")
 MAX_ROUNDS = 4
+HIDE_DELAY = 0.35
 TEXT_MIN = 120
 
 
 class Conversation:
     def __init__(self, client: Client, executor: Executor, gate: Gate, policy: Policy, focus: Focus, ui, voice,
-                 environment, backend=None) -> None:
+                 environment, backend=None, screenshots=None) -> None:
         self.backend = backend or client
+        self.screenshots = screenshots
         self.client, self.executor, self.gate, self.policy = client, executor, gate, policy
         self.focus, self.ui, self.voice, self.environment = focus, ui, voice, environment
         self.busy = threading.Lock()
@@ -141,13 +145,27 @@ class Conversation:
         self._execute([action], executed)
         return {"reply": "", "lang": body.get("lang") or None}
 
+    def _screenshot(self, text: str, lang: str | None) -> dict:
+        self.ui.dispatch.call(self.ui.hide_panel)
+        time.sleep(HIDE_DELAY)
+        outcome = self.screenshots.shoot()
+        message = self.screenshots.message(outcome)
+        self._post(self.ui.show_panel)
+        self._post(self.ui.say, "user", text)
+        log.info("Intento diretto: screenshot (%s)", outcome.status)
+        if outcome.status == "delivered":
+            return {"reply": t("screenshot.voice_saved"), "show": message, "lang": lang or None}
+        return {"reply": message, "lang": lang or None}
+
     def _ask(self, text: str, lang: str | None, spoken: bool) -> None:
         with self.busy:
             with self._turn_lock:
                 self._cancelled = False
-            self._post(self.ui.show_panel)
-            self._post(self.ui.say, "user", text)
-            self._post(self.ui.set_state, "thinking")
+            wants_shot = self.screenshots is not None and shot.asks(text)
+            if not wants_shot:
+                self._post(self.ui.show_panel)
+                self._post(self.ui.say, "user", text)
+                self._post(self.ui.set_state, "thinking")
             body = self._body(text, lang)
             if spoken and hasattr(self.voice, "recent_audio_pcm16_b64"):
                 audio_b64 = self.voice.recent_audio_pcm16_b64()
@@ -156,7 +174,7 @@ class Conversation:
                     body["audio_sample_rate"] = 16000
             executed: list[dict] = []
             try:
-                result = self._direct(text, body, executed)
+                result = self._screenshot(text, lang) if wants_shot else self._direct(text, body, executed)
                 if result is None:
                     if senses.asks_webcam(text):
                         self._capture("webcam", body)

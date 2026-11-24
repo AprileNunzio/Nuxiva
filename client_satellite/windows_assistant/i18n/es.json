@@ -65,10 +65,10 @@
   "startup.assets_missing": "Faltan archivos de la interfaz en la instalación: {files}. Reinstala Nuxiva con el último instalador.",
   "startup.toolkit_failed": "No se pudo iniciar la interfaz gráfica: {reason}. Reinstala Nuxiva con el último instalador.",
   "startup.bundle_unreadable": "Windows impidió que Nuxiva leyera sus propios archivos ({path}). Normalmente es un antivirus que los bloqueó o puso en cuarentena: restáuralos, o reinstala Nuxiva con el último instalador.",
-  "screenshot.saved": "Captura guardada en la carpeta compartida",
-  "screenshot.queued": "Recurso inaccesible: se reintentará",
-  "screenshot.blocked": "Captura no realizada: bloqueada por privacidad",
-  "screenshot.failed": "Captura de pantalla fallida",
+  "screenshot.saved": "Captura guardada: {name} en {folder}",
+  "screenshot.queued": "Carpeta compartida {folder} inaccesible: captura en cola, lo reintento solo",
+  "screenshot.blocked": "Captura no realizada: bloqueada por privacidad (pantalla bloqueada o invitados presentes)",
+  "screenshot.failed": "Captura fallida: {reason}",
   "net.timeout": "NUXIVA en {host}:{port} no responde (tiempo agotado). Causas probables: el servidor está apagado o cambió de dirección IP, este PC está en otra red (VPN, Wi-Fi de invitados) o el cortafuegos del servidor bloquea el puerto {port}. Prueba en PowerShell: Test-NetConnection {host} -Port {port}",
   "net.refused": "NUXIVA en {host}:{port} rechazó la conexión: el equipo está encendido pero nada escucha en ese puerto. Comprueba que NUXIVA esté en marcha en el servidor y que la dirección y el puerto sean correctos.",
   "net.unreachable": "No hay ruta de red hacia {host}:{port}. Comprueba que este PC esté en la misma red que el servidor (cable, Wi-Fi o VPN).",
@@ -157,5 +157,11 @@
   "assist.denied": "No puedo: {reason}. Puedes cambiarlo en Permisos.",
   "assist.failed": "No lo he conseguido: {reason}",
   "assist.unexpected": "No pude completar la solicitud: {reason}",
-  "assist.nothing_to_add": "He procesado la solicitud, pero no tengo nada que añadir."
+  "assist.nothing_to_add": "He procesado la solicitud, pero no tengo nada que añadir.",
+  "screenshot.auth_failed": "Acceso denegado a {folder}: revisa el usuario y la contraseña SMB. La captura sigue en cola",
+  "screenshot.no_target": "No hay carpeta SMB para las capturas: configúrala en el panel Nodos del servidor",
+  "screenshot.disabled": "Las capturas están desactivadas en este PC: actívalas en el panel Nodos del servidor",
+  "screenshot.hotkey_unavailable": "No puedo interceptar la tecla Impr Pant en este PC: puedes decir «haz una captura de pantalla»",
+  "screenshot.delivered_later": "Red de nuevo disponible: {count} capturas en cola guardadas en {folder}",
+  "screenshot.voice_saved": "Hecho: captura guardada en la carpeta compartida"
 }

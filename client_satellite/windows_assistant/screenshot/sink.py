@@ -10,6 +10,14 @@ class SinkError(Exception):
     pass
 
 
+class AuthError(SinkError):
+    pass
+
+
+class UnreachableError(SinkError):
+    pass
+
+
 def unc_root(config: rules.Config) -> Path:
     if config.drive:
         return Path(config.drive + "\\")

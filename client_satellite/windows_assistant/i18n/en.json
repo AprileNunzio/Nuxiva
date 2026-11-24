@@ -65,10 +65,10 @@
   "startup.assets_missing": "Interface files are missing from the installation: {files}. Reinstall Nuxiva with the latest installer.",
   "startup.toolkit_failed": "The graphical interface could not start: {reason}. Reinstall Nuxiva with the latest installer.",
   "startup.bundle_unreadable": "Windows prevented Nuxiva from reading its own files ({path}). This is usually an antivirus that blocked or quarantined them: restore them, or reinstall Nuxiva with the latest installer.",
-  "screenshot.saved": "Screenshot saved to the shared folder",
-  "screenshot.queued": "Share unreachable: will retry",
-  "screenshot.blocked": "Screenshot not taken: blocked by privacy policy",
-  "screenshot.failed": "Screenshot failed",
+  "screenshot.saved": "Screenshot saved: {name} in {folder}",
+  "screenshot.queued": "Shared folder {folder} unreachable: screenshot queued, I will retry on my own",
+  "screenshot.blocked": "Screenshot not taken: blocked for privacy (screen locked or guests present)",
+  "screenshot.failed": "Screenshot failed: {reason}",
   "net.timeout": "NUXIVA at {host}:{port} is not answering (timed out). Most likely causes: the server is off or changed IP address, this PC is on another network (VPN, guest Wi-Fi), or the server firewall blocks port {port}. Try in PowerShell: Test-NetConnection {host} -Port {port}",
   "net.refused": "NUXIVA at {host}:{port} refused the connection: the computer is on but nothing listens on that port. Check that NUXIVA is running on the server and that the address and port are correct.",
   "net.unreachable": "No network path to {host}:{port}. Check that this PC is on the same network as the server (cable, Wi-Fi or VPN).",
@@ -157,5 +157,11 @@
   "assist.denied": "I can't: {reason}. You can change it in Permissions.",
   "assist.failed": "I couldn't do it: {reason}",
   "assist.unexpected": "I couldn't complete the request: {reason}",
-  "assist.nothing_to_add": "I processed the request, but I have nothing to add."
+  "assist.nothing_to_add": "I processed the request, but I have nothing to add.",
+  "screenshot.auth_failed": "Access denied to {folder}: check the SMB user and password. The screenshot stays queued",
+  "screenshot.no_target": "No SMB folder set for screenshots: set it in the server's Nodes panel",
+  "screenshot.disabled": "Screenshots are off for this PC: turn them on in the server's Nodes panel",
+  "screenshot.hotkey_unavailable": "I cannot catch the Print Screen key on this PC: you can say «take a screenshot»",
+  "screenshot.delivered_later": "Network back: {count} queued screenshots saved in {folder}",
+  "screenshot.voice_saved": "Done: screenshot saved to the shared folder"
 }

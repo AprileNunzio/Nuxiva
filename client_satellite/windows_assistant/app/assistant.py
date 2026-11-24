@@ -38,6 +38,8 @@ from permissions import os_access
 from permissions.catalog import Level
 from permissions.gate import Gate
 from permissions.policy import Policy
+from screenshot import clipboard, smbauth
+from screenshot.credentials import Vault as ScreenshotVault
 from screenshot.hotkey import PrintScreenHotkey
 from screenshot.service import Service as Screenshots
 from senses import places
@@ -90,8 +92,10 @@ class Assistant:
         self.backup = BackupScheduler(cfg, self.snapshots, lambda text: self.ui.dispatch.post(self.ui.note, text))
         self.doc_sync = DocumentsSync(self.client, cfg, lambda text: self.ui.dispatch.post(self.ui.note, text))
         self.updater = Updater(lambda text: self.ui.dispatch.post(self.ui.note, text), self.quit)
-        self.screenshots = Screenshots(paths.DATA_DIR / "screenshot-spool", lambda text: self.ui.dispatch.post(self.ui.note, text), t,
-                                       hotkey_factory=PrintScreenHotkey)
+        self.screenshots = Screenshots(paths.DATA_DIR / "screenshot-spool", lambda text, tone: self.ui.dispatch.post(self.ui.toast, text, tone),
+                                       t, hotkey_factory=PrintScreenHotkey, clipboard=clipboard.copy, connect=smbauth.connect,
+                                       vault=ScreenshotVault(paths.DATA_DIR / "screenshot-smb.bin", protect.seal, protect.unseal))
+        self.conversation.screenshots = self.screenshots
         self.hotkeys: list = []
         if self.policy.tampered:
             self.ui.alert("⚠ Il file dei permessi era stato modificato fuori da NUXIVA: ho ripristinato i valori sicuri.")
@@ -123,7 +127,7 @@ class Assistant:
 
     def _on_reply(self, reply: dict) -> None:
         if isinstance(reply.get("settings"), dict):
-            self.screenshots.apply(reply["settings"])
+            self.screenshots.apply(reply["settings"], reply.get("screenshot_auth") if isinstance(reply.get("screenshot_auth"), dict) else None)
         if isinstance(reply.get("sync"), dict):
             self.doc_sync.apply_config(reply["sync"])
         self._agent_named(agent_name.clean(reply.get("assistant_name")))

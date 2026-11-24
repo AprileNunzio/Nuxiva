@@ -177,6 +177,8 @@ EDITABLE_KEYS = {
     "NUXIVA_SCREENSHOT_BLOCK_LOCKED": "Non catturare con lo schermo bloccato",
     "NUXIVA_SCREENSHOT_BLOCK_GUESTS": "Non catturare quando ci sono ospiti presenti",
     "NUXIVA_SCREENSHOT_NOTICE": "Mostra una notifica a ogni cattura",
+    "NUXIVA_SCREENSHOT_SMB_USER": "Utente SMB per una destinazione smb:// diversa dal server (vuoto = utente nuxiva-share del server)",
+    "NUXIVA_SCREENSHOT_SMB_PASSWORD": "Password SMB per una destinazione smb:// diversa dal server (cifrata sul PC, mai nei registri)",
     "NUXIVA_SMB_PASSWORD": "Password dell'utente nuxiva-share per la cartella condivisa",
     "NUXIVA_AUTONOMY": "Autonomia: compiti programmati, autopilota (diagnosi, studio, riepilogo serale) e approvazioni (1/0)",
     "NUXIVA_WELCOME": "Quando ti riconosce mostra meteo, promemoria e riepilogo Google nei widget (1/0)",

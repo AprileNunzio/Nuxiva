@@ -15,7 +15,7 @@ WHEN = datetime(2026, 11, 14, 19, 20, 0, tzinfo=timezone.utc)
 class RulesTest(unittest.TestCase):
     def test_file_name_has_host_date_and_time(self):
         name = rules.file_name("PC Cucina!", WHEN, 7)
-        self.assertEqual(name, "pc-cucina_20261114-192000_007.png")
+        self.assertEqual(name, f"pc-cucina_{WHEN.astimezone():%Y%m%d-%H%M%S}_007.png")
         self.assertTrue(rules.is_managed(name))
         self.assertEqual(rules.stamp(name), WHEN.timestamp())
         self.assertEqual(rules.host_label("../../x"), "x")
@@ -46,7 +46,9 @@ class RulesTest(unittest.TestCase):
         self.assertEqual(len(config.masks), 1)
         self.assertEqual((config.days, config.block_guests, config.block_locked, config.lang), (7, False, True, "fr"))
         self.assertEqual(rules.from_settings({"NUXIVA_SCREENSHOT": "1", "NUXIVA_SCREENSHOT_SUBDIR": "../x"}), rules.Config())
-        self.assertFalse(rules.from_settings({}).enabled)
+        self.assertTrue(rules.from_settings({}).enabled)
+        self.assertFalse(rules.from_settings({}).active)
+        self.assertFalse(rules.from_settings({"NUXIVA_SCREENSHOT": "0"}).enabled)
 
     def test_retention(self):
         now = WHEN.timestamp()
@@ -129,7 +131,7 @@ class SpoolTest(unittest.TestCase):
 class ServiceTest(unittest.TestCase):
     def make(self, tmp, **settings):
         notes = []
-        service = Service(Path(tmp) / "q", notes.append, lambda key: key, Path(tmp) / "guests")
+        service = Service(Path(tmp) / "q", lambda text, tone: notes.append(text), lambda key, **values: key, Path(tmp) / "guests")
         base = {"NUXIVA_SCREENSHOT": "1", "NUXIVA_SCREENSHOT_TARGET": "z:\\"}
         service.apply({**base, **settings})
         return service, notes
@@ -144,11 +146,13 @@ class ServiceTest(unittest.TestCase):
                 grab.assert_not_called()
             self.assertEqual(notes, ["screenshot.blocked", "screenshot.blocked"])
 
-    def test_disabled_is_silent(self):
+    def test_disabled_and_missing_target_are_explained(self):
         with tempfile.TemporaryDirectory() as tmp:
             service, notes = self.make(tmp, NUXIVA_SCREENSHOT="0")
             self.assertEqual(service.capture_once(locked=False), "disabled")
-            self.assertEqual(notes, [])
+            service.apply({"NUXIVA_SCREENSHOT": "1"})
+            self.assertEqual(service.capture_once(locked=False), "no_target")
+            self.assertEqual(notes, ["screenshot.disabled", "screenshot.no_target"])
 
     def test_capture_goes_to_the_queue_when_the_share_is_down(self):
         from PIL import Image

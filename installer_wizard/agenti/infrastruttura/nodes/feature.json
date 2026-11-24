@@ -26,7 +26,7 @@
       "key": "NUXIVA_SCREENSHOT",
       "label": "Screenshot con il tasto Stamp, salvato nella cartella condivisa (solo quel tasto viene letto)",
       "type": "select",
-      "default": "0",
+      "default": "1",
       "options": [
         {
           "value": "1",

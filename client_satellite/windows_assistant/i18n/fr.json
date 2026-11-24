@@ -65,10 +65,10 @@
   "startup.assets_missing": "Fichiers d'interface manquants dans l'installation : {files}. Réinstallez Nuxiva avec le dernier programme d'installation.",
   "startup.toolkit_failed": "Impossible de démarrer l'interface graphique : {reason}. Réinstallez Nuxiva avec le dernier programme d'installation.",
   "startup.bundle_unreadable": "Windows a empêché Nuxiva de lire ses propres fichiers ({path}). C'est généralement un antivirus qui les a bloqués ou mis en quarantaine : restaurez-les, ou réinstallez Nuxiva avec le dernier programme d'installation.",
-  "screenshot.saved": "Capture enregistrée dans le dossier partagé",
-  "screenshot.queued": "Partage injoignable : nouvelle tentative",
-  "screenshot.blocked": "Capture non effectuée : bloquée par la confidentialité",
-  "screenshot.failed": "Échec de la capture d'écran",
+  "screenshot.saved": "Capture d'écran enregistrée : {name} dans {folder}",
+  "screenshot.queued": "Dossier partagé {folder} injoignable : capture en file d'attente, je réessaie tout seul",
+  "screenshot.blocked": "Capture non effectuée : bloquée pour la confidentialité (écran verrouillé ou invités présents)",
+  "screenshot.failed": "Capture d'écran échouée : {reason}",
   "net.timeout": "NUXIVA sur {host}:{port} ne répond pas (délai dépassé). Causes probables : le serveur est éteint ou a changé d'adresse IP, ce PC est sur un autre réseau (VPN, Wi-Fi invité), le pare-feu du serveur bloque le port {port}. Essayez dans PowerShell : Test-NetConnection {host} -Port {port}",
   "net.refused": "NUXIVA sur {host}:{port} a refusé la connexion : l'ordinateur est allumé mais rien n'écoute sur ce port. Vérifiez que NUXIVA est démarré sur le serveur et que l'adresse et le port sont corrects.",
   "net.unreachable": "Aucun chemin réseau vers {host}:{port}. Vérifiez que ce PC est sur le même réseau que le serveur (câble, Wi-Fi ou VPN).",
@@ -157,5 +157,11 @@
   "assist.denied": "Je ne peux pas : {reason}. Vous pouvez le modifier dans Autorisations.",
   "assist.failed": "Je n'y suis pas arrivée : {reason}",
   "assist.unexpected": "Je n'ai pas pu terminer la demande : {reason}",
-  "assist.nothing_to_add": "J'ai traité la demande, mais je n'ai rien à ajouter."
+  "assist.nothing_to_add": "J'ai traité la demande, mais je n'ai rien à ajouter.",
+  "screenshot.auth_failed": "Accès refusé à {folder} : vérifiez l'utilisateur et le mot de passe SMB. La capture reste en file d'attente",
+  "screenshot.no_target": "Aucun dossier SMB défini pour les captures : définissez-le dans le panneau Nœuds du serveur",
+  "screenshot.disabled": "Les captures sont désactivées pour ce PC : activez-les dans le panneau Nœuds du serveur",
+  "screenshot.hotkey_unavailable": "Je ne peux pas intercepter la touche Impr écran sur ce PC : dites « fais une capture d'écran »",
+  "screenshot.delivered_later": "Réseau revenu : {count} captures en attente enregistrées dans {folder}",
+  "screenshot.voice_saved": "C'est fait : capture enregistrée dans le dossier partagé"
 }

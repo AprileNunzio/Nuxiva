@@ -1,6 +1,6 @@
 import re
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 
 SUFFIX = ".png"
 MAX_HOST = 40
@@ -52,7 +52,7 @@ def host_label(raw: str) -> str:
 
 
 def file_name(host: str, when: datetime, seq: int) -> str:
-    return f"{host_label(host)}_{when.astimezone(timezone.utc):%Y%m%d-%H%M%S}_{seq % 1000:03d}{SUFFIX}"
+    return f"{host_label(host)}_{when.astimezone():%Y%m%d-%H%M%S}_{seq % 1000:03d}{SUFFIX}"
 
 
 def is_managed(name: str) -> bool:
@@ -63,7 +63,7 @@ def stamp(name: str) -> float | None:
     if not is_managed(name):
         return None
     try:
-        return datetime.strptime(name.rsplit("_", 2)[1], "%Y%m%d-%H%M%S").replace(tzinfo=timezone.utc).timestamp()
+        return datetime.strptime(name.rsplit("_", 2)[1], "%Y%m%d-%H%M%S").timestamp()
     except ValueError:
         return None
 
@@ -118,7 +118,7 @@ def from_settings(settings: dict) -> Config:
     days = get("NUXIVA_SCREENSHOT_RETENTION_DAYS")
     lang = get("NUXIVA_UI_LANG")
     return Config(
-        enabled=flag(get("NUXIVA_SCREENSHOT"), False), host=host, share=share, drive=drive, subdir=subdir,
+        enabled=flag(get("NUXIVA_SCREENSHOT"), True), host=host, share=share, drive=drive, subdir=subdir,
         masks=parse_masks(get("NUXIVA_SCREENSHOT_MASK")), days=int(days) if days.isdigit() and int(days) <= 3650 else 30,
         block_locked=flag(get("NUXIVA_SCREENSHOT_BLOCK_LOCKED"), True),
         block_guests=flag(get("NUXIVA_SCREENSHOT_BLOCK_GUESTS"), True),

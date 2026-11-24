@@ -21,6 +21,7 @@ class Spool:
         self.directory = directory
         self.failures = 0
         self.next_try = 0.0
+        self.last_error: Exception | None = None
 
     def pending(self) -> list:
         items = [(p.name, p.stat().st_size) for p in self.directory.iterdir() if rules.is_managed(p.name) and p.is_file()]
@@ -36,6 +37,9 @@ class Spool:
             (self.directory / items[0][0]).unlink()
         sink.put(self.directory, name, data)
 
+    def ready(self, now: float | None = None) -> bool:
+        return (time.monotonic() if now is None else now) >= self.next_try
+
     def flush(self, target, now: float | None = None) -> tuple:
         now = time.monotonic() if now is None else now
         delivered, failed = 0, False
@@ -45,13 +49,14 @@ class Spool:
             path = self.directory / name
             try:
                 target(name, path.read_bytes())
-            except (sink.SinkError, OSError):
+            except (sink.SinkError, OSError) as exc:
+                self.last_error = exc
                 self.failures += 1
                 self.next_try = now + delay(self.failures - 1)
                 failed = True
                 break
             path.unlink()
             delivered += 1
-            self.failures, self.next_try = 0, 0.0
+            self.failures, self.next_try, self.last_error = 0, 0.0, None
         return delivered, failed
 

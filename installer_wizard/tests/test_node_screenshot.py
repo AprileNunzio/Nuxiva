@@ -27,11 +27,33 @@ class ScreenshotSettingsTests(unittest.TestCase):
     def test_default_target_is_not_applied_when_off_or_set_or_hostile(self):
         off = {"NUXIVA_SCREENSHOT": "0"}
         self.assertIs(screenshot.with_default_target(off, "nas"), off)
+        no_shares = {"NUXIVA_SHARES": "0"}
+        self.assertIs(screenshot.with_default_target(no_shares, "nas"), no_shares)
         custom = {"NUXIVA_SCREENSHOT": "1", "NUXIVA_SCREENSHOT_TARGET": "/mnt/x"}
-        self.assertIs(screenshot.with_default_target(custom, "nas"), custom)
+        self.assertEqual(screenshot.with_default_target(custom, "nas"), custom)
         on = {"NUXIVA_SCREENSHOT": "1"}
         for host in ("", "-oProxy", "a b", "a;b", "a/b", "x" * 300):
-            self.assertIs(screenshot.with_default_target(on, host), on)
+            self.assertEqual(screenshot.with_default_target(on, host), on)
+
+    def test_screenshots_are_on_by_default_when_the_share_exists(self):
+        unset = screenshot.with_default_target({"NUXIVA_SCREENSHOT": ""}, "10.0.0.2")
+        self.assertEqual(unset["NUXIVA_SCREENSHOT"], "1")
+        self.assertEqual(unset["NUXIVA_SCREENSHOT_TARGET"], "smb://10.0.0.2/condivisa")
+
+    def test_server_share_credentials_go_only_with_the_server_target(self):
+        settings = screenshot.with_default_target({}, "nas")
+        env = {"NUXIVA_SMB_PASSWORD": "Batteria-42"}
+        self.assertEqual(screenshot.credentials(settings, "nas", env),
+                         {"target": "smb://nas/condivisa", "user": "nuxiva-share", "password": "Batteria-42"})
+        other = {**settings, "NUXIVA_SCREENSHOT_TARGET": "smb://altro/dati"}
+        self.assertEqual(screenshot.credentials(other, "nas", env), {})
+        custom = {**other, "NUXIVA_SCREENSHOT_SMB_USER": "mario"}
+        self.assertEqual(screenshot.credentials(custom, "nas", {**env, "NUXIVA_SCREENSHOT_SMB_PASSWORD": "Altra-7"}),
+                         {"target": "smb://altro/dati", "user": "mario", "password": "Altra-7"})
+        self.assertEqual(screenshot.credentials({**settings, "NUXIVA_SCREENSHOT": "0"}, "nas", env), {})
+        self.assertEqual(screenshot.credentials(settings, "nas", {"NUXIVA_SMB_PASSWORD": "a\nb"}), {})
+        self.assertEqual(screenshot.credentials({**custom, "NUXIVA_SCREENSHOT_SMB_USER": "a b"}, "nas",
+                                                {"NUXIVA_SCREENSHOT_SMB_PASSWORD": "x"}), {})
 
     def test_every_language_labels_every_key(self):
         feature = json.loads((NODES / "feature.json").read_text(encoding="utf-8"))

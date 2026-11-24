@@ -35,13 +35,19 @@ class Dispatch:
     def post(self, fn, *args):
         fn(*args)
 
+    def call(self, fn, *args):
+        return fn(*args)
+
 
 class UI:
     def __init__(self):
         self.dispatch, self.said, self.notes, self.states = Dispatch(), [], [], []
 
     def show_panel(self):
-        return None
+        self.states.append("shown")
+
+    def hide_panel(self):
+        self.states.append("hidden")
 
     def say(self, who, text, show=None):
         self.said.append((who, text))
@@ -100,11 +106,12 @@ class ConversationFlowTest(unittest.TestCase):
         sys.modules.pop("app.conversation", None)
         self.modules.stop()
 
-    def _run(self, text, backend, executor=None, gate=None):
+    def _run(self, text, backend, executor=None, gate=None, screenshots=None):
         ui, executor, gate = UI(), executor or Executor(), gate or Gate()
         policy = mock.Mock(summary=mock.Mock(return_value={}))
         voice = mock.Mock()
-        conv = self.conversation.Conversation(backend, executor, gate, policy, Focus(), ui, voice, lambda: {})
+        conv = self.conversation.Conversation(backend, executor, gate, policy, Focus(), ui, voice, lambda: {},
+                                              screenshots=screenshots)
         conv.busy = threading.Lock()
         conv._ask(text, "it", False)
         return ui, executor, gate
@@ -117,6 +124,21 @@ class ConversationFlowTest(unittest.TestCase):
         self.capture.webcam_image.assert_not_called()
         self.assertEqual(ui.said[-1], ("nuxiva", t("report.site_opened_in", url="https://nunziotech.com",
                                                     browser="Google Chrome")))
+
+    def test_spoken_screenshot_hides_the_panel_and_saves_without_brain(self):
+        from screenshot.service import Outcome
+        backend = Backend()
+        shots = mock.Mock()
+        shots.shoot.return_value = Outcome("delivered", "screenshot.saved", "ok", {"name": "pc.png", "folder": "\\\\nas"})
+        shots.message.return_value = "salvato"
+        with mock.patch.object(self.conversation, "HIDE_DELAY", 0):
+            ui, executor, gate = self._run("fai uno screenshot di quello che vedi", backend, screenshots=shots)
+        self.assertEqual(backend.bodies, [])
+        self.assertEqual(ui.states[:2], ["hidden", "shown"])
+        shots.shoot.assert_called_once_with()
+        self.capture.window_image.assert_not_called()
+        self.assertEqual(gate.requests, [])
+        self.assertEqual(ui.said[-1], ("nuxiva", t("screenshot.voice_saved")))
 
     def test_model_cannot_open_the_webcam_without_an_explicit_request(self):
         backend = Backend({"need": "webcam", "actions": []})

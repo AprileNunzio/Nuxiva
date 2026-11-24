@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Screenshot con il tasto Stamp o a voce, salvati da soli nella cartella condivisa",
+    "en": "Screenshots with the Print Screen key or by voice, saved automatically to the shared folder",
+    "fr": "Captures d'écran avec la touche Impr écran ou à la voix, enregistrées seules dans le dossier partagé",
+    "es": "Capturas con la tecla Impr Pant o por voz, guardadas solas en la carpeta compartida"
+  },
+  "features": [
+    {
+      "it": "Dì «fai uno screenshot di quello che vedi»: l'assistente Windows nasconde il suo pannello, cattura lo schermo e lo salva nella cartella condivisa con data e ora nel nome.",
+      "en": "Say «take a screenshot of what you see»: the Windows assistant hides its panel, captures the screen and saves it to the shared folder with date and time in the name.",
+      "fr": "Dites « fais une capture d'écran de ce que tu vois » : l'assistant Windows masque son panneau, capture l'écran et l'enregistre dans le dossier partagé avec la date et l'heure dans le nom.",
+      "es": "Di «haz una captura de pantalla de lo que ves»: el asistente de Windows oculta su panel, captura la pantalla y la guarda en la carpeta compartida con fecha y hora en el nombre."
+    },
+    {
+      "it": "Gli screenshot sono attivi di default dove c'è la cartella condivisa; l'accesso protetto da password avviene da solo con credenziali cifrate sul PC e mai scritte nei registri.",
+      "en": "Screenshots are on by default where the shared folder exists; password-protected access happens on its own with credentials encrypted on the PC and never written to logs.",
+      "fr": "Les captures sont actives par défaut là où le dossier partagé existe ; l'accès protégé par mot de passe se fait seul, avec des identifiants chiffrés sur le PC et jamais écrits dans les journaux.",
+      "es": "Las capturas están activas por defecto donde existe la carpeta compartida; el acceso con contraseña se hace solo, con credenciales cifradas en el PC y nunca escritas en los registros."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il tasto Stamp funziona anche con le app in primo piano e lo screenshot resta anche negli appunti; ogni cattura mostra un messaggio chiaro di esito o di errore e, se la rete manca, resta in coda e parte da sola al ritorno.",
+      "en": "The Print Screen key works with apps in the foreground and the screenshot also stays on the clipboard; every capture shows a clear success or error message and, without network, waits in a queue and is sent on its own later.",
+      "fr": "La touche Impr écran fonctionne avec les applications au premier plan et la capture reste aussi dans le presse-papiers ; chaque capture affiche un message clair de réussite ou d'erreur et, sans réseau, attend en file et part seule ensuite.",
+      "es": "La tecla Impr Pant funciona con las apps en primer plano y la captura queda también en el portapapeles; cada captura muestra un mensaje claro de éxito o error y, sin red, espera en cola y se envía sola después."
+    }
+  ]
+}

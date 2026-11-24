@@ -97,9 +97,11 @@ async def node_heartbeat(request: Request):
         "folder": "Nuxiva",
         "smb_path": f"\\\\{request.url.hostname or 'NUXIVA'}\\condivisa\\persone\\{person_slug}",
     }
+    host = request.url.hostname or ""
+    settings = screenshot.with_default_target(registry.effective(node["id"]), host)
     return {"commands": commands, "actions": inbox.take(node["id"]), "heartbeat": 30, "agent": _agent_sha(), **apk,
             "update_target": _server_version(), "modules": _module_shas(), "assistant_name": _assistant_name(),
-            "settings": screenshot.with_default_target(registry.effective(node["id"]), request.url.hostname or ""),
+            "settings": settings, "screenshot_auth": screenshot.credentials(settings, host, read_global_env()),
             "sync": sync_info, "custom": sorted(node.get("settings") or {})}
 
 
