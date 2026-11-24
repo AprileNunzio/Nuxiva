@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Risposte complesse fino a 4 volte più veloci con i cervelli cloud e tempi per fase sotto la risposta",
+    "en": "Complex answers up to 4 times faster with cloud brains and per-phase timings under the reply",
+    "fr": "Réponses complexes jusqu'à 4 fois plus rapides avec les cerveaux cloud et durées par étape sous la réponse",
+    "es": "Respuestas complejas hasta 4 veces más rápidas con los cerebros en la nube y tiempos por fase bajo la respuesta"
+  },
+  "features": [
+    {
+      "it": "Le risposte di Groq, Gemini e Claude arrivano parola per parola: il primo testo compare in circa un secondo invece che a risposta finita.",
+      "en": "Groq, Gemini and Claude replies arrive word by word: the first text shows up in about a second instead of when the reply is complete.",
+      "fr": "Les réponses de Groq, Gemini et Claude arrivent mot à mot : le premier texte apparaît en une seconde environ au lieu d'attendre la fin.",
+      "es": "Las respuestas de Groq, Gemini y Claude llegan palabra por palabra: el primer texto aparece en un segundo aproximadamente en lugar de al terminar."
+    },
+    {
+      "it": "Sotto ogni risposta della pagina 80 compaiono i tempi delle fasi principali e il totale.",
+      "en": "Under every reply on page 80 the main phase timings and the total are shown.",
+      "fr": "Sous chaque réponse de la page 80 s'affichent les durées des étapes principales et le total.",
+      "es": "Debajo de cada respuesta de la página 80 aparecen los tiempos de las fases principales y el total."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il confronto tra modelli non aspetta più fino a 15 secondi il cervello più lento: attende solo una frazione del tempo del primo, e sulle domande semplici usa subito la prima risposta.",
+      "en": "Model comparison no longer waits up to 15 seconds for the slowest brain: it waits only a fraction of the first one's time, and simple questions use the first reply right away.",
+      "fr": "La comparaison des modèles n'attend plus jusqu'à 15 secondes le cerveau le plus lent : elle attend une fraction du temps du premier, et les questions simples utilisent tout de suite la première réponse.",
+      "es": "La comparación entre modelos ya no espera hasta 15 segundos al cerebro más lento: espera solo una fracción del tiempo del primero, y las preguntas simples usan enseguida la primera respuesta."
+    },
+    {
+      "it": "Decisioni del coordinatore, verifica delle fonti e raccolta del contesto girano in parallelo; l'impaginazione con il flusso attivo passa in sottofondo come scheda.",
+      "en": "Coordinator decisions, source checks and context gathering run in parallel; with streaming the page layout moves to the background as a card.",
+      "fr": "Les décisions du coordinateur, la vérification des sources et la collecte du contexte tournent en parallèle ; avec le flux actif, la mise en page passe en arrière-plan sous forme de carte.",
+      "es": "Las decisiones del coordinador, la comprobación de fuentes y la recogida de contexto se ejecutan en paralelo; con el flujo activo la maquetación pasa a segundo plano como tarjeta."
+    },
+    {
+      "it": "Le connessioni verso i servizi cloud vengono riusate, il limite dei modelli Claude è chiesto una volta sola e i modelli locali non raggiungibili non vengono più interrogati a ogni domanda.",
+      "en": "Connections to cloud services are reused, the Claude model limit is asked only once and unreachable local models are no longer queried on every question.",
+      "fr": "Les connexions aux services cloud sont réutilisées, la limite des modèles Claude n'est demandée qu'une fois et les modèles locaux injoignables ne sont plus interrogés à chaque question.",
+      "es": "Las conexiones con los servicios en la nube se reutilizan, el límite de los modelos Claude se pide una sola vez y los modelos locales inalcanzables ya no se consultan en cada pregunta."
+    }
+  ]
+}

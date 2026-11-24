@@ -68,13 +68,14 @@ async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
     recent = dialogue.context(device, query)
     if recent:
         context["dialogue"] = recent
-    knowledge = await study.engine.recall(query)
+    knowledge, personal, route = await asyncio.gather(study.engine.recall(query),
+                                                     asyncio.to_thread(personal_memory.recall, who.slug, who.role, query),
+                                                     brains.route(query))
     if knowledge:
         context["knowledge"] = knowledge
     long_term = mind.recall(query, who=acting().slug)
     if long_term:
         context["long_term"] = long_term
-    personal = await asyncio.to_thread(personal_memory.recall, who.slug, who.role, query)
     if personal:
         context["personal_graph"] = personal
     from agenti.chat.reflex_memory import reflex_memory
@@ -86,7 +87,6 @@ async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
             "interests": prof.interests,
             "facts": prof.facts,
         }
-    route = await brains.route(query)
     route["lang"] = speech_lang["lang"]
     route["person"] = acting().slug if acting().role != "system" else ""
     rule = languages.instruction(speech_lang["lang"], speech_lang["teach"])
@@ -219,6 +219,8 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
                 flow.cancelled()
                 return JSONResponse({"cancelled": True})
         flow.answered(result)
+        if timings := flow.timings():
+            result["timings"] = timings
         if not internal and principal:
             background(personal_memory.learn(principal.slug, principal.role, said))
     if not result.pop("exact_reply", False):

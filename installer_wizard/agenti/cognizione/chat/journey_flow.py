@@ -1,13 +1,18 @@
+import time
 from contextvars import Token
 
 from agenti.brain import stages
 from agenti.brain.journey import journeys
+
+MIN_PHASE_S = 0.05
+MAX_PHASES = 8
 
 
 class ChatJourney:
     def __init__(self, said: str, text: str, device: str, who: str, internal: bool = False) -> None:
         self.internal = internal
         self.token: Token | None = None
+        self.memory: int | None = None
         if internal:
             self.tracker = None
             return
@@ -42,6 +47,7 @@ class ChatJourney:
         memory = self.tracker.add_node("cache", "Memoria & Contesto", "Recupero contesto conversazionale e ricordi recenti",
                                        state="ok", parent=self.laws)
         self.tracker.add_edge(self.laws, memory, "flow", "contesto")
+        self.memory = memory
         self.token = stages.bind(self.tracker, memory)
 
     def answered(self, result: dict) -> None:
@@ -55,6 +61,15 @@ class ChatJourney:
                                      state="ok", parent=last)
         self.tracker.add_edge(last, node, "flow", "output")
         self.tracker.finish(answer=reply, agent=agent, state="done")
+
+    def timings(self) -> dict:
+        if self.internal or not self.tracker or self.memory is None:
+            return {}
+        nodes = self.tracker.nodes
+        root = next((n["i"] for n in nodes if n["k"] == "ceo" and n["p"] == self.memory), self.memory)
+        phases = [{"kind": n["k"], "name": n["n"], "state": n["s"], "ms": int(round((n["b"] - n["a"]) * 1000))}
+                  for n in nodes if n["p"] == root and n["b"] - n["a"] >= MIN_PHASE_S]
+        return {"total_ms": int(round((time.time() - self.tracker.started) * 1000)), "phases": phases[:MAX_PHASES]}
 
     def failed(self, exc: BaseException) -> None:
         if self.internal or not self.tracker:

@@ -11,6 +11,22 @@ sink: ContextVar[asyncio.Queue | None] = ContextVar("nuxiva_stream_sink", defaul
 PREFIX = "data: "
 
 
+class Race:
+    def __init__(self) -> None:
+        self.owner: int | None = None
+        self.claimed = asyncio.Event()
+
+    def admits(self, lane: int) -> bool:
+        if self.owner is None:
+            self.owner = lane
+            self.claimed.set()
+        return self.owner == lane
+
+
+race: ContextVar[Race | None] = ContextVar("nuxiva_stream_race", default=None)
+lane: ContextVar[int | None] = ContextVar("nuxiva_stream_lane", default=None)
+
+
 class StreamFailed(ValueError):
     pass
 
@@ -21,8 +37,17 @@ def active() -> bool:
 
 def push(event: dict) -> None:
     queue = sink.get()
-    if queue is not None:
-        queue.put_nowait(event)
+    if queue is None:
+        return
+    current, mine = race.get(), lane.get()
+    if event.get("type") == "token" and current is not None and mine is not None and not current.admits(mine):
+        return
+    queue.put_nowait(event)
+
+
+def token(text: str) -> None:
+    if text:
+        push({"type": "token", "t": text})
 
 
 async def core_stream(payload: dict) -> dict:

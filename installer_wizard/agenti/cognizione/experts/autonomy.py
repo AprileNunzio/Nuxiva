@@ -74,7 +74,7 @@ async def create_for(text: str, lang: str = "it") -> Expert | None:
         if not _budget():
             return None
         try:
-            spec = await llm(PROMPT % clean(text, MAX_CHARS).replace('"', "'"), as_json=True, max_tokens=300, temperature=0.2)
+            spec = await llm(PROMPT % clean(text, MAX_CHARS).replace('"', "'"), as_json=True, max_tokens=300, temperature=0.2, fast=True)
             raw = _definition(spec)
             found = _existing(raw["role"])
             if found:

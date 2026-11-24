@@ -126,8 +126,26 @@
     return { data: final, spoken: Boolean(voice) };
   }
 
+  function showTiming(d) {
+    const box = $("say-timing");
+    if (!box) return;
+    box.replaceChildren();
+    const timings = d && d.timings;
+    if (!timings || !Array.isArray(timings.phases)) { box.hidden = true; return; }
+    const add = (label, ms) => {
+      const item = document.createElement("span"), value = document.createElement("b");
+      value.textContent = PageText.t("web/display", "timing_seconds", { s: (Math.max(0, Number(ms) || 0) / 1000).toFixed(1) });
+      item.append(`${String(label || "").slice(0, 60)} `, value);
+      box.append(item);
+    };
+    timings.phases.slice(0, 6).forEach((phase) => add(phase.name, phase.ms));
+    add(PageText.t("web/display", "timing_total"), timings.total_ms);
+    box.hidden = false;
+  }
+
   function show(text, d, spoken = false) {
     parseActions(d);
+    showTiming(d);
     $("you").textContent = `« ${text} »`;
     if (enrollUi(d)) return;
     const ui = d.ui || { mode: "face" };
@@ -155,6 +173,7 @@
     if (!heard.followup) {
       $("you").textContent = `« ${text} »`;
       $("say").textContent = "…";
+      showTiming(null);
     }
     try {
       if (!heard.followup) await predict(text);

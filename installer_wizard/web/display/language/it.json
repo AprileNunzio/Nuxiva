@@ -629,6 +629,9 @@
     "screenshot_disabled": "📸 Screenshot spenti: attivali nel pannello Nodi",
     "screenshot_no_target": "📸 Nessuna cartella per gli screenshot: impostala nel pannello Nodi",
     "screenshot_failed": "📸 Screenshot non riuscito: lo schermo non si lascia catturare",
-    "screenshot_service": "📸 Servizio screenshot non attivo su questo server"
+    "screenshot_service": "📸 Servizio screenshot non attivo su questo server",
+    "timing_label": "Tempi per fase",
+    "timing_total": "Totale",
+    "timing_seconds": "{{s}} s"
   }
 }

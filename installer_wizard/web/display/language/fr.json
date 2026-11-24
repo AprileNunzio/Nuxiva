@@ -629,6 +629,9 @@
     "screenshot_disabled": "📸 Captures désactivées : activez-les dans le panneau Nœuds",
     "screenshot_no_target": "📸 Aucun dossier pour les captures : définissez-le dans le panneau Nœuds",
     "screenshot_failed": "📸 Capture échouée : l'écran ne peut pas être capturé",
-    "screenshot_service": "📸 Service de capture inactif sur ce serveur"
+    "screenshot_service": "📸 Service de capture inactif sur ce serveur",
+    "timing_label": "Durée par étape",
+    "timing_total": "Total",
+    "timing_seconds": "{{s}} s"
   }
 }

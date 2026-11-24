@@ -16,6 +16,7 @@ logger = logging.getLogger("nuxiva.presentation")
 
 ROUTE = "/api/presentation/image"
 BUDGET_SECONDS = 45.0
+INLINE_SECONDS = 12.0
 WIDGET_SECONDS = 180
 image_store = ImageStore(STATE_DIR / "presentation" / "images")
 
@@ -35,12 +36,34 @@ _fetch_json, _fetch_bytes = http_fetchers(USER_AGENT)
 planner = PresentationPlanner(_complete, CommonsImages(_fetch_json, _fetch_bytes, image_store, ROUTE), _Models())
 
 
-async def compose(question: str, reply: str) -> Optional[Tuple[str, dict]]:
+def _wanted(question: str, reply: str) -> bool:
     mode = env_get("NUXIVA_PRESENTATION", "smart")
-    if not worth_planning(question, reply, mode if mode in MODES else "smart"):
+    return worth_planning(question, reply, mode if mode in MODES else "smart")
+
+
+def compose_later(question: str, reply: str) -> bool:
+    if not _wanted(question, reply):
+        return False
+    background(_brief(question, reply))
+    return True
+
+
+async def _brief(question: str, reply: str) -> None:
+    try:
+        outcome = await asyncio.wait_for(planner.compose(question, reply, widget_only=True), BUDGET_SECONDS)
+    except asyncio.TimeoutError:
+        logger.info("background presentation planning timed out")
+        return
+    if outcome is not None and outcome.widget:
+        from agenti.desktop.desk import desk
+        desk.show("brief", outcome.widget, ttl=WIDGET_SECONDS)
+
+
+async def compose(question: str, reply: str) -> Optional[Tuple[str, dict]]:
+    if not _wanted(question, reply):
         return None
     try:
-        outcome = await asyncio.wait_for(planner.compose(question, reply), BUDGET_SECONDS)
+        outcome = await asyncio.wait_for(planner.compose(question, reply), INLINE_SECONDS)
     except asyncio.TimeoutError:
         logger.info("presentation planning timed out")
         return None

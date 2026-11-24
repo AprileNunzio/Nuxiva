@@ -629,6 +629,9 @@
     "screenshot_disabled": "📸 Screenshots are off: turn them on in the Nodes panel",
     "screenshot_no_target": "📸 No folder for screenshots: set it in the Nodes panel",
     "screenshot_failed": "📸 Screenshot failed: the screen could not be captured",
-    "screenshot_service": "📸 Screenshot service is not running on this server"
+    "screenshot_service": "📸 Screenshot service is not running on this server",
+    "timing_label": "Time per phase",
+    "timing_total": "Total",
+    "timing_seconds": "{{s}} s"
   }
 }

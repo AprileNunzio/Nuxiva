@@ -63,7 +63,7 @@ class PresentationPlanner:
         self._models = models
         self._attempts = attempts
 
-    async def compose(self, question: str, reply: str) -> Optional[Presentation]:
+    async def compose(self, question: str, reply: str, widget_only: bool = False) -> Optional[Presentation]:
         plan = await self._plan(question, reply)
         if plan is None:
             return None
@@ -71,7 +71,7 @@ class PresentationPlanner:
         subject = side_effects(plan)
         if subject:
             self._models.request(subject)
-        if plan.mode == "widget":
+        if plan.mode == "widget" or (widget_only and plan.mode != "face"):
             return Presentation(plan.speech, {"mode": "face"}, to_widget(plan, assets))
         return Presentation(plan.speech, to_ui(plan, assets))
 

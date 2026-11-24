@@ -629,6 +629,9 @@
     "screenshot_disabled": "📸 Capturas desactivadas: actívalas en el panel Nodos",
     "screenshot_no_target": "📸 No hay carpeta para capturas: configúrala en el panel Nodos",
     "screenshot_failed": "📸 Captura fallida: no se pudo capturar la pantalla",
-    "screenshot_service": "📸 Servicio de capturas inactivo en este servidor"
+    "screenshot_service": "📸 Servicio de capturas inactivo en este servidor",
+    "timing_label": "Tiempo por fase",
+    "timing_total": "Total",
+    "timing_seconds": "{{s}} s"
   }
 }

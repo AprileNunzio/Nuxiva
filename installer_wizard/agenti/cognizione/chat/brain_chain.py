@@ -9,6 +9,7 @@ from state import store
 from tasks import background
 
 from agenti.brain import stages
+from agenti.chat import pace, streaming
 from agenti.brain.brains import brains
 from agenti.brain.privacy.gate import PrivacyBlocked, privacy_gate
 from agenti.brain.components import LimbicModulator, SpikingNeuron
@@ -111,20 +112,36 @@ class CorticalBrainChain:
 
     async def _parallel(self, query: str, context: Dict[str, Any], generators: List[Generator], plan: Strategy,
                         errors: List[str]) -> List[Dict[str, Any]]:
-        tasks = {asyncio.create_task(gen(query, dict(context), self.limbic)): idx for idx, gen in enumerate(generators)}
+        contest = streaming.Race() if streaming.active() else None
+        marker = streaming.race.set(contest)
+        try:
+            tasks = {asyncio.create_task(_in_lane(idx, gen(query, dict(context), self.limbic))): idx for idx, gen in enumerate(generators)}
+        finally:
+            streaming.race.reset(marker)
         answers: List[Dict[str, Any]] = []
         loop = asyncio.get_running_loop()
-        hard_end = loop.time() + HARD_TIMEOUT_S
+        launched_at = loop.time()
+        hard_end = launched_at + HARD_TIMEOUT_S
         soft_end: Optional[float] = None
         pending = set(tasks)
+        claim = asyncio.create_task(contest.claimed.wait()) if contest else None
         try:
             while pending:
                 end = min(hard_end, soft_end) if soft_end is not None else hard_end
                 remaining = end - loop.time()
                 if remaining <= 0:
                     break
-                done, pending = await asyncio.wait(pending, timeout=remaining, return_when=asyncio.FIRST_COMPLETED)
+                watched = pending | ({claim} if claim is not None else set())
+                done, _ = await asyncio.wait(watched, timeout=remaining, return_when=asyncio.FIRST_COMPLETED)
+                if claim is not None and claim in done:
+                    claim = None
+                    for task in [t for t in pending if tasks[t] != contest.owner]:
+                        task.cancel()
+                        pending.discard(task)
                 for task in done:
+                    if task not in tasks or task.cancelled():
+                        continue
+                    pending.discard(task)
                     exc = task.exception()
                     if exc is not None:
                         errors.append(f"{tasks[task]}: {type(exc).__name__}: {str(exc)[:120]}")
@@ -136,10 +153,12 @@ class CorticalBrainChain:
                 if answers and plan.pick == "first":
                     break
                 if answers and soft_end is None:
-                    soft_end = loop.time() + plan.wait_s
+                    soft_end = loop.time() + pace.patience(plan.wait_s, loop.time() - launched_at)
         finally:
             for task in pending:
                 task.cancel()
+            if claim is not None:
+                claim.cancel()
         return answers
 
     async def execute_parallel_thought(self, query: str, context: Dict[str, Any], branch_generators: List[Generator],
@@ -177,6 +196,11 @@ class CorticalBrainChain:
 cortical_chain = CorticalBrainChain()
 
 
+async def _in_lane(index: int, work: Awaitable[Dict[str, Any]]) -> Dict[str, Any]:
+    streaming.lane.set(index)
+    return await work
+
+
 def engine_label(lang: Any = None) -> str:
     engine = _scanner().get_engine(DEFAULT_MODE) or _scanner().get_default_engine()
     return engine.label(lang)
@@ -188,7 +212,8 @@ async def _cloud(ref: str, query: str, device: str, context: dict, route: dict) 
     trace.attempt(call, ref)
     label = engine_label(route.get("lang"))
     try:
-        answer = await conversation.reply(ref, query, device, context, route["max_tokens"], remember_turn=route.get("remember", True))
+        answer = await conversation.reply(ref, query, device, context, route["max_tokens"], remember_turn=route.get("remember", True),
+                                          on_token=streaming.token if streaming.active() else None)
     except CloudError as exc:
         brains.record(ref, (time.time() - started) * 1000, False, route["kind"])
         trace.abort(call, str(exc))
@@ -258,6 +283,8 @@ async def ask(query: str, device: str, context: dict, route: dict, core_local: C
     plan = engine.effective(query, cortical_chain.limbic).strategy
     if free_matrix_active:
         plan = replace(plan, candidates=1, pick="sequential", critic=False)
+    elif streaming.active() or pace.simple(query):
+        plan = replace(plan, pick="first", critic=False)
     parallel = plan.pick != "sequential" and min(plan.candidates, len(candidates)) > 1
     run_route = {**route, "remember": not parallel}
 

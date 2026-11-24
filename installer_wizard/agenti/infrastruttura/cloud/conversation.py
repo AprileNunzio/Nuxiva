@@ -1,5 +1,6 @@
 import time
 from collections import defaultdict, deque
+from collections.abc import Callable
 
 from agenti.cloud.client import Reply, complete
 
@@ -60,9 +61,14 @@ def remember(device: str, query: str, text: str) -> None:
     history.append({"role": "assistant", "content": text})
 
 
-async def reply(ref: str, query: str, device: str, context: dict, max_tokens: int, remember_turn: bool = True) -> Reply:
+async def reply(ref: str, query: str, device: str, context: dict, max_tokens: int, remember_turn: bool = True,
+                on_token: Callable[[str], None] | None = None) -> Reply:
     messages = [*_history[device], {"role": "user", "content": query}]
-    answer = await complete(ref, messages, persona(context), max_tokens=max_tokens, temperature=0.6)
+    if on_token is None:
+        answer = await complete(ref, messages, persona(context), max_tokens=max_tokens, temperature=0.6)
+    else:
+        from agenti.cloud.stream import complete_stream
+        answer = await complete_stream(ref, messages, persona(context), max_tokens=max_tokens, temperature=0.6, on_token=on_token)
     if remember_turn:
         remember(device, query, answer.text)
     return answer

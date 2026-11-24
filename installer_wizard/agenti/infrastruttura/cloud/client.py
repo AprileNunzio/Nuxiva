@@ -6,6 +6,7 @@ import httpx
 from agenti.cloud.address import normalize
 from agenti.cloud.catalog import BY_ID, REASONING_BUDGET, Provider, parse_ref
 from agenti.cloud.failure import describe
+from agenti.cloud.pool import shared
 from agenti.cloud.vault import vault
 from agenti.brain.usage.ledger import usage_ledger
 
@@ -120,27 +121,45 @@ def _cut(spec: Provider, data: dict) -> bool:
     return str((data.get("choices") or [{}])[0].get("finish_reason") or "") in CUT
 
 
+MODEL_LIMIT_TTL = 6 * 3600.0
+_model_limits: dict[tuple[str, str], tuple[float, int | None]] = {}
+
+
 async def _post(url: str, body: dict, head: dict, timeout: float) -> httpx.Response:
-    async with httpx.AsyncClient(timeout=timeout) as client:
-        return await client.post(url, json=body, headers=head)
+    return await shared().post(url, json=body, headers=head, timeout=timeout)
 
 
 async def _anthropic_model_limit(root: str, model: str, head: dict) -> int | None:
     from urllib.parse import quote
 
+    key = (root, model)
+    cached = _model_limits.get(key)
+    if cached and time.monotonic() - cached[0] < MODEL_LIMIT_TTL:
+        return cached[1]
     try:
-        async with httpx.AsyncClient(timeout=5) as client:
-            response = await client.get(f"{root}/models/{quote(model, safe='')}", headers=head)
-            response.raise_for_status()
-            data = response.json()
+        response = await shared().get(f"{root}/models/{quote(model, safe='')}", headers=head, timeout=5)
+        response.raise_for_status()
+        data = response.json()
     except (httpx.HTTPError, ValueError):
         return None
     limit = data.get("max_tokens") if isinstance(data, dict) else None
-    return limit if type(limit) is int and limit > 0 else None
+    limit = limit if type(limit) is int and limit > 0 else None
+    _model_limits[key] = (time.monotonic(), limit)
+    return limit
 
 
-async def complete(ref: str, messages: list[dict], system: str = "", max_tokens: int | None = 800, temperature=None,
-                   json_mode: bool = False, _retried: bool = False) -> Reply:
+@dataclass
+class Request:
+    pid: str
+    model: str
+    spec: Provider
+    url: str
+    body: dict
+    head: dict
+    timeout: float
+
+
+async def prepare(ref: str, messages: list[dict], system: str, max_tokens: int | None, temperature, json_mode: bool) -> Request:
     pid, model = parse_ref(ref)
     spec, entry = BY_ID[pid], vault.get(pid)
     if not vault.configured(pid):
@@ -151,12 +170,18 @@ async def complete(ref: str, messages: list[dict], system: str = "", max_tokens:
     head, timeout = headers(spec, entry), float(opts.get("timeout") or 120)
     if spec.kind == "anthropic":
         root = endpoint(spec, entry)
-        url = f"{root}/messages"
         model_limit = await _anthropic_model_limit(root, model, head) if max_tokens is None and not opts.get("max_tokens") else None
         body = _anthropic_body(model, messages, system, max_tokens, temperature, opts, json_mode, model_limit)
-    else:
-        url = f"{endpoint(spec, entry)}/chat/completions"
-        body = _openai_body(spec, model, messages, system, max_tokens, temperature, opts, json_mode)
+        return Request(pid, model, spec, f"{root}/messages", body, head, timeout)
+    body = _openai_body(spec, model, messages, system, max_tokens, temperature, opts, json_mode)
+    return Request(pid, model, spec, f"{endpoint(spec, entry)}/chat/completions", body, head, timeout)
+
+
+async def complete(ref: str, messages: list[dict], system: str = "", max_tokens: int | None = 800, temperature=None,
+                   json_mode: bool = False, _retried: bool = False) -> Reply:
+    request = await prepare(ref, messages, system, max_tokens, temperature, json_mode)
+    pid, model, spec, url, body, head, timeout = (request.pid, request.model, request.spec, request.url, request.body,
+                                                  request.head, request.timeout)
     started = time.perf_counter()
     try:
         res = await _post(url, body, head, timeout)

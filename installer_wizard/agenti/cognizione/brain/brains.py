@@ -14,6 +14,7 @@ from agenti.brain.roles import FALLBACK_ROLE, ROLES, split_order
 from agenti.brain.configuration import legacy_ref
 
 CHAT_SLA_MS = 50
+INSTALLED_TIMEOUT = 2.0
 log = logging.getLogger("nuxiva.brains")
 
 CATALOG = [
@@ -158,10 +159,10 @@ class Brains:
         if time.time() - ts < 30:
             return names
         try:
-            async with httpx.AsyncClient(timeout=5) as client:
+            async with httpx.AsyncClient(timeout=INSTALLED_TIMEOUT) as client:
                 names = [m["name"] for m in (await client.get(f"{ollama_url()}/api/tags")).json().get("models", [])]
-        except (httpx.HTTPError, ValueError, KeyError):
-            return names
+        except (httpx.HTTPError, ValueError, KeyError) as exc:
+            log.info("Modelli locali non raggiungibili, riprovo tra 30 s: %s", type(exc).__name__)
         self._installed = (time.time(), names)
         return names
 

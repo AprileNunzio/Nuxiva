@@ -2,6 +2,7 @@ import glob
 import json
 import logging
 import os
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -13,6 +14,7 @@ log = logging.getLogger("nuxiva.team.scanner")
 
 USER_FEATURES_DIR = STATE_DIR / "features"
 USER_WIDGETS_DIR = STATE_DIR / "widgets"
+RESCAN_SECONDS = 2.0
 
 
 @dataclass
@@ -69,6 +71,7 @@ class AgentScanner:
     def __init__(self) -> None:
         self.agents: dict[str, DiscoveredAgent] = {}
         self.signature = ""
+        self._checked = 0.0
         self._widget_owners: dict[str, str] = {}
         self._ensure_dirs()
 
@@ -89,6 +92,10 @@ class AgentScanner:
         return "|".join(items)
 
     def scan(self, force: bool = False) -> dict[str, DiscoveredAgent]:
+        if not force and self.agents and time.monotonic() - self._checked < RESCAN_SECONDS:
+            self._sync_registered_tools()
+            return self.agents
+        self._checked = time.monotonic()
         self._ensure_dirs()
         from agenti._registry import registry as agent_registry
         feat_paths = [str(p) for p in agent_registry.manifest_paths()]

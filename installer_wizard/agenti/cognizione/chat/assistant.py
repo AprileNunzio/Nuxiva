@@ -1,3 +1,4 @@
+import asyncio
 import importlib
 import time
 
@@ -10,7 +11,7 @@ from agenti.authz import gate
 from agenti.authz.principal import acting
 from agenti.brain import stages
 from agenti.brain.llm import BrainUnavailable, generate
-from agenti.chat import code, strict_reply
+from agenti.chat import code, strict_reply, streaming
 from agenti.chat import context as request_context
 from agenti.chat.claims import ConnectorClaims
 from agenti.chat.compose import compose_generic
@@ -121,7 +122,7 @@ async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
     routing = text if switched else await pivot.to_pivot(text, lang)
 
     from agenti.team.ceo import ceo
-    ceo_decision = await ceo.decide(routing, {"lang": lang})
+    planning = asyncio.create_task(ceo.decide(routing, {"lang": lang}))
 
     generated = {"by_model": False}
 
@@ -129,9 +130,18 @@ async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
         generated["by_model"] = True
         return await core_call(text)
 
-    async with stages.stage("ceo", "CEO Orchestrator", ceo_decision.delegation_plan):
-        raw_result = await _route(routing, ask, speech_lang, _hint(ceo_decision))
-        result = ceo.synthesize(ceo_decision, raw_result)
+    async def hint() -> str:
+        return _hint(await asyncio.shield(planning))
+
+    try:
+        async with stages.stage("ceo", "CEO Orchestrator") as probe:
+            raw_result = await _route(routing, ask, speech_lang, hint)
+            ceo_decision = await planning
+            probe.note(ceo_decision.delegation_plan)
+            result = ceo.synthesize(ceo_decision, raw_result)
+    finally:
+        if not planning.done():
+            planning.cancel()
 
     if lang != pivot.PIVOT and result.get("reply"):
         result["reply"] = await pivot.from_pivot(result["reply"], lang, force=not generated["by_model"])
@@ -173,7 +183,11 @@ def _hint(decision) -> str:
     return agent if (decision.reasoned or decision.confidence >= 0.85) and agent in CONNECTORS else ""
 
 
-async def _route(text: str, core_call, speech_lang: dict | None = None, hint: str = "") -> dict:
+async def _no_hint() -> str:
+    return ""
+
+
+async def _route(text: str, core_call, speech_lang: dict | None = None, hint=_no_hint) -> dict:
     started = time.time()
     from agenti.automations.bus import emit
     emit("voice_command", {"text": text})
@@ -250,8 +264,9 @@ async def _route(text: str, core_call, speech_lang: dict | None = None, hint: st
         decision = await understanding.route(text, request_context.device.get())
         probe.note(understanding.describe(decision))
     domains = decision.domains if understanding.enabled() else list(EARLY)
-    if hint:
-        domains = [hint] + [d for d in domains if d != hint]
+    preferred = await hint()
+    if preferred:
+        domains = [preferred] + [d for d in domains if d != preferred]
     if understanding.enabled() and domains and (refused := _refused(domains[0], started)):
         return refused
     for domain in domains:
@@ -339,10 +354,20 @@ async def _forged(text: str):
 
 async def _converse(text: str, core_call, unrouted: bool = False) -> tuple[str, str, dict]:
     from agenti.agent import commands as agent_cmd
-    delegated = await _delegate(text)
+    tools = not unrouted and agent_cmd.enabled() and not code.wanted(text)
+    weak = tools and agent_cmd.weak(text)
+    lookup = asyncio.create_task(grounding.needs_lookup(text)) if tools and not weak else None
+    try:
+        delegated = await _delegate(text)
+    except BaseException:
+        if lookup is not None:
+            lookup.cancel()
+        raise
     if delegated:
+        if lookup is not None:
+            lookup.cancel()
         return delegated
-    if not unrouted and agent_cmd.enabled() and not code.wanted(text) and (agent_cmd.weak(text) or await grounding.needs_lookup(text)):
+    if weak or (lookup is not None and await lookup):
         async with stages.stage("agent", "Agente con strumenti"):
             speech, ui = await agent_cmd.answer(text)
         return "agente · strumenti", speech, ui
@@ -380,7 +405,10 @@ def ambient_diorama(text: str, reply: str) -> None:
 
 
 async def _presented(reply: str, text: str):
-    from agenti.presentation.composition import compose
+    from agenti.presentation.composition import compose, compose_later
+    if streaming.active():
+        compose_later(text, reply)
+        return None
     async with stages.attempt("tool", "Impaginazione della risposta") as probe:
         laid_out = await compose(text, reply)
         if not laid_out:

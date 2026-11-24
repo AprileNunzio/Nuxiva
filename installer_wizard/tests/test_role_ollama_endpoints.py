@@ -38,8 +38,8 @@ class RoleOllamaEndpointTests(unittest.IsolatedAsyncioTestCase):
         self.client = httpx.AsyncClient
         self.enterContext(patch("httpx.AsyncClient", side_effect=self.mock_client))
 
-    def mock_client(self, *, timeout: float | httpx.Timeout) -> httpx.AsyncClient:
-        return self.client(transport=httpx.MockTransport(self.respond), timeout=timeout)
+    def mock_client(self, *, timeout: float | httpx.Timeout, **options) -> httpx.AsyncClient:
+        return self.client(transport=httpx.MockTransport(lambda request: self.respond(request)), timeout=timeout, **options)
 
     def respond(self, request: httpx.Request) -> httpx.Response:
         body = json.loads(request.content)
