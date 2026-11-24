@@ -10,7 +10,7 @@ class CloudCatalogTests(unittest.TestCase):
     def test_gemini_models_include_3_8_flash_and_exclude_deprecated_2_5_flash(self):
         gemini = BY_ID["gemini"]
         self.assertIn("gemini-3.8-flash", gemini.models)
-        self.assertIn("gemini-3.1-pro", gemini.models)
+        self.assertIn("gemini-3.1-pro-preview", gemini.models)
         self.assertNotIn("gemini-2.5-flash", gemini.models)
 
     def test_anthropic_models_include_claude_5_5(self):

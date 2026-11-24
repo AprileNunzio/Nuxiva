@@ -28,7 +28,7 @@
     "available": "disponible",
     "unavailable": "no disponible",
     "manual_model": "Modelo introducido a mano",
-    "manual_model_placeholder": "O escribe el identificador (p. ej. qwen2.5:7b o cloud:openai/gpt-5)",
+    "manual_model_placeholder": "O escribe el identificador (p. ej. qwen2.5:7b o cloud:openai/gpt-6.1-sol)",
     "manual_model_add": "Usar este",
     "chain_label": "Orden de los modelos",
     "chain_primary": "Principal",

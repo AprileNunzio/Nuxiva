@@ -39,6 +39,19 @@ async def live(pid: str) -> list[str]:
     return sorted(set(_ids(res.json())))
 
 
+async def test_model(pid: str) -> str:
+    spec = BY_ID[pid]
+    saved = vault.get(pid).get("model")
+    if saved:
+        return saved
+    try:
+        offered = await live(pid)
+    except (httpx.HTTPError, CloudError, ValueError):
+        offered = []
+    preferred = [m for m in spec.models if m in offered]
+    return next(iter(preferred or offered or spec.models), "")
+
+
 async def _public(pid: str, refresh: bool) -> tuple[list[dict], str]:
     try:
         rows = await public_catalog.refresh(force=refresh)

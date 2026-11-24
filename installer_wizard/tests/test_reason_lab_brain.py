@@ -32,22 +32,22 @@ class BrainDefaultTests(unittest.TestCase):
         self.assertEqual(self.resolve("granite3.3:2b", role="fast")["model"], "small:1b")
 
     def test_a_cloud_provider_takes_its_key_from_the_vault(self):
-        resolved = self.resolve("cloud:openai/gpt-5", {"key": "k" * 20})
+        resolved = self.resolve("cloud:openai/gpt-5.5", {"key": "k" * 20})
         self.assertEqual((resolved["backend"], resolved["base_url"], resolved["model"], resolved["key"], resolved["supported"]),
-                         ("openai", "https://api.openai.com/v1", "gpt-5", "k" * 20, True))
+                         ("openai", "https://api.openai.com/v1", "gpt-5.5", "k" * 20, True))
 
     def test_a_provider_without_a_compatible_api_is_marked_unsupported(self):
         self.assertFalse(self.resolve("cloud:anthropic/claude-sonnet-5-5", {"key": "k" * 20})["supported"])
 
     def test_a_provider_that_is_not_configured_is_marked_unsupported(self):
-        self.assertFalse(self.resolve("cloud:openai/gpt-5", {}, configured=False)["supported"])
+        self.assertFalse(self.resolve("cloud:openai/gpt-5.5", {}, configured=False)["supported"])
 
     def test_an_unknown_role_is_refused(self):
         with self.assertRaises(HTTPException):
             brain_default.resolve("deep")
 
     def test_the_public_view_never_contains_the_key(self):
-        for patch in patched("cloud:openai/gpt-5", {"key": "k" * 20}):
+        for patch in patched("cloud:openai/gpt-5.5", {"key": "k" * 20}):
             patch.start()
             self.addCleanup(patch.stop)
         view = brain_default.public()

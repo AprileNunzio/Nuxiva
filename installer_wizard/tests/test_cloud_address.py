@@ -33,6 +33,15 @@ class GroqModelTests(unittest.TestCase):
         self.assertEqual(parse_ref(make_ref("groq", "llama-3.1-8b-instant")), ("groq", "openai/gpt-oss-20b"))
 
 
+class RetiredModelTests(unittest.TestCase):
+    def test_every_retired_model_points_to_an_offered_model(self):
+        for provider, mapping in RETIRED.items():
+            offered = set(BY_ID[provider].models)
+            for old, new in mapping.items():
+                self.assertNotIn(old, offered, f"{provider}/{old}")
+                self.assertIn(new, offered, f"{provider}/{new}")
+
+
 class FailureTests(unittest.TestCase):
     def test_not_found_names_url_model_and_provider_message(self):
         res = httpx.Response(404, json={"error": {"message": "The model `x` does not exist", "code": "model_not_found"}})

@@ -12,7 +12,7 @@ from agenti.cloud import public_catalog
 from agenti.cloud.catalog import BY_ID, is_cloud, parse_ref
 from agenti.cloud.client import CloudError, complete
 
-VISION_FAMILIES = re.compile(r"gpt-4o|gpt-4\.1|gpt-5|o3|o4|claude-(?:3|sonnet|opus|haiku)|claude-.*-4|gemini|pixtral|"
+VISION_FAMILIES = re.compile(r"gpt-4o|gpt-4\.1|gpt-5|gpt-6|o3|o4|claude-(?:3|sonnet|opus|haiku|fable)|claude-.*-4|gemini|pixtral|"
                              r"mistral-(?:medium|small)-(?:2505|3)|llama-?3\.2.*vision|llama-4|qwen.*vl|grok-(?:2-vision|4)|"
                              r"glm-4\.?\d*v|kimi.*vl", re.I)
 LOCAL_VISION = re.compile(r"llava|bakllava|moondream|llama3\.2-vision|qwen2\.5vl|qwen2-vl|minicpm-v|gemma3|granite3\.2-vision|"

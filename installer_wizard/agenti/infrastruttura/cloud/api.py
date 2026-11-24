@@ -80,9 +80,8 @@ async def cloud_delete_key(pid: str, _: str = Depends(require_admin)):
 
 @admin_routes.post("/api/cloud/{pid}/test")
 async def cloud_test(pid: str, request: Request, _: str = Depends(require_admin)):
-    spec = _provider(pid)
-    fallback = vault.get(pid).get("model") or (spec.models[0] if spec.models else "")
-    model = str((await request.json()).get("model") or fallback)
+    _provider(pid)
+    model = str((await request.json()).get("model") or await models.test_model(pid))
     if not _MODEL_RE.match(model):
         raise HTTPException(400, "Nome del modello non valido")
     try:

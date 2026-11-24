@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Modelli cloud aggiornati agli ultimi disponibili e passaggio automatico dai modelli ritirati",
+    "en": "Cloud models updated to the latest available and automatic move away from retired models",
+    "fr": "Modèles cloud mis à jour vers les plus récents et passage automatique depuis les modèles retirés",
+    "es": "Modelos en la nube actualizados a los últimos disponibles y paso automático desde los modelos retirados"
+  },
+  "features": [
+    {
+      "it": "Elenchi aggiornati: OpenAI GPT-6.2 Astra e GPT-6 Luna, Claude Fable 5.2, Gemini 3.5 Flash Lite, Grok 4.7, Mistral Large 4 e Small 4, DeepSeek Flash e V4 Pro, Cerebras Qwen 3.8.",
+      "en": "Updated lists: OpenAI GPT-6.2 Astra and GPT-6 Luna, Claude Fable 5.2, Gemini 3.5 Flash Lite, Grok 4.7, Mistral Large 4 and Small 4, DeepSeek Flash and V4 Pro, Cerebras Qwen 3.8.",
+      "fr": "Listes mises à jour : OpenAI GPT-6.2 Astra et GPT-6 Luna, Claude Fable 5.2, Gemini 3.5 Flash Lite, Grok 4.7, Mistral Large 4 et Small 4, DeepSeek Flash et V4 Pro, Cerebras Qwen 3.8.",
+      "es": "Listas actualizadas: OpenAI GPT-6.2 Astra y GPT-6 Luna, Claude Fable 5.2, Gemini 3.5 Flash Lite, Grok 4.7, Mistral Large 4 y Small 4, DeepSeek Flash y V4 Pro, Cerebras Qwen 3.8."
+    },
+    {
+      "it": "Il pulsante Prova di un servizio cloud sceglie un modello che il fornitore offre davvero, leggendo il suo elenco aggiornato.",
+      "en": "The Test button of a cloud service picks a model the provider really offers, reading its up-to-date list.",
+      "fr": "Le bouton Tester d'un service cloud choisit un modèle réellement proposé par le fournisseur, en lisant sa liste à jour.",
+      "es": "El botón Probar de un servicio en la nube elige un modelo que el proveedor ofrece de verdad, leyendo su lista actualizada."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Chi usava modelli ritirati (es. DeepSeek Chat e Reasoner, OpenAI o4-mini, o3 e GPT-5, Gemini 2.5 Pro, Cerebras Llama 3.3) passa da solo al sostituto consigliato invece di ricevere errori.",
+      "en": "Anyone using retired models (e.g. DeepSeek Chat and Reasoner, OpenAI o4-mini, o3 and GPT-5, Gemini 2.5 Pro, Cerebras Llama 3.3) moves automatically to the recommended replacement instead of getting errors.",
+      "fr": "Ceux qui utilisaient des modèles retirés (ex. DeepSeek Chat et Reasoner, OpenAI o4-mini, o3 et GPT-5, Gemini 2.5 Pro, Cerebras Llama 3.3) passent automatiquement au remplaçant recommandé au lieu de recevoir des erreurs.",
+      "es": "Quien usaba modelos retirados (p. ej. DeepSeek Chat y Reasoner, OpenAI o4-mini, o3 y GPT-5, Gemini 2.5 Pro, Cerebras Llama 3.3) pasa solo al sustituto recomendado en lugar de recibir errores."
+    }
+  ]
+}

@@ -28,7 +28,7 @@
     "available": "disponible",
     "unavailable": "indisponible",
     "manual_model": "Modèle saisi à la main",
-    "manual_model_placeholder": "Ou saisissez l'identifiant (ex. qwen2.5:7b ou cloud:openai/gpt-5)",
+    "manual_model_placeholder": "Ou saisissez l'identifiant (ex. qwen2.5:7b ou cloud:openai/gpt-6.1-sol)",
     "manual_model_add": "Utiliser celui-ci",
     "chain_label": "Ordre des modèles",
     "chain_primary": "Principal",
