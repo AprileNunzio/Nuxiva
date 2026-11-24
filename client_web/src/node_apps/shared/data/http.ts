@@ -3,6 +3,8 @@ export class NodeModuleError extends Error {
     readonly code: string,
     readonly status: number,
     readonly detailMessage?: string,
+    readonly method?: string,
+    readonly path?: string,
   ) {
     super(detailMessage ? `${code}: ${detailMessage}` : code);
     this.name = 'NodeModuleError';
@@ -12,6 +14,8 @@ export class NodeModuleError extends Error {
 const JSON_HEADERS = { Accept: 'application/json', 'Content-Type': 'application/json', 'X-Nuxiva-Request': '1' };
 
 export async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
+  const method = (init?.method ?? 'GET').toUpperCase();
+  const path = url.split(/[?#]/)[0].slice(0, 200);
   const response = await fetch(url, { cache: 'no-store', credentials: 'same-origin', ...init, headers: { ...JSON_HEADERS, ...init?.headers } });
   if (!response.ok) {
     const payload: unknown = await response.json().catch(() => null);
@@ -27,9 +31,16 @@ export async function requestJson<T>(url: string, init?: RequestInit): Promise<T
         if (typeof obj.message === 'string') detailMessage = obj.message;
       }
     }
-    throw new NodeModuleError(code, response.status, detailMessage);
+    throw new NodeModuleError(code, response.status, detailMessage, method, path);
   }
-  return (await response.json()) as T;
+  try {
+    return (await response.json()) as T;
+  } catch (cause) {
+    if (cause instanceof SyntaxError) {
+      throw new NodeModuleError('invalid_response', response.status, cause.message.slice(0, 200), method, path);
+    }
+    throw cause;
+  }
 }
 
 export function asRecord(value: unknown): Record<string, unknown> {

@@ -1,4 +1,7 @@
 import { reportError } from '../errors/errorBus';
+import { onServerRestored } from '../errors/connectivity/connectivity';
+import { diagnose } from '../errors/diagnosis/diagnose';
+import { unavailableCode } from './unavailableReason';
 import { fetchBluetooth } from './api';
 import { BluetoothState } from './model';
 
@@ -21,6 +24,7 @@ let timer: number | null = null;
 let inflight: AbortController | null = null;
 let failures = 0;
 let queue: Promise<void> = Promise.resolve();
+let stopRestored: (() => void) | null = null;
 
 function emit(next: Partial<BluetoothSnapshot>): void {
   snapshot = { ...snapshot, ...next };
@@ -55,7 +59,7 @@ async function poll(): Promise<void> {
       return;
     }
     if (failures++ === 0) {
-      reportError('node_bluetooth_unavailable', cause);
+      reportError(unavailableCode(diagnose(cause)), cause);
     }
     emit({ reachable: false });
   } finally {
@@ -90,11 +94,14 @@ export const bluetoothStore = {
   subscribe(listener: Listener): () => void {
     listeners.add(listener);
     if (listeners.size === 1) {
+      stopRestored = onServerRestored(() => void poll());
       void poll();
     }
     return () => {
       listeners.delete(listener);
       if (listeners.size === 0) {
+        stopRestored?.();
+        stopRestored = null;
         inflight?.abort();
         schedule();
       }

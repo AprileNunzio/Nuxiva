@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { reportError } from '../../shared/errors/errorBus';
+import { onServerRestored } from '../../shared/errors/connectivity/connectivity';
 import { getJson } from './http';
 import { useWindowToolbar } from '../../app_shell/window_manager/WindowContext';
 
@@ -51,8 +52,10 @@ export function useResource<T>(url: string, intervalMs = 0): Resource<T> {
     };
     void load();
     const timer = intervalMs > 0 ? window.setInterval(() => !document.hidden && void load(), intervalMs) : 0;
+    const stopRestored = onServerRestored(() => void load());
     return () => {
       alive.current = false;
+      stopRestored();
       controller.abort();
       if (timer) {
         window.clearInterval(timer);

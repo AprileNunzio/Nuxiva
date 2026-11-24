@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { adminPath } from '../shared/http/basePath';
 import { subscribeErrors } from '../shared/errors/errorBus';
+import { errorTitle } from '../shared/errors/errorTitle';
 import { getScopedString, useScopedI18n } from '../shared/i18n/useScopedI18n';
 import { resolveApp } from './window_manager/registry';
 import { windowStore } from './window_manager/WindowStore';
 import type { OSWindowOpenRequest } from './window_manager/types';
 
-interface Notification { id: string; key: string; scope: string; at: number; action?: OSWindowOpenRequest }
+const interpolate = (text: string, params?: Record<string, string | number>): string =>
+  text.replace(/\{([A-Za-z0-9_]+)\}/g, (match, name: string) => (params && name in params ? String(params[name]) : match));
+
+interface Notification { id: string; key: string; scope: string; at: number; action?: OSWindowOpenRequest; errorCode?: string }
 export function NotificationCenter({ visible, onClose, onCountChange }: { visible: boolean; onClose: () => void; onCountChange: (count: number) => void }) {
   const { t, lang } = useScopedI18n('app_shell');
   const [items, setItems] = useState<Notification[]>([]);
   useEffect(() => onCountChange(items.length), [items.length,onCountChange]);
   useEffect(() => {
     const append = (item: Notification) => setItems(current => current.some(n => n.id === item.id) ? current : [item, ...current].slice(0, 100));
-    const unsubscribe = subscribeErrors(error => append({ id: `error:${error.id}`, key: error.code, scope: 'shared/errors', at: error.occurredAt }));
+    const unsubscribe = subscribeErrors(error => append({ id: `error:${error.id}`, key: error.code, scope: 'shared/errors', at: error.occurredAt, errorCode: error.code }));
     const stream = new EventSource(`${adminPath('/api/bus/stream')}?topics=ui.notification.*,ui.window.open`, { withCredentials: true });
     stream.onmessage = event => {
       if (event.data.length > 65536) return;
@@ -38,7 +42,7 @@ export function NotificationCenter({ visible, onClose, onCountChange }: { visibl
   return <>{visible && <aside className="os-notifications"><header><h2>{t('os_notifications')}</h2><button aria-label={t('os_close')} onClick={onClose}>×</button></header>
       <button onClick={() => setItems([])}>{t('os_clear')}</button>
       {!items.length && <p>{t('os_no_notifications')}</p>}
-      {items.map(item => <article key={item.id}><strong>{getScopedString(item.scope, lang, item.key, t(item.key))}</strong>
+      {items.map(item => <article key={item.id}><strong>{item.errorCode ? errorTitle((key, params) => interpolate(getScopedString('shared/errors', lang, key), params), item.errorCode) : getScopedString(item.scope, lang, item.key, t(item.key))}</strong>
         <p>{new Date(item.at).toLocaleString(lang)}</p>
         {item.action && <button onClick={() => windowStore.openWindow(item.action!)}>{getScopedString(resolveApp(item.action.appId)!.scope, lang, 'title', item.action.appId)}</button>}
       </article>)}

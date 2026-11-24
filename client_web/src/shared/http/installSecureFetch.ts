@@ -1,5 +1,6 @@
 import { emitSessionExpired } from './sessionEvents';
 import { adminPath } from './basePath';
+import { displayPath, guardFetch, requestMethod } from './fetchFailure';
 
 export const CSRF_HEADER = 'X-Nuxiva-Request';
 const AUTH_PREFIX = '/api/auth/';
@@ -22,8 +23,9 @@ export function installSecureFetch(): void {
 
   window.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
     const url = resolveUrl(input);
+    const method = requestMethod(input, init);
     if (url.origin !== window.location.origin) {
-      return nativeFetch(input, init);
+      return guardFetch(() => nativeFetch(input, init), method, displayPath(url, false));
     }
     const headers = new Headers(init?.headers ?? (input instanceof Request ? input.headers : undefined));
     headers.set(CSRF_HEADER, '1');
@@ -31,7 +33,7 @@ export function installSecureFetch(): void {
     const request = target === url.pathname ? input : input instanceof Request
       ? new Request(`${url.origin}${target}${url.search}`, input)
       : `${url.origin}${target}${url.search}`;
-    const response = await nativeFetch(request, { ...init, headers, credentials: 'include' });
+    const response = await guardFetch(() => nativeFetch(request, { ...init, headers, credentials: 'include' }), method, target.slice(0, 200));
     if (response.status === 401 && !url.pathname.startsWith(AUTH_PREFIX) && !url.pathname.startsWith(MCP_PREFIX)) {
       emitSessionExpired();
     }
