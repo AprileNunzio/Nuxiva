@@ -19,8 +19,8 @@ android {
         applicationId = "com.nuxiva.edge"
         minSdk = 26
         targetSdk = 34
-        versionCode = 5008024
-        versionName = "5.8.24"
+        versionCode = 5008025
+        versionName = "5.8.25"
 
         ndk {
             abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64")
