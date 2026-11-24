@@ -1,1 +1,0 @@
-import"./rolldown-runtime-XKyaHtl9.js";import{r as e,s as t}from"./I18nContext-BdxLbVXf.js";import{View as n}from"./View-EEG_BDIo.js";t();var r=e(),i=()=>(0,r.jsx)(n,{});export{i as View,i as default};
