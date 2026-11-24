@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Elenco Gemini allineato a quello ufficiale di Google",
+    "en": "Gemini list aligned with Google's official list",
+    "fr": "Liste Gemini alignée sur la liste officielle de Google",
+    "es": "Lista de Gemini alineada con la oficial de Google"
+  },
+  "features": [
+    {
+      "it": "Oltre a Gemini 4 Carbon, Argon, Neon e Hydrogen tornano disponibili Gemini 3.6 Flash, 3.1 Pro Preview e 3 Flash Preview, e si aggiungono Gemma 4 31B e 26B.",
+      "en": "Besides Gemini 4 Carbon, Argon, Neon and Hydrogen, Gemini 3.6 Flash, 3.1 Pro Preview and 3 Flash Preview are available again, and Gemma 4 31B and 26B are added.",
+      "fr": "En plus de Gemini 4 Carbon, Argon, Neon et Hydrogen, Gemini 3.6 Flash, 3.1 Pro Preview et 3 Flash Preview sont de nouveau disponibles, et Gemma 4 31B et 26B sont ajoutés.",
+      "es": "Además de Gemini 4 Carbon, Argon, Neon e Hydrogen vuelven a estar disponibles Gemini 3.6 Flash, 3.1 Pro Preview y 3 Flash Preview, y se añaden Gemma 4 31B y 26B."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Chi aveva scelto Gemini 3.1 Pro o 3.5 Flash passa al modello ufficiale corrispondente (3.1 Pro Preview e 3.6 Flash) invece che a un altro.",
+      "en": "Anyone who had picked Gemini 3.1 Pro or 3.5 Flash moves to the matching official model (3.1 Pro Preview and 3.6 Flash) instead of a different one.",
+      "fr": "Ceux qui avaient choisi Gemini 3.1 Pro ou 3.5 Flash passent au modèle officiel correspondant (3.1 Pro Preview et 3.6 Flash) au lieu d'un autre.",
+      "es": "Quien había elegido Gemini 3.1 Pro o 3.5 Flash pasa al modelo oficial correspondiente (3.1 Pro Preview y 3.6 Flash) en lugar de a otro."
+    }
+  ]
+}
