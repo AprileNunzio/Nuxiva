@@ -51,9 +51,9 @@ ANSWER_KEYS = {"NUXIVA_USER_NAME", "NUXIVA_UI_LANG", "NUXIVA_VOICE", "NUXIVA_LLM
 BRAINS = ("local", "remote", "cloud")
 CLOUD_PICK = {
     "anthropic": ("Anthropic Claude", "claude-haiku-5-5", "claude-sonnet-5-5"),
-    "gemini": ("Google Gemini", "gemini-3.8-flash", "gemini-3.1-pro-preview"),
-    "openai": ("OpenAI", "gpt-6.1-sol", "gpt-6-astra"),
-    "mistral": ("Mistral AI", "mistral-small-latest", "mistral-large-latest"),
+    "gemini": ("Google Gemini", "gemini-4-hydrogen", "gemini-4-neon"),
+    "openai": ("OpenAI", "gpt-6.1-terra", "gpt-6.2-sol"),
+    "mistral": ("Mistral AI", "mistral-small-2603", "mistral-large-4"),
     "groq": ("Groq", "openai/gpt-oss-20b", "openai/gpt-oss-120b"),
     "openrouter": ("OpenRouter", "openrouter/auto", "openrouter/auto"),
 }

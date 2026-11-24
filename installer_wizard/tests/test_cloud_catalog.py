@@ -7,10 +7,11 @@ from agenti.cloud.tools import cloud_catalog
 
 class CloudCatalogTests(unittest.TestCase):
 
-    def test_gemini_models_include_3_8_flash_and_exclude_deprecated_2_5_flash(self):
+    def test_gemini_models_include_gemini_4_and_exclude_deprecated_2_5_flash(self):
         gemini = BY_ID["gemini"]
         self.assertIn("gemini-3.8-flash", gemini.models)
-        self.assertIn("gemini-3.1-pro-preview", gemini.models)
+        self.assertIn("gemini-4-neon", gemini.models)
+        self.assertIn("gemini-4-carbon", gemini.models)
         self.assertNotIn("gemini-2.5-flash", gemini.models)
 
     def test_anthropic_models_include_claude_5_5(self):
@@ -18,11 +19,11 @@ class CloudCatalogTests(unittest.TestCase):
         self.assertIn("claude-sonnet-5-5", anthropic.models)
         self.assertIn("claude-haiku-5-5", anthropic.models)
 
-    def test_openai_models_include_gpt_6_and_5_5(self):
+    def test_openai_models_include_gpt_6_2(self):
         openai = BY_ID["openai"]
-        self.assertIn("gpt-6-astra", openai.models)
-        self.assertIn("gpt-6.1-sol", openai.models)
-        self.assertIn("gpt-5.5", openai.models)
+        self.assertIn("gpt-6.2-astra", openai.models)
+        self.assertIn("gpt-6.2-sol", openai.models)
+        self.assertIn("gpt-6-luna", openai.models)
 
     def test_cloud_catalog_tool_returns_all_providers(self):
         data = asyncio.run(cloud_catalog())

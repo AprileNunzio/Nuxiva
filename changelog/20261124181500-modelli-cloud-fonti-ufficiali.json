@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Modelli cloud ricontrollati sulle pagine ufficiali: Gemini 4, GPT-6.2 e Grok 4.20",
+    "en": "Cloud models rechecked against official pages: Gemini 4, GPT-6.2 and Grok 4.20",
+    "fr": "Modèles cloud revérifiés sur les pages officielles : Gemini 4, GPT-6.2 et Grok 4.20",
+    "es": "Modelos en la nube revisados en las páginas oficiales: Gemini 4, GPT-6.2 y Grok 4.20"
+  },
+  "features": [
+    {
+      "it": "Gemini propone la famiglia 4 (Carbon, Neon, Hydrogen, Argon) e la prima configurazione usa Hydrogen e Neon; OpenAI propone GPT-6.2 Astra e Sol; xAI aggiunge Grok 4.20.",
+      "en": "Gemini offers the 4 family (Carbon, Neon, Hydrogen, Argon) and first setup uses Hydrogen and Neon; OpenAI offers GPT-6.2 Astra and Sol; xAI adds Grok 4.20.",
+      "fr": "Gemini propose la famille 4 (Carbon, Neon, Hydrogen, Argon) et la première configuration utilise Hydrogen et Neon ; OpenAI propose GPT-6.2 Astra et Sol ; xAI ajoute Grok 4.20.",
+      "es": "Gemini ofrece la familia 4 (Carbon, Neon, Hydrogen, Argon) y la primera configuración usa Hydrogen y Neon; OpenAI ofrece GPT-6.2 Astra y Sol; xAI añade Grok 4.20."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Tolti dagli elenchi i modelli superati o non più documentati (Gemini 3.6 Flash e 3.1 Pro, GPT-6 Astra, GPT-5.5, Mistral Medium e alias -latest) e i vecchi Grok passano da soli a Grok 4.7.",
+      "en": "Removed superseded or no longer documented models from the lists (Gemini 3.6 Flash and 3.1 Pro, GPT-6 Astra, GPT-5.5, Mistral Medium and -latest aliases) and old Grok models move to Grok 4.7 automatically.",
+      "fr": "Retrait des modèles dépassés ou plus documentés (Gemini 3.6 Flash et 3.1 Pro, GPT-6 Astra, GPT-5.5, Mistral Medium et alias -latest) et les anciens Grok passent automatiquement à Grok 4.7.",
+      "es": "Quitados de las listas los modelos superados o ya no documentados (Gemini 3.6 Flash y 3.1 Pro, GPT-6 Astra, GPT-5.5, Mistral Medium y alias -latest) y los Grok antiguos pasan solos a Grok 4.7."
+    }
+  ]
+}
