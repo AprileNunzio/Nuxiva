@@ -2,7 +2,7 @@
   "use strict";
 
   const MAX_OPS = 4096;
-  const WATCHDOG_MS = 25000;
+  const WATCHDOG_MS = 20000;
   const RETRY_MS = 2000;
 
   class PatchError extends Error {}
@@ -54,6 +54,8 @@
     return out;
   }
 
+  let lastFrame = 0;
+
   function connectDelta(url, onState, onLink) {
     let es = null, retry = null, lastMsg = 0, state = null, version = -1;
     const emit = (events) => {
@@ -82,8 +84,10 @@
     }
     function open() {
       es = new EventSource(url);
+      lastMsg = Date.now();
       es.onmessage = (ev) => {
         lastMsg = Date.now();
+        lastFrame = lastMsg;
         onLink && onLink(true);
         try {
           handle(JSON.parse(ev.data));
@@ -100,5 +104,5 @@
     }, 5000);
   }
 
-  global.NuxivaDelta = { connectDelta, applyOps, PatchError };
+  global.NuxivaDelta = { connectDelta, applyOps, PatchError, lastFrameAt: () => lastFrame };
 })(typeof window !== "undefined" ? window : globalThis);

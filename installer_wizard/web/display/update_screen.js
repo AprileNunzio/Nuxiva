@@ -32,6 +32,7 @@
     el("span", "upd-step", now).id = "upd-step";
     el("span", "upd-message", now).id = "upd-message";
     PageText.bind(el("span", "upd-hint", line), "upd_hint");
+    if (global.NuxivaUpdateLive) global.NuxivaUpdateLive.mount(foot, null);
     const track = el("ol", "upd-track", foot);
     track.id = "upd-track";
     track.setAttribute("role", "progressbar");
@@ -68,8 +69,10 @@
     if (run && run.active) PageText.bind(msg, `upd_active_${run.active}`);
     else if (s.message) PageText.plain(msg, String(s.message).slice(0, 200));
     else PageText.bind(msg, "upd_waiting");
-    const live = run && ["restart", "confirm"].includes(run.active || "") ? String(s.message || "").slice(0, 200) : "";
+    const building = !!(s.update_live && s.update_live.current);
+    const live = !building && run && ["restart", "confirm"].includes(run.active || "") ? String(s.message || "").slice(0, 200) : "";
     PageText.plain(document.getElementById("upd-detail"), live);
+    if (global.NuxivaUpdateLive) global.NuxivaUpdateLive.sync(run, s.update_live || null);
   }
 
   function ready(run) {
@@ -98,6 +101,7 @@
     if (!root || root.classList.contains("hidden")) return;
     root.classList.add("hidden");
     if (global.NuxivaUpdateSystem) global.NuxivaUpdateSystem.hide();
+    if (global.NuxivaUpdateLive) global.NuxivaUpdateLive.hide();
     if (global.NuxivaResources) global.NuxivaResources.release("update");
     global.NuxivaUpdateNotes.stop();
   }

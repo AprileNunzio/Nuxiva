@@ -105,7 +105,8 @@ class UpdateProgress:
         view = {key: run.get(key) for key in PUBLIC_RUN_KEYS}
         view["from"] = str(view["from"] or "")[:7]
         view["to"] = str(view["to"] or "")[:7]
-        view["stages"] = [{"id": s["id"], "status": s["status"]} for s in pipeline.get("stages", [])]
+        view["stages"] = [{"id": s["id"], "status": s["status"], "t0": s.get("started_at"), "t1": s.get("finished_at")}
+                          for s in pipeline.get("stages", [])]
         view["percent"] = pipeline.get("percent", 0)
         view["active"] = pipeline.get("active")
         view["outcome"] = pipeline.get("outcome")

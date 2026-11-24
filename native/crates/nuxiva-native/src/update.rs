@@ -142,3 +142,10 @@ pub fn update_apt_percent(summary_json: &str, unpacked: u32, configured: u32) ->
         configured,
     ))
 }
+
+#[pyfunction]
+pub fn update_build_eta(sample_json: &str) -> PyResult<String> {
+    let sample: nuxiva_update_core::BuildSample = serde_json::from_str(bounded(sample_json)?)
+        .map_err(|e| PyValueError::new_err(e.to_string()))?;
+    to_json(&nuxiva_update_core::build_eta::estimate(&sample))
+}

@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Aggiornamento di sistema con tempi dal vivo e stima del tempo rimanente",
+    "en": "System update with live timers and an estimate of the time left",
+    "fr": "Mise à jour système avec chronomètres en direct et estimation du temps restant",
+    "es": "Actualización del sistema con tiempos en vivo y estimación del tiempo restante"
+  },
+  "features": [
+    {
+      "it": "Durante la compilazione la pagina mostra tempo trascorso che scorre ogni secondo, componenti compilati, componente in lavorazione, ritmo al minuto e tempo stimato rimanente con un intervallo di incertezza.",
+      "en": "While building, the page shows elapsed time ticking every second, components built, the component in progress, pace per minute and the estimated time left with an uncertainty range.",
+      "fr": "Pendant la compilation, la page affiche le temps écoulé seconde par seconde, les composants compilés, le composant en cours, le rythme par minute et le temps restant estimé avec une marge d'incertitude.",
+      "es": "Durante la compilación la página muestra el tiempo transcurrido segundo a segundo, los componentes compilados, el componente en proceso, el ritmo por minuto y el tiempo restante estimado con un margen de incertidumbre."
+    },
+    {
+      "it": "Nuova riga dei tempi per fase: quanto è durata ogni fase dell'aggiornamento e ogni compilazione.",
+      "en": "New time-per-phase row: how long each update phase and each build took.",
+      "fr": "Nouvelle ligne des durées par phase : combien de temps a duré chaque phase de la mise à jour et chaque compilation.",
+      "es": "Nueva fila de tiempos por fase: cuánto duró cada fase de la actualización y cada compilación."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il contatore della compilazione non resta più fermo tra un componente e l'altro, e la pagina avvisa se la connessione cade o se la compilazione non dà segnali, riconnettendosi da sola.",
+      "en": "The build counter no longer freezes between components, and the page warns when the connection drops or the build goes silent, reconnecting by itself.",
+      "fr": "Le compteur de compilation ne reste plus figé entre deux composants, et la page prévient si la connexion tombe ou si la compilation ne donne plus signe de vie, en se reconnectant seule.",
+      "es": "El contador de compilación ya no se queda parado entre un componente y otro, y la página avisa si se cae la conexión o si la compilación deja de dar señales, reconectándose sola."
+    }
+  ]
+}

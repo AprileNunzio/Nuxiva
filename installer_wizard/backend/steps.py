@@ -215,6 +215,11 @@ async def _run_script(step: Step, action: str, stream: bool, quiet: bool = False
             if sm:
                 rec["speed"] = sm.group(1)
             store.touch()
+        elif line.startswith("@@BUILD "):
+            from agenti.update_center.build_live.tracker import live as build_live
+            if build_live.feed(step.id, line[8:]):
+                rec["last_update"] = time.time()
+                store.touch()
         else:
             store.log(line[:500], step.id)
     timeout_s = 60.0 if action == "check" else 1800.0
