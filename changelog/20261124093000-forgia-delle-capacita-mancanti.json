@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Nuxiva crea da sola le capacità che le mancano, ma solo dopo averle messe alla prova",
+    "en": "Nuxiva creates missing capabilities on its own, but only after testing them",
+    "fr": "Nuxiva crée seule les capacités manquantes, mais seulement après les avoir testées",
+    "es": "Nuxiva crea por sí sola las capacidades que le faltan, pero solo tras ponerlas a prueba"
+  },
+  "features": [
+    {
+      "it": "Una capacità nuova passa da prove in ambiente isolato e da un periodo di osservazione prima di poter essere usata; se fa qualcosa che non aveva dichiarato viene bloccata per sempre.",
+      "en": "A new capability goes through isolated tests and an observation period before it can be used; if it does anything it did not declare, it is blocked for good.",
+      "fr": "Une nouvelle capacité passe des tests isolés et une période d'observation avant d'être utilisable ; si elle fait quelque chose qu'elle n'a pas déclaré, elle est bloquée pour toujours.",
+      "es": "Una capacidad nueva pasa pruebas aisladas y un periodo de observación antes de poder usarse; si hace algo que no había declarado, queda bloqueada para siempre."
+    },
+    {
+      "it": "Le capacità che inviano o spendono richiedono l'approvazione del proprietario e nessuna capacità generata può sostituirne una di sistema.",
+      "en": "Capabilities that send or spend require the owner's approval and no generated capability can replace a system one.",
+      "fr": "Les capacités qui envoient ou dépensent exigent l'approbation du propriétaire et aucune capacité générée ne peut en remplacer une du système.",
+      "es": "Las capacidades que envían o gastan requieren la aprobación del propietario y ninguna capacidad generada puede sustituir a una del sistema."
+    }
+  ],
+  "fixes": []
+}

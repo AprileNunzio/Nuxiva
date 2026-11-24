@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Nuxiva sceglie il modello giusto per ogni richiesta e risparmia token",
+    "en": "Nuxiva picks the right model for each request and saves tokens",
+    "fr": "Nuxiva choisit le bon modèle pour chaque demande et économise des jetons",
+    "es": "Nuxiva elige el modelo adecuado para cada petición y ahorra tokens"
+  },
+  "features": [
+    {
+      "it": "Il lavoro semplice resta sui modelli locali gratuiti e passa al cloud solo quando serve più qualità, più contesto o meno attesa, sempre entro un tetto di spesa.",
+      "en": "Simple work stays on free local models and moves to the cloud only when more quality, more context or less waiting is needed, always within a spending cap.",
+      "fr": "Le travail simple reste sur les modèles locaux gratuits et passe au cloud seulement si plus de qualité, plus de contexte ou moins d'attente est nécessaire, toujours dans un plafond de dépense.",
+      "es": "El trabajo simple se queda en modelos locales gratuitos y pasa a la nube solo cuando hace falta más calidad, más contexto o menos espera, siempre dentro de un tope de gasto."
+    },
+    {
+      "it": "I dati segreti non lasciano mai il dispositivo, i prompt vengono compattati e le risposte pubbliche già note si riusano senza richiamare il modello.",
+      "en": "Secret data never leaves the device, prompts are compacted and known public answers are reused without calling the model again.",
+      "fr": "Les données secrètes ne quittent jamais l'appareil, les requêtes sont compactées et les réponses publiques déjà connues sont réutilisées sans rappeler le modèle.",
+      "es": "Los datos secretos nunca salen del dispositivo, los prompts se compactan y las respuestas públicas ya conocidas se reutilizan sin volver a llamar al modelo."
+    }
+  ],
+  "fixes": []
+}

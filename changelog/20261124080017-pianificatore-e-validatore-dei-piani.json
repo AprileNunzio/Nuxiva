@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Nuxiva pianifica per intero prima di agire e blocca i piani non validi",
+    "en": "Nuxiva plans the whole job before acting and blocks invalid plans",
+    "fr": "Nuxiva planifie l'ensemble avant d'agir et bloque les plans invalides",
+    "es": "Nuxiva planifica todo antes de actuar y bloquea los planes no válidos"
+  },
+  "features": [
+    {
+      "it": "Ogni richiesta diventa un piano a passi con dipendenze: i passi indipendenti partono in parallelo e un piano con cicli, tipi incompatibili o strumenti inesistenti viene fermato prima di eseguire qualsiasi cosa.",
+      "en": "Every request becomes a step plan with dependencies: independent steps run in parallel, and a plan with cycles, incompatible types or nonexistent tools is stopped before anything runs.",
+      "fr": "Chaque demande devient un plan par étapes avec dépendances : les étapes indépendantes partent en parallèle, et un plan avec cycles, types incompatibles ou outils inexistants est arrêté avant toute exécution.",
+      "es": "Cada petición se convierte en un plan por pasos con dependencias: los pasos independientes salen en paralelo y un plan con ciclos, tipos incompatibles o herramientas inexistentes se detiene antes de ejecutar nada."
+    },
+    {
+      "it": "Un piano non può includere azioni che non hai chiesto né usare destinatari presi da contenuti esterni, e i passi che mandano all'esterno o spendono richiedono la tua approvazione.",
+      "en": "A plan cannot include actions you did not ask for or use recipients taken from external content, and steps that send outside or spend require your approval.",
+      "fr": "Un plan ne peut pas inclure d'actions que vous n'avez pas demandées ni utiliser des destinataires tirés de contenus externes, et les étapes qui envoient à l'extérieur ou dépensent exigent votre approbation.",
+      "es": "Un plan no puede incluir acciones que no pediste ni usar destinatarios sacados de contenidos externos, y los pasos que envían al exterior o gastan requieren tu aprobación."
+    }
+  ],
+  "fixes": []
+}

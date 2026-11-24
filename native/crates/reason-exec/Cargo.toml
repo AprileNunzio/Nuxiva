@@ -1,0 +1,20 @@
+[package]
+name = "nuxiva-reason-exec"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "reason_exec"
+path = "src/lib.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+nuxiva-capability-registry = { path = "../capability-registry" }
+nuxiva-reason-plan = { path = "../reason-plan" }
+nuxiva-reason-understand = { path = "../reason-understand" }
+blake3 = "1"

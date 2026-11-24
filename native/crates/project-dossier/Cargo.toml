@@ -1,0 +1,18 @@
+[package]
+name = "nuxiva-project-dossier"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "project_dossier"
+path = "src/lib.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+nuxiva-capability-registry = { path = "../capability-registry" }
+blake3 = { version = "1", default-features = false, features = ["std", "pure"] }

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Nuxiva può misurare quanto capiscono i modelli reali, locali e in cloud",
+    "en": "Nuxiva can measure how well real models, local and cloud, understand requests",
+    "fr": "Nuxiva peut mesurer à quel point les vrais modèles, locaux et cloud, comprennent les demandes",
+    "es": "Nuxiva puede medir cuánto entienden las peticiones los modelos reales, locales y en la nube"
+  },
+  "features": [
+    {
+      "it": "Un programma di misura invia le 300 richieste di prova in sei lingue a Ollama o a un servizio compatibile e salva i risultati per confrontare modelli, costi e tempi.",
+      "en": "A measuring tool sends the 300 test requests in six languages to Ollama or a compatible service and saves the results to compare models, costs and times.",
+      "fr": "Un outil de mesure envoie les 300 demandes de test en six langues à Ollama ou à un service compatible et enregistre les résultats pour comparer modèles, coûts et temps.",
+      "es": "Una herramienta de medición envía las 300 peticiones de prueba en seis idiomas a Ollama o a un servicio compatible y guarda los resultados para comparar modelos, costes y tiempos."
+    },
+    {
+      "it": "La chiave del servizio si legge solo da una variabile d'ambiente e non viene mai scritta né stampata.",
+      "en": "The service key is read only from an environment variable and is never written or printed.",
+      "fr": "La clé du service est lue uniquement depuis une variable d'environnement et n'est jamais écrite ni affichée.",
+      "es": "La clave del servicio se lee solo desde una variable de entorno y nunca se escribe ni se muestra."
+    }
+  ],
+  "fixes": []
+}

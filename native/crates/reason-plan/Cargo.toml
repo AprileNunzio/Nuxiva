@@ -1,0 +1,20 @@
+[package]
+name = "nuxiva-reason-plan"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "reason_plan"
+path = "src/lib.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+nuxiva-capability-registry = { path = "../capability-registry" }
+nuxiva-reason-understand = { path = "../reason-understand" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

@@ -1960,6 +1960,13 @@ name = "nuxiva-bus-core"
 version = "5.8.23"
 
 [[package]]
+name = "nuxiva-capability-forge"
+version = "5.8.23"
+dependencies = [
+ "nuxiva-capability-registry",
+]
+
+[[package]]
 name = "nuxiva-capability-registry"
 version = "5.8.23"
 dependencies = [
@@ -2262,6 +2269,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-inventory-core"
+version = "5.8.23"
+dependencies = [
+ "blake3",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "nuxiva-jev-adapter"
+version = "5.8.23"
+dependencies = [
+ "nuxiva-model-router",
+]
+
+[[package]]
 name = "nuxiva-knowledge-core"
 version = "5.8.23"
 dependencies = [
@@ -2385,6 +2408,13 @@ dependencies = [
  "thiserror 2.0.21",
  "uniffi",
  "zeroize",
+]
+
+[[package]]
+name = "nuxiva-model-router"
+version = "5.8.23"
+dependencies = [
+ "blake3",
 ]
 
 [[package]]
@@ -2561,6 +2591,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-policy-engine"
+version = "5.8.23"
+dependencies = [
+ "nuxiva-capability-registry",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-presence-core"
 version = "5.8.23"
 dependencies = [
@@ -2579,10 +2618,60 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-project-dossier"
+version = "5.8.23"
+dependencies = [
+ "blake3",
+ "nuxiva-capability-registry",
+]
+
+[[package]]
 name = "nuxiva-reason-eval"
 version = "5.8.23"
 dependencies = [
  "nuxiva-bench-core",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "nuxiva-reason-eval-run"
+version = "5.8.23"
+dependencies = [
+ "nuxiva-capability-registry",
+ "nuxiva-llm-client",
+ "nuxiva-reason-eval",
+ "nuxiva-reason-understand",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
+name = "nuxiva-reason-exec"
+version = "5.8.23"
+dependencies = [
+ "blake3",
+ "nuxiva-capability-registry",
+ "nuxiva-reason-plan",
+ "nuxiva-reason-understand",
+]
+
+[[package]]
+name = "nuxiva-reason-plan"
+version = "5.8.23"
+dependencies = [
+ "nuxiva-capability-registry",
+ "nuxiva-reason-understand",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "nuxiva-reason-understand"
+version = "5.8.23"
+dependencies = [
+ "nuxiva-capability-registry",
+ "nuxiva-reason-eval",
  "serde",
  "serde_json",
 ]

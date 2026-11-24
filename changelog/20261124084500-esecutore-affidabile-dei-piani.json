@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Nuxiva esegue i piani senza mai ripetere un invio per errore",
+    "en": "Nuxiva runs plans without ever repeating a send by mistake",
+    "fr": "Nuxiva exécute les plans sans jamais répéter un envoi par erreur",
+    "es": "Nuxiva ejecuta los planes sin repetir nunca un envío por error"
+  },
+  "features": [
+    {
+      "it": "I piani validati vengono eseguiti nell'ordine giusto con un diario di ogni passo: se l'esecuzione si interrompe, riprende da dove era arrivata senza rifare ciò che è già stato fatto.",
+      "en": "Validated plans run in the right order with a journal of every step: if execution is interrupted, it resumes where it stopped without redoing what is already done.",
+      "fr": "Les plans validés s'exécutent dans le bon ordre avec un journal de chaque étape : si l'exécution est interrompue, elle reprend où elle s'est arrêtée sans refaire ce qui est déjà fait.",
+      "es": "Los planes validados se ejecutan en el orden correcto con un diario de cada paso: si la ejecución se interrumpe, continúa donde se quedó sin repetir lo ya hecho."
+    },
+    {
+      "it": "Gli invii e le azioni irreversibili chiedono sempre approvazione, non vengono mai ritentati alla cieca e, se l'esito è incerto dopo un arresto, passano all'utente invece di essere ripetuti.",
+      "en": "Sends and irreversible actions always ask for approval, are never retried blindly, and if the outcome is uncertain after a crash they go to the user instead of being repeated.",
+      "fr": "Les envois et actions irréversibles demandent toujours une approbation, ne sont jamais retentés à l'aveugle et, si l'issue est incertaine après un arrêt, sont soumis à l'utilisateur au lieu d'être répétés.",
+      "es": "Los envíos y acciones irreversibles siempre piden aprobación, nunca se reintentan a ciegas y, si el resultado es incierto tras una caída, pasan al usuario en lugar de repetirse."
+    }
+  ],
+  "fixes": []
+}

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Comprensione delle richieste in qualsiasi lingua senza comandi scritti a mano",
+    "en": "Understanding requests in any language without hand-written commands",
+    "fr": "Compréhension des demandes dans toute langue sans commandes écrites à la main",
+    "es": "Comprensión de peticiones en cualquier idioma sin comandos escritos a mano"
+  },
+  "features": [
+    {
+      "it": "Ogni richiesta diventa un obiettivo strutturato con intenzione, effetti e rischio; nomi, indirizzi e citazioni restano esattamente come li hai scritti e il modello più grande interviene solo se il primo non è sicuro.",
+      "en": "Every request becomes a structured goal with intent, effects and risk; names, addresses and quotations stay exactly as you wrote them, and the larger model steps in only when the first one is not sure.",
+      "fr": "Chaque demande devient un objectif structuré avec intention, effets et risque ; noms, adresses et citations restent exactement comme vous les avez écrits, et le modèle plus grand n'intervient que si le premier n'est pas sûr.",
+      "es": "Cada petición se convierte en un objetivo estructurado con intención, efectos y riesgo; nombres, direcciones y citas se conservan tal como los escribiste y el modelo mayor solo interviene si el primero no está seguro."
+    },
+    {
+      "it": "Il contenuto di pagine web, email e documenti viene trattato come dato: non può dettare destinatari, conti o azioni, e il rischio è calcolato dagli effetti, non dichiarato dal modello.",
+      "en": "The content of web pages, emails and documents is treated as data: it cannot dictate recipients, accounts or actions, and risk is computed from the effects, not declared by the model.",
+      "fr": "Le contenu des pages web, e-mails et documents est traité comme une donnée : il ne peut dicter ni destinataires, ni comptes, ni actions, et le risque est calculé à partir des effets, non déclaré par le modèle.",
+      "es": "El contenido de páginas web, correos y documentos se trata como un dato: no puede dictar destinatarios, cuentas ni acciones, y el riesgo se calcula a partir de los efectos, no lo declara el modelo."
+    }
+  ],
+  "fixes": []
+}

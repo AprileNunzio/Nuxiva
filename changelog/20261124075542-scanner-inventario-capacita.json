@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Nuxiva scopre da sola agenti, strumenti, widget e nodi disponibili",
+    "en": "Nuxiva discovers the available agents, tools, widgets and nodes on its own",
+    "fr": "Nuxiva découvre seule les agents, outils, widgets et nœuds disponibles",
+    "es": "Nuxiva descubre por sí sola los agentes, herramientas, widgets y nodos disponibles"
+  },
+  "features": [
+    {
+      "it": "Un inventario unico tiene traccia di ciò che esiste: ogni novità, modifica o scomparsa viene rilevata, e un piano già preparato viene ricontrollato se nel frattempo qualcosa è cambiato.",
+      "en": "A single inventory keeps track of what exists: every addition, change or disappearance is detected, and a plan already prepared is checked again if something changed in the meantime.",
+      "fr": "Un inventaire unique suit ce qui existe : chaque ajout, modification ou disparition est détecté, et un plan déjà préparé est revérifié si quelque chose a changé entre-temps.",
+      "es": "Un inventario único registra lo que existe: se detecta cada alta, cambio o desaparición, y un plan ya preparado se vuelve a comprobar si algo cambió entretanto."
+    },
+    {
+      "it": "Ciò che arriva da utenti o viene generato parte senza fiducia e non può prendere il posto di uno strumento di sistema; ogni variazione resta in un registro a prova di manomissione.",
+      "en": "Anything coming from users or generated starts untrusted and cannot take the place of a system tool; every change stays in a tamper-evident log.",
+      "fr": "Tout ce qui vient des utilisateurs ou est généré démarre sans confiance et ne peut pas prendre la place d'un outil système ; chaque changement reste dans un journal infalsifiable.",
+      "es": "Todo lo que llega de usuarios o se genera empieza sin confianza y no puede ocupar el lugar de una herramienta del sistema; cada cambio queda en un registro a prueba de manipulaciones."
+    }
+  ],
+  "fixes": []
+}

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Nuxiva usa jev per le richieste semplici su Windows, macOS e Android",
+    "en": "Nuxiva uses jev for simple requests on Windows, macOS and Android",
+    "fr": "Nuxiva utilise jev pour les demandes simples sur Windows, macOS et Android",
+    "es": "Nuxiva usa jev para las peticiones simples en Windows, macOS y Android"
+  },
+  "features": [
+    {
+      "it": "Le richieste brevi e pubbliche vengono gestite da jev sul dispositivo abilitato, mentre quelle private, con immagini o con contenuti vanno sempre al pianificatore completo.",
+      "en": "Short public requests are handled by jev on the enabled device, while private ones, or those with images or content, always go to the full planner.",
+      "fr": "Les demandes courtes et publiques sont traitées par jev sur l'appareil activé, tandis que celles qui sont privées, avec images ou contenus vont toujours au planificateur complet.",
+      "es": "Las peticiones breves y públicas las gestiona jev en el dispositivo habilitado, mientras que las privadas, con imágenes o con contenido van siempre al planificador completo."
+    },
+    {
+      "it": "Se jev smette di rispondere, dopo tre errori viene escluso per un minuto così le richieste non si bloccano.",
+      "en": "If jev stops responding, after three errors it is left out for a minute so requests do not stall.",
+      "fr": "Si jev cesse de répondre, après trois erreurs il est écarté pendant une minute pour que les demandes ne restent pas bloquées.",
+      "es": "Si jev deja de responder, tras tres errores se aparta durante un minuto para que las peticiones no se bloqueen."
+    }
+  ],
+  "fixes": []
+}

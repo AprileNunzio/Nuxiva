@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Nuxiva prepara e consulta il dossier di progetto prima di agire",
+    "en": "Nuxiva prepares and consults the project dossier before acting",
+    "fr": "Nuxiva prépare et consulte le dossier de projet avant d'agir",
+    "es": "Nuxiva prepara y consulta el dossier del proyecto antes de actuar"
+  },
+  "features": [
+    {
+      "it": "Ogni progetto ha un dossier di documenti standard (principio, grafica, sicurezza, architettura, dati, test, decisioni) che diventa operativo solo dopo l'approvazione dell'utente e va riapprovato a ogni modifica.",
+      "en": "Every project has a dossier of standard documents (principle, graphics, security, architecture, data, tests, decisions) that becomes operational only after user approval and must be approved again after every change.",
+      "fr": "Chaque projet a un dossier de documents standard (principe, graphisme, sécurité, architecture, données, tests, décisions) qui n'est opérationnel qu'après approbation de l'utilisateur et doit être réapprouvé à chaque modification.",
+      "es": "Cada proyecto tiene un dossier de documentos estándar (principio, gráfica, seguridad, arquitectura, datos, pruebas, decisiones) que solo es operativo tras la aprobación del usuario y debe aprobarse de nuevo tras cada cambio."
+    },
+    {
+      "it": "Gli agenti leggono solo le sezioni pertinenti entro un limite di token, e il documento sulla sicurezza può soltanto restringere i permessi, mai ampliarli.",
+      "en": "Agents read only the relevant sections within a token limit, and the security document can only restrict permissions, never extend them.",
+      "fr": "Les agents ne lisent que les sections pertinentes dans une limite de jetons, et le document de sécurité ne peut que restreindre les permissions, jamais les étendre.",
+      "es": "Los agentes leen solo las secciones pertinentes dentro de un límite de tokens, y el documento de seguridad solo puede restringir permisos, nunca ampliarlos."
+    }
+  ],
+  "fixes": []
+}

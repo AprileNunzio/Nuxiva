@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-24",
+  "title": {
+    "it": "Nuxiva decide cosa è permesso in base a ruolo, contesto e singola persona",
+    "en": "Nuxiva decides what is allowed based on role, context and each person",
+    "fr": "Nuxiva décide ce qui est permis selon le rôle, le contexte et chaque personne",
+    "es": "Nuxiva decide lo que se permite según el rol, el contexto y cada persona"
+  },
+  "features": [
+    {
+      "it": "Ogni ruolo ha un tetto di azioni consentite; contesti come casa, lavoro o bambini e regole per persona possono solo restringerlo, mai ampliarlo.",
+      "en": "Each role has a ceiling of permitted actions; contexts such as home, work or kids and per-person rules can only narrow it, never widen it.",
+      "fr": "Chaque rôle a un plafond d'actions autorisées ; les contextes comme maison, travail ou enfants et les règles par personne ne peuvent que le restreindre, jamais l'élargir.",
+      "es": "Cada rol tiene un tope de acciones permitidas; los contextos como casa, trabajo o niños y las reglas por persona solo pueden restringirlo, nunca ampliarlo."
+    },
+    {
+      "it": "I widget della dashboard compaiono solo a chi ha il ruolo e il contesto giusti, e ogni rifiuto riporta un motivo traducibile.",
+      "en": "Dashboard widgets appear only to those with the right role and context, and every refusal carries a translatable reason.",
+      "fr": "Les widgets du tableau de bord n'apparaissent qu'à ceux qui ont le bon rôle et le bon contexte, et chaque refus porte un motif traduisible.",
+      "es": "Los widgets del panel aparecen solo a quien tiene el rol y el contexto adecuados, y cada rechazo lleva un motivo traducible."
+    }
+  ],
+  "fixes": []
+}
