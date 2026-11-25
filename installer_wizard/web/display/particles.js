@@ -481,5 +481,18 @@ void main() {
   }
 
   document.addEventListener("visibilitychange", () => { if (!document.hidden && renderer && showing) renderer.play(); });
-  window.NuxivaParticles = Object.freeze({ update, hide, decode, get showing() { return showing; } });
+  function adjust(d) {
+    if (!renderer || !showing) return;
+    renderer.yaw += d.yaw || 0;
+    renderer.pitch = Math.max(-1.3, Math.min(1.3, renderer.pitch + (d.pitch || 0)));
+    renderer.scale = Math.max(0.18, Math.min(4.8, renderer.scale * (d.zoom || 1)));
+    renderer.userInteracted = true;
+  }
+
+  function reset() {
+    if (!renderer) return;
+    Object.assign(renderer, { yaw: 0, pitch: 0.28, scale: 0.85, userInteracted: false });
+  }
+
+  window.NuxivaParticles = Object.freeze({ update, hide, decode, adjust, reset, get showing() { return showing; } });
 })();

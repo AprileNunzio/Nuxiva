@@ -81,25 +81,8 @@ async def display_events(request: Request):
     return {"ok": True, "recorded": len(clean)}
 
 
-@public_routes.get("/api/hands/display/spatial_hud")
-async def display_spatial_hud_get(request: Request):
+@public_routes.get("/api/hands/display/holo")
+async def display_holo(request: Request):
     require_display(request, "Solo dal display")
-    from agenti.hands import spatial_hud
-    return JSONResponse(spatial_hud.snapshot(), headers=NO_CACHE)
-
-
-@public_routes.post("/api/hands/display/spatial_hud")
-async def display_spatial_hud_post(request: Request):
-    require_display(request, "Solo dal display")
-    from agenti.hands import spatial_hud
-    body = await request.json()
-    if not isinstance(body, dict):
-        raise HTTPException(400, "Stato Spatial HUD non valido")
-    state = spatial_hud.update_from_display(body)
-    intent = body.get("gesture_intent")
-    if isinstance(intent, dict):
-        ev = semantic(intent)
-        if ev is not None:
-            hand_events.record([ev])
-    return JSONResponse(state, headers=NO_CACHE)
-
+    from agenti.hands.holo.session import session
+    return JSONResponse(session.snapshot(), headers=NO_CACHE)

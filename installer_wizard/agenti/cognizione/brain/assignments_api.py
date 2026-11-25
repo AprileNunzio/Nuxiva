@@ -91,7 +91,9 @@ async def brain_trace(request: Request):
 
 @public_routes.get("/api/brain/journey")
 async def brain_journey(request: Request):
+    from agenti.desktop.privileges import require_super_admin
     require_display(request)
+    require_super_admin(request)
     principal = turns.request_owner(request)
     snapshot = journeys.snapshot()
     return {**snapshot, "journeys": [
@@ -102,7 +104,9 @@ async def brain_journey(request: Request):
 
 @public_routes.post("/api/brain/journey/{turn_id}/stop", status_code=202)
 async def stop_journey(turn_id: str, request: Request):
+    from agenti.desktop.privileges import require_super_admin
     require_display(request)
+    require_super_admin(request)
     if request.headers.get("X-Nuxiva-Request") != "1":
         raise HTTPException(403)
     if not turns.stop(turn_id, turns.request_owner(request)):

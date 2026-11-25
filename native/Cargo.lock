@@ -2260,6 +2260,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-holo-core"
+version = "5.8.25"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-initiative-core"
 version = "5.8.25"
 dependencies = [
@@ -2466,6 +2474,7 @@ dependencies = [
  "nuxiva-gesture-core",
  "nuxiva-graph-core",
  "nuxiva-guard-core",
+ "nuxiva-holo-core",
  "nuxiva-initiative-core",
  "nuxiva-knowledge-core",
  "nuxiva-langid",

@@ -632,6 +632,23 @@
     "screenshot_service": "📸 Servicio de capturas inactivo en este servidor",
     "timing_label": "Tiempo por fase",
     "timing_total": "Total",
-    "timing_seconds": "{{s}} s"
+    "timing_seconds": "{{s}} s",
+    "holo_mode_particles": "Holograma de partículas",
+    "holo_mode_realistic": "3D realista",
+    "holo_mode_anatomy": "Anatomía",
+    "holo_status_building": "Diseño en alta definición en curso",
+    "holo_status_refining": "Primera versión 3D · refinado HD en curso",
+    "holo_status_ready": "Alta definición",
+    "holo_status_draft_only": "Primera versión 3D",
+    "holo_status_failed": "Alta definición no disponible",
+    "holo_gesture_idle": "Manos listas",
+    "holo_gesture_rotate": "Pellizco · rotar",
+    "holo_gesture_zoom": "Dos pellizcos · zoom",
+    "holo_gesture_pan": "Dos pellizcos · mover",
+    "holo_gesture_explode": "Dos palmas · separar piezas",
+    "holo_gesture_toggle": "Puño · abrir o unir",
+    "holo_hint": "Pellizca y mueve para girar · dos pellizcos para ampliar · dos palmas abiertas para separar las piezas · puño para abrir o unir",
+    "holo_camera_local": "Webcam procesada solo en este dispositivo",
+    "holo_parts": "{{n}} piezas · {{l}} capas"
   }
 }

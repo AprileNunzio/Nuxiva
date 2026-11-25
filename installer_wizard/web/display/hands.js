@@ -202,6 +202,11 @@
     if (st.stopped) return;
     const hands = res.landmarks || [];
     window.__nuxivaLastHands = hands;
+    if (document.body.classList.contains("holo-gestures")) {
+      if (hands.length) st.seen = performance.now();
+      st.cursor.classList.remove("on", "pinch");
+      return;
+    }
     if (st.bridge && st.bridge.ready) {
       if (hands.length) st.seen = performance.now();
       if (st.bridge.send(now, res)) return;

@@ -1,0 +1,28 @@
+{
+  "commands": {
+    "realistic": ["en 3d", "3d", "realiste", "photorealiste", "comme un jeu video", "graphismes de jeu video", "haute definition", "en hd", "solide", "vue realiste"],
+    "anatomy": ["anatomie", "mode anatomie", "anatomique", "coupe", "vue eclatee", "interieur"],
+    "particles": ["particules", "retour aux particules", "mode particules"],
+    "zoom_in": ["agrandis", "zoom avant", "plus grand", "rapproche"],
+    "zoom_out": ["reduis", "zoom arriere", "plus petit", "eloigne"],
+    "rotate_left": ["tourne a gauche", "pivote a gauche"],
+    "rotate_right": ["tourne a droite", "pivote a droite", "tourne le", "tourne"],
+    "rotate_up": ["tourne vers le haut", "vue du dessus"],
+    "rotate_down": ["tourne vers le bas", "vue du dessous"],
+    "reset": ["vue initiale", "reinitialise la vue"],
+    "explode": ["separe les pieces", "eclate le", "ouvre le modele", "ouvre le"],
+    "collapse": ["rassemble", "reassemble", "remets ensemble"],
+    "animate": ["anime le", "fais le bouger", "lance l animation"],
+    "still": ["arrete le", "arrete l animation", "immobile"],
+    "close": ["ferme l hologramme", "ferme la vue", "ferme le modele", "cache l hologramme"]
+  },
+  "replies": {
+    "realistic": "Je passe à la vue 3D réaliste de {subject}.",
+    "realistic_wait": "Je termine le modèle haute définition de {subject} : voici la première version 3D en attendant.",
+    "anatomy": "Vue anatomique de {subject} : couches externes transparentes, parties internes mises en avant. Sépare ou rassemble avec les mains ou la voix.",
+    "particles": "Retour à l'hologramme de particules de {subject}.",
+    "view": "C'est fait.",
+    "close": "J'ai fermé la vue.",
+    "unavailable": "Le modèle haute définition a échoué ({reason}) : je reste sur la première version 3D."
+  }
+}

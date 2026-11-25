@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "date": "2026-11-25",
+  "title": {
+    "it": "Ologrammi 3D su richiesta: particelle, 3D realistico e anatomia comandati con le mani",
+    "en": "3D holograms on request: particles, realistic 3D and anatomy driven by your hands",
+    "fr": "Hologrammes 3D sur demande : particules, 3D réaliste et anatomie pilotés avec les mains",
+    "es": "Hologramas 3D bajo petición: partículas, 3D realista y anatomía controlados con las manos"
+  },
+  "features": [
+    {
+      "it": "Chiedi «fammi vedere come è fatto il DNA»: compare subito l'ologramma a particelle e, mentre parli, Nuxiva prepara il modello in alta definizione. Se chiedi «in 3D» o «l'anatomia» la vista parte direttamente in quella modalità.",
+      "en": "Ask “show me how DNA is made”: the particle hologram appears at once and Nuxiva prepares the high definition model meanwhile. Ask “in 3D” or “the anatomy” and the view starts directly in that mode.",
+      "fr": "Demande « montre-moi comment est fait l'ADN » : l'hologramme de particules apparaît tout de suite et Nuxiva prépare le modèle haute définition. Demande « en 3D » ou « l'anatomie » et la vue démarre directement dans ce mode.",
+      "es": "Pide «muéstrame cómo está hecho el ADN»: el holograma de partículas aparece al instante y Nuxiva prepara el modelo en alta definición. Si pides «en 3D» o «la anatomía», la vista empieza directamente en ese modo."
+    },
+    {
+      "it": "Vista 3D realistica con materiali fisici, riflessi, ombre morbide e parti animate (un cuore che batte, una ruota che gira); vista anatomia con strati esterni trasparenti, etichette e parti che si separano.",
+      "en": "Realistic 3D view with physical materials, reflections, soft shadows and animated parts (a beating heart, a spinning wheel); anatomy view with transparent outer layers, labels and parts that separate.",
+      "fr": "Vue 3D réaliste avec matériaux physiques, reflets, ombres douces et pièces animées (un cœur qui bat, une roue qui tourne) ; vue anatomie avec couches externes transparentes, étiquettes et pièces qui se séparent.",
+      "es": "Vista 3D realista con materiales físicos, reflejos, sombras suaves y piezas animadas (un corazón que late, una rueda que gira); vista anatómica con capas externas transparentes, etiquetas y piezas que se separan."
+    },
+    {
+      "it": "Con la webcam del display: pizzica e muovi per ruotare, due pizzichi per ingrandire o spostare, due palmi aperti per separare le parti, pugno per aprire o ricomporre. Funziona anche a voce: «ingrandisci», «ruota a destra», «modalità anatomia», «torna alle particelle».",
+      "en": "With the display webcam: pinch and move to rotate, two pinches to zoom or move, two open palms to separate the parts, a fist to open or reassemble. Voice works too: “zoom in”, “rotate right”, “anatomy mode”, “back to particles”.",
+      "fr": "Avec la webcam de l'écran : pince et bouge pour tourner, deux pincements pour zoomer ou déplacer, deux paumes ouvertes pour séparer les pièces, le poing pour ouvrir ou rassembler. La voix aussi : « agrandis », « tourne à droite », « mode anatomie », « retour aux particules ».",
+      "es": "Con la webcam de la pantalla: pellizca y mueve para girar, dos pellizcos para ampliar o mover, dos palmas abiertas para separar las piezas, el puño para abrir o unir. También con la voz: «amplía», «gira a la derecha», «modo anatomía», «vuelve a las partículas»."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Tolto il pulsante Spatial Gesture HUD dal pannello: la vista olografica si apre da sola quando chiedi di vedere qualcosa.",
+      "en": "Removed the Spatial Gesture HUD button from the panel: the holographic view opens by itself when you ask to see something.",
+      "fr": "Bouton Spatial Gesture HUD retiré du panneau : la vue holographique s'ouvre seule quand tu demandes à voir quelque chose.",
+      "es": "Quitado el botón Spatial Gesture HUD del panel: la vista holográfica se abre sola cuando pides ver algo."
+    },
+    {
+      "it": "«Mostra il cervello» e «Flusso dell'analisi» compaiono solo al super admin (amministratore completo collegato, o il proprietario riconosciuto davanti al display), e anche i loro dati sono protetti sul server.",
+      "en": "“Show the brain” and “Analysis flow” appear only to the super admin (a signed-in full administrator, or the owner recognised in front of the display), and their data is protected on the server too.",
+      "fr": "« Montrer le cerveau » et « Flux de l'analyse » n'apparaissent qu'au super admin (administrateur complet connecté, ou le propriétaire reconnu devant l'écran), et leurs données sont aussi protégées sur le serveur.",
+      "es": "«Mostrar el cerebro» y «Flujo del análisis» solo aparecen al super admin (administrador completo conectado, o el propietario reconocido delante de la pantalla), y sus datos también están protegidos en el servidor."
+    }
+  ]
+}

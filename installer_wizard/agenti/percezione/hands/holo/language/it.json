@@ -1,0 +1,28 @@
+{
+  "commands": {
+    "realistic": ["in 3d", "3d", "in tre dimensioni", "realistico", "realistica", "fotorealistico", "fotorealistica", "come un videogioco", "grafica da videogioco", "alta definizione", "in hd", "solido", "vista realistica"],
+    "anatomy": ["anatomia", "modalita anatomia", "anatomico", "anatomica", "sezione", "spaccato", "interno", "come e fatto dentro", "come e fatta dentro", "vista esplosa"],
+    "particles": ["particelle", "a particelle", "torna alle particelle", "modalita particelle"],
+    "zoom_in": ["ingrandisci", "ingrandiscilo", "ingrandiscila", "zoom avanti", "piu grande", "avvicina", "avvicinalo"],
+    "zoom_out": ["rimpicciolisci", "rimpiccioliscilo", "riduci", "zoom indietro", "piu piccolo", "allontana", "allontanalo"],
+    "rotate_left": ["ruota a sinistra", "gira a sinistra", "giralo a sinistra"],
+    "rotate_right": ["ruota a destra", "gira a destra", "giralo a destra", "ruotalo", "giralo", "ruota"],
+    "rotate_up": ["ruota verso l alto", "inclina in alto", "mostrami sopra", "vista dall alto"],
+    "rotate_down": ["ruota verso il basso", "inclina in basso", "mostrami sotto", "vista dal basso"],
+    "reset": ["vista iniziale", "ripristina la vista", "resetta la vista", "rimetti com era"],
+    "explode": ["separa le parti", "esplodi", "esplodilo", "apri il modello", "aprilo"],
+    "collapse": ["ricomponi", "ricomponilo", "unisci le parti", "rimetti insieme"],
+    "animate": ["animalo", "animala", "fallo muovere", "falla muovere", "mettilo in movimento", "fallo battere"],
+    "still": ["fermalo", "fermala", "ferma l animazione", "stop animazione", "tienilo fermo"],
+    "close": ["chiudi l ologramma", "chiudi la visualizzazione", "chiudi il modello", "chiudi la vista", "basta ologramma", "togli l ologramma"]
+  },
+  "replies": {
+    "realistic": "Passo alla vista 3D realistica di {subject}.",
+    "realistic_wait": "Sto finendo il modello in alta definizione di {subject}: intanto ti mostro la prima versione 3D.",
+    "anatomy": "Vista anatomica di {subject}: strati esterni trasparenti, parti interne in evidenza. Separa o ricomponi con le mani o a voce.",
+    "particles": "Torno all'ologramma a particelle di {subject}.",
+    "view": "Fatto.",
+    "close": "Ho chiuso la visualizzazione.",
+    "unavailable": "Il modello in alta definizione non è riuscito ({reason}): resto sulla prima versione 3D."
+  }
+}

@@ -21,6 +21,13 @@ admin_routes = APIRouter()
 public_routes.add_api_route("/api/display/remote-media/camera/probe", probe_camera, methods=["POST"])
 
 
+@public_routes.get("/api/display/privileges")
+async def display_privileges(request: Request):
+    require_display(request)
+    from agenti.desktop.privileges import is_super_admin
+    return JSONResponse({"super_admin": is_super_admin(request, time.time())}, headers=NO_CACHE)
+
+
 @public_routes.get("/api/display/remote-media")
 async def remote_media(request: Request):
     user = session_user(request) if request.url.scheme == "https" else None

@@ -632,6 +632,23 @@
     "screenshot_service": "📸 Screenshot service is not running on this server",
     "timing_label": "Time per phase",
     "timing_total": "Total",
-    "timing_seconds": "{{s}} s"
+    "timing_seconds": "{{s}} s",
+    "holo_mode_particles": "Particle hologram",
+    "holo_mode_realistic": "Realistic 3D",
+    "holo_mode_anatomy": "Anatomy",
+    "holo_status_building": "High definition design in progress",
+    "holo_status_refining": "First 3D version · HD refinement in progress",
+    "holo_status_ready": "High definition",
+    "holo_status_draft_only": "First 3D version",
+    "holo_status_failed": "High definition not available",
+    "holo_gesture_idle": "Hands ready",
+    "holo_gesture_rotate": "Pinch · rotate",
+    "holo_gesture_zoom": "Two pinches · zoom",
+    "holo_gesture_pan": "Two pinches · move",
+    "holo_gesture_explode": "Two palms · separate parts",
+    "holo_gesture_toggle": "Fist · open or reassemble",
+    "holo_hint": "Pinch and move to rotate · two pinches to zoom · two open palms to separate the parts · fist to open or reassemble",
+    "holo_camera_local": "Webcam processed on this device only",
+    "holo_parts": "{{n}} parts · {{l}} layers"
   }
 }

@@ -426,7 +426,10 @@ async def public_predict(q: str = ""):
 
 
 @public_routes.get("/api/assistant/memory")
-async def public_memory():
+async def public_memory(request: Request):
+    from agenti.desktop.privileges import require_super_admin
+    require_display(request)
+    require_super_admin(request)
     try:
         r = await core.request("GET", "/api/v1/knowledge/graph", timeout=20)
         return JSONResponse(r.json().get("graph", {}), headers=NO_CACHE)

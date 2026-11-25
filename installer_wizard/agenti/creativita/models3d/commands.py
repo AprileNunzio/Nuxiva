@@ -35,18 +35,15 @@ async def _build(subject: str) -> None:
 
 async def answer(text: str) -> tuple[str, dict]:
     if h := HOLOGRAM.search(text):
-        from agenti.hands import spatial_hud
+        from agenti.hands.holo import commands as holo
         subject = h.group("what").strip()
-        await spatial_hud.spatial_hud_generate_object(subject, "particles")
-        return f"Ecco l'ologramma particellare di {subject} sullo Spatial HUD.", {"mode": "face"}
-    if UPGRADE_PBR.search(text):
-        from agenti.hands import spatial_hud
-        await spatial_hud.spatial_hud_set_fidelity("photoreal_pbr")
-        return "Rendering evoluto a fotorealismo PBR con sfumature, riflessi clearcoat e illuminazione fisica.", {"mode": "face"}
-    if UPGRADE_3D.search(text):
-        from agenti.hands import spatial_hud
-        await spatial_hud.spatial_hud_set_fidelity("mesh_3d")
-        return "Ologramma convertito in geometria 3D solida.", {"mode": "face"}
+        ui = holo.start(subject, holo.initial_mode(text, "it"), "it")
+        return holo.say("it", "particles", subject=subject), {"mode": "face", **ui}
+    if UPGRADE_PBR.search(text) or UPGRADE_3D.search(text):
+        from agenti.hands.holo import commands as holo
+        held = await holo.answer(holo.vocab("it")["commands"]["realistic"][0], "it")
+        if held is not None:
+            return held["reply"], held["ui"]
     try:
         return voice.answer(text)
     except LookupError:

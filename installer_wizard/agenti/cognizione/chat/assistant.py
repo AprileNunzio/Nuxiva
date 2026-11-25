@@ -114,10 +114,14 @@ async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
     json_only = bool(strict_reply.JSON_ONLY.match(text.strip()))
     if json_only or strict_reply.CHAT_ONLY.search(text):
         return await _text_only(text, lang, started, json_only=json_only)
+    from agenti.hands.holo import commands as holo
+    held = await holo.answer(text, lang)
+    if held is not None:
+        return held
     from agenti.particles import show as particles_show
     visual = await particles_show.answer_visual(text, lang)
     if visual is not None:
-        return visual
+        return holo.follow(visual, text, lang)
     switched = bool((speech_lang or {}).get("switched"))
     routing = text if switched else await pivot.to_pivot(text, lang)
 

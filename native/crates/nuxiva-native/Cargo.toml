@@ -54,6 +54,7 @@ nuxiva-display-learner = { path = "../display-learner" }
 nuxiva-sentinel-core = { path = "../sentinel-core" }
 nuxiva-surface-core = { path = "../surface-core" }
 nuxiva-molecule-core = { path = "../molecule-core" }
+nuxiva-holo-core = { path = "../holo-core" }
 nuxiva-guard-core = { path = "../guard-core" }
 nuxiva-seal-core = { path = "../seal-core" }
 nuxiva-config-core = { path = "../config-core" }

@@ -43,6 +43,7 @@ mod gesture;
 mod governors;
 mod graph;
 mod guard;
+mod holo;
 mod home_rules;
 mod initiative;
 mod jev;
@@ -114,6 +115,7 @@ use embodied::{
 };
 use gesture::{RustGestureEngine, gesture_catalog, gesture_validate_profile};
 use governors::{RustMeshTaskGovernor, RustNetworkGovernor, RustResourceGovernor};
+use holo::holo_prepare;
 use language::{detect_language, supported_languages};
 use learner::RustLearner;
 use memory::{RustFastMemory, RustLiveCoPilot};
@@ -156,6 +158,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustSentinel>()?;
     m.add_class::<RustMoveGuard>()?;
     m.add_function(wrap_pyfunction!(molecule_build, m)?)?;
+    m.add_function(wrap_pyfunction!(holo_prepare, m)?)?;
     m.add_function(wrap_pyfunction!(surface_layout, m)?)?;
     m.add_function(wrap_pyfunction!(surface_audience, m)?)?;
     m.add_class::<RustAccessMatrix>()?;
