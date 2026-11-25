@@ -7,7 +7,7 @@ VIEW = ("zoom_in", "zoom_out", "rotate_left", "rotate_right", "rotate_up", "rota
         "animate", "still")
 TTL_SECONDS = 600.0
 SUBJECT_MAX = 64
-FINAL = ("designed", "exact")
+FINAL = ("designed", "exact", "catalog")
 
 
 class Session:
@@ -20,7 +20,7 @@ class Session:
     @staticmethod
     def _empty() -> dict:
         return {"id": "", "subject": "", "mode": "particles", "status": "idle", "source": "", "reason": "", "scene": None,
-                "command": {"seq": 0, "name": ""}, "animate": True, "until": 0.0, "updated_at": 0.0}
+                "command": {"seq": 0, "name": ""}, "progress": {"key": "", "params": {}}, "animate": True, "until": 0.0, "updated_at": 0.0}
 
     def _touch(self) -> None:
         now = self.clock()
@@ -43,6 +43,14 @@ class Session:
             self.data.update(scene=scene, source=source, status="ready" if source in FINAL else "refining", reason="")
             self.data["updated_at"] = round(self.clock(), 3)
             return True
+
+    def progress(self, session_id: str, key: str, **params) -> None:
+        clean = {k: (v if isinstance(v, (int, float)) else str(v)[:SUBJECT_MAX]) for k, v in params.items()}
+        with self.lock:
+            if session_id != self.data["id"]:
+                return
+            self.data["progress"] = {"key": str(key)[:24], "params": clean}
+            self.data["updated_at"] = round(self.clock(), 3)
 
     def failed(self, session_id: str, reason: str) -> None:
         with self.lock:
@@ -88,6 +96,7 @@ class Session:
             live = bool(self.data["id"]) and self.data["until"] > self.clock()
             out = {k: v for k, v in self.data.items() if k != "until"}
             out["command"] = dict(self.data["command"])
+            out["progress"] = {"key": self.data["progress"]["key"], "params": dict(self.data["progress"]["params"])}
             out["active"] = live
             if not live:
                 out.update(scene=None, mode="particles")

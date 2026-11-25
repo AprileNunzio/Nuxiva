@@ -2,7 +2,7 @@ import re
 
 from access import NO_CACHE, is_local, require_display
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from agenti.hands import events as hand_events
 from agenti.hands import store
@@ -86,3 +86,14 @@ async def display_holo(request: Request):
     require_display(request, "Solo dal display")
     from agenti.hands.holo.session import session
     return JSONResponse(session.snapshot(), headers=NO_CACHE)
+
+
+@public_routes.get("/api/hands/display/holo/asset/{asset_id}")
+async def display_holo_asset(asset_id: str, request: Request):
+    require_display(request, "Solo dal display")
+    from agenti.hands.holo.catalog.store import catalog
+    path = catalog.path(asset_id)
+    if path is None:
+        raise HTTPException(404, "Modello sconosciuto")
+    return FileResponse(path, media_type="model/gltf-binary", headers={"Cache-Control": "private, max-age=86400",
+                                                                      "X-Content-Type-Options": "nosniff"})

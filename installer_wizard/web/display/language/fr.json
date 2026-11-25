@@ -649,6 +649,16 @@
     "holo_gesture_toggle": "Poing · ouvrir ou rassembler",
     "holo_hint": "Pince et bouge pour tourner · deux pincements pour zoomer · deux paumes ouvertes pour séparer les pièces · poing pour ouvrir ou rassembler",
     "holo_camera_local": "Webcam traitée uniquement sur cet appareil",
-    "holo_parts": "{{n}} pièces · {{l}} couches"
+    "holo_parts": "{{n}} pièces · {{l}} couches",
+    "holo_progress_searching": "Je cherche un modèle 3D professionnel sur {{source}}",
+    "holo_progress_rating": "J’évalue le rendu de {{n}} modèles trouvés",
+    "holo_progress_downloading": "Je télécharge et vérifie « {{name}} »",
+    "holo_progress_rejected": "« {{name}} » écarté : score {{score}} sous le seuil",
+    "holo_progress_chosen": "« {{name}} » choisi avec un score de {{score}}",
+    "holo_progress_cached": "J’utilise « {{name}} » du catalogue",
+    "holo_progress_none": "Aucun modèle prêt ne dépasse le seuil {{limit}} : je le crée",
+    "holo_progress_generating": "Je crée le modèle en haute définition",
+    "holo_credit": "« {{name}} » de {{author}} · {{license}}",
+    "holo_asset_score": "Modèle vérifié · score {{s}}"
   }
 }

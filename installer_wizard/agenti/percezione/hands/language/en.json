@@ -10,6 +10,9 @@
   ],
   "settings": {
     "NUXIVA_HANDS_FPS": "Sampling rate (fps)",
-    "NUXIVA_HANDS_COUNT": "Max hands tracked"
+    "NUXIVA_HANDS_COUNT": "Max hands tracked",
+    "NUXIVA_HOLO_CATALOG": "Before creating a 3D model, search online for a ready model and save it in the catalogue",
+    "NUXIVA_SKETCHFAB_TOKEN": "Sketchfab API token (to download Creative Commons models)",
+    "NUXIVA_HOLO_MIN_SCORE": "Minimum score (40-95) for a found model to be shown"
   }
 }

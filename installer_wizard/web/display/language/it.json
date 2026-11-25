@@ -649,6 +649,16 @@
     "holo_gesture_toggle": "Pugno · apri o ricomponi",
     "holo_hint": "Pizzica e muovi per ruotare · due pizzichi per ingrandire · due palmi aperti per separare le parti · pugno per aprire o ricomporre",
     "holo_camera_local": "Webcam elaborata solo su questo dispositivo",
-    "holo_parts": "{{n}} parti · {{l}} strati"
+    "holo_parts": "{{n}} parti · {{l}} strati",
+    "holo_progress_searching": "Cerco un modello 3D professionale su {{source}}",
+    "holo_progress_rating": "Valuto la grafica di {{n}} modelli trovati",
+    "holo_progress_downloading": "Scarico e controllo «{{name}}»",
+    "holo_progress_rejected": "«{{name}}» scartato: punteggio {{score}} sotto la soglia",
+    "holo_progress_chosen": "Scelto «{{name}}» con punteggio {{score}}",
+    "holo_progress_cached": "Uso «{{name}}» dal catalogo",
+    "holo_progress_none": "Nessun modello pronto supera la soglia {{limit}}: lo creo io",
+    "holo_progress_generating": "Creo il modello in alta definizione",
+    "holo_credit": "«{{name}}» di {{author}} · {{license}}",
+    "holo_asset_score": "Modello verificato · punteggio {{s}}"
   }
 }

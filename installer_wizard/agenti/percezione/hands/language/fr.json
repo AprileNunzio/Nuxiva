@@ -11,6 +11,9 @@
   "settings": {
     "NUXIVA_HANDS_FPS": "Analyse par seconde avec une main en vue",
     "NUXIVA_HANDS_COUNT": "Des mains reconnues",
-    "NUXIVA_HANDS_MAX_MS": "Temps maximum d'analyse (il s'éteint automatiquement au-delà)"
+    "NUXIVA_HANDS_MAX_MS": "Temps maximum d'analyse (il s'éteint automatiquement au-delà)",
+    "NUXIVA_HOLO_CATALOG": "Avant de créer un modèle 3D, chercher en ligne un modèle prêt et l'enregistrer dans le catalogue",
+    "NUXIVA_SKETCHFAB_TOKEN": "Jeton API Sketchfab (pour télécharger des modèles Creative Commons)",
+    "NUXIVA_HOLO_MIN_SCORE": "Score minimum (40-95) pour afficher un modèle trouvé"
   }
 }

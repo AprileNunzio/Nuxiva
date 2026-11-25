@@ -42,6 +42,12 @@ async def build(session_id: str, subject: str, spec: dict | None, lang: str) -> 
     first = draft(subject, spec)
     if first is not None:
         session.scene_ready(session_id, first, "draft")
+    from agenti.hands.holo.catalog import finder
+    entry = await finder.find(subject, lambda key, **params: session.progress(session_id, key, **params))
+    if entry is not None:
+        session.scene_ready(session_id, finder.asset_scene(entry), "catalog")
+        return
+    session.progress(session_id, "generating")
     try:
         scene = await design(subject, lang)
     except MODEL_ERRORS as exc:

@@ -115,7 +115,7 @@ use embodied::{
 };
 use gesture::{RustGestureEngine, gesture_catalog, gesture_validate_profile};
 use governors::{RustMeshTaskGovernor, RustNetworkGovernor, RustResourceGovernor};
-use holo::{holo_dna, holo_prepare};
+use holo::{holo_dna, holo_inspect_glb, holo_prepare};
 use language::{detect_language, supported_languages};
 use learner::RustLearner;
 use memory::{RustFastMemory, RustLiveCoPilot};
@@ -160,6 +160,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(molecule_build, m)?)?;
     m.add_function(wrap_pyfunction!(holo_prepare, m)?)?;
     m.add_function(wrap_pyfunction!(holo_dna, m)?)?;
+    m.add_function(wrap_pyfunction!(holo_inspect_glb, m)?)?;
     m.add_function(wrap_pyfunction!(surface_layout, m)?)?;
     m.add_function(wrap_pyfunction!(surface_audience, m)?)?;
     m.add_class::<RustAccessMatrix>()?;

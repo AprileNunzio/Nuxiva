@@ -109,3 +109,52 @@ body.holo-solid .particles-professor-card {
     display: none;
   }
 }
+
+.holo-credit {
+  position: absolute;
+  right: clamp(0.6rem, 2vw, 1.2rem);
+  top: clamp(0.6rem, 2vh, 1.2rem);
+  max-width: min(360px, 70vw);
+  padding: 0.3rem 0.65rem;
+  border: 1px solid rgba(94, 242, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(4, 16, 28, 0.72);
+  color: #bfefff;
+  font-size: clamp(0.62rem, 1vw, 0.76rem);
+  text-decoration: none;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+}
+
+.holo-credit[hidden],
+.holo-progress[hidden] {
+  display: none !important;
+}
+
+.holo-progress {
+  position: fixed;
+  left: 50%;
+  top: clamp(0.6rem, 3vh, 1.4rem);
+  z-index: 31;
+  max-width: min(560px, 90vw);
+  margin: 0;
+  padding: 0.45rem 0.9rem;
+  transform: translateX(-50%);
+  border: 1px solid rgba(94, 242, 255, 0.45);
+  border-radius: 999px;
+  background: rgba(4, 16, 28, 0.82);
+  color: #e6f9ff;
+  font-size: clamp(0.68rem, 1.1vw, 0.85rem);
+  text-align: center;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  animation: holo-progress-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes holo-progress-pulse {
+  50% { border-color: rgba(94, 242, 255, 0.9); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holo-progress { animation: none; }
+}

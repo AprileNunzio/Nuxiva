@@ -14,3 +14,10 @@ pub fn holo_dna(py: Python<'_>, sequence: &str) -> PyResult<String> {
     py.detach(move || nuxiva_holo_core::dna::generate(&owned))
         .map_err(|err| PyValueError::new_err(err.code()))
 }
+
+#[pyfunction]
+pub fn holo_inspect_glb(py: Python<'_>, data: &[u8]) -> PyResult<String> {
+    let owned = data.to_vec();
+    py.detach(move || nuxiva_holo_core::glb::inspect_json(&owned))
+        .map_err(|err| PyValueError::new_err(err.code()))
+}

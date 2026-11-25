@@ -5,6 +5,7 @@ pub enum HoloError {
     TooLarge,
     BadJson,
     NoParts,
+    BadModel,
 }
 
 pub type HoloResult<T> = Result<T, HoloError>;
@@ -16,6 +17,7 @@ impl HoloError {
             Self::TooLarge => "holo_too_large",
             Self::BadJson => "holo_bad_json",
             Self::NoParts => "holo_no_parts",
+            Self::BadModel => "holo_bad_model",
         }
     }
 }

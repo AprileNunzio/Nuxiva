@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "date": "2026-11-25",
+  "title": {
+    "it": "Prima di creare un modello 3D, Nuxiva cerca online un modello professionale già pronto, lo valuta e te lo mostra",
+    "en": "Before building a 3D model, Nuxiva looks online for a ready professional model, rates it and shows it to you",
+    "fr": "Avant de créer un modèle 3D, Nuxiva cherche en ligne un modèle professionnel prêt, l'évalue et vous le montre",
+    "es": "Antes de crear un modelo 3D, Nuxiva busca en línea un modelo profesional ya hecho, lo evalúa y te lo muestra"
+  },
+  "features": [
+    {
+      "it": "Quando chiedi di vedere qualcosa in 3D, Nuxiva cerca modelli su Poly Haven (gratuito, CC0) e su Sketchfab se hai inserito il token nel pannello, preferendo quelli animati e con licenza libera.",
+      "en": "When you ask to see something in 3D, Nuxiva searches Poly Haven (free, CC0) and Sketchfab when you have entered its token in the panel, preferring animated models with open licences.",
+      "fr": "Quand vous demandez à voir quelque chose en 3D, Nuxiva cherche des modèles sur Poly Haven (gratuit, CC0) et sur Sketchfab si vous avez saisi le jeton dans le panneau, en préférant les modèles animés sous licence libre.",
+      "es": "Cuando pides ver algo en 3D, Nuxiva busca modelos en Poly Haven (gratis, CC0) y en Sketchfab si has introducido el token en el panel, prefiriendo los animados y con licencia libre."
+    },
+    {
+      "it": "Ogni modello viene valutato due volte prima di essere mostrato: la miniatura è giudicata dalla vista dell'assistente (è davvero il soggetto? è curato? ha uno sfondo?) e il file è controllato dal motore Rust (triangoli, materiali, texture, animazioni). Sotto la soglia scelta nel pannello viene scartato.",
+      "en": "Every model is rated twice before it is shown: the assistant's vision judges the thumbnail (is it really the subject? is it polished? does it have a background?) and the Rust engine checks the file (triangles, materials, textures, animations). Below the threshold set in the panel it is discarded.",
+      "fr": "Chaque modèle est évalué deux fois avant d'être affiché : la vision de l'assistant juge la miniature (est-ce vraiment le sujet ? est-il soigné ? a-t-il un fond ?) et le moteur Rust contrôle le fichier (triangles, matériaux, textures, animations). Sous le seuil choisi dans le panneau, il est écarté.",
+      "es": "Cada modelo se evalúa dos veces antes de mostrarse: la visión del asistente juzga la miniatura (¿es de verdad el tema? ¿está cuidado? ¿tiene fondo?) y el motor Rust revisa el archivo (triángulos, materiales, texturas, animaciones). Por debajo del umbral elegido en el panel se descarta."
+    },
+    {
+      "it": "Il display ti dice sempre cosa sta facendo: dove cerca, quanti modelli valuta, cosa scarica, cosa scarta e con che punteggio. Il modello scelto si muove con le sue animazioni, si ruota e si ingrandisce a gesti e mostra autore e licenza.",
+      "en": "The display always tells you what it is doing: where it searches, how many models it rates, what it downloads, what it discards and with which score. The chosen model plays its animations, rotates and zooms with gestures and shows author and licence.",
+      "fr": "L'écran vous dit toujours ce qu'il fait : où il cherche, combien de modèles il évalue, ce qu'il télécharge, ce qu'il écarte et avec quel score. Le modèle choisi joue ses animations, tourne et zoome aux gestes et affiche auteur et licence.",
+      "es": "La pantalla te dice siempre qué está haciendo: dónde busca, cuántos modelos evalúa, qué descarga, qué descarta y con qué puntuación. El modelo elegido reproduce sus animaciones, gira y se amplía con gestos y muestra autor y licencia."
+    },
+    {
+      "it": "I modelli approvati restano nel catalogo locale: la volta dopo lo stesso soggetto si apre subito, senza nuove ricerche.",
+      "en": "Approved models stay in the local catalogue: next time the same subject opens immediately, with no new search.",
+      "fr": "Les modèles approuvés restent dans le catalogue local : la fois suivante, le même sujet s'ouvre tout de suite, sans nouvelle recherche.",
+      "es": "Los modelos aprobados se quedan en el catálogo local: la próxima vez el mismo tema se abre al instante, sin nuevas búsquedas."
+    },
+    {
+      "it": "Download solo in HTTPS da un elenco chiuso di indirizzi, senza redirect, con limiti di dimensione, archivi controllati contro i percorsi malevoli e file accettati solo se il controllo Rust va a buon fine. Il token di Sketchfab è salvato come segreto.",
+      "en": "Downloads only over HTTPS from a closed list of addresses, without redirects, with size limits, archives checked against malicious paths and files accepted only when the Rust check passes. The Sketchfab token is stored as a secret.",
+      "fr": "Téléchargements uniquement en HTTPS depuis une liste fermée d'adresses, sans redirection, avec limites de taille, archives contrôlées contre les chemins malveillants et fichiers acceptés seulement si le contrôle Rust réussit. Le jeton Sketchfab est stocké comme secret.",
+      "es": "Descargas solo por HTTPS desde una lista cerrada de direcciones, sin redirecciones, con límites de tamaño, archivos comprimidos revisados contra rutas maliciosas y archivos aceptados solo si el control Rust es correcto. El token de Sketchfab se guarda como secreto."
+    }
+  ]
+}

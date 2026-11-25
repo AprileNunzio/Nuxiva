@@ -1,4 +1,4 @@
-#![allow(clippy::indexing_slicing)]
+#![allow(clippy::indexing_slicing, clippy::arithmetic_side_effects)]
 
 use serde_json::{Value, json};
 
@@ -175,4 +175,87 @@ fn rod_rotation_points_cylinder_axis_along_segment() {
     let len = (d[0] * d[0] + d[1] * d[1] + d[2] * d[2]).sqrt();
     let dot = (axis[0] * d[0] + axis[1] * d[1] + axis[2] * d[2]) / len;
     assert!((dot - 1.0).abs() < 1e-3, "{dot}");
+}
+
+fn glb(json: &Value) -> Vec<u8> {
+    let mut text = json.to_string().into_bytes();
+    while text.len() % 4 != 0 {
+        text.push(b' ');
+    }
+    let total = 12 + 8 + text.len();
+    let mut out = Vec::new();
+    out.extend_from_slice(b"glTF");
+    out.extend_from_slice(&2_u32.to_le_bytes());
+    out.extend_from_slice(&u32::try_from(total).unwrap_or(0).to_le_bytes());
+    out.extend_from_slice(&u32::try_from(text.len()).unwrap_or(0).to_le_bytes());
+    out.extend_from_slice(&0x4E4F_534A_u32.to_le_bytes());
+    out.extend_from_slice(&text);
+    out
+}
+
+fn model(animated: bool, ground: bool) -> Value {
+    let mut accessors = vec![
+        json!({"count": 60000, "min": [-1, -1, -1], "max": [1, 1, 1]}),
+        json!({"count": 90000}),
+    ];
+    let mut meshes =
+        vec![json!({"primitives": [{"attributes": {"POSITION": 0}, "indices": 1, "material": 0}]})];
+    for _ in 0..3 {
+        accessors.push(json!({"count": 300, "min": [0, 0, 0], "max": [1, 1, 1]}));
+        let index = accessors.len() - 1;
+        meshes.push(json!({"primitives": [{"attributes": {"POSITION": index}}]}));
+    }
+    if ground {
+        accessors.push(json!({"count": 4, "min": [-100, 0, -100], "max": [100, 0, 100]}));
+        let index = accessors.len() - 1;
+        meshes.push(json!({"primitives": [{"attributes": {"POSITION": index}}]}));
+    }
+    json!({"asset": {"version": "2.0"}, "accessors": accessors, "meshes": meshes,
+           "materials": [{"pbrMetallicRoughness": {"baseColorTexture": {"index": 0}}, "normalTexture": {"index": 1}}],
+           "textures": [{}, {}], "animations": if animated { json!([{}]) } else { json!([]) }})
+}
+
+#[test]
+fn professional_animated_model_scores_high() {
+    let report = crate::glb::inspect(&glb(&model(true, false)));
+    assert!(report.is_ok());
+    let report = report.unwrap_or_default();
+    assert_eq!(report.triangles, 30_000 + 300);
+    assert_eq!(report.animations, 1);
+    assert!(!report.background_suspect);
+    assert_eq!(report.score, 100);
+}
+
+#[test]
+fn ground_plane_and_static_lower_the_score() {
+    let report = crate::glb::inspect(&glb(&model(false, true))).unwrap_or_default();
+    assert!(report.background_suspect);
+    assert!(report.reasons.contains(&"background"));
+    assert!(report.reasons.contains(&"static"));
+    assert!(report.score <= 60);
+}
+
+#[test]
+fn external_uris_and_unknown_extensions_are_unusable() {
+    let mut value = model(true, false);
+    value["buffers"] = json!([{"uri": "file:///etc/passwd", "byteLength": 10}]);
+    value["extensionsRequired"] = json!(["KHR_draco_mesh_compression"]);
+    let report = crate::glb::inspect(&glb(&value)).unwrap_or_default();
+    assert_eq!(report.score, 0);
+    assert_eq!(report.external_uris, 1);
+    assert_eq!(
+        report.unsupported,
+        vec!["KHR_draco_mesh_compression".to_owned()]
+    );
+}
+
+#[test]
+fn malformed_containers_are_rejected() {
+    assert_eq!(crate::glb::inspect(b"nope"), Err(HoloError::BadModel));
+    let mut bytes = glb(&model(true, false));
+    bytes.truncate(bytes.len() - 4);
+    assert_eq!(crate::glb::inspect(&bytes), Err(HoloError::BadModel));
+    let mut lying = glb(&model(true, false));
+    lying[12..16].copy_from_slice(&u32::MAX.to_le_bytes());
+    assert_eq!(crate::glb::inspect(&lying), Err(HoloError::BadModel));
 }

@@ -141,7 +141,8 @@ class CommandsTest(unittest.TestCase):
     def test_build_uses_draft_then_reports_failure(self):
         sid = session.begin("cuore", "realistic")
         spec = {"parts": [{"shape": "sphere", "size": [1, 1, 1], "at": [0, 0, 0]}]}
-        with mock.patch.object(hd, "design", side_effect=RuntimeError("offline")):
+        with mock.patch.object(hd, "design", side_effect=RuntimeError("offline")), \
+                mock.patch("agenti.hands.holo.catalog.finder.find", new=mock.AsyncMock(return_value=None)):
             asyncio.run(hd.build(sid, "cuore", spec, "it"))
         snap = session.snapshot()
         self.assertEqual(snap["status"], "draft_only")

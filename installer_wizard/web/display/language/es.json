@@ -649,6 +649,16 @@
     "holo_gesture_toggle": "Puño · abrir o unir",
     "holo_hint": "Pellizca y mueve para girar · dos pellizcos para ampliar · dos palmas abiertas para separar las piezas · puño para abrir o unir",
     "holo_camera_local": "Webcam procesada solo en este dispositivo",
-    "holo_parts": "{{n}} piezas · {{l}} capas"
+    "holo_parts": "{{n}} piezas · {{l}} capas",
+    "holo_progress_searching": "Busco un modelo 3D profesional en {{source}}",
+    "holo_progress_rating": "Evalúo los gráficos de {{n}} modelos encontrados",
+    "holo_progress_downloading": "Descargo y compruebo «{{name}}»",
+    "holo_progress_rejected": "«{{name}}» descartado: puntuación {{score}} bajo el umbral",
+    "holo_progress_chosen": "Elegido «{{name}}» con puntuación {{score}}",
+    "holo_progress_cached": "Uso «{{name}}» del catálogo",
+    "holo_progress_none": "Ningún modelo listo supera el umbral {{limit}}: lo creo yo",
+    "holo_progress_generating": "Creo el modelo en alta definición",
+    "holo_credit": "«{{name}}» de {{author}} · {{license}}",
+    "holo_asset_score": "Modelo verificado · puntuación {{s}}"
   }
 }

@@ -649,6 +649,16 @@
     "holo_gesture_toggle": "Fist · open or reassemble",
     "holo_hint": "Pinch and move to rotate · two pinches to zoom · two open palms to separate the parts · fist to open or reassemble",
     "holo_camera_local": "Webcam processed on this device only",
-    "holo_parts": "{{n}} parts · {{l}} layers"
+    "holo_parts": "{{n}} parts · {{l}} layers",
+    "holo_progress_searching": "Looking for a professional 3D model on {{source}}",
+    "holo_progress_rating": "Rating the graphics of {{n}} models found",
+    "holo_progress_downloading": "Downloading and checking “{{name}}”",
+    "holo_progress_rejected": "“{{name}}” rejected: score {{score}} below the threshold",
+    "holo_progress_chosen": "Chose “{{name}}” with score {{score}}",
+    "holo_progress_cached": "Using “{{name}}” from the catalogue",
+    "holo_progress_none": "No ready model passes the {{limit}} threshold: building it myself",
+    "holo_progress_generating": "Building the high definition model",
+    "holo_credit": "“{{name}}” by {{author}} · {{license}}",
+    "holo_asset_score": "Verified model · score {{s}}"
   }
 }

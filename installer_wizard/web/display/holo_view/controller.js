@@ -33,9 +33,19 @@
     const privacy = document.createElement("p");
     privacy.className = "holo-privacy";
     privacy.textContent = T("holo_camera_local");
-    root.append(canvas, labels, bar, hint, privacy);
-    document.body.appendChild(root);
-    st.els = { root, canvas, labels, cells, hint };
+    const credit = document.createElement("a");
+    credit.className = "holo-credit";
+    credit.target = "_blank";
+    credit.rel = "noopener noreferrer";
+    credit.hidden = true;
+    const progress = document.createElement("p");
+    progress.className = "holo-progress";
+    progress.setAttribute("role", "status");
+    progress.setAttribute("aria-live", "polite");
+    progress.hidden = true;
+    root.append(canvas, labels, bar, hint, privacy, credit);
+    document.body.append(root, progress);
+    st.els = { root, canvas, labels, cells, hint, credit, progress };
   }
 
   async function engine() {
@@ -60,9 +70,39 @@
     const { cells } = st.els;
     cells.subject.textContent = snap.subject || "";
     cells.mode.textContent = T(`holo_mode_${snap.mode}`);
-    const parts = snap.scene ? T("holo_parts", { n: snap.scene.parts.length, l: snap.scene.layers }) : "";
+    const asset = snap.scene && snap.scene.asset;
+    const parts = asset ? T("holo_asset_score", { s: asset.score }) : (snap.scene ? T("holo_parts", { n: snap.scene.parts.length, l: snap.scene.layers }) : "");
     cells.status.textContent = [T(`holo_status_${snap.status}`), parts].filter(Boolean).join(" · ");
     cells.gesture.textContent = T(`holo_gesture_${st.gesture}`);
+    paintCredit(asset);
+    paintProgress(snap);
+  }
+
+  function safePage(url) {
+    try {
+      const u = new URL(String(url || ""));
+      return u.protocol === "https:" ? u.href : "";
+    } catch {
+      return "";
+    }
+  }
+
+  function paintCredit(asset) {
+    const { credit } = st.els;
+    credit.hidden = !asset;
+    if (!asset) return;
+    credit.textContent = T("holo_credit", { name: asset.name || "", author: asset.author || "", license: asset.license || "" });
+    const page = safePage(asset.page);
+    if (page) credit.href = page;
+    else credit.removeAttribute("href");
+  }
+
+  function paintProgress(snap) {
+    const { progress } = st.els;
+    const key = snap.active && snap.progress ? snap.progress.key : "";
+    const busy = key && (snap.status === "building" || snap.status === "refining" || key === "none" || key === "rejected");
+    progress.hidden = !busy;
+    if (busy) progress.textContent = T(`holo_progress_${key}`, snap.progress.params || {});
   }
 
   function apply(name) {
@@ -80,15 +120,17 @@
       show(false);
       st.key = "";
       st.seq = snap.command ? snap.command.seq : st.seq;
+      st.els.progress.hidden = true;
       return;
     }
-    const solid = st.mode !== "particles" && snap.scene && Array.isArray(snap.scene.parts) && snap.scene.parts.length;
+    const scene = snap.scene;
+    const solid = Boolean(scene && (scene.asset || (st.mode !== "particles" && Array.isArray(scene.parts) && scene.parts.length)));
     if (solid) {
       const made = await engine();
       const key = `${snap.id}:${snap.source}`;
       if (key !== st.key) {
         st.key = key;
-        made.load(snap.scene);
+        made.load(snap.scene).catch((err) => console.info("Modello 3D non caricato:", err.message));
       }
       made.setAnatomy(st.mode === "anatomy");
       made.setAnimate(snap.animate !== false);

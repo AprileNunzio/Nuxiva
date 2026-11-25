@@ -78,7 +78,7 @@
     scene.add(pivot);
 
     const st = { parts: [], layers: 1, anatomy: false, explode: 0, explodeTarget: 0, animate: true, yaw: 0.5, pitch: 0.22,
-                 zoom: 1, pan: [0, 0], touched: 0, raf: 0, last: 0, labels: [] };
+                 zoom: 1, pan: [0, 0], touched: 0, raf: 0, last: 0, labels: [], asset: null, ticket: 0 };
 
     function dispose() {
       for (const holder of st.parts) {
@@ -87,6 +87,15 @@
         root.remove(holder);
       }
       st.parts = [];
+      if (st.asset) {
+        root.remove(st.asset.root);
+        st.asset.root.traverse((node) => {
+          if (!node.isMesh) return;
+          node.geometry.dispose();
+          [].concat(node.material).forEach((m) => m && m.dispose());
+        });
+        st.asset = null;
+      }
       labelLayer.textContent = "";
       st.labels = [];
     }
@@ -133,8 +142,18 @@
       });
     }
 
-    function load(data) {
+    async function load(data) {
       dispose();
+      const ticket = ++st.ticket;
+      if (data.asset && data.asset.url) {
+        const asset = await window.NuxivaHoloAsset.load(THREE, data.asset.url);
+        if (ticket !== st.ticket) return;
+        st.asset = asset;
+        root.add(asset.root);
+        window.NuxivaHoloAsset.style(asset, st.anatomy);
+        play();
+        return;
+      }
       st.layers = Math.max(1, Number(data.layers) || 1);
       for (const part of data.parts || []) {
         const holder = window.NuxivaHoloGeometry.build(THREE, part, data.euler);
@@ -150,6 +169,7 @@
       st.anatomy = Boolean(on);
       st.explodeTarget = st.anatomy ? Math.max(st.explodeTarget, 0.55) : 0;
       st.parts.forEach(styleLayer);
+      if (st.asset) window.NuxivaHoloAsset.style(st.asset, st.anatomy);
       labelsFor();
     }
 
@@ -216,6 +236,13 @@
       camera.position.set(0, 0.3, 4.4 / st.zoom);
       camera.lookAt(st.pan[0] * 0.2, st.pan[1] * 0.2, 0);
       animateParts(t);
+      if (st.asset) {
+        if (st.asset.mixer && st.animate) st.asset.mixer.update(dt);
+        if (Math.abs(st.explode - (st.asset.spread || 0)) > 1e-3) {
+          st.asset.spread = st.explode;
+          window.NuxivaHoloAsset.explode(st.asset, st.explode);
+        }
+      }
       if (composer) composer.render();
       else renderer.render(scene, camera);
       placeLabels(w, h);
@@ -223,7 +250,7 @@
     }
 
     function play() {
-      if (!st.raf && !document.hidden && st.parts.length) st.raf = requestAnimationFrame(frame);
+      if (!st.raf && !document.hidden && (st.parts.length || st.asset)) st.raf = requestAnimationFrame(frame);
     }
 
     function stop() {

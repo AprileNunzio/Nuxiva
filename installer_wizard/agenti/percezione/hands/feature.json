@@ -80,6 +80,34 @@
           "label": "90 ms (tollerante)"
         }
       ]
+    },
+    {
+      "key": "NUXIVA_HOLO_CATALOG",
+      "label": "Prima di creare un modello 3D cerca online un modello pronto e lo salva nel catalogo",
+      "type": "select",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_SKETCHFAB_TOKEN",
+      "label": "Token API di Sketchfab (per scaricare modelli con licenza Creative Commons)",
+      "type": "secret"
+    },
+    {
+      "key": "NUXIVA_HOLO_MIN_SCORE",
+      "label": "Punteggio minimo (40-95) perché un modello trovato venga mostrato",
+      "type": "text",
+      "default": "70",
+      "placeholder": "70"
     }
   ],
   "icon3d": "./icon.png",
