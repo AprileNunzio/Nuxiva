@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-25",
+  "title": {
+    "it": "Il DNA ora è quello vero: doppia elica B esatta, particelle fedeli e luce più viva",
+    "en": "DNA is now the real thing: exact B double helix, faithful particles and livelier light",
+    "fr": "L'ADN est désormais le vrai : double hélice B exacte, particules fidèles et lumière plus vive",
+    "es": "El ADN ahora es el de verdad: doble hélice B exacta, partículas fieles y luz más viva"
+  },
+  "features": [
+    {
+      "it": "«Fammi vedere come è fatto il DNA» mostra la geometria reale: 10,5 coppie di basi per giro, solco maggiore e minore, adenina, timina, guanina e citosina colorate, fosfati, zuccheri e legami a idrogeno con spiegazione in anatomia.",
+      "en": "“Show me how DNA is made” shows the real geometry: 10.5 base pairs per turn, major and minor grooves, coloured adenine, thymine, guanine and cytosine, phosphates, sugars and hydrogen bonds explained in anatomy view.",
+      "fr": "« Montre-moi comment est fait l'ADN » affiche la vraie géométrie : 10,5 paires de bases par tour, grand et petit sillon, adénine, thymine, guanine et cytosine colorées, phosphates, sucres et liaisons hydrogène expliqués en vue anatomie.",
+      "es": "«Muéstrame cómo está hecho el ADN» muestra la geometría real: 10,5 pares de bases por vuelta, surco mayor y menor, adenina, timina, guanina y citosina de colores, fosfatos, azúcares y puentes de hidrógeno explicados en la vista anatómica."
+    },
+    {
+      "it": "Anche l'ologramma a particelle del DNA nasce dalla stessa struttura esatta, e la vista 3D ha un leggero bagliore sulle parti luminose.",
+      "en": "The DNA particle hologram now comes from the same exact structure, and the 3D view adds a soft glow on bright parts.",
+      "fr": "L'hologramme de particules de l'ADN naît de la même structure exacte, et la vue 3D ajoute une légère lueur sur les parties lumineuses.",
+      "es": "El holograma de partículas del ADN nace de la misma estructura exacta, y la vista 3D añade un ligero brillo en las partes luminosas."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Le etichette della vista anatomia sono distribuite lungo il modello invece di ammassarsi in un punto.",
+      "en": "Anatomy view labels are spread along the model instead of piling up in one spot.",
+      "fr": "Les étiquettes de la vue anatomie sont réparties le long du modèle au lieu de s'entasser au même endroit.",
+      "es": "Las etiquetas de la vista anatómica se reparten a lo largo del modelo en lugar de amontonarse en un punto."
+    }
+  ]
+}

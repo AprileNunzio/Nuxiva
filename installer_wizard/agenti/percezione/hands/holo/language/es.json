@@ -1,20 +1,92 @@
 {
   "commands": {
-    "realistic": ["en 3d", "3d", "realista", "fotorrealista", "como un videojuego", "graficos de videojuego", "alta definicion", "en hd", "solido", "vista realista"],
-    "anatomy": ["anatomia", "modo anatomia", "anatomico", "anatomica", "corte", "vista despiezada", "interior"],
-    "particles": ["particulas", "vuelve a las particulas", "modo particulas"],
-    "zoom_in": ["amplia", "acerca", "zoom adelante", "mas grande"],
-    "zoom_out": ["reduce", "aleja", "zoom atras", "mas pequeno"],
-    "rotate_left": ["gira a la izquierda", "rota a la izquierda"],
-    "rotate_right": ["gira a la derecha", "rota a la derecha", "giralo", "gira"],
-    "rotate_up": ["gira hacia arriba", "vista superior"],
-    "rotate_down": ["gira hacia abajo", "vista inferior"],
-    "reset": ["vista inicial", "restablece la vista"],
-    "explode": ["separa las piezas", "despiezalo", "abre el modelo", "abrelo"],
-    "collapse": ["vuelve a unir", "une las piezas", "rearma"],
-    "animate": ["animalo", "hazlo mover", "inicia la animacion"],
-    "still": ["detenlo", "para la animacion", "quieto"],
-    "close": ["cierra el holograma", "cierra la vista", "cierra el modelo", "oculta el holograma"]
+    "realistic": [
+      "en 3d",
+      "3d",
+      "realista",
+      "fotorrealista",
+      "como un videojuego",
+      "graficos de videojuego",
+      "alta definicion",
+      "en hd",
+      "solido",
+      "vista realista"
+    ],
+    "anatomy": [
+      "anatomia",
+      "modo anatomia",
+      "anatomico",
+      "anatomica",
+      "corte",
+      "vista despiezada",
+      "interior"
+    ],
+    "particles": [
+      "particulas",
+      "vuelve a las particulas",
+      "modo particulas"
+    ],
+    "zoom_in": [
+      "amplia",
+      "acerca",
+      "zoom adelante",
+      "mas grande"
+    ],
+    "zoom_out": [
+      "reduce",
+      "aleja",
+      "zoom atras",
+      "mas pequeno"
+    ],
+    "rotate_left": [
+      "gira a la izquierda",
+      "rota a la izquierda"
+    ],
+    "rotate_right": [
+      "gira a la derecha",
+      "rota a la derecha",
+      "giralo",
+      "gira"
+    ],
+    "rotate_up": [
+      "gira hacia arriba",
+      "vista superior"
+    ],
+    "rotate_down": [
+      "gira hacia abajo",
+      "vista inferior"
+    ],
+    "reset": [
+      "vista inicial",
+      "restablece la vista"
+    ],
+    "explode": [
+      "separa las piezas",
+      "despiezalo",
+      "abre el modelo",
+      "abrelo"
+    ],
+    "collapse": [
+      "vuelve a unir",
+      "une las piezas",
+      "rearma"
+    ],
+    "animate": [
+      "animalo",
+      "hazlo mover",
+      "inicia la animacion"
+    ],
+    "still": [
+      "detenlo",
+      "para la animacion",
+      "quieto"
+    ],
+    "close": [
+      "cierra el holograma",
+      "cierra la vista",
+      "cierra el modelo",
+      "oculta el holograma"
+    ]
   },
   "replies": {
     "realistic": "Paso a la vista 3D realista de {subject}.",
@@ -24,5 +96,42 @@
     "view": "Hecho.",
     "close": "He cerrado la vista.",
     "unavailable": "El modelo en alta definición ha fallado ({reason}): sigo con la primera versión 3D."
+  },
+  "parts": {
+    "dna": {
+      "label": "ADN · doble hélice B"
+    },
+    "dna_adenine": {
+      "label": "Adenina (A)",
+      "info": "Siempre se empareja con la timina mediante dos puentes de hidrógeno."
+    },
+    "dna_thymine": {
+      "label": "Timina (T)",
+      "info": "Se empareja con la adenina; el ARN usa uracilo."
+    },
+    "dna_guanine": {
+      "label": "Guanina (G)",
+      "info": "Se empareja con la citosina mediante tres puentes de hidrógeno."
+    },
+    "dna_cytosine": {
+      "label": "Citosina (C)",
+      "info": "Se empareja con la guanina; los pares G-C estabilizan el ADN."
+    },
+    "dna_phosphate": {
+      "label": "Grupo fosfato",
+      "info": "Une los azúcares y da al ADN su carga negativa."
+    },
+    "dna_sugar": {
+      "label": "Desoxirribosa",
+      "info": "El azúcar al que se une cada base."
+    },
+    "dna_backbone": {
+      "label": "Esqueleto azúcar-fosfato",
+      "info": "La hebra exterior: una vuelta completa cada 10,5 pares de bases."
+    },
+    "dna_hydrogen_bond": {
+      "label": "Puentes de hidrógeno",
+      "info": "Mantienen unidas las dos bases de un par."
+    }
   }
 }

@@ -136,14 +136,14 @@ def _explode(part: dict) -> list[float]:
     return [v / length * push for v in part["at"]]
 
 
-def prepare(spec) -> dict:
+def prepare(spec, limit: int = MAX_PARTS) -> dict:
     if not isinstance(spec, dict):
         raise ValueError("holo_bad_json")
     items = spec.get("parts")
     if not isinstance(items, list):
         raise ValueError("holo_no_parts")
     particles = spec.get("source") == "particles"
-    parts = [p for p in (_part(raw, particles, i) for i, raw in enumerate(items[:MAX_PARTS]) if isinstance(raw, dict)) if p]
+    parts = [p for p in (_part(raw, particles, i) for i, raw in enumerate(items[:limit]) if isinstance(raw, dict)) if p]
     if not parts:
         raise ValueError("holo_no_parts")
     _normalize(parts)

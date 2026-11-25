@@ -7,6 +7,7 @@ VIEW = ("zoom_in", "zoom_out", "rotate_left", "rotate_right", "rotate_up", "rota
         "animate", "still")
 TTL_SECONDS = 600.0
 SUBJECT_MAX = 64
+FINAL = ("designed", "exact")
 
 
 class Session:
@@ -37,9 +38,9 @@ class Session:
 
     def scene_ready(self, session_id: str, scene: dict, source: str) -> bool:
         with self.lock:
-            if session_id != self.data["id"] or (self.data["source"] == "designed" and source != "designed"):
+            if session_id != self.data["id"] or (self.data["source"] in FINAL and source not in FINAL):
                 return False
-            self.data.update(scene=scene, source=source, status="ready" if source == "designed" else "refining", reason="")
+            self.data.update(scene=scene, source=source, status="ready" if source in FINAL else "refining", reason="")
             self.data["updated_at"] = round(self.clock(), 3)
             return True
 

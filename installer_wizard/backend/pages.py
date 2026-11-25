@@ -23,6 +23,10 @@ VENDOR = {
     **{f"{n}.js": f"https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/{d}/{n}.js"
        for d, n in (("libs", "fflate.min"), ("libs", "chevrotain.min"), ("curves", "NURBSCurve"), ("curves", "NURBSUtils"))},
     "RoomEnvironment.js": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js",
+    **{f"{n}.js": f"https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/{d}/{n}.js"
+       for d, n in (("postprocessing", "EffectComposer"), ("postprocessing", "RenderPass"), ("postprocessing", "ShaderPass"),
+                    ("postprocessing", "UnrealBloomPass"), ("shaders", "CopyShader"), ("shaders", "LuminosityHighPassShader"),
+                    ("shaders", "GammaCorrectionShader"))},
     "Michelle.glb": "https://raw.githubusercontent.com/mrdoob/three.js/r170/examples/models/gltf/Michelle.glb",
     "Xbot.glb": "https://raw.githubusercontent.com/mrdoob/three.js/r170/examples/models/gltf/Xbot.glb",
     "occt-import-js.js": "https://cdn.jsdelivr.net/npm/occt-import-js@0.0.22/dist/occt-import-js.js",

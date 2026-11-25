@@ -120,3 +120,59 @@ fn part_count_is_capped() {
         Some(crate::model::MAX_PARTS)
     );
 }
+
+#[test]
+fn dna_follows_b_form_and_pairs_bases() {
+    let out = crate::dna::generate("atgcxx");
+    assert!(out.is_ok());
+    let scene: Value = serde_json::from_str(&out.unwrap_or_default()).unwrap_or(Value::Null);
+    let parts = scene["parts"].as_array().cloned().unwrap_or_default();
+    assert_eq!(parts.len(), 4 * 7 + 3 * 2);
+    let names: Vec<&str> = parts.iter().filter_map(|p| p["name"].as_str()).collect();
+    assert_eq!(names.iter().filter(|n| **n == "dna_adenine").count(), 2);
+    assert_eq!(names.iter().filter(|n| **n == "dna_thymine").count(), 2);
+    assert_eq!(names.iter().filter(|n| **n == "dna_backbone").count(), 6);
+    assert_eq!(scene["layers"], 2);
+}
+
+#[test]
+fn dna_sequence_is_sanitized_and_bounded() {
+    assert_eq!(crate::dna::sequence("<script>"), "ATGCGTACCGATTGCAGCTA");
+    assert_eq!(
+        crate::dna::sequence(&"GC".repeat(100)).len(),
+        crate::dna::MAX_PAIRS
+    );
+    assert_eq!(crate::dna::sequence("a t g c"), "ATGC");
+}
+
+#[test]
+fn rod_rotation_points_cylinder_axis_along_segment() {
+    let parts = crate::dna::parts("ATGC");
+    let rod = parts
+        .iter()
+        .find(|p| p["name"] == "dna_backbone")
+        .cloned()
+        .unwrap_or(Value::Null);
+    let rx = num(&rod["rotation"][0]).to_radians();
+    let rz = num(&rod["rotation"][2]).to_radians();
+    let axis = [-rz.sin(), rz.cos() * rx.cos(), rz.cos() * rx.sin()];
+    let first = parts
+        .iter()
+        .filter(|p| p["name"] == "dna_phosphate")
+        .map(|p| {
+            [
+                num(&p["position"][0]),
+                num(&p["position"][1]),
+                num(&p["position"][2]),
+            ]
+        })
+        .collect::<Vec<_>>();
+    let d = [
+        first[2][0] - first[0][0],
+        first[2][1] - first[0][1],
+        first[2][2] - first[0][2],
+    ];
+    let len = (d[0] * d[0] + d[1] * d[1] + d[2] * d[2]).sqrt();
+    let dot = (axis[0] * d[0] + axis[1] * d[1] + axis[2] * d[2]) / len;
+    assert!((dot - 1.0).abs() < 1e-3, "{dot}");
+}

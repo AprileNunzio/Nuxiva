@@ -7,8 +7,8 @@ from pathlib import Path
 
 from tasks import background
 
-from agenti.hands.holo import hd
-from agenti.hands.holo.session import MODES, session
+from agenti.hands.holo import exact, hd
+from agenti.hands.holo.session import FINAL, MODES, session
 
 LANGS = ("it", "en", "fr", "es")
 MAX_WORDS = 12
@@ -55,8 +55,22 @@ def say(lang: str, key: str, **values) -> str:
 
 def _launch(subject: str, mode: str, spec: dict | None, lang: str) -> dict:
     session_id = session.begin(subject, mode)
-    background(hd.build(session_id, subject, spec, _code(lang)))
+    kind = exact.kind_of(subject)
+    if kind is None:
+        background(hd.build(session_id, subject, spec, _code(lang)))
+        return session.brief()
+    scene = exact.scene(kind, _code(lang))
+    session.scene_ready(session_id, scene, "exact")
+    _show_particles(subject, exact.to_particles(scene))
     return session.brief()
+
+
+def _show_particles(subject: str, spec: dict) -> None:
+    from agenti.particles import codec, show as particles_show
+    from agenti.particles.store import store
+    seed = int.from_bytes(subject.encode()[:8].ljust(8, b"\0"), "little")
+    entry = store.put(subject, spec, codec.sample(spec, particles_show.POINTS, seed))
+    particles_show.present(entry, query=subject)
 
 
 def follow(visual: dict, text: str, lang: str) -> dict:
@@ -67,6 +81,8 @@ def follow(visual: dict, text: str, lang: str) -> dict:
         return visual
     hit = store.lookup(subject) or {}
     ui["holo"] = _launch(subject, initial_mode(text, lang), hit.get("spec"), lang)
+    from agenti.particles import show as particles_show
+    ui["particles"] = particles_show.current() or ui.get("particles")
     visual["ui"] = ui
     return visual
 
@@ -75,9 +91,10 @@ def start(subject: str, mode: str, lang: str) -> dict:
     from agenti.particles import show as particles_show
     entry = particles_show.materialize_instant(subject)
     shown = particles_show.present(entry, query=subject)
-    if entry.get("instant"):
+    if entry.get("instant") and exact.kind_of(subject) is None:
         particles_show.refine_later(subject, subject)
-    return {"particles": particles_show.current(), "holo": _launch(shown["concept"], mode, entry.get("spec"), lang)}
+    holo = _launch(shown["concept"], mode, entry.get("spec"), lang)
+    return {"particles": particles_show.current(), "holo": holo}
 
 
 def _mode_reply(name: str, snap: dict, lang: str) -> str:
@@ -88,7 +105,7 @@ def _mode_reply(name: str, snap: dict, lang: str) -> str:
         return say(lang, "particles", subject=subject)
     if snap["status"] == "failed":
         return say(lang, "unavailable", reason=snap["reason"] or "-")
-    if name == "realistic" and snap["source"] != "designed":
+    if name == "realistic" and snap["source"] not in FINAL:
         return say(lang, "realistic_wait", subject=subject)
     return say(lang, name, subject=subject)
 

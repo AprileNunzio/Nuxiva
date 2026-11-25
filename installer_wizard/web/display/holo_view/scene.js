@@ -11,9 +11,26 @@
     document.head.appendChild(s);
   }));
 
+  const POST = ["CopyShader.js", "LuminosityHighPassShader.js", "GammaCorrectionShader.js", "EffectComposer.js", "RenderPass.js",
+    "ShaderPass.js", "UnrealBloomPass.js"];
+
   async function ensure() {
     if (!window.THREE) await script("three.min.js");
     if (!THREE.RoomEnvironment) await script("RoomEnvironment.js");
+  }
+
+  async function post(renderer, scene, camera) {
+    try {
+      for (const name of POST) await script(name);
+    } catch (err) {
+      console.info("Bloom non disponibile, rendering senza post-produzione:", err.message);
+      return null;
+    }
+    const composer = new THREE.EffectComposer(renderer);
+    composer.addPass(new THREE.RenderPass(scene, camera));
+    composer.addPass(new THREE.UnrealBloomPass(new THREE.Vector2(512, 512), 0.32, 0.4, 0.92));
+    composer.addPass(new THREE.ShaderPass(THREE.GammaCorrectionShader));
+    return composer;
   }
 
   function lights(THREE, scene) {
@@ -49,10 +66,12 @@
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x020409);
     const pmrem = new THREE.PMREMGenerator(renderer);
     scene.environment = pmrem.fromScene(new THREE.RoomEnvironment(), 0.04).texture;
     const camera = new THREE.PerspectiveCamera(38, 1, 0.05, 60);
     lights(THREE, scene);
+    const composer = await post(renderer, scene, camera);
     const root = new THREE.Group();
     const pivot = new THREE.Group();
     pivot.add(root);
@@ -87,11 +106,18 @@
       labelLayer.textContent = "";
       st.labels = [];
       if (!st.anatomy) return;
-      const seen = new Set();
+      const groups = new Map();
       for (const holder of st.parts) {
         const { part } = holder.userData;
-        if (!part.label || seen.has(part.label) || (st.layers > 1 && part.layer === 0 && st.parts.length > 3)) continue;
-        seen.add(part.label);
+        if (!part.label) continue;
+        if (!groups.has(part.label)) groups.set(part.label, []);
+        groups.get(part.label).push(holder);
+      }
+      const names = [...groups.keys()].slice(0, 14);
+      names.forEach((label, k) => {
+        const target = names.length > 1 ? -0.8 + (1.6 * k) / (names.length - 1) : 0;
+        const holder = groups.get(label).reduce((best, h) => (Math.abs(h.userData.part.at[1] - target) < Math.abs(best.userData.part.at[1] - target) ? h : best));
+        const { part } = holder.userData;
         const el = document.createElement("div");
         el.className = "holo-label";
         const name = document.createElement("b");
@@ -104,8 +130,7 @@
         }
         labelLayer.appendChild(el);
         st.labels.push({ el, holder });
-        if (st.labels.length >= 14) break;
-      }
+      });
     }
 
     function load(data) {
@@ -178,6 +203,7 @@
       const h = canvas.clientHeight || window.innerHeight;
       if (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio())) {
         renderer.setSize(w, h, false);
+        if (composer) composer.setSize(w, h);
         camera.aspect = w / Math.max(1, h);
         camera.updateProjectionMatrix();
       }
@@ -190,7 +216,8 @@
       camera.position.set(0, 0.3, 4.4 / st.zoom);
       camera.lookAt(st.pan[0] * 0.2, st.pan[1] * 0.2, 0);
       animateParts(t);
-      renderer.render(scene, camera);
+      if (composer) composer.render();
+      else renderer.render(scene, camera);
       placeLabels(w, h);
       play();
     }

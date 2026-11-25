@@ -19,6 +19,10 @@ pub enum Source {
 }
 
 pub fn scene(raw: &Value) -> HoloResult<Scene> {
+    scene_limited(raw, MAX_PARTS)
+}
+
+pub fn scene_limited(raw: &Value, limit: usize) -> HoloResult<Scene> {
     let root = raw.as_object().ok_or(HoloError::BadJson)?;
     let source = match root.get("source").and_then(Value::as_str) {
         Some("particles") => Source::Particles,
@@ -30,7 +34,7 @@ pub fn scene(raw: &Value) -> HoloResult<Scene> {
         .ok_or(HoloError::NoParts)?;
     let parts: Vec<Part> = items
         .iter()
-        .take(MAX_PARTS)
+        .take(limit)
         .enumerate()
         .filter_map(|(index, item)| item.as_object().and_then(|map| part(map, source, index)))
         .collect();

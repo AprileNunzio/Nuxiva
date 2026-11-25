@@ -1,20 +1,91 @@
 {
   "commands": {
-    "realistic": ["en 3d", "3d", "realiste", "photorealiste", "comme un jeu video", "graphismes de jeu video", "haute definition", "en hd", "solide", "vue realiste"],
-    "anatomy": ["anatomie", "mode anatomie", "anatomique", "coupe", "vue eclatee", "interieur"],
-    "particles": ["particules", "retour aux particules", "mode particules"],
-    "zoom_in": ["agrandis", "zoom avant", "plus grand", "rapproche"],
-    "zoom_out": ["reduis", "zoom arriere", "plus petit", "eloigne"],
-    "rotate_left": ["tourne a gauche", "pivote a gauche"],
-    "rotate_right": ["tourne a droite", "pivote a droite", "tourne le", "tourne"],
-    "rotate_up": ["tourne vers le haut", "vue du dessus"],
-    "rotate_down": ["tourne vers le bas", "vue du dessous"],
-    "reset": ["vue initiale", "reinitialise la vue"],
-    "explode": ["separe les pieces", "eclate le", "ouvre le modele", "ouvre le"],
-    "collapse": ["rassemble", "reassemble", "remets ensemble"],
-    "animate": ["anime le", "fais le bouger", "lance l animation"],
-    "still": ["arrete le", "arrete l animation", "immobile"],
-    "close": ["ferme l hologramme", "ferme la vue", "ferme le modele", "cache l hologramme"]
+    "realistic": [
+      "en 3d",
+      "3d",
+      "realiste",
+      "photorealiste",
+      "comme un jeu video",
+      "graphismes de jeu video",
+      "haute definition",
+      "en hd",
+      "solide",
+      "vue realiste"
+    ],
+    "anatomy": [
+      "anatomie",
+      "mode anatomie",
+      "anatomique",
+      "coupe",
+      "vue eclatee",
+      "interieur"
+    ],
+    "particles": [
+      "particules",
+      "retour aux particules",
+      "mode particules"
+    ],
+    "zoom_in": [
+      "agrandis",
+      "zoom avant",
+      "plus grand",
+      "rapproche"
+    ],
+    "zoom_out": [
+      "reduis",
+      "zoom arriere",
+      "plus petit",
+      "eloigne"
+    ],
+    "rotate_left": [
+      "tourne a gauche",
+      "pivote a gauche"
+    ],
+    "rotate_right": [
+      "tourne a droite",
+      "pivote a droite",
+      "tourne le",
+      "tourne"
+    ],
+    "rotate_up": [
+      "tourne vers le haut",
+      "vue du dessus"
+    ],
+    "rotate_down": [
+      "tourne vers le bas",
+      "vue du dessous"
+    ],
+    "reset": [
+      "vue initiale",
+      "reinitialise la vue"
+    ],
+    "explode": [
+      "separe les pieces",
+      "eclate le",
+      "ouvre le modele",
+      "ouvre le"
+    ],
+    "collapse": [
+      "rassemble",
+      "reassemble",
+      "remets ensemble"
+    ],
+    "animate": [
+      "anime le",
+      "fais le bouger",
+      "lance l animation"
+    ],
+    "still": [
+      "arrete le",
+      "arrete l animation",
+      "immobile"
+    ],
+    "close": [
+      "ferme l hologramme",
+      "ferme la vue",
+      "ferme le modele",
+      "cache l hologramme"
+    ]
   },
   "replies": {
     "realistic": "Je passe à la vue 3D réaliste de {subject}.",
@@ -24,5 +95,42 @@
     "view": "C'est fait.",
     "close": "J'ai fermé la vue.",
     "unavailable": "Le modèle haute définition a échoué ({reason}) : je reste sur la première version 3D."
+  },
+  "parts": {
+    "dna": {
+      "label": "ADN · double hélice B"
+    },
+    "dna_adenine": {
+      "label": "Adénine (A)",
+      "info": "S'apparie toujours avec la thymine par deux liaisons hydrogène."
+    },
+    "dna_thymine": {
+      "label": "Thymine (T)",
+      "info": "S'apparie avec l'adénine ; l'ARN utilise l'uracile."
+    },
+    "dna_guanine": {
+      "label": "Guanine (G)",
+      "info": "S'apparie avec la cytosine par trois liaisons hydrogène."
+    },
+    "dna_cytosine": {
+      "label": "Cytosine (C)",
+      "info": "S'apparie avec la guanine ; les paires G-C stabilisent l'ADN."
+    },
+    "dna_phosphate": {
+      "label": "Groupe phosphate",
+      "info": "Relie les sucres et donne à l'ADN sa charge négative."
+    },
+    "dna_sugar": {
+      "label": "Désoxyribose",
+      "info": "Le sucre auquel chaque base est attachée."
+    },
+    "dna_backbone": {
+      "label": "Squelette sucre-phosphate",
+      "info": "Le brin extérieur : un tour complet toutes les 10,5 paires de bases."
+    },
+    "dna_hydrogen_bond": {
+      "label": "Liaisons hydrogène",
+      "info": "Maintiennent ensemble les deux bases d'une paire."
+    }
   }
 }

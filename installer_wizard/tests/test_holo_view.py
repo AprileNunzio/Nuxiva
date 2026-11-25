@@ -3,7 +3,9 @@ import json
 import unittest
 from unittest import mock
 
-from agenti.hands.holo import commands, fallback, hd
+import math
+
+from agenti.hands.holo import commands, exact, fallback, hd
 from agenti.hands.holo.session import Session, session
 
 
@@ -145,6 +147,67 @@ class CommandsTest(unittest.TestCase):
         self.assertEqual(snap["status"], "draft_only")
         self.assertEqual(snap["source"], "draft")
         self.assertEqual(len(snap["scene"]["parts"]), 1)
+
+
+class ExactTest(unittest.TestCase):
+    def tearDown(self):
+        session.close()
+
+    def test_dna_is_recognised_in_every_language(self):
+        for text in ("dna", "il DNA", "l'acido desossiribonucleico", "la doppia elica", "ADN", "double helix"):
+            self.assertEqual(exact.kind_of(text), "dna", text)
+        self.assertIsNone(exact.kind_of("cuore"))
+
+    def test_dna_scene_is_b_form_with_localized_labels(self):
+        scene = exact.scene("dna", "it")
+        names = [p["name"] for p in scene["parts"]]
+        self.assertEqual(names.count("dna_phosphate"), 40)
+        self.assertEqual(names.count("dna_backbone"), 38)
+        labels = {p["label"] for p in scene["parts"]}
+        self.assertIn("Adenina (A)", labels)
+        self.assertIn("Scheletro zucchero-fosfato", labels)
+        self.assertEqual(scene["title"], "DNA · doppia elica B")
+        self.assertEqual(exact.scene("dna", "en")["title"], "DNA · B double helix")
+
+    def test_particle_spec_is_valid_and_rotation_is_equivalent(self):
+        from agenti.particles import codec
+        spec = exact.to_particles(exact.scene("dna", "it"))
+        codec.validate(spec)
+        self.assertLessEqual(len(spec["parts"]), 96)
+
+        def apply_zyx(v, rx, ry, rz):
+            x, y, z = v
+            rx, ry, rz = (math.radians(d) for d in (rx, ry, rz))
+            y, z = y * math.cos(rx) - z * math.sin(rx), y * math.sin(rx) + z * math.cos(rx)
+            x, z = x * math.cos(ry) + z * math.sin(ry), -x * math.sin(ry) + z * math.cos(ry)
+            x, y = x * math.cos(rz) - y * math.sin(rz), x * math.sin(rz) + y * math.cos(rz)
+            return [x, y, z]
+
+        def apply_xyz(v, rx, ry, rz):
+            x, y, z = v
+            rx, ry, rz = (math.radians(d) for d in (rx, ry, rz))
+            x, y = x * math.cos(rz) - y * math.sin(rz), x * math.sin(rz) + y * math.cos(rz)
+            x, z = x * math.cos(ry) + z * math.sin(ry), -x * math.sin(ry) + z * math.cos(ry)
+            y, z = y * math.cos(rx) - z * math.sin(rx), y * math.sin(rx) + z * math.cos(rx)
+            return [x, y, z]
+
+        rot = [30.0, -50.0, 70.0]
+        converted = exact._zyx(rot)
+        for vector in ([1, 0, 0], [0, 1, 0], [0, 0, 1]):
+            for a, b in zip(apply_xyz(vector, *rot), apply_zyx(vector, *converted)):
+                self.assertAlmostEqual(a, b, places=3)
+
+    def test_follow_uses_exact_scene_without_model_call(self):
+        visual = {"reply": "x", "ui": {"mode": "face", "particles": {"concept": "dna"}}}
+        with mock.patch("agenti.particles.store.store.lookup", return_value=None), \
+                mock.patch.object(commands, "_show_particles") as shown, \
+                mock.patch.object(commands, "background") as bg:
+            commands.follow(visual, "fammi vedere come è fatto il DNA", "it")
+        bg.assert_not_called()
+        shown.assert_called_once()
+        snap = session.snapshot()
+        self.assertEqual(snap["source"], "exact")
+        self.assertEqual(snap["status"], "ready")
 
 
 class PrivilegesTest(unittest.TestCase):

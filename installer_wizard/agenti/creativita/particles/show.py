@@ -252,6 +252,11 @@ async def materialize(concept: str, spec: dict | None = None) -> dict:
     return entry
 
 
+def exact_shape(concept: str) -> bool:
+    from agenti.hands.holo import exact
+    return exact.kind_of(concept) is not None
+
+
 def ensure_visual(question: str) -> dict | None:
     if not enabled() or PRIVATE.search(question or ""):
         return None
@@ -262,7 +267,7 @@ def ensure_visual(question: str) -> dict | None:
         entry = materialize_instant(direct_concept)
         state["last"] = time.time()
         shown = present(entry, query=question or "")
-        if entry.get("instant"):
+        if entry.get("instant") and not exact_shape(direct_concept):
             refine_later(direct_concept, question or "")
         return shown
     except Exception:

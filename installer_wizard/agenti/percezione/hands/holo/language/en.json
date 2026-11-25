@@ -1,20 +1,94 @@
 {
   "commands": {
-    "realistic": ["in 3d", "3d", "realistic", "photorealistic", "like a video game", "video game graphics", "high definition", "in hd", "solid", "realistic view"],
-    "anatomy": ["anatomy", "anatomy mode", "anatomical", "cross section", "cutaway", "inside", "exploded view"],
-    "particles": ["particles", "back to particles", "particle mode"],
-    "zoom_in": ["zoom in", "bigger", "enlarge", "closer"],
-    "zoom_out": ["zoom out", "smaller", "shrink", "further"],
-    "rotate_left": ["rotate left", "turn left"],
-    "rotate_right": ["rotate right", "turn right", "rotate it", "rotate"],
-    "rotate_up": ["rotate up", "tilt up", "top view"],
-    "rotate_down": ["rotate down", "tilt down", "bottom view"],
-    "reset": ["reset view", "initial view"],
-    "explode": ["separate the parts", "explode it", "open the model", "open it"],
-    "collapse": ["put it back together", "join the parts", "reassemble"],
-    "animate": ["animate it", "make it move", "start the animation"],
-    "still": ["stop it", "stop the animation", "hold still"],
-    "close": ["close the hologram", "close the view", "close the model", "hide the hologram"]
+    "realistic": [
+      "in 3d",
+      "3d",
+      "realistic",
+      "photorealistic",
+      "like a video game",
+      "video game graphics",
+      "high definition",
+      "in hd",
+      "solid",
+      "realistic view"
+    ],
+    "anatomy": [
+      "anatomy",
+      "anatomy mode",
+      "anatomical",
+      "cross section",
+      "cutaway",
+      "inside",
+      "exploded view"
+    ],
+    "particles": [
+      "particles",
+      "back to particles",
+      "particle mode"
+    ],
+    "zoom_in": [
+      "zoom in",
+      "bigger",
+      "enlarge",
+      "closer"
+    ],
+    "zoom_out": [
+      "zoom out",
+      "smaller",
+      "shrink",
+      "further"
+    ],
+    "rotate_left": [
+      "rotate left",
+      "turn left"
+    ],
+    "rotate_right": [
+      "rotate right",
+      "turn right",
+      "rotate it",
+      "rotate"
+    ],
+    "rotate_up": [
+      "rotate up",
+      "tilt up",
+      "top view"
+    ],
+    "rotate_down": [
+      "rotate down",
+      "tilt down",
+      "bottom view"
+    ],
+    "reset": [
+      "reset view",
+      "initial view"
+    ],
+    "explode": [
+      "separate the parts",
+      "explode it",
+      "open the model",
+      "open it"
+    ],
+    "collapse": [
+      "put it back together",
+      "join the parts",
+      "reassemble"
+    ],
+    "animate": [
+      "animate it",
+      "make it move",
+      "start the animation"
+    ],
+    "still": [
+      "stop it",
+      "stop the animation",
+      "hold still"
+    ],
+    "close": [
+      "close the hologram",
+      "close the view",
+      "close the model",
+      "hide the hologram"
+    ]
   },
   "replies": {
     "realistic": "Switching to the realistic 3D view of {subject}.",
@@ -24,5 +98,42 @@
     "view": "Done.",
     "close": "I closed the view.",
     "unavailable": "The high definition model failed ({reason}): staying on the first 3D version."
+  },
+  "parts": {
+    "dna": {
+      "label": "DNA · B double helix"
+    },
+    "dna_adenine": {
+      "label": "Adenine (A)",
+      "info": "Always pairs with thymine through two hydrogen bonds."
+    },
+    "dna_thymine": {
+      "label": "Thymine (T)",
+      "info": "Pairs with adenine; RNA uses uracil instead."
+    },
+    "dna_guanine": {
+      "label": "Guanine (G)",
+      "info": "Pairs with cytosine through three hydrogen bonds."
+    },
+    "dna_cytosine": {
+      "label": "Cytosine (C)",
+      "info": "Pairs with guanine; G-C pairs make DNA more stable."
+    },
+    "dna_phosphate": {
+      "label": "Phosphate group",
+      "info": "Links the sugars and gives DNA its negative charge."
+    },
+    "dna_sugar": {
+      "label": "Deoxyribose",
+      "info": "The sugar every base is attached to."
+    },
+    "dna_backbone": {
+      "label": "Sugar-phosphate backbone",
+      "info": "The outer strand: one full turn every 10.5 base pairs."
+    },
+    "dna_hydrogen_bond": {
+      "label": "Hydrogen bonds",
+      "info": "Hold the two bases of a pair together."
+    }
   }
 }

@@ -1,4 +1,5 @@
 #![forbid(unsafe_code)]
+pub mod dna;
 pub mod error;
 pub mod layout;
 pub mod model;
