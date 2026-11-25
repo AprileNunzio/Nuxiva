@@ -4,6 +4,7 @@ pub mod error;
 pub mod glb;
 pub mod layout;
 pub mod model;
+pub mod molecule;
 pub mod parse;
 
 pub use error::{HoloError, HoloResult};
@@ -20,5 +21,7 @@ pub fn prepare(input: &str) -> HoloResult<String> {
     serde_json::to_string(&scene).map_err(|_| HoloError::BadJson)
 }
 
+#[cfg(test)]
+mod molecule_tests;
 #[cfg(test)]
 mod tests;

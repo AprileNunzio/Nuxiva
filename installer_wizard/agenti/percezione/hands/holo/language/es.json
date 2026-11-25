@@ -132,6 +132,87 @@
     "dna_hydrogen_bond": {
       "label": "Puentes de hidrógeno",
       "info": "Mantienen unidas las dos bases de un par."
+    },
+    "atom_H": {
+      "label": "Hidrógeno (H)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_C": {
+      "label": "Carbono (C)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_N": {
+      "label": "Nitrógeno (N)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_O": {
+      "label": "Oxígeno (O)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_S": {
+      "label": "Azufre (S)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_P": {
+      "label": "Fósforo (P)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_F": {
+      "label": "Flúor (F)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_Cl": {
+      "label": "Cloro (Cl)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_Br": {
+      "label": "Bromo (Br)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_I": {
+      "label": "Yodo (I)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_Fe": {
+      "label": "Hierro (Fe)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_Na": {
+      "label": "Sodio (Na)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_K": {
+      "label": "Potasio (K)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_Ca": {
+      "label": "Calcio (Ca)",
+      "info": "Átomo en su posición real medida"
+    },
+    "atom_Mg": {
+      "label": "Magnesio (Mg)",
+      "info": "Átomo en su posición real medida"
+    },
+    "bond": {
+      "label": "Enlace químico",
+      "info": "Más grueso si es doble o triple"
+    },
+    "protein_chain": {
+      "label": "Cadena {chain}",
+      "info": "Esqueleto de la proteína, un punto por aminoácido"
     }
+  },
+  "science": {
+    "molecule": [
+      "molecula",
+      "moleculas",
+      "compuesto"
+    ],
+    "protein": [
+      "proteina",
+      "proteinas",
+      "enzima",
+      "enzimas"
+    ]
   }
 }

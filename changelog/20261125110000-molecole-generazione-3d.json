@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "date": "2026-11-25",
+  "title": {
+    "it": "Molecole e proteine vere, e generazione 3D con l'IA sul nodo GPU della mesh con riserva cloud",
+    "en": "Real molecules and proteins, and AI 3D generation on the mesh GPU node with a cloud reserve",
+    "fr": "Vraies molécules et protéines, et génération 3D par IA sur le nœud GPU du maillage avec réserve cloud",
+    "es": "Moléculas y proteínas reales, y generación 3D con IA en el nodo GPU de la malla con reserva en la nube"
+  },
+  "features": [
+    {
+      "it": "«Fammi vedere la molecola della caffeina» mostra gli atomi e i legami veri presi da PubChem, con colori per elemento e nomi in anatomia; le proteine come l'emoglobina arrivano dalla banca dati RCSB PDB con una catena colorata per ogni filamento.",
+      "en": "“Show me the caffeine molecule” shows the real atoms and bonds from PubChem, coloured by element and named in anatomy view; proteins such as haemoglobin come from the RCSB PDB with one coloured chain per strand.",
+      "fr": "« Montre-moi la molécule de caféine » affiche les vrais atomes et liaisons issus de PubChem, colorés par élément et nommés en vue anatomie ; les protéines comme l'hémoglobine viennent de la RCSB PDB avec une chaîne colorée par brin.",
+      "es": "«Muéstrame la molécula de la cafeína» enseña los átomos y enlaces reales de PubChem, con colores por elemento y nombres en la vista anatómica; las proteínas como la hemoglobina llegan de la RCSB PDB con una cadena de color por hebra."
+    },
+    {
+      "it": "Se nessun modello pronto supera la soglia, Nuxiva genera il modello 3D con l'IA sul nodo GPU della mesh (Hunyuan3D-2) e, se il nodo è occupato o spento, in cloud con Meshy. Anche il modello generato passa i controlli prima di essere mostrato.",
+      "en": "When no ready model passes the threshold, Nuxiva generates the 3D model with AI on the mesh GPU node (Hunyuan3D-2) and, if the node is busy or off, in the cloud with Meshy. Generated models pass the same checks before they are shown.",
+      "fr": "Si aucun modèle prêt ne dépasse le seuil, Nuxiva génère le modèle 3D par IA sur le nœud GPU du maillage (Hunyuan3D-2) et, si le nœud est occupé ou éteint, dans le cloud avec Meshy. Le modèle généré passe les mêmes contrôles avant d'être affiché.",
+      "es": "Si ningún modelo listo supera el umbral, Nuxiva genera el modelo 3D con IA en el nodo GPU de la malla (Hunyuan3D-2) y, si el nodo está ocupado o apagado, en la nube con Meshy. El modelo generado pasa los mismos controles antes de mostrarse."
+    },
+    {
+      "it": "Nel pannello si impostano l'indirizzo del nodo GPU, la chiave Meshy e un massimo di generazioni cloud al giorno; il display dice in ogni momento cosa sta cercando, generando o scartando.",
+      "en": "The panel sets the GPU node address, the Meshy key and a daily maximum of cloud generations; the display always says what it is looking up, generating or discarding.",
+      "fr": "Le panneau règle l'adresse du nœud GPU, la clé Meshy et un maximum quotidien de générations cloud ; l'écran indique toujours ce qu'il cherche, génère ou écarte.",
+      "es": "En el panel se configuran la dirección del nodo GPU, la clave de Meshy y un máximo diario de generaciones en la nube; la pantalla dice en todo momento qué busca, genera o descarta."
+    },
+    {
+      "it": "Il nodo GPU è accettato solo su indirizzi della rete locale, mai su indirizzi pubblici o di metadati; le strutture scientifiche sono lette dal motore Rust con limiti su atomi, legami e dimensioni.",
+      "en": "The GPU node is accepted only on local network addresses, never public or metadata ones; scientific structures are read by the Rust engine with limits on atoms, bonds and size.",
+      "fr": "Le nœud GPU n'est accepté que sur des adresses du réseau local, jamais publiques ni de métadonnées ; les structures scientifiques sont lues par le moteur Rust avec des limites d'atomes, de liaisons et de taille.",
+      "es": "El nodo GPU solo se acepta en direcciones de la red local, nunca públicas ni de metadatos; las estructuras científicas las lee el motor Rust con límites de átomos, enlaces y tamaño."
+    }
+  ]
+}

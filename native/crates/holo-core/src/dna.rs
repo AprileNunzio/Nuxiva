@@ -58,7 +58,14 @@ fn lerp(a: [f32; 3], b: [f32; 3], t: f32) -> [f32; 3] {
     ]
 }
 
-fn rod(name: &str, from: [f32; 3], to: [f32; 3], radius: f32, color: &str, layer: u8) -> Value {
+pub(crate) fn rod(
+    name: &str,
+    from: [f32; 3],
+    to: [f32; 3],
+    radius: f32,
+    color: &str,
+    layer: u8,
+) -> Value {
     let d = sub(to, from);
     let length = d.iter().map(|v| v * v).sum::<f32>().sqrt().max(1e-4);
     let z = (-(d[0] / length)).clamp(-1.0, 1.0).asin().to_degrees();
@@ -68,7 +75,7 @@ fn rod(name: &str, from: [f32; 3], to: [f32; 3], radius: f32, color: &str, layer
            "roughness": 0.35, "layer": layer})
 }
 
-fn ball(name: &str, at: [f32; 3], radius: f32, color: &str, layer: u8) -> Value {
+pub(crate) fn ball(name: &str, at: [f32; 3], radius: f32, color: &str, layer: u8) -> Value {
     json!({"name": name, "shape": "sphere", "radius": radius, "position": at, "color": color,
            "roughness": 0.3, "layer": layer})
 }

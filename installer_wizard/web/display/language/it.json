@@ -659,6 +659,19 @@
     "holo_progress_none": "Nessun modello pronto supera la soglia {{limit}}: lo creo io",
     "holo_progress_generating": "Creo il modello in alta definizione",
     "holo_credit": "«{{name}}» di {{author}} · {{license}}",
-    "holo_asset_score": "Modello verificato · punteggio {{s}}"
+    "holo_asset_score": "Modello verificato · punteggio {{s}}",
+    "holo_progress_science_searching": "Cerco la struttura reale su {{source}}",
+    "holo_progress_science_found": "Struttura reale trovata su {{source}}: {{name}}",
+    "holo_progress_science_missing": "Nessuna struttura reale per «{{name}}»: provo con i modelli 3D",
+    "holo_progress_forge_local": "Genero il modello 3D sul nodo GPU della mesh",
+    "holo_progress_forge_local_busy": "Nodo GPU occupato o spento: passo alla riserva",
+    "holo_progress_forge_cloud": "Genero il modello 3D in cloud · {{stage}} {{percent}}%",
+    "holo_progress_forge_cloud_limit": "Limite di {{limit}} generazioni cloud al giorno raggiunto",
+    "holo_progress_forge_rejected": "Il modello generato non ha superato il controllo",
+    "holo_progress_forge_done": "Modello generato e approvato con punteggio {{score}}",
+    "holo_stage_shape": "forma",
+    "holo_stage_texture": "materiali",
+    "holo_license_forge_local": "generato sul nodo GPU",
+    "holo_license_forge_cloud": "generato in cloud (Meshy)"
   }
 }

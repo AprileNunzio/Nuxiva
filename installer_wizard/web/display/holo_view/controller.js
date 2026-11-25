@@ -74,7 +74,7 @@
     const parts = asset ? T("holo_asset_score", { s: asset.score }) : (snap.scene ? T("holo_parts", { n: snap.scene.parts.length, l: snap.scene.layers }) : "");
     cells.status.textContent = [T(`holo_status_${snap.status}`), parts].filter(Boolean).join(" · ");
     cells.gesture.textContent = T(`holo_gesture_${st.gesture}`);
-    paintCredit(asset);
+    paintCredit(asset || (snap.scene && snap.scene.credit));
     paintProgress(snap);
   }
 
@@ -91,7 +91,9 @@
     const { credit } = st.els;
     credit.hidden = !asset;
     if (!asset) return;
-    credit.textContent = T("holo_credit", { name: asset.name || "", author: asset.author || "", license: asset.license || "" });
+    const license = String(asset.license || "");
+    const shown = license.startsWith("forge_") ? T(`holo_license_${license}`) : license;
+    credit.textContent = T("holo_credit", { name: asset.name || "", author: asset.author || "", license: shown });
     const page = safePage(asset.page);
     if (page) credit.href = page;
     else credit.removeAttribute("href");
@@ -102,7 +104,10 @@
     const key = snap.active && snap.progress ? snap.progress.key : "";
     const busy = key && (snap.status === "building" || snap.status === "refining" || key === "none" || key === "rejected");
     progress.hidden = !busy;
-    if (busy) progress.textContent = T(`holo_progress_${key}`, snap.progress.params || {});
+    if (!busy) return;
+    const params = { ...(snap.progress.params || {}) };
+    if (params.stage) params.stage = T(`holo_stage_${params.stage}`);
+    progress.textContent = T(`holo_progress_${key}`, params);
   }
 
   function apply(name) {

@@ -35,7 +35,7 @@ def asset_scene(entry: dict) -> dict:
     return {"title": entry.get("name", ""), "parts": [], "layers": 1, "euler": "XYZ", "asset": asset}
 
 
-async def _english(subject: str) -> str:
+async def english(subject: str) -> str:
     from agenti.locale.pivot import pivot
     try:
         return await pivot.from_pivot(subject, "en", force=True)
@@ -76,17 +76,23 @@ async def _rated(subject: str, candidates: list[dict], notify) -> list[tuple[dic
     return out
 
 
-async def find(subject: str, notify=lambda key, **params: None) -> dict | None:
+def cached(subject: str, notify=lambda key, **params: None) -> dict | None:
+    found = catalog.best(key_of(subject))
+    if found:
+        notify("cached", name=found.get("name", ""))
+    return found
+
+
+async def find(subject: str, notify=lambda key, **params: None, english_name: str = "") -> dict | None:
     key = key_of(subject)
-    cached = catalog.best(key)
-    if cached:
-        notify("cached", name=cached.get("name", ""))
-        return cached
+    hit = cached(subject, notify)
+    if hit:
+        return hit
     if not enabled():
         return None
-    english = await _english(subject)
+    english_name = english_name or await english(subject)
     limit = threshold()
-    for candidate, verdict in await _rated(subject, await _candidates(subject, english, notify), notify):
+    for candidate, verdict in await _rated(subject, await _candidates(subject, english_name, notify), notify):
         notify("downloading", name=candidate["name"])
         try:
             glb = await SOURCES[candidate["source"]].download(candidate["uid"])

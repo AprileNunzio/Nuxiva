@@ -163,6 +163,88 @@
     "dna_hydrogen_bond": {
       "label": "Legami a idrogeno",
       "info": "Tengono unite le due basi della coppia."
+    },
+    "atom_H": {
+      "label": "Idrogeno (H)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_C": {
+      "label": "Carbonio (C)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_N": {
+      "label": "Azoto (N)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_O": {
+      "label": "Ossigeno (O)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_S": {
+      "label": "Zolfo (S)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_P": {
+      "label": "Fosforo (P)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_F": {
+      "label": "Fluoro (F)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_Cl": {
+      "label": "Cloro (Cl)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_Br": {
+      "label": "Bromo (Br)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_I": {
+      "label": "Iodio (I)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_Fe": {
+      "label": "Ferro (Fe)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_Na": {
+      "label": "Sodio (Na)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_K": {
+      "label": "Potassio (K)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_Ca": {
+      "label": "Calcio (Ca)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "atom_Mg": {
+      "label": "Magnesio (Mg)",
+      "info": "Atomo nella posizione reale misurata"
+    },
+    "bond": {
+      "label": "Legame chimico",
+      "info": "Più spesso se doppio o triplo"
+    },
+    "protein_chain": {
+      "label": "Catena {chain}",
+      "info": "Scheletro della proteina, un punto per amminoacido"
     }
+  },
+  "science": {
+    "molecule": [
+      "molecola",
+      "molecole",
+      "composto",
+      "formula"
+    ],
+    "protein": [
+      "proteina",
+      "proteine",
+      "enzima",
+      "enzimi"
+    ]
   }
 }

@@ -14,6 +14,11 @@
     "NUXIVA_HANDS_MAX_MS": "Tempo massimo per analisi (in automatico oltre questo si spegne)",
     "NUXIVA_HOLO_CATALOG": "Prima di creare un modello 3D cerca online un modello pronto e lo salva nel catalogo",
     "NUXIVA_SKETCHFAB_TOKEN": "Token API di Sketchfab (per scaricare modelli con licenza Creative Commons)",
-    "NUXIVA_HOLO_MIN_SCORE": "Punteggio minimo (40-95) perché un modello trovato venga mostrato"
+    "NUXIVA_HOLO_MIN_SCORE": "Punteggio minimo (40-95) perché un modello trovato venga mostrato",
+    "NUXIVA_HOLO_GENERATE": "Se nessun modello pronto va bene, genera il modello 3D con l'IA",
+    "NUXIVA_HOLO_GPU_URL": "Indirizzo del nodo GPU con Hunyuan3D-2 (rete locale, es. http://192.168.1.50:8081)",
+    "NUXIVA_HOLO_GPU_TOKEN": "Token del nodo GPU (facoltativo, se protetto da un proxy)",
+    "NUXIVA_MESHY_TOKEN": "Chiave API di Meshy per la generazione 3D in cloud (consuma crediti)",
+    "NUXIVA_HOLO_CLOUD_DAILY": "Massimo di modelli generati in cloud al giorno (0-50)"
   }
 }

@@ -13,6 +13,11 @@
     "NUXIVA_HANDS_COUNT": "Max hands tracked",
     "NUXIVA_HOLO_CATALOG": "Before creating a 3D model, search online for a ready model and save it in the catalogue",
     "NUXIVA_SKETCHFAB_TOKEN": "Sketchfab API token (to download Creative Commons models)",
-    "NUXIVA_HOLO_MIN_SCORE": "Minimum score (40-95) for a found model to be shown"
+    "NUXIVA_HOLO_MIN_SCORE": "Minimum score (40-95) for a found model to be shown",
+    "NUXIVA_HOLO_GENERATE": "If no ready model is good enough, generate the 3D model with AI",
+    "NUXIVA_HOLO_GPU_URL": "Address of the GPU node running Hunyuan3D-2 (local network, e.g. http://192.168.1.50:8081)",
+    "NUXIVA_HOLO_GPU_TOKEN": "GPU node token (optional, when behind a proxy)",
+    "NUXIVA_MESHY_TOKEN": "Meshy API key for cloud 3D generation (uses credits)",
+    "NUXIVA_HOLO_CLOUD_DAILY": "Maximum cloud-generated models per day (0-50)"
   }
 }

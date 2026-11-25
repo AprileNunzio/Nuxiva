@@ -9,7 +9,8 @@ from urllib.parse import urlsplit
 import httpx
 
 ALLOWED_HOSTS = ("api.sketchfab.com", "media.sketchfab.com", "sketchfab-prod-media.s3.amazonaws.com", "api.polyhaven.com",
-                 "dl.polyhaven.org", "cdn.polyhaven.com")
+                 "dl.polyhaven.org", "cdn.polyhaven.com", "pubchem.ncbi.nlm.nih.gov", "files.rcsb.org", "search.rcsb.org",
+                 "api.meshy.ai", "assets.meshy.ai")
 MAX_DOWNLOAD = 96 * 1024 * 1024
 MAX_UNZIPPED = 256 * 1024 * 1024
 MAX_THUMB = 3 * 1024 * 1024
@@ -45,6 +46,21 @@ async def download(url: str, limit: int = MAX_DOWNLOAD, headers: dict | None = N
                     raise FetchError("holo_too_large")
                 chunks.append(chunk)
     return b"".join(chunks)
+
+
+async def post_json(url: str, body: dict, limit: int = 1024 * 1024, headers: dict | None = None) -> dict:
+    if not allowed(url):
+        raise FetchError("holo_host_not_allowed")
+    async with httpx.AsyncClient(timeout=TIMEOUT, follow_redirects=False) as client:
+        response = await client.post(url, json=body, headers=headers or {})
+    if response.status_code not in (200, 202):
+        raise FetchError(f"holo_http_{response.status_code}")
+    if len(response.content) > limit:
+        raise FetchError("holo_too_large")
+    data = response.json()
+    if not isinstance(data, dict):
+        raise FetchError("holo_bad_reply")
+    return data
 
 
 def safe_name(name: str) -> str:

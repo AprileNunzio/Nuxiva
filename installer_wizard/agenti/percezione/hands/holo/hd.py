@@ -42,10 +42,7 @@ async def build(session_id: str, subject: str, spec: dict | None, lang: str) -> 
     first = draft(subject, spec)
     if first is not None:
         session.scene_ready(session_id, first, "draft")
-    from agenti.hands.holo.catalog import finder
-    entry = await finder.find(subject, lambda key, **params: session.progress(session_id, key, **params))
-    if entry is not None:
-        session.scene_ready(session_id, finder.asset_scene(entry), "catalog")
+    if await _ready_made(session_id, subject, lang):
         return
     session.progress(session_id, "generating")
     try:
@@ -57,3 +54,27 @@ async def build(session_id: str, subject: str, spec: dict | None, lang: str) -> 
     session.scene_ready(session_id, scene, "designed")
     log.info("progetto HD pronto: %s (%d parti)", subject, len(scene["parts"]))
 
+
+async def _ready_made(session_id: str, subject: str, lang: str) -> bool:
+    from agenti.hands.holo import commands, exact
+    from agenti.hands.holo.catalog import finder
+    from agenti.hands.holo.forge import forge
+    from agenti.hands.holo.science import resolve
+
+    def notify(key: str, **params) -> None:
+        session.progress(session_id, key, **params)
+
+    entry = finder.cached(subject, notify)
+    if entry is None:
+        english = await finder.english(subject)
+        science = await resolve.find(subject, english, commands.vocab(lang).get("science", {}), notify)
+        if science is not None:
+            science = exact.localize(science, lang)
+            session.scene_ready(session_id, science, "exact")
+            commands.show_particles(subject, exact.to_particles(science))
+            return True
+        entry = await finder.find(subject, notify, english) or await forge.create(finder.key_of(subject), subject, english, notify)
+    if entry is None:
+        return False
+    session.scene_ready(session_id, finder.asset_scene(entry), "catalog")
+    return True

@@ -108,6 +108,50 @@
       "type": "text",
       "default": "70",
       "placeholder": "70"
+    },
+    {
+      "key": "NUXIVA_HOLO_GENERATE",
+      "label": "Se nessun modello pronto va bene, genera il modello 3D con l'IA",
+      "type": "select",
+      "default": "auto",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Nodo GPU della mesh, poi cloud"
+        },
+        {
+          "value": "local",
+          "label": "Solo nodo GPU della mesh"
+        },
+        {
+          "value": "off",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_HOLO_GPU_URL",
+      "label": "Indirizzo del nodo GPU con Hunyuan3D-2 (rete locale, es. http://192.168.1.50:8081)",
+      "type": "text",
+      "default": "",
+      "placeholder": "http://192.168.1.50:8081"
+    },
+    {
+      "key": "NUXIVA_HOLO_GPU_TOKEN",
+      "label": "Token del nodo GPU (facoltativo, se protetto da un proxy)",
+      "type": "secret"
+    },
+    {
+      "key": "NUXIVA_MESHY_TOKEN",
+      "label": "Chiave API di Meshy per la generazione 3D in cloud (consuma crediti)",
+      "type": "secret"
+    },
+    {
+      "key": "NUXIVA_HOLO_CLOUD_DAILY",
+      "label": "Massimo di modelli generati in cloud al giorno (0-50)",
+      "type": "text",
+      "default": "5",
+      "placeholder": "5"
     }
   ],
   "icon3d": "./icon.png",

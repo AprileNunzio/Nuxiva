@@ -31,11 +31,19 @@ def _build(kind: str, detail: str) -> dict:
     return fallback.prepare({"title": "DNA", "source": "model", "parts": dna.parts(dna.sequence(detail))}, GENERATED_PARTS)
 
 
+def _prefixed(names: dict, name: str) -> dict | None:
+    stem, _, tail = name.rpartition("_")
+    entry = names.get(stem) if stem and len(tail) == 1 else None
+    if not entry:
+        return None
+    return {"label": entry["label"].replace("{chain}", tail), "info": entry.get("info", "").replace("{chain}", tail)}
+
+
 def localize(scene: dict, lang: str) -> dict:
     from agenti.hands.holo.commands import vocab
     names = vocab(lang).get("parts", {})
     for part in scene["parts"]:
-        entry = names.get(part["name"])
+        entry = names.get(part["name"]) or _prefixed(names, part["name"])
         if entry:
             part["label"], part["info"] = entry["label"], entry.get("info", "")
     title = names.get(scene.get("title", "").lower())

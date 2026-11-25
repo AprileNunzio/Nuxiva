@@ -61,11 +61,11 @@ def _launch(subject: str, mode: str, spec: dict | None, lang: str) -> dict:
         return session.brief()
     scene = exact.scene(kind, _code(lang))
     session.scene_ready(session_id, scene, "exact")
-    _show_particles(subject, exact.to_particles(scene))
+    show_particles(subject, exact.to_particles(scene))
     return session.brief()
 
 
-def _show_particles(subject: str, spec: dict) -> None:
+def show_particles(subject: str, spec: dict) -> None:
     from agenti.particles import codec, show as particles_show
     from agenti.particles.store import store
     seed = int.from_bytes(subject.encode()[:8].ljust(8, b"\0"), "little")

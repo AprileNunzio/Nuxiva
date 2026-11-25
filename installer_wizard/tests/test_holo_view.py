@@ -142,7 +142,7 @@ class CommandsTest(unittest.TestCase):
         sid = session.begin("cuore", "realistic")
         spec = {"parts": [{"shape": "sphere", "size": [1, 1, 1], "at": [0, 0, 0]}]}
         with mock.patch.object(hd, "design", side_effect=RuntimeError("offline")), \
-                mock.patch("agenti.hands.holo.catalog.finder.find", new=mock.AsyncMock(return_value=None)):
+                mock.patch.object(hd, "_ready_made", new=mock.AsyncMock(return_value=False)):
             asyncio.run(hd.build(sid, "cuore", spec, "it"))
         snap = session.snapshot()
         self.assertEqual(snap["status"], "draft_only")
@@ -201,7 +201,7 @@ class ExactTest(unittest.TestCase):
     def test_follow_uses_exact_scene_without_model_call(self):
         visual = {"reply": "x", "ui": {"mode": "face", "particles": {"concept": "dna"}}}
         with mock.patch("agenti.particles.store.store.lookup", return_value=None), \
-                mock.patch.object(commands, "_show_particles") as shown, \
+                mock.patch.object(commands, "show_particles") as shown, \
                 mock.patch.object(commands, "background") as bg:
             commands.follow(visual, "fammi vedere come è fatto il DNA", "it")
         bg.assert_not_called()

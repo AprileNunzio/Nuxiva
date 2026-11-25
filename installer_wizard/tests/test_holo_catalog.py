@@ -107,7 +107,7 @@ class FinderTest(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.catalog = Catalog(Path(self.tmp.name))
         self.patches = [mock.patch.object(finder, "catalog", self.catalog), mock.patch.object(finder, "key_of", side_effect=lambda s: s),
-                        mock.patch.object(finder, "_english", new=mock.AsyncMock(return_value="heart")),
+                        mock.patch.object(finder, "english", new=mock.AsyncMock(return_value="heart")),
                         mock.patch.object(finder.sketchfab, "token", return_value=""),
                         mock.patch.object(finder.state_store, "event")]
         for p in self.patches:
@@ -168,11 +168,14 @@ class BuildTest(unittest.TestCase):
         sid = session.begin("cuore", "realistic")
         entry = {"id": "b" * 24, "name": "Cuore", "author": "A", "license": "CC-BY", "score": 81}
 
-        async def find(subject, notify):
+        async def find(subject, notify, english=""):
             notify("chosen", name="Cuore", score=81)
             return entry
 
-        with mock.patch.object(finder, "find", new=find), mock.patch.object(hd, "design", new=mock.AsyncMock()) as design:
+        with mock.patch.object(finder, "find", new=find), mock.patch.object(hd, "design", new=mock.AsyncMock()) as design, \
+                mock.patch.object(finder, "cached", return_value=None), \
+                mock.patch.object(finder, "english", new=mock.AsyncMock(return_value="heart")), \
+                mock.patch("agenti.hands.holo.science.resolve.find", new=mock.AsyncMock(return_value=None)):
             asyncio.run(hd.build(sid, "cuore", None, "it"))
         design.assert_not_called()
         snap = session.snapshot()
