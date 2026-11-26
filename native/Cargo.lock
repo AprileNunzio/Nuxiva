@@ -2419,6 +2419,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-model-fit"
+version = "5.8.25"
+dependencies = [
+ "nuxiva-model-router",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-model-router"
 version = "5.8.25"
 dependencies = [

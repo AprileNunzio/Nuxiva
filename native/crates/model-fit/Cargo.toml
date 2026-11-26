@@ -1,0 +1,19 @@
+[package]
+name = "nuxiva-model-fit"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "model_fit"
+path = "src/lib.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+nuxiva-model-router = { path = "../model-router" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

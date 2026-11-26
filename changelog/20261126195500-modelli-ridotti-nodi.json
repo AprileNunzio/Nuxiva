@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "title": {
+    "it": "Modelli ridotti su nodi e satelliti: Nuxiva sceglie da sé la versione che entra in memoria",
+    "en": "Reduced models on nodes and satellites: Nuxiva picks the version that fits in memory on its own",
+    "fr": "Modèles réduits sur nœuds et satellites : Nuxiva choisit seul la version qui tient en mémoire",
+    "es": "Modelos reducidos en nodos y satélites: Nuxiva elige por sí misma la versión que cabe en memoria"
+  },
+  "features": [
+    {
+      "it": "Per ogni nodo della mesh Nuxiva calcola quanta memoria serve a ogni modello nelle sue versioni compresse, dalla piena precisione alla più leggera, e sceglie la migliore che entra nella scheda grafica o nella RAM lasciando sempre un margine libero.",
+      "en": "For every mesh node Nuxiva computes how much memory each model needs in its compressed versions, from full precision to the lightest, and picks the best one that fits in the graphics card or RAM while always keeping some headroom free.",
+      "fr": "Pour chaque nœud du maillage, Nuxiva calcule la mémoire nécessaire à chaque modèle dans ses versions compressées, de la pleine précision à la plus légère, et choisit la meilleure qui tient dans la carte graphique ou la RAM en gardant toujours une marge libre.",
+      "es": "Para cada nodo de la malla Nuxiva calcula cuánta memoria necesita cada modelo en sus versiones comprimidas, de la precisión completa a la más ligera, y elige la mejor que cabe en la tarjeta gráfica o en la RAM dejando siempre un margen libre."
+    },
+    {
+      "it": "I satelliti non caricano mai modelli grandi e, a batteria, passano da soli a modelli ancora più piccoli; il modello scelto entra nell'instradamento come cervello locale gratuito, adatto anche ai dati segreti.",
+      "en": "Satellites never load large models and, on battery, switch on their own to even smaller ones; the chosen model joins routing as a free local brain, suitable for secret data too.",
+      "fr": "Les satellites ne chargent jamais de grands modèles et, sur batterie, passent seuls à des modèles encore plus petits ; le modèle choisi rejoint le routage comme cerveau local gratuit, adapté aussi aux données secrètes.",
+      "es": "Los satélites nunca cargan modelos grandes y, con batería, pasan solos a modelos aún más pequeños; el modelo elegido entra en el enrutamiento como cerebro local gratuito, apto también para datos secretos."
+    },
+    {
+      "it": "Le stime di qualità delle versioni compresse sono provvisorie e vengono sostituite dai valori misurati nel Laboratorio di prova appena disponibili.",
+      "en": "Quality estimates for compressed versions are provisional and are replaced by the values measured in the Test Lab as soon as they are available.",
+      "fr": "Les estimations de qualité des versions compressées sont provisoires et sont remplacées par les valeurs mesurées dans le Laboratoire d'essai dès qu'elles sont disponibles.",
+      "es": "Las estimaciones de calidad de las versiones comprimidas son provisionales y se sustituyen por los valores medidos en el Laboratorio de pruebas en cuanto están disponibles."
+    }
+  ]
+}
