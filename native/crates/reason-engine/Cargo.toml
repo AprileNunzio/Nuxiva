@@ -1,0 +1,26 @@
+[package]
+name = "nuxiva-reason-engine"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "reason_engine"
+path = "src/lib.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+nuxiva-capability-registry = { path = "../capability-registry" }
+nuxiva-reason-understand = { path = "../reason-understand" }
+nuxiva-reason-plan = { path = "../reason-plan" }
+nuxiva-reason-exec = { path = "../reason-exec" }
+blake3 = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chacha20poly1305 = "0.10"
+getrandom = "0.3"
+zeroize = "1"

@@ -38,6 +38,10 @@ nuxiva-audio-dsp = { path = "../audio-dsp" }
 nuxiva-bus-core = { path = "../bus-core" }
 nuxiva-langid = { path = "../langid" }
 nuxiva-reason-lab = { path = "../reason-lab" }
+nuxiva-reason-engine = { path = "../reason-engine" }
+nuxiva-reason-exec = { path = "../reason-exec" }
+nuxiva-reason-plan = { path = "../reason-plan" }
+nuxiva-capability-registry = { path = "../capability-registry" }
 nuxiva-crdt-core = { path = "../crdt-core" }
 nuxiva-cortex-core = { path = "../cortex-core" }
 nuxiva-spatial-core = { path = "../spatial-core" }

@@ -5,6 +5,7 @@ from contextvars import ContextVar
 
 TOOLS: dict[str, dict] = {}
 REQUEST: ContextVar[str] = ContextVar("agent_request", default="")
+USED: ContextVar[list | None] = ContextVar("agent_used_tools", default=None)
 RECURRING = re.compile(r"\b(automazion\w*|ogni|tutti\s+i|tutte\s+le|quando|appena|se\s+\w+|alle\s+\d|alle\s+ore|"
                        r"domani|stasera|stanotte|più\s+tardi|tra\s+\d+|fra\s+\d+|ricordami|programm\w*|pianific\w*|"
                        r"routine|sempre|ogni\s+volta)\b", re.I)
@@ -119,6 +120,9 @@ async def run(name: str, args: dict) -> str:
     if not enabled(name):
         raise ToolDisabled(f"lo strumento «{name}» è disattivato dalla console")
     started = time.monotonic()
+    used = USED.get()
+    if used is not None:
+        used.append(name)
     try:
         out = TOOLS[name]["fn"](**clean_args(name, args))
         if inspect.isawaitable(out):

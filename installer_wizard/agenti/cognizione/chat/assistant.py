@@ -124,6 +124,12 @@ async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
         return holo.follow(visual, text, lang)
     switched = bool((speech_lang or {}).get("switched"))
     routing = text if switched else await pivot.to_pivot(text, lang)
+    from agenti.reasoning import act as reasoning, pipeline as reasoning_pipeline, shadow as reasoning_shadow
+    role = reasoning_pipeline.role_of(acting().role)
+    if reasoning.active():
+        acted = await reasoning.attempt(text, role, pivot.PIVOT)
+        if acted is not None:
+            return await _translated(acted, text, lang, by_model=False)
 
     from agenti.team.ceo import ceo
     planning = asyncio.create_task(ceo.decide(routing, {"lang": lang}))
@@ -137,6 +143,7 @@ async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
     async def hint() -> str:
         return _hint(await asyncio.shield(planning))
 
+    tracking = reasoning_shadow.track()
     try:
         async with stages.stage("ceo", "CEO Orchestrator") as probe:
             raw_result = await _route(routing, ask, speech_lang, hint)
@@ -144,11 +151,16 @@ async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
             probe.note(ceo_decision.delegation_plan)
             result = ceo.synthesize(ceo_decision, raw_result)
     finally:
+        used_tools = reasoning_shadow.untrack(tracking)
         if not planning.done():
             planning.cancel()
+    reasoning_shadow.schedule(text, role, raw_result, used_tools, CONNECTORS)
+    return await _translated(result, text, lang, by_model=generated["by_model"])
 
+
+async def _translated(result: dict, text: str, lang: str, *, by_model: bool) -> dict:
     if lang != pivot.PIVOT and result.get("reply"):
-        result["reply"] = await pivot.from_pivot(result["reply"], lang, force=not generated["by_model"])
+        result["reply"] = await pivot.from_pivot(result["reply"], lang, force=not by_model)
     if result.get("reply"):
         from agenti.particles import show as particles_show
         if particles_show.ensure_visual(text) is not None and isinstance(result.get("ui"), dict):

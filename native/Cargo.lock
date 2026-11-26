@@ -2459,6 +2459,7 @@ dependencies = [
  "nuxiva-audio-dsp",
  "nuxiva-authz-core",
  "nuxiva-bus-core",
+ "nuxiva-capability-registry",
  "nuxiva-chat-core",
  "nuxiva-collaudo-core",
  "nuxiva-config-core",
@@ -2504,7 +2505,10 @@ dependencies = [
  "nuxiva-percept-core",
  "nuxiva-presence-core",
  "nuxiva-proactivity-core",
+ "nuxiva-reason-engine",
+ "nuxiva-reason-exec",
  "nuxiva-reason-lab",
+ "nuxiva-reason-plan",
  "nuxiva-reflect-core",
  "nuxiva-reflex-core",
  "nuxiva-rescue-core",
@@ -2642,6 +2646,22 @@ version = "5.8.25"
 dependencies = [
  "blake3",
  "nuxiva-capability-registry",
+]
+
+[[package]]
+name = "nuxiva-reason-engine"
+version = "5.8.25"
+dependencies = [
+ "blake3",
+ "chacha20poly1305",
+ "getrandom 0.3.4",
+ "nuxiva-capability-registry",
+ "nuxiva-reason-exec",
+ "nuxiva-reason-plan",
+ "nuxiva-reason-understand",
+ "serde",
+ "serde_json",
+ "zeroize",
 ]
 
 [[package]]

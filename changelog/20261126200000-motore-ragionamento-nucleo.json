@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "title": {
+    "it": "Il motore di ragionamento unisce comprensione, piano, verifica ed esecuzione in un solo nucleo",
+    "en": "The reasoning engine joins understanding, planning, checking and execution in one core",
+    "fr": "Le moteur de raisonnement réunit compréhension, plan, vérification et exécution dans un seul noyau",
+    "es": "El motor de razonamiento une comprensión, plan, verificación y ejecución en un solo núcleo"
+  },
+  "features": [
+    {
+      "it": "Ogni richiesta diventa un obiettivo e poi un piano costruito solo con le capacità pertinenti: i valori personali non vengono mai inviati al modello che pianifica.",
+      "en": "Every request becomes a goal and then a plan built only from the relevant capabilities: personal values are never sent to the planning model.",
+      "fr": "Chaque demande devient un objectif puis un plan construit uniquement avec les capacités pertinentes : les valeurs personnelles ne sont jamais envoyées au modèle qui planifie.",
+      "es": "Cada petición se convierte en un objetivo y luego en un plan construido solo con las capacidades pertinentes: los valores personales nunca se envían al modelo que planifica."
+    },
+    {
+      "it": "Un piano non valido riceve una sola correzione mirata; i piani riusciti si riusano per richieste con la stessa forma, senza chiamare di nuovo il modello.",
+      "en": "An invalid plan gets a single targeted correction; successful plans are reused for requests with the same shape without calling the model again.",
+      "fr": "Un plan non valide reçoit une seule correction ciblée ; les plans réussis sont réutilisés pour les demandes de même forme sans rappeler le modèle.",
+      "es": "Un plan no válido recibe una sola corrección dirigida; los planes correctos se reutilizan para peticiones con la misma forma sin volver a llamar al modelo."
+    },
+    {
+      "it": "Le esecuzioni sono registrate in un journal cifrato: dopo un riavvio Nuxiva riprende dall'ultimo passo confermato e non ripete mai un invio già fatto.",
+      "en": "Executions are recorded in an encrypted journal: after a restart Nuxiva resumes from the last confirmed step and never repeats a send already made.",
+      "fr": "Les exécutions sont enregistrées dans un journal chiffré : après un redémarrage, Nuxiva reprend à la dernière étape confirmée et ne répète jamais un envoi déjà fait.",
+      "es": "Las ejecuciones se registran en un diario cifrado: tras un reinicio Nuxiva retoma desde el último paso confirmado y nunca repite un envío ya hecho."
+    },
+    {
+      "it": "Un cancello di passaggio misura giorni di osservazione, accordo con il percorso attuale, piani non validi e azioni indesiderate prima di permettere al motore di agire.",
+      "en": "A cutover gate measures days of observation, agreement with the current path, invalid plans and unwanted actions before the engine may act.",
+      "fr": "Une porte de passage mesure les jours d'observation, l'accord avec le chemin actuel, les plans non valides et les actions indésirables avant que le moteur puisse agir.",
+      "es": "Una puerta de paso mide días de observación, acuerdo con el camino actual, planes no válidos y acciones no deseadas antes de que el motor pueda actuar."
+    }
+  ],
+  "fixes": []
+}
