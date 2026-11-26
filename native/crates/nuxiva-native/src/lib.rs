@@ -44,6 +44,7 @@ mod governors;
 mod graph;
 mod guard;
 mod holo;
+mod home_resolve;
 mod home_rules;
 mod initiative;
 mod jev;
@@ -174,6 +175,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     jev::register(m)?;
     reason_lab::register(m)?;
     reason_engine::register(m)?;
+    home_resolve::register(m)?;
     seal::register(m)?;
     brain::register(m)?;
     mcp::register(m)?;

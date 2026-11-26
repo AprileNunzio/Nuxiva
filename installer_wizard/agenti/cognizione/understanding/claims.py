@@ -29,17 +29,29 @@ def whiteboard(ctx: Context) -> float:
     return 0.6 if w.LOOK.search(t) else 0.0
 
 
+CAMERA_ONLY = re.compile(r"\b(?:web\s?cam|telecamer\w*|videocamer\w*|cam|fotocamer\w*)\b")
+
+
 def livecam(ctx: Context) -> float:
     from agenti.cameras import commands as c
     t = ctx.plain
     if c.DEVICE.search(t) and (c.OPEN.search(t) or c.CLOSE.search(t)):
-        return 0.95
+        return 0.95 if CAMERA_ONLY.search(t) or _home_score(ctx) < 0.7 else 0.5
     if time_pending(c):
         return 0.85
     opened = "live_cam" in ctx.widgets
     if opened and (c.FULL.search(t) or c.NORMAL.search(t)):
         return 0.75
     return 0.55 if ctx.follows("livecam") and c.DEVICE.search(t) else 0.0
+
+
+def _home_score(ctx: Context) -> float:
+    try:
+        return home(ctx)
+    except (ImportError, LookupError, ValueError, TypeError) as exc:
+        from state import store
+        store.event("WARN", f"Comprensione domotica non valutabile: {exc}", "understanding")
+        return 0.0
 
 
 def time_pending(module) -> bool:
@@ -65,12 +77,14 @@ def music(ctx: Context) -> float:
 
 def home(ctx: Context) -> float:
     from agenti.home_assistant.home import brain
-    from agenti.home_assistant.nlu.parser import parse
+    from agenti.home_assistant.nlu.parser import understand
     if not brain.catalog.entities:
         return 0.0
-    plan = parse(ctx.text, brain.catalog)
+    plan = understand(ctx.text, brain.catalog)
     if plan is None:
         return 0.0
+    if plan["kind"] == "command" and "confidence" in plan:
+        return round(0.6 + 0.37 * float(plan["confidence"]), 3)
     if plan["kind"] == "command":
         return 0.85 if plan.get("how") == "nome" else 0.7
     return {"query": 0.8, "ask": 0.7}.get(plan["kind"], 0.3)

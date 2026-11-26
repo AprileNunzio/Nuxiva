@@ -14,6 +14,7 @@ class Catalog:
     entities: dict = field(default_factory=dict)
     default_area: str | None = None
     occupied: list = field(default_factory=list)
+    resolver: object = field(default=None, repr=False, compare=False)
 
     def controllable(self):
         return (e for e in self.entities.values() if e.get("controllable"))

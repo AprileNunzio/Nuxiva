@@ -24,5 +24,24 @@
     "missing_humidity": "humidity unavailable",
     "climate": "Home climate",
     "rooms": "Rooms"
+  },
+  "resolve": {
+    "which_room": "Which room? For example {rooms}.",
+    "which_room_plain": "Which room?",
+    "none_in_room": "I can't find suitable devices for this command in {rooms}.",
+    "none_anywhere": "I can't find suitable devices for this command.",
+    "confirm": "Do you mean {what}? Answer yes or no.",
+    "and": "and",
+    "verbs": {
+      "on": "turn on",
+      "off": "turn off",
+      "toggle": "toggle",
+      "open": "open",
+      "close": "close",
+      "up": "raise",
+      "down": "lower",
+      "lock": "lock",
+      "unlock": "unlock"
+    }
   }
 }

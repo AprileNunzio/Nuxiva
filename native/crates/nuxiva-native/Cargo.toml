@@ -39,6 +39,7 @@ nuxiva-bus-core = { path = "../bus-core" }
 nuxiva-langid = { path = "../langid" }
 nuxiva-reason-lab = { path = "../reason-lab" }
 nuxiva-reason-engine = { path = "../reason-engine" }
+nuxiva-home-resolve = { path = "../home-resolve" }
 nuxiva-reason-exec = { path = "../reason-exec" }
 nuxiva-reason-plan = { path = "../reason-plan" }
 nuxiva-capability-registry = { path = "../capability-registry" }

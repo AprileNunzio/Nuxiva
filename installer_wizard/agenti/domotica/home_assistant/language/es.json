@@ -32,5 +32,24 @@
     "missing_humidity": "humedad no disponible",
     "climate": "Clima de la casa",
     "rooms": "Habitaciones"
+  },
+  "resolve": {
+    "which_room": "¿En qué habitación? Por ejemplo {rooms}.",
+    "which_room_plain": "¿En qué habitación?",
+    "none_in_room": "No encuentro dispositivos adecuados para esta orden en {rooms}.",
+    "none_anywhere": "No encuentro dispositivos adecuados para esta orden.",
+    "confirm": "¿Quiere {what}? Responda sí o no.",
+    "and": "y",
+    "verbs": {
+      "on": "encender",
+      "off": "apagar",
+      "toggle": "conmutar",
+      "open": "abrir",
+      "close": "cerrar",
+      "up": "subir",
+      "down": "bajar",
+      "lock": "bloquear",
+      "unlock": "desbloquear"
+    }
   }
 }

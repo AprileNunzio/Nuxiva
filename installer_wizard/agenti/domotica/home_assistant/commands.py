@@ -11,7 +11,7 @@ from agenti.home_assistant.constants import (CANCEL_RE, CONFIRM_RE, CONFIRM_WIND
 from agenti.home_assistant.helpers import join_words
 from agenti.home_assistant.nlu.calls import is_sensitive
 from agenti.home_assistant.nlu.matching import match_areas, match_domains
-from agenti.home_assistant.nlu.parser import looks_like_home, parse
+from agenti.home_assistant.nlu.parser import looks_like_home, understand
 from agenti.home_assistant.nlu.text import norm, stem
 from agenti.home_assistant.readings import messages
 from state import store
@@ -166,8 +166,8 @@ class HomeCommands:
                 return "Come desidera, non faccio nulla.", {"mode": "face"}, "casa"
         self.pending = None
         started = time.time()
-        plan = parse(text, self.catalog)
-        source = "regole"
+        plan = understand(text, self.catalog, self._here())
+        source = "ragionamento" if plan and str(plan.get("how", "")).startswith("ragionamento") else "regole"
         if plan is None and (learned := self.learned.get(norm(text))):
             plan, source = learned, "memoria"
             self.stats["learned_hits"] += 1
@@ -210,6 +210,9 @@ class HomeCommands:
         if not self.online:
             return ("Home Assistant non è raggiungibile in questo momento: riprovo a collegarmi da solo.",
                     {"mode": "face"}, "casa")
+        if plan.get("confirm"):
+            self.pending = {"plan": plan, "until": time.time() + CONFIRM_WINDOW, "who": acting().slug}
+            return plan["question"], {"mode": "face"}, "casa · conferma"
         if plan.get("sensitive") and self.settings()["confirm"]:
             self.pending = {"plan": plan, "until": time.time() + CONFIRM_WINDOW, "who": acting().slug}
             what = join_words([f"{INFINITIVE.get(c['service'], 'comandare')} "
@@ -220,8 +223,15 @@ class HomeCommands:
         return await self._run(plan, text, source, started)
 
     def _same_speaker(self) -> bool:
-        who = acting().slug
-        return bool(who) and who == (self.pending or {}).get("who")
+        who, pending = acting().slug, self.pending or {}
+        if who == pending.get("who") and not pending.get("plan", {}).get("sensitive"):
+            return True
+        return bool(who) and who == pending.get("who")
+
+    @staticmethod
+    def _here() -> str | None:
+        from agenti.places.context import area
+        return area()
 
     @staticmethod
     def _denied() -> str:

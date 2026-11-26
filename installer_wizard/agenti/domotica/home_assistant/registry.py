@@ -231,6 +231,7 @@ class HomeRegistry:
         cat = Catalog()
         for aid, a in self.areas.items():
             cat.areas[aid] = {"name": a["name"], "floor_id": a.get("floor_id"),
+                              "labels": [a["name"], *a["aliases"], *self.aliases.get(f"area:{aid}", [])],
                               "names": area_names(a["name"], a["aliases"] + self.aliases.get(f"area:{aid}", []), all_names)}
         for fid, f in self.floors.items():
             cat.floors[fid] = {"name": f["name"], "level": f.get("level"),
@@ -253,7 +254,8 @@ class HomeRegistry:
                 "device_id": e.get("device_id"), "device_class": e.get("device_class", ""),
                 "device_name": dev["name"] if dev else "",
                 "controllable": bool(e.get("controllable")),
-                "names": phrases, "caps": set(e.get("capabilities") or []), "state": st.get("state"),
+                "names": phrases, "labels": sorted(n for n in names if n), "caps": set(e.get("capabilities") or []),
+                "state": st.get("state"),
                 "attrs": st.get("attrs", {}), "is_group": isinstance(st.get("attrs", {}).get("entity_id"), list),
                 "as_light": e["domain"] == "switch" and any(find_phrase(list(p), lw) >= 0
                                                             for p in phrases for lw in light_words)}

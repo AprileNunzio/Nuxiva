@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "title": {
+    "it": "I comandi per la casa si capiscono con qualunque formulazione",
+    "en": "Home commands are understood however they are phrased",
+    "fr": "Les commandes de la maison sont comprises quelle que soit la formulation",
+    "es": "Las órdenes de la casa se entienden con cualquier formulación"
+  },
+  "features": [
+    {
+      "it": "Nuxiva ragiona sui dispositivi reali di casa: capisce singolare e plurale, sinonimi, ordine diverso delle parole, piccoli errori di trascrizione e frasi in italiano, inglese, spagnolo e francese.",
+      "en": "Nuxiva reasons over the real devices in your home: it understands singular and plural, synonyms, different word order, small transcription errors and sentences in Italian, English, Spanish and French.",
+      "fr": "Nuxiva raisonne sur les vrais appareils de la maison : il comprend singulier et pluriel, synonymes, ordre des mots différent, petites erreurs de transcription et phrases en italien, anglais, espagnol et français.",
+      "es": "Nuxiva razona sobre los dispositivos reales de la casa: entiende singular y plural, sinónimos, distinto orden de palabras, pequeños errores de transcripción y frases en italiano, inglés, español y francés."
+    },
+    {
+      "it": "Quando è sicuro esegue subito, quando è quasi sicuro chiede una conferma breve, quando la stanza è ambigua chiede quale: non chiede più di ripetere con parole precise.",
+      "en": "When it is sure it acts at once, when it is almost sure it asks a short confirmation, when the room is unclear it asks which one: it no longer asks you to repeat with exact words.",
+      "fr": "Quand il est sûr il agit tout de suite, quand il est presque sûr il demande une courte confirmation, quand la pièce est ambiguë il demande laquelle : il ne demande plus de répéter avec des mots précis.",
+      "es": "Cuando está seguro actúa enseguida, cuando está casi seguro pide una confirmación breve, cuando la habitación es ambigua pregunta cuál: ya no pide repetir con palabras exactas."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "«Accendi le luci della camera da letto» non viene più scambiato per un comando della webcam per via della parola «camera».",
+      "en": "\"Turn on the bedroom lights\" in Italian is no longer mistaken for a webcam command because of the word \"camera\".",
+      "fr": "« Allume les lumières de la chambre » en italien n'est plus confondu avec une commande de webcam à cause du mot « camera ».",
+      "es": "«Enciende las luces del dormitorio» en italiano ya no se confunde con una orden de la webcam por la palabra «camera»."
+    }
+  ]
+}

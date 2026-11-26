@@ -1,5 +1,6 @@
 import re
 
+from agenti.home_assistant.nlu import resolver
 from agenti.home_assistant.nlu.calls import build_call, is_sensitive
 from agenti.home_assistant.nlu.matching import (
     Catalog,
@@ -123,6 +124,18 @@ def parse(text: str, cat: Catalog) -> dict | None:
         if q:
             return q
     return parse_command(text, cat) or parse_query(text, cat)
+
+
+def understand(text: str, cat: Catalog, here: str | None = None) -> dict | None:
+    rules = parse(text, cat)
+    if rules and rules["kind"] == "query":
+        return rules
+    reasoned = resolver.plan(text, cat, detect_params(norm(text)), here)
+    if reasoned is None or reasoned["kind"] == "command":
+        return reasoned or rules
+    if rules is None or rules["kind"] != "command" or rules.get("how") == "casa":
+        return reasoned
+    return rules
 
 
 def looks_like_home(text: str) -> bool:
