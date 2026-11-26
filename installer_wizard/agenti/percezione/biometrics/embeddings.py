@@ -5,6 +5,8 @@ THRESHOLD_CEIL_DELTA = 0.0
 GENUINE_SLACK = 0.06
 GENUINE_PERCENTILE = 0.10
 MIN_FOR_STATS = 6
+OUTLIER_SPREAD = 3.0
+OUTLIER_FLOOR = 0.35
 
 
 def unit(v: np.ndarray) -> np.ndarray:
@@ -68,6 +70,20 @@ def genuine_spread(emb: np.ndarray) -> float | None:
     if len(rows) < MIN_FOR_STATS:
         return None
     return float(np.std(leave_one_out(rows)))
+
+
+def typical_rows(emb: np.ndarray, spread: float = OUTLIER_SPREAD, floor: float = OUTLIER_FLOOR) -> np.ndarray:
+    rows = unit_rows(emb)
+    if len(rows) < MIN_FOR_STATS:
+        return rows
+    sims = leave_one_out(rows)
+    median = float(np.median(sims))
+    deviation = float(np.median(np.abs(sims - median))) * 1.4826
+    cutoff = max(floor, median - spread * max(deviation, 0.02))
+    keep = sims >= cutoff
+    if int(keep.sum()) < MIN_FOR_STATS:
+        keep = sims >= np.sort(sims)[::-1][MIN_FOR_STATS - 1]
+    return rows[keep]
 
 
 def person_threshold(emb: np.ndarray, base: float) -> float:

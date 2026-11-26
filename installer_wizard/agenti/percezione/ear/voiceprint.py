@@ -141,7 +141,9 @@ class Voiceprints:
                 continue
             if loaded is None:
                 continue
-            rows = emb.unit_rows(loaded)
+            rows = emb.typical_rows(loaded)
+            if len(rows) < len(loaded):
+                log.info("Impronta vocale %s: %d campioni atipici esclusi dal confronto", f.stem, len(loaded) - len(rows))
             samples[f.stem], centres[f.stem] = rows, emb.centroid(rows)
             limits[f.stem] = emb.person_threshold(rows, match_base()) if adaptive else match_base()
         book = build_book(samples)
@@ -268,12 +270,19 @@ class Voiceprints:
         if not earconf.flag("NUXIVA_VOICE_AUTOIMPROVE", True):
             return self.count(slug) < ENROLLED_AT
         if self.count(slug) < ENROLLED_AT:
-            return True
+            return self._consistent(slug, probe)
         result = self.verdict(probe)
         if result["ambiguous"]:
             return False
         own = self.scores(probe).get(slug, 0.0)
         return own >= self.limit(slug) + LEARN_MARGIN and result["best"] == slug
+
+    def _consistent(self, slug: str, probe: np.ndarray) -> bool:
+        with self.lock:
+            rows = self.samples.get(slug)
+        if rows is None or len(rows) < 2:
+            return True
+        return float(emb.centroid(rows) @ emb.unit(np.asarray(probe, dtype=np.float32))) >= match_base()
 
     def add(self, slug: str, probe: np.ndarray, source: str) -> int:
         if sealed_rows is None or not _SLUG.match(slug) or probe is None:
@@ -285,7 +294,7 @@ class Voiceprints:
             old = None
         if not self.may_learn(slug, probe, source):
             return 0 if old is None else len(old)
-        merged = emb.merge(old, probe, MAX_SAMPLES)
+        merged = emb.typical_rows(emb.merge(old, probe, MAX_SAMPLES))
         sealed_rows.save(path, merged)
         meta = {"samples": len(merged), "updated": time.time(), "source": source, "enrolled": len(merged) >= ENROLLED_AT}
         (STORE / f"{slug}.json").write_text(json.dumps(meta), encoding="utf-8")

@@ -122,6 +122,23 @@ class VoiceprintTest(unittest.TestCase):
         self.assertLessEqual(self.vp.count("anna"), voiceprint.MAX_SAMPLES)
         self.assertEqual(self.vp.count("anna"), voiceprint.MAX_SAMPLES)
 
+    def test_a_profile_polluted_by_other_voices_stops_matching_them(self):
+        nunzio, guest = voice(1, 20), voice(42, 3)
+        with mock.patch.object(voiceprint, "sealed_rows", mock.Mock()) as sealed:
+            sealed.load.return_value = np.vstack([nunzio, guest])
+            sealed.SealedRowsError = ValueError
+            (self.dir / "nunzio.npy").write_bytes(b"x")
+            self.vp._load()
+            self.assertEqual(len(self.vp.samples["nunzio"]), len(nunzio))
+            self.assertEqual(self.vp.identify(nunzio[0])[0], "nunzio")
+            self.assertIsNone(self.vp.identify(voice(42, 3)[1])[0])
+
+    def test_early_listening_samples_must_match_the_profile(self):
+        nunzio = voice(1, 3)
+        self.enrol("nunzio", nunzio)
+        self.assertEqual(self.vp.add("nunzio", voice(77, 1)[0], "ascolto"), 3)
+        self.assertEqual(self.vp.add("nunzio", voice(1, 4)[3], "ascolto"), 4)
+
     def test_invalid_names_and_forgetting(self):
         self.assertEqual(self.vp.add("../x", voice(1)[0], "lettura"), 0)
         self.assertEqual(self.vp.add("anna", None, "lettura"), 0)

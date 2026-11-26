@@ -168,7 +168,7 @@ def transcribe(audio: np.ndarray, fast: bool = False, detect: bool = False, stag
 
     if not fast and ear_mode in ("online", "hybrid") and online_stt is not None:
         try:
-            cloud_text = online_stt.transcribe_online(audio, lang)
+            cloud_text = online_stt.transcribe_online(audio, lang, " ".join(p for p in (_prompt(lang), _hotwords(lang)) if p)[:600])
             if cloud_text:
                 log.info("Trascrizione completata con successo tramite STT online (%s)", cloud_text)
                 return cloud_text, lang

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "title": {
+    "it": "Riconoscimento di chi parla più affidabile: le impronte vocali non si sporcano più con voci di altre persone",
+    "en": "More reliable speaker recognition: voiceprints no longer get polluted by other people's voices",
+    "fr": "Reconnaissance du locuteur plus fiable : les empreintes vocales ne sont plus polluées par d'autres voix",
+    "es": "Reconocimiento de quién habla más fiable: las huellas de voz ya no se contaminan con voces de otras personas"
+  },
+  "fixes": [
+    {
+      "it": "Un'impronta vocale che aveva raccolto per errore campioni di altre voci (TV, ospiti) faceva riconoscere tutti come la stessa persona. Ora i campioni atipici vengono esclusi dal confronto con una statistica robusta, anche nelle impronte già salvate.",
+      "en": "A voiceprint that had wrongly collected samples of other voices (TV, guests) made everybody look like the same person. Atypical samples are now left out of the comparison with a robust statistic, also in voiceprints already saved.",
+      "fr": "Une empreinte vocale ayant recueilli par erreur d'autres voix (télé, invités) faisait reconnaître tout le monde comme la même personne. Les échantillons atypiques sont désormais exclus par une statistique robuste, y compris dans les empreintes existantes.",
+      "es": "Una huella de voz que había recogido por error otras voces (TV, invitados) hacía reconocer a todos como la misma persona. Ahora las muestras atípicas se excluyen con una estadística robusta, también en las huellas ya guardadas."
+    },
+    {
+      "it": "Durante l'ascolto, i primi campioni imparati da soli entrano nell'impronta solo se somigliano a quelli già presenti, non basta che la telecamera veda una sola persona.",
+      "en": "While listening, the first self-learned samples join the voiceprint only if they resemble the ones already there; the camera seeing a single person is no longer enough.",
+      "fr": "Pendant l'écoute, les premiers échantillons appris seuls n'entrent dans l'empreinte que s'ils ressemblent à ceux déjà présents ; il ne suffit plus que la caméra voie une seule personne.",
+      "es": "Durante la escucha, las primeras muestras aprendidas solas entran en la huella solo si se parecen a las que ya hay; ya no basta con que la cámara vea a una sola persona."
+    },
+    {
+      "it": "Con la trascrizione online o ibrida, il nome dell'assistente e il vocabolario di casa vengono passati anche al servizio di trascrizione, così nomi e parole di casa escono corretti.",
+      "en": "With online or hybrid transcription, the assistant name and the home vocabulary are also passed to the transcription service, so names and home words come out right.",
+      "fr": "Avec la transcription en ligne ou hybride, le nom de l'assistant et le vocabulaire de la maison sont aussi transmis au service de transcription, pour que les noms et mots de la maison soient corrects.",
+      "es": "Con la transcripción en línea o híbrida, el nombre del asistente y el vocabulario de casa también se pasan al servicio de transcripción, así los nombres y las palabras de casa salen bien."
+    }
+  ]
+}
