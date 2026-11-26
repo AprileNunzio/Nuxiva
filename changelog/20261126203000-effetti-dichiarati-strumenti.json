@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "title": {
+    "it": "Gli strumenti possono dichiarare i propri effetti al motore di ragionamento",
+    "en": "Tools can declare their own effects to the reasoning engine",
+    "fr": "Les outils peuvent déclarer leurs propres effets au moteur de raisonnement",
+    "es": "Las herramientas pueden declarar sus propios efectos al motor de razonamiento"
+  },
+  "features": [
+    {
+      "it": "Uno strumento che dichiara cosa fa (lettura, scrittura, invio esterno, spesa, azione fisica) riceve un contratto preciso invece di uno dedotto con prudenza.",
+      "en": "A tool that declares what it does (read, write, external send, spending, physical action) gets a precise contract instead of a cautiously inferred one.",
+      "fr": "Un outil qui déclare ce qu'il fait (lecture, écriture, envoi externe, dépense, action physique) reçoit un contrat précis au lieu d'un contrat déduit avec prudence.",
+      "es": "Una herramienta que declara lo que hace (lectura, escritura, envío externo, gasto, acción física) recibe un contrato preciso en lugar de uno deducido con prudencia."
+    }
+  ],
+  "fixes": []
+}

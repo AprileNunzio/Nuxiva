@@ -17,11 +17,11 @@ def asked_for_recurring() -> bool:
 
 
 def tool(name: str, description: str, args: dict, confirm=False, full_only: bool = False, agent: str = "", verify=None,
-         precheck=None, intent: str = "", consent=None):
+         precheck=None, intent: str = "", consent=None, effects: tuple[str, ...] = ()):
     def wrap(fn):
         TOOLS[name] = {"name": name, "description": description, "args": args, "fn": fn, "confirm": confirm,
                        "full_only": full_only, "agent": agent, "verify": verify, "precheck": precheck, "consent": consent,
-                       "intent": re.compile(intent, re.I) if intent else None}
+                       "intent": re.compile(intent, re.I) if intent else None, "effects": tuple(effects)}
         return fn
     return wrap
 
