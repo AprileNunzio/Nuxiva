@@ -632,6 +632,7 @@
     "screenshot_service": "📸 Screenshot service is not running on this server",
     "timing_label": "Time per phase",
     "timing_total": "Total",
+    "timing_listen": "Listening",
     "timing_seconds": "{{s}} s",
     "holo_mode_particles": "Particle hologram",
     "holo_mode_realistic": "Realistic 3D",

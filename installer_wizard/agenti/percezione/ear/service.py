@@ -36,6 +36,8 @@ from speakers import SpeakerContext
 from livecap import LiveCaptions
 from livegov import LiveGovernor
 from recorder import Recorder, write_chunk
+from raw_dictation import transcribe_raw
+from stopwatch import Stopwatch
 from nvr_scribe import NvrScribe
 from reviewer import Reviewer, activity
 from voiceprint import ENROLLED_AT, Voiceprints
@@ -210,7 +212,7 @@ class Session(AttestMixin):
             return
 
         self.speech.append(frame)
-        self.live.tick(self.speech, self.lang, self._addressed())
+        self.live.tick(self.speech, self.lang, self._addressed(), voiced)
         duration = now - self.speech_start
         reason = self.endpoint.frame(now, voiced)
         if reason is not None:
@@ -267,6 +269,7 @@ class Session(AttestMixin):
     async def _utterance(self, audio: np.ndarray, attentive: bool, followup: bool, instant: bool, caption: dict,
                          overlap: bool = False) -> None:
         self.recorder.hold(20)
+        watch = Stopwatch()
         if not await asyncio.to_thread(stt.has_speech, audio):
             await self.broadcast(type="caption_drop", utt=caption["utt"])
             if instant:
@@ -274,7 +277,9 @@ class Session(AttestMixin):
             elif attentive and self.mode == "listening" and time.time() > self.listen_until:
                 await self.set_mode("idle")
             return
+        watch.lap("vad")
         clean = await asyncio.to_thread(enhance.clean, audio, self.profile)
+        watch.lap("clean")
         if self.enroll is not None:
             await self.broadcast(type="caption_drop", utt=caption["utt"])
             await enroll_sample(self, voiceprints, clean, audio)
@@ -299,8 +304,8 @@ class Session(AttestMixin):
                 if overheard is None:
                     if attentive:
                         await self.broadcast(type="state", state="transcribing", conversation=followup)
-                    text, lang = await asyncio.to_thread(stt.transcribe, clean, False, True)
-                    text = await consensus.agree(self.channels, clean, text, lang)
+                    text, lang = await asyncio.to_thread(stt.transcribe, clean, False, True, watch.stages)
+                    text = await consensus.agree(self.channels, clean, text, lang, watch.stages)
                     if not attentive:
                         confirmed = learner.find_wake(text)
                         if confirmed is None or confirmed[0] >= 3 or stt.hallucination(text):
@@ -318,7 +323,7 @@ class Session(AttestMixin):
         if overheard is not None:
             await self._heard(overheard, clean, caption)
             return
-        await self._deliver(text, lang, ms, clean, woke, followup, caption)
+        await self._deliver(text, lang, ms, clean, woke, followup, caption, watch.summary())
 
     async def _overheard(self, clean: np.ndarray, probe: str, caption: dict) -> str:
         if capture.journal_on() and capture.full_text_on() and len(clean) > len(stt.head(clean)) and governor.background_ok():
@@ -342,11 +347,11 @@ class Session(AttestMixin):
         asyncio.create_task(capture.store(note_error, "heard", text, self.lang, slug, score, False, 0, caption, clean))
 
     async def _deliver(self, text: str, lang: str, ms: int, clean: np.ndarray, woke: bool, followup: bool,
-                       caption: dict) -> None:
+                       caption: dict, stages: dict) -> None:
         self.lang = lang
         found = learner.find_wake(text)
         command = text[found[1]:].strip(" ,.!?") if found and found[0] < 3 else text.strip()
-        log.info("Sentito (%d ms, attivazione=%s, conversazione=%s): %s", ms, woke, followup, text)
+        log.info("Sentito (%d ms, fasi=%s, attivazione=%s, conversazione=%s): %s", ms, stages, woke, followup, text)
         if woke and found:
             learner.on_wake(found[2], ms)
         if not stt.hallucination(command):
@@ -360,7 +365,7 @@ class Session(AttestMixin):
             return
         expected, self.awaiting_command = self.awaiting_command, False
         learner.on_command()
-        self.recorder.note("transcript", text=command, dur=round(len(clean) / RATE, 2), woke=woke, ms=ms)
+        self.recorder.note("transcript", text=command, dur=round(len(clean) / RATE, 2), woke=woke, ms=ms, stages=stages)
         speaker, score, turn, dominant = await asyncio.to_thread(speakers.inspect, clean, self.alone, self._programme())
         if turn.get("mixed_speakers"):
             async with stt.lock:
@@ -386,7 +391,7 @@ class Session(AttestMixin):
                 await self.set_mode("idle")
                 return
 
-        await self.broadcast(**(turn | {"type": "transcript", "text": command, "ms": ms, "lang": lang,
+        await self.broadcast(**(turn | {"type": "transcript", "text": command, "ms": ms, "lang": lang, "stages": stages,
                                         "followup": followup and not woke and not expected, "speaker": speaker,
                                         "speaker_score": round(score, 3), "voice_known": self._known(speaker),
                                         "utt": caption["utt"], "voice_ref": voice_ref}))
@@ -411,14 +416,6 @@ class Session(AttestMixin):
         self.awaiting_command = True
         await self.broadcast(type="wake_only")
         await self.set_mode("listening")
-
-    async def _transcribe_raw(self) -> None:
-        pcm, self.raw = b"".join(self.raw or []), None
-        audio = np.frombuffer(pcm, dtype="<i2").astype(np.float32) / 32768.0
-        async with stt.lock:
-            text, lang = (await asyncio.to_thread(stt.transcribe, enhance.clean(audio, self.profile), False, True)
-                          if len(audio) > RATE * 0.3 else ("", stt.HOME_LANG))
-        await self.send(type="transcription", text=text, lang=lang)
 
     async def control(self, msg: dict) -> None:
         kind = msg.get("type")
@@ -468,7 +465,7 @@ class Session(AttestMixin):
             self.input.clear()
             self.raw = []
         elif kind == "transcribe_end":
-            await self._transcribe_raw()
+            await transcribe_raw(self)
         elif kind == "stats":
             await self.send(type="stats", **learner.summary(), instant=self.wake.ready, voiceprint=voiceprints.ready, duplex=duplex_link.health())
         elif kind == "client":

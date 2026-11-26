@@ -632,6 +632,7 @@
     "screenshot_service": "📸 Servizio screenshot non attivo su questo server",
     "timing_label": "Tempi per fase",
     "timing_total": "Totale",
+    "timing_listen": "Ascolto",
     "timing_seconds": "{{s}} s",
     "holo_mode_particles": "Ologramma a particelle",
     "holo_mode_realistic": "3D realistico",

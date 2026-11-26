@@ -1,3 +1,4 @@
+import math
 import time
 from collections import deque
 from dataclasses import dataclass, field
@@ -103,4 +104,5 @@ def _py_hear(segments: list, phrases: set[str]) -> Heard:
     text = " ".join(_text(s) for s in segments).strip()
     if text.lower().strip(" .") in phrases:
         return Heard("", 0.0, (), ((text, "frase tipica di rumore"),))
-    return Heard(text, 1.0)
+    scores = [math.exp(min(0.0, _num(s, "avg_logprob", 0.0))) for s in segments if _text(s)]
+    return Heard(text, sum(scores) / len(scores) if scores else 0.0)

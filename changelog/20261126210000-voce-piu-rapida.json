@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "title": {
+    "it": "Voce più rapida: meno attesa tra la fine della frase e la risposta, e nessuna pausa tra una frase e l'altra",
+    "en": "Faster voice: less waiting between the end of a sentence and the reply, and no pause between spoken sentences",
+    "fr": "Voix plus rapide : moins d'attente entre la fin de la phrase et la réponse, et plus de pause entre les phrases",
+    "es": "Voz más rápida: menos espera entre el final de la frase y la respuesta, y sin pausas entre una frase y otra"
+  },
+  "features": [
+    {
+      "it": "La lingua parlata viene riconosciuta con il modello leggero già caricato invece che con quello grande: circa mezzo secondo in meno per ogni comando vocale sui PC con 6 o più core.",
+      "en": "The spoken language is recognised with the light model already loaded instead of the large one: about half a second less for every voice command on PCs with 6 or more cores.",
+      "fr": "La langue parlée est reconnue avec le modèle léger déjà chargé au lieu du grand : environ une demi-seconde de moins par commande vocale sur les PC à 6 cœurs ou plus.",
+      "es": "El idioma hablado se reconoce con el modelo ligero ya cargado en lugar del grande: alrededor de medio segundo menos por cada orden de voz en PC con 6 o más núcleos."
+    },
+    {
+      "it": "Con più microfoni, il voto tra gli ascolti parte solo quando la trascrizione principale è incerta: se è chiara la risposta non aspetta più le trascrizioni degli altri microfoni.",
+      "en": "With several microphones, the vote between recordings runs only when the main transcript is uncertain: when it is clear, the reply no longer waits for the other microphones.",
+      "fr": "Avec plusieurs microphones, le vote entre les écoutes ne démarre que si la transcription principale est incertaine : quand elle est claire, la réponse n'attend plus les autres microphones.",
+      "es": "Con varios micrófonos, la votación entre escuchas solo se activa cuando la transcripción principal es dudosa: si es clara, la respuesta ya no espera a los demás micrófonos."
+    },
+    {
+      "it": "Quando smetti di parlare non parte più un nuovo sottotitolo live che rubava processore alla trascrizione finale.",
+      "en": "When you stop talking, no new live caption starts to steal processor time from the final transcript.",
+      "fr": "Quand vous arrêtez de parler, aucun nouveau sous-titre en direct ne démarre pour voler du processeur à la transcription finale.",
+      "es": "Cuando dejas de hablar ya no arranca un nuevo subtítulo en vivo que quitaba procesador a la transcripción final."
+    },
+    {
+      "it": "La frase successiva della risposta viene sintetizzata mentre Nuxiva pronuncia quella in corso, così non ci sono più silenzi tra una frase e l'altra.",
+      "en": "The next sentence of the reply is synthesised while Nuxiva speaks the current one, so there are no more silences between sentences.",
+      "fr": "La phrase suivante de la réponse est synthétisée pendant que Nuxiva prononce la phrase en cours, il n'y a donc plus de silences entre les phrases.",
+      "es": "La siguiente frase de la respuesta se sintetiza mientras Nuxiva pronuncia la actual, así ya no hay silencios entre frases."
+    },
+    {
+      "it": "Ogni comando vocale registra i tempi per fase (rilevamento voce, pulizia, lingua, trascrizione, voto) e la sicurezza della trascrizione; sotto la risposta compare anche il tempo di ascolto.",
+      "en": "Every voice command records the time of each stage (voice detection, cleaning, language, transcription, vote) and the transcript confidence; the listening time also appears under the reply.",
+      "fr": "Chaque commande vocale enregistre le temps de chaque étape (détection de la voix, nettoyage, langue, transcription, vote) et la confiance de la transcription ; le temps d'écoute apparaît aussi sous la réponse.",
+      "es": "Cada orden de voz registra los tiempos de cada fase (detección de voz, limpieza, idioma, transcripción, votación) y la confianza de la transcripción; el tiempo de escucha también aparece bajo la respuesta."
+    }
+  ]
+}

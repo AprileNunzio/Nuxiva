@@ -13,6 +13,7 @@ WINDOW_S = 8.0
 FIRST_DELAY = 0.6
 MIN_AUDIO_S = 0.7
 SPEAKER_AT = (1.4, 4.0)
+TRAILING_QUIET_S = 0.25
 NORMAL = re.compile(r"[^\w]+", re.UNICODE)
 
 
@@ -57,6 +58,7 @@ class LiveCaptions:
         self.score = 0.0
         self.known: bool | None = None
         self.addressed = False
+        self.last_voiced = time.monotonic()
 
     def begin(self, addressed: bool) -> str:
         self.stop()
@@ -78,16 +80,20 @@ class LiveCaptions:
         self.clear()
         return result
 
-    def tick(self, frames: list, lang: str, addressed: bool) -> None:
+    def tick(self, frames: list, lang: str, addressed: bool, voiced: bool = True) -> None:
         if not self.utt or not frames:
             return
         self.addressed = addressed
+        if voiced:
+            self.last_voiced = time.monotonic()
         length = len(frames[0]) + sum(len(f) for f in frames[1:])
         if length < MIN_AUDIO_S * RATE:
             return
         self._speaker(frames, length)
         busy = self.task is not None and not self.task.done()
-        if busy or time.monotonic() < self.next_at or self.lock.locked() or not self.governor.allowed():
+        if busy or time.monotonic() - self.last_voiced >= TRAILING_QUIET_S:
+            return
+        if time.monotonic() < self.next_at or self.lock.locked() or not self.governor.allowed():
             return
         window = np.concatenate(frames)[-int(WINDOW_S * RATE):]
         self.task = asyncio.create_task(self._partial(self.utt, window, lang))

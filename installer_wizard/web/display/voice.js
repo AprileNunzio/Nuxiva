@@ -114,9 +114,15 @@
       active = true;
       if (D.avatar && D.avatar.face) D.avatar.face.realAudio = true;
       cancelAnimationFrame(raf); animate();
+      let ahead = Promise.resolve();
+      const audios = parts.map((part) => {
+        ahead = ahead.then(() => synth(part, lang, signal));
+        ahead.catch(() => {});
+        return ahead;
+      });
       try {
-        for (let i = 0; i < parts.length; i++) {
-          const buffer = await synth(parts[i], lang, signal);
+        for (let i = 0; i < audios.length; i++) {
+          const buffer = await audios[i];
           if (gen !== generation) return;
           await play(buffer, gen, i === 0 ? onStart : undefined);
         }
@@ -133,15 +139,16 @@
       active = true;
       if (D.avatar && D.avatar.face) D.avatar.face.realAudio = true;
       cancelAnimationFrame(raf); animate();
-      let chain = Promise.resolve();
+      let chain = Promise.resolve(), ahead = Promise.resolve();
       return {
         add(text) {
           const part = (text || "").trim();
           if (!part || gen !== generation) return;
+          const audio = ahead.then(() => (signal.aborted ? null : synth(part, lang, signal)));
+          ahead = audio.catch(() => null);
           chain = chain.then(async () => {
-            if (signal.aborted) return;
-            const buffer = await synth(part, lang, signal);
-            if (gen === generation) await play(buffer, gen);
+            const buffer = await audio;
+            if (buffer && gen === generation) await play(buffer, gen);
           }).catch((err) => { if (!signal.aborted) console.warn("Frase non sintetizzata:", err); });
         },
         async close() {

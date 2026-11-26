@@ -632,6 +632,7 @@
     "screenshot_service": "📸 Service de capture inactif sur ce serveur",
     "timing_label": "Durée par étape",
     "timing_total": "Total",
+    "timing_listen": "Écoute",
     "timing_seconds": "{{s}} s",
     "holo_mode_particles": "Hologramme de particules",
     "holo_mode_realistic": "3D réaliste",

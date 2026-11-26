@@ -138,6 +138,8 @@
       item.append(`${String(label || "").slice(0, 60)} `, value);
       box.append(item);
     };
+    const heard = D.takeEarStages ? D.takeEarStages() : null;
+    if (heard && Number.isFinite(heard.total_ms)) add(PageText.t("web/display", "timing_listen"), heard.total_ms);
     timings.phases.slice(0, 6).forEach((phase) => add(phase.name, phase.ms));
     add(PageText.t("web/display", "timing_total"), timings.total_ms);
     box.hidden = false;

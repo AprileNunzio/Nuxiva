@@ -90,6 +90,23 @@ class ConsensusTest(unittest.IsolatedAsyncioTestCase):
             with mock.patch.dict("os.environ", {"NUXIVA_EAR_VOTE": "0"}):
                 self.assertEqual(await consensus.agree(provider, clean, "ciao", "it"), "ciao")
 
+    async def test_a_confident_transcript_skips_the_extra_microphones(self):
+        from agenti.ear import consensus
+        provider = mock.Mock()
+        provider.recent.return_value = [("a", 20.0, b"\x00\x00"), ("b", 20.0, b"\x00\x00")]
+        stub = SimpleNamespace(HOME_LANG="it", transcribe=mock.Mock(return_value=("ciao", "it")),
+                               hallucination=lambda t: False)
+        with mock.patch.object(consensus, "stt", stub), \
+             mock.patch.dict("os.environ", {"NUXIVA_EAR_MODE": "offline"}):
+            stages = {"confidence": 0.93}
+            self.assertEqual(await consensus.agree(provider, np.zeros(1600, np.float32), "ciao", "it", stages), "ciao")
+            stub.transcribe.assert_not_called()
+            self.assertNotIn("vote_ms", stages)
+            stages = {"confidence": 0.41}
+            await consensus.agree(provider, np.zeros(1600, np.float32), "ciao", "it", stages)
+            self.assertEqual(stub.transcribe.call_count, 2)
+            self.assertIn("vote_ms", stages)
+
     def test_noisy_or_silent_microphones_are_not_asked(self):
         from agenti.ear import consensus
         picked = consensus.pick([("a", 3.0, b"x"), ("b", 25.0, b"x"), ("c", 12.0, b"x"), ("d", 30.0, b"")], 2)

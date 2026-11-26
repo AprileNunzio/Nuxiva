@@ -10,6 +10,8 @@
   let remoteEnabled = false, remoteGeneration = 0;
   const secure = () => (window.isSecureContext || Boolean(navigator.mediaDevices?.getUserMedia)) && !!navigator.mediaDevices;
   let hostMicActive = false;
+  let earStages = null;
+  D.takeEarStages = () => { const s = earStages; earStages = null; return s && Date.now() - s.at < 60000 ? s : null; };
   const micAllowed = () => D.local ? !hostMicActive : secure() && remoteEnabled && D.remoteMedia?.microphone === true;
   const socketUrl = () => `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/ear`;
   let parked = false;
@@ -217,6 +219,7 @@
       else if (ev.type === "enroll_unavailable") D.Enroll.unavailable();
       else if (ev.type === "transcript" && ev.text) {
         D.lastVoice = true;
+        earStages = ev.stages && typeof ev.stages === "object" ? { ...ev.stages, at: Date.now() } : null;
         if (ev.speaker) D.currentSpeaker = ev.speaker;
         if (ev.origin !== false && micLive()) {
           D.ask(ev.text, ev.lang, { followup: !!ev.followup, speaker: ev.speaker || "", voice_known: ev.voice_known, same_speaker: ev.same_speaker, voices_active: ev.voices_active, mixed_speakers: ev.mixed_speakers, voice_ref: ev.voice_ref || "" });

@@ -149,6 +149,16 @@ class CaptionTest(unittest.IsolatedAsyncioTestCase):
             self.caps.tick(self.frames, "it", True)
         self.assertIsNone(self.caps.task)
 
+    async def test_no_new_partial_once_the_speaker_falls_silent(self):
+        self.caps.begin(True)
+        self.caps.next_at = 0.0
+        self.caps.last_voiced = time.monotonic() - livecap.TRAILING_QUIET_S - 0.05
+        self.caps.tick(self.frames, "it", True, voiced=False)
+        self.assertIsNone(self.caps.task)
+        self.caps.tick(self.frames, "it", True, voiced=True)
+        self.assertIsNotNone(self.caps.task)
+        await self.settle()
+
 
 class JournalTest(unittest.TestCase):
     def setUp(self):

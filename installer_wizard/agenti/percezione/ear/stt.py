@@ -47,6 +47,7 @@ HOME_LANG = os.environ.get("NUXIVA_REPLY_LANG", "it").strip().lower()[:3] or "it
 LANGUAGES = langpick.allowed()
 LANG_MIN_PROB = 0.75
 LANG_MIN_SECONDS = 0.9
+LID_FAST = os.environ.get("NUXIVA_EAR_LID_FAST", "1").lower() not in ("0", "off", "no")
 PROMPTS = {"it": "Ehi, {name}, assistente digitale.", "en": "Hey {name}, digital assistant.", "es": "Oye, {name}, asistente digital.",
            "fr": "Hé, {name}, assistante numérique.", "de": "Hey {name}, digitale Assistentin.", "pt": "Ei, {name}, assistente digital."}
 
@@ -129,11 +130,17 @@ def has_speech(audio: np.ndarray) -> bool:
     return bool(get_speech_timestamps(audio, VAD))
 
 
+def lid_model():
+    if LID_FAST and wake_model is not None and WAKE_MODEL not in ("tiny", "tiny.en"):
+        return wake_model
+    return ACTIVE["model"]
+
+
 def spoken_language(audio: np.ndarray) -> str:
     if not MULTILANG or len(audio) < RATE * LANG_MIN_SECONDS:
         return HOME_LANG
     try:
-        lang, prob, ranked = ACTIVE["model"].detect_language(audio)
+        lang, prob, ranked = lid_model().detect_language(audio)
     except (RuntimeError, ValueError) as exc:
         log.debug("Riconoscimento della lingua non disponibile: %s", exc)
         return HOME_LANG
@@ -151,9 +158,12 @@ def _adapt(seconds: float, audio_seconds: float) -> None:
             FALLBACK, device="cpu", compute_type="int8", cpu_threads=THREADS, download_root=MODEL_DIR), name=FALLBACK)
 
 
-def transcribe(audio: np.ndarray, fast: bool = False, detect: bool = False) -> tuple[str, str]:
+def transcribe(audio: np.ndarray, fast: bool = False, detect: bool = False, stages: dict | None = None) -> tuple[str, str]:
     started = time.time()
     lang = spoken_language(audio) if detect else HOME_LANG
+    decoding = time.time()
+    if stages is not None and detect:
+        stages["lang_ms"] = int((decoding - started) * 1000)
     ear_mode = os.environ.get("NUXIVA_EAR_MODE", "offline").strip().lower()
 
     if not fast and ear_mode in ("online", "hybrid") and online_stt is not None:
@@ -184,6 +194,9 @@ def transcribe(audio: np.ndarray, fast: bool = False, detect: bool = False) -> t
         log.info("Segmenti scartati: %s", ", ".join(f"{why}" for _, why in heard.dropped))
     FIXER.remember(heard.text)
     _adapt(time.time() - started, len(audio) / RATE)
+    if stages is not None:
+        stages["stt_ms"] = int((time.time() - decoding) * 1000)
+        stages["confidence"] = round(float(heard.confidence), 3)
     return heard.text, lang
 
 

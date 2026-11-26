@@ -129,6 +129,25 @@ class WordFallbackTest(unittest.TestCase):
         self.assertFalse(fixer.native)
         self.assertEqual(fixer.hear([segment(" ciao Giuglia")], "", stt.HALLUCINATIONS).text, "ciao Giuglia")
         self.assertEqual(fixer.hear([segment(" Grazie.")], "", stt.HALLUCINATIONS).text, "")
+        heard = fixer.hear([segment(" ciao", logprob=-0.2), segment(" Giuglia", logprob=-1.0)], "", stt.HALLUCINATIONS)
+        self.assertAlmostEqual(heard.confidence, (np.exp(-0.2) + np.exp(-1.0)) / 2, places=6)
+
+    def test_language_is_detected_with_the_light_model_and_stages_are_timed(self):
+        light, heavy = mock.Mock(), mock.Mock()
+        light.detect_language.return_value = ("it", 0.97, [("it", 0.97)])
+        heavy.transcribe.return_value = ([segment(" ciao", logprob=-0.1)], None)
+        with mock.patch.dict(stt.ACTIVE, {"model": heavy}), mock.patch.object(stt, "wake_model", light), \
+                mock.patch.object(stt, "WAKE_MODEL", "base"), mock.patch.object(stt, "LID_FAST", True), \
+                mock.patch.object(stt, "MULTILANG", True), mock.patch.object(stt, "_adapt", lambda *a: None), \
+                mock.patch.dict("os.environ", {"NUXIVA_EAR_MODE": "offline"}):
+            stages = {}
+            stt.transcribe(np.zeros(32000, dtype=np.float32), fast=False, detect=True, stages=stages)
+        light.detect_language.assert_called_once()
+        heavy.detect_language.assert_not_called()
+        self.assertTrue({"lang_ms", "stt_ms", "confidence"} <= set(stages))
+        with mock.patch.object(stt, "wake_model", light), mock.patch.object(stt, "WAKE_MODEL", "tiny"), \
+                mock.patch.dict(stt.ACTIVE, {"model": heavy}):
+            self.assertIs(stt.lid_model(), heavy)
 
     def test_mock_segments_without_scores_are_accepted(self):
         fixer = words.WordFixer(lambda: TERMS)

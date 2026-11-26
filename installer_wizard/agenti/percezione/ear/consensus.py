@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+import time
 
 import numpy as np
 
@@ -14,6 +15,7 @@ MARGIN_S = 0.4
 FUSED_WEIGHT = 1.5
 MIN_SCORE_DB = 6.0
 MAX_MICS = 4
+SURE_DEFAULT = 0.8
 
 
 def enabled() -> bool:
@@ -26,9 +28,25 @@ def pick(channels: list, count: int) -> list:
     return sorted(usable, key=lambda c: -float(c[1]))[:count]
 
 
-async def agree(provider, clean: np.ndarray, text: str, lang: str) -> str:
-    if provider is None or not text.strip() or lang != stt.HOME_LANG or not enabled():
+def sure(stages: dict | None) -> bool:
+    confidence = (stages or {}).get("confidence")
+    if not isinstance(confidence, (int, float)):
+        return False
+    return float(confidence) >= earconf.number("NUXIVA_EAR_VOTE_CONFIDENCE", SURE_DEFAULT, 0.0, 1.01)
+
+
+async def agree(provider, clean: np.ndarray, text: str, lang: str, stages: dict | None = None) -> str:
+    if provider is None or not text.strip() or lang != stt.HOME_LANG or not enabled() or sure(stages):
         return text
+    started = time.monotonic()
+    try:
+        return await _ballot(provider, clean, text)
+    finally:
+        if stages is not None:
+            stages["vote_ms"] = int((time.monotonic() - started) * 1000)
+
+
+async def _ballot(provider, clean: np.ndarray, text: str) -> str:
     count = int(earconf.number("NUXIVA_EAR_VOTE_MICS", 2, 0, MAX_MICS))
     channels = provider.recent(len(clean) + int(MARGIN_S * RATE)) if count else []
     if len(channels) < 2:
