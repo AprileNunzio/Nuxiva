@@ -23,7 +23,7 @@ def resolve(role: str = "main") -> dict:
     key = entry.get("key") or None
     base = (entry.get("base_url") or spec.base_url or "").rstrip("/")
     flavor = entry.get("flavor")
-    backend = "ollama" if flavor == "ollama" else "openai" if flavor == "openai" or spec.kind == "openai" else None
+    backend = flavor if flavor in ("ollama", "studio") else "openai" if flavor == "openai" or spec.kind == "openai" else None
     if backend == "ollama":
         base = (entry.get("root") or base).rstrip("/")
     supported = backend is not None and bool(base) and vault.configured(provider_id)

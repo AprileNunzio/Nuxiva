@@ -51,7 +51,7 @@ pub fn url(backend: Backend, base: &str) -> String {
     let (origin, path) = split(base.trim().trim_end_matches('/'));
     let path = match backend {
         Backend::Ollama => strip(path, &OLLAMA_TAILS).to_owned(),
-        Backend::OpenAiCompatible => {
+        Backend::OpenAiCompatible | Backend::LocalStudio => {
             let path = strip(path, &OPENAI_TAILS);
             let name = host(origin);
             KNOWN_ROOTS

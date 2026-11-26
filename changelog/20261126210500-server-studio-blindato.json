@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "title": {
+    "it": "Nuovo tipo di server: studio di modelli locale con strumenti del server sempre spenti",
+    "en": "New server type: local model studio with server tools always off",
+    "fr": "Nouveau type de serveur : studio de modèles local avec outils du serveur toujours désactivés",
+    "es": "Nuevo tipo de servidor: estudio de modelos local con herramientas del servidor siempre apagadas"
+  },
+  "features": [
+    {
+      "it": "Nel Centro cervelli si può aggiungere uno studio di modelli locale accanto a Ollama e ai server compatibili OpenAI: porta 8888 proposta da sola, chiave obbligatoria e, fuori dalla rete di casa, solo collegamenti https.",
+      "en": "In the Brain Center a local model studio can be added next to Ollama and OpenAI-compatible servers: port 8888 suggested automatically, key required and, outside the home network, https connections only.",
+      "fr": "Dans le Centre des cerveaux, on peut ajouter un studio de modèles local à côté d'Ollama et des serveurs compatibles OpenAI : port 8888 proposé automatiquement, clé obligatoire et, hors du réseau domestique, connexions https uniquement.",
+      "es": "En el Centro de cerebros se puede añadir un estudio de modelos local junto a Ollama y a los servidores compatibles con OpenAI: puerto 8888 propuesto solo, clave obligatoria y, fuera de la red de casa, solo conexiones https."
+    },
+    {
+      "it": "Ogni richiesta allo studio, anche in streaming e nel Laboratorio di prova, spegne gli strumenti del server e toglie quelli richiesti: le azioni le esegue solo Nuxiva con il proprio isolamento e le proprie conferme.",
+      "en": "Every request to the studio, streaming and Test Lab included, switches off the server tools and removes requested ones: actions are carried out only by Nuxiva with its own isolation and confirmations.",
+      "fr": "Chaque requête au studio, y compris en streaming et dans le Laboratoire d'essai, désactive les outils du serveur et retire ceux demandés : seules Nuxiva exécute les actions, avec sa propre isolation et ses propres confirmations.",
+      "es": "Cada petición al estudio, también en streaming y en el Laboratorio de pruebas, apaga las herramientas del servidor y quita las pedidas: las acciones las ejecuta solo Nuxiva con su propio aislamiento y sus propias confirmaciones."
+    }
+  ]
+}

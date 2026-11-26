@@ -93,7 +93,7 @@ export interface ProviderTest {
   readonly ms: number;
 }
 
-export type ServerFlavor = 'ollama' | 'openai';
+export type ServerFlavor = 'ollama' | 'openai' | 'studio';
 
 export interface ModelServer {
   readonly id: string;

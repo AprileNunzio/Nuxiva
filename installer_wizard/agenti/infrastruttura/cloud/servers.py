@@ -6,6 +6,7 @@ from agenti.cloud.address import normalize
 from agenti.cloud.catalog import BY_ID, FLAVORS, Provider
 from agenti.cloud.client import CloudError, endpoint, headers
 from agenti.cloud.models import _ids
+from agenti.cloud.studio import FLAVOR as STUDIO, studio_addresses
 from agenti.cloud.vault import vault
 
 
@@ -16,6 +17,8 @@ def addresses(flavor: str, url: str) -> tuple[str, str]:
     if not root.startswith(("http://", "https://")):
         root = f"http://{root}"
     host = root.split("//", 1)[1].split("/", 1)[0]
+    if flavor == STUDIO:
+        return studio_addresses(root)
     if flavor == "ollama":
         root = root.removesuffix("/v1")
         if ":" not in host:
@@ -37,6 +40,8 @@ async def probe(flavor: str, base_url: str, key: str = "") -> list[str]:
 async def test(flavor: str, url: str, key: str = "") -> dict:
     if flavor not in FLAVORS:
         return {"ok": False, "error": "Tipo di server sconosciuto"}
+    if flavor == STUDIO and not key:
+        return {"ok": False, "error": "Chiave API dello studio obbligatoria"}
     try:
         root, base = addresses(flavor, url)
         models = await probe(flavor, base, key)

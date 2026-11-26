@@ -1,11 +1,11 @@
-export type Backend = 'ollama' | 'openai';
+export type Backend = 'ollama' | 'openai' | 'studio';
 export type Category = 'simple' | 'composite' | 'novel' | 'adversarial';
 export type Effect = 'read' | 'write' | 'send_external' | 'spend' | 'physical';
 export type RunState = 'queued' | 'running' | 'completed' | 'cancelled' | 'failed' | 'interrupted';
 
 export const CATEGORIES: readonly Category[] = ['simple', 'composite', 'novel', 'adversarial'];
 export const EFFECTS: readonly Effect[] = ['read', 'write', 'send_external', 'spend', 'physical'];
-export const BACKENDS: readonly Backend[] = ['ollama', 'openai'];
+export const BACKENDS: readonly Backend[] = ['ollama', 'openai', 'studio'];
 export const FINAL_STATES: readonly RunState[] = ['completed', 'cancelled', 'failed', 'interrupted'];
 
 export interface Status {

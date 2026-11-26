@@ -6,6 +6,7 @@ use reason_understand::Request;
 pub enum Backend {
     Ollama,
     OpenAiCompatible,
+    LocalStudio,
 }
 
 impl Backend {
@@ -14,6 +15,7 @@ impl Backend {
         match name {
             "ollama" => Some(Self::Ollama),
             "openai" => Some(Self::OpenAiCompatible),
+            "studio" => Some(Self::LocalStudio),
             _ => None,
         }
     }
@@ -22,7 +24,7 @@ impl Backend {
     pub fn path(self) -> &'static str {
         match self {
             Self::Ollama => "api/chat",
-            Self::OpenAiCompatible => "chat/completions",
+            Self::OpenAiCompatible | Self::LocalStudio => "chat/completions",
         }
     }
 
@@ -53,6 +55,14 @@ impl Backend {
                 "temperature": 0,
                 "response_format": {"type": "json_object"}
             }),
+            Self::LocalStudio => json!({
+                "model": model,
+                "messages": messages,
+                "temperature": 0,
+                "stream": false,
+                "enable_tools": false,
+                "response_format": {"type": "json_object"}
+            }),
         }
     }
 
@@ -69,7 +79,7 @@ impl Backend {
                     input.unwrap_or(0).saturating_add(output.unwrap_or(0)),
                 ))
             }
-            Self::OpenAiCompatible => {
+            Self::OpenAiCompatible | Self::LocalStudio => {
                 let content = value
                     .pointer("/choices/0/message/content")?
                     .as_str()?

@@ -10,7 +10,7 @@ import { NewServer, ServerFlavor } from '../../core/types';
 import { Badge, Button, Card, FLUID, IconButton, Row, fieldClass } from '../../ui/primitives';
 
 const EMPTY: NewServer = { name: '', flavor: 'openai', url: '', key: '' };
-const FLAVORS: readonly ServerFlavor[] = ['openai', 'ollama'];
+const FLAVORS: readonly ServerFlavor[] = ['openai', 'ollama', 'studio'];
 
 export const ServersCard: React.FC = () => {
   const { t } = useSectionText('providers');

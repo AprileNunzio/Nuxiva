@@ -23,7 +23,7 @@ class DatasetBody(BaseModel):
 
 class ProfileBody(BaseModel):
     name: str = Field(max_length=store.MAX_NAME)
-    backend: Literal["ollama", "openai"]
+    backend: Literal["ollama", "openai", "studio"]
     base_url: str = Field(max_length=256)
     model: str = Field(max_length=100)
     timeout_seconds: int = Field(60, ge=5, le=300)
@@ -32,7 +32,7 @@ class ProfileBody(BaseModel):
 class RunBody(BaseModel):
     dataset: str
     brain_role: Literal["main", "fast"] = "main"
-    backend: Literal["ollama", "openai"] | None = None
+    backend: Literal["ollama", "openai", "studio"] | None = None
     base_url: str | None = Field(None, max_length=256)
     model: str | None = Field(None, max_length=100)
     key: SecretStr | None = Field(None, max_length=512)

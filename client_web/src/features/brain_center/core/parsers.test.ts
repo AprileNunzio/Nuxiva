@@ -65,6 +65,7 @@ describe('provider validation', () => {
       url: 'http://10.0.0.2:11434',
       key: '',
     });
+    expect(validateServer({ name: 'Studio', flavor: 'studio', url: 'http://10.0.0.3:8888', key: 'sk-studio-key-1234' }).flavor).toBe('studio');
   });
 
   it('encodes provider ids for paths', () => {

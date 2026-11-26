@@ -24,6 +24,7 @@ const GOOD: &str = r#"{"intent":"find_image","language":"it","effects":["read"],
 fn backends_are_selected_by_name_only() {
     assert_eq!(Backend::parse("ollama"), Some(Backend::Ollama));
     assert_eq!(Backend::parse("openai"), Some(Backend::OpenAiCompatible));
+    assert_eq!(Backend::parse("studio"), Some(Backend::LocalStudio));
     assert_eq!(Backend::parse("x"), None);
 }
 
@@ -38,6 +39,11 @@ fn request_bodies_keep_external_text_fenced_and_force_json() {
     let openai = Backend::OpenAiCompatible.body("m", &request);
     assert_eq!(openai["response_format"]["type"], "json_object");
     assert_eq!(openai["temperature"], 0);
+    let studio = Backend::LocalStudio.body("m", &request);
+    assert_eq!(studio["enable_tools"], false);
+    assert_eq!(studio["stream"], false);
+    assert_eq!(studio["response_format"]["type"], "json_object");
+    assert_eq!(Backend::LocalStudio.path(), "chat/completions");
 }
 
 #[test]

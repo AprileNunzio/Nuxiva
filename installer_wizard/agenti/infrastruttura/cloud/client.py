@@ -7,6 +7,7 @@ from agenti.cloud.address import normalize
 from agenti.cloud.catalog import BY_ID, REASONING_BUDGET, Provider, parse_ref
 from agenti.cloud.failure import describe
 from agenti.cloud.pool import shared
+from agenti.cloud.studio import harden
 from agenti.cloud.vault import vault
 from agenti.brain.usage.ledger import usage_ledger
 
@@ -173,7 +174,7 @@ async def prepare(ref: str, messages: list[dict], system: str, max_tokens: int |
         model_limit = await _anthropic_model_limit(root, model, head) if max_tokens is None and not opts.get("max_tokens") else None
         body = _anthropic_body(model, messages, system, max_tokens, temperature, opts, json_mode, model_limit)
         return Request(pid, model, spec, f"{root}/messages", body, head, timeout)
-    body = _openai_body(spec, model, messages, system, max_tokens, temperature, opts, json_mode)
+    body = harden(_openai_body(spec, model, messages, system, max_tokens, temperature, opts, json_mode), entry)
     return Request(pid, model, spec, f"{endpoint(spec, entry)}/chat/completions", body, head, timeout)
 
 

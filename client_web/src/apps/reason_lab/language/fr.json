@@ -18,6 +18,7 @@
     "backend": "Type de service",
     "backend_ollama": "Ollama",
     "backend_openai": "Service compatible OpenAI",
+    "backend_studio": "Studio de modèles local (outils du serveur toujours désactivés)",
     "base_url": "Adresse",
     "model": "Nom du modèle",
     "key": "Clé du service (facultative)",

@@ -152,7 +152,7 @@ def current_model(provider: str, model: str) -> str:
 
 
 SERVER = "srv-"
-FLAVORS = {"ollama": "Ollama", "openai": "Compatibile OpenAI"}
+FLAVORS = {"ollama": "Ollama", "openai": "Compatibile OpenAI", "studio": "Studio di modelli locale"}
 
 
 def server_provider(pid: str, entry: dict) -> Provider:

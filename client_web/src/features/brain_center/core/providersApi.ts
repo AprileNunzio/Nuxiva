@@ -32,7 +32,7 @@ function parseServer(value: unknown): ModelServer | null {
   return {
     id,
     name: asString(s.name, 40) ?? id,
-    flavor: s.flavor === 'openai' ? 'openai' : 'ollama',
+    flavor: s.flavor === 'openai' || s.flavor === 'studio' ? s.flavor : 'ollama',
     url: asString(s.url, 300) ?? '',
     online: s.online === true,
     models: strings(s.models, 200, 160),
