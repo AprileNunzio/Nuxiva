@@ -106,6 +106,11 @@ fn reason_lab_rows(dataset: &str, outcomes: &str) -> PyResult<String> {
 }
 
 #[pyfunction]
+fn reason_lab_compare(baseline: &str, candidate: &str) -> PyResult<String> {
+    reason_lab::facade::compare(baseline.as_bytes(), candidate.as_bytes()).map_err(failed)
+}
+
+#[pyfunction]
 fn reason_lab_check_endpoint(py: Python<'_>, base: String) -> PyResult<()> {
     py.detach(move || checked_base(&base).map(|_| ()))
 }
@@ -186,6 +191,7 @@ pub(crate) fn register(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_function(wrap_pyfunction!(reason_lab_cases, module)?)?;
     module.add_function(wrap_pyfunction!(reason_lab_report, module)?)?;
     module.add_function(wrap_pyfunction!(reason_lab_rows, module)?)?;
+    module.add_function(wrap_pyfunction!(reason_lab_compare, module)?)?;
     module.add_function(wrap_pyfunction!(reason_lab_check_endpoint, module)?)?;
     module.add_function(wrap_pyfunction!(reason_lab_run_case, module)?)
 }

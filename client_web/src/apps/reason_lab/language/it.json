@@ -167,6 +167,19 @@
     "preset_adversarial": "Avversarie",
     "preset_adversarial_hint": "Tentativi di inganno e contenuti ostili",
     "preset_all": "Tutte insieme",
-    "preset_all_hint": "Tutte le categorie in un unico elenco"
+    "preset_all_hint": "Tutte le categorie in un unico elenco",
+    "verdict": "Esito del banco",
+    "trend_improved": "Migliorato",
+    "trend_unchanged": "Invariato",
+    "trend_regressed": "Regressione",
+    "regressions_none": "Nessuna regressione rispetto alle soglie del banco.",
+    "not_comparable": "Le due esecuzioni non hanno le stesse domande: il confronto non è affidabile.",
+    "regression_success_drop": "Successo calato di {points} punti",
+    "regression_wrong_actions_up": "Azioni indesiderate aumentate di {points}",
+    "regression_latency_up": "Latenza p95 aumentata di {points} ms",
+    "regression_tokens_up": "Token medi aumentati di {points}",
+    "regression_slice_drop": "{scope}: successo calato di {points} punti",
+    "regression_slice_missing": "{scope}: assente nella nuova esecuzione",
+    "reward": "Ricompensa"
   }
 }

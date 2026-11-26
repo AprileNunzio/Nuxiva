@@ -39,12 +39,18 @@ class FakeNative:
             "reason_lab_check_endpoint": lambda base: (_ for _ in ()).throw(ValueError("endpoint_forbidden")) if "169.254" in base else None,
             "reason_lab_run_case": self.run_case,
             "reason_lab_report": lambda scenarios, outcomes: json.dumps({"overall": {"cases": len(outcomes.strip().splitlines())}}),
+            "reason_lab_compare": self.compare,
             "reason_lab_rows": lambda scenarios, outcomes: json.dumps([
                 {"case_id": json.loads(line)["case_id"], "lang": "it", "category": "simple", "expected_intent": "=cmd()", "intent": "x",
                  "intent_match": False, "success": False, "wrong_action": False, "completed": True, "tokens": 1, "latency_ms": 2}
                 for line in outcomes.strip().splitlines()]),
         }
         return table.get(name)
+
+    def compare(self, baseline, candidate):
+        if json.loads(baseline)["overall"]["cases"] != json.loads(candidate)["overall"]["cases"]:
+            raise ValueError("eval.invalid.dataset_mismatch")
+        return json.dumps({"trend": "unchanged", "regressions": []})
 
     def run_case(self, backend, base, model, key, case_id, text, external, timeout):
         self.calls.append(case_id)
@@ -171,6 +177,23 @@ class LabTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("attachment", csv.headers["content-disposition"])
         self.assertEqual(self.client.get(base + "/download?kind=exe").status_code, 422)
         self.assertEqual(len(self.client.get(base + "/download?kind=outcomes").text.strip().splitlines()), 3)
+
+    async def test_two_runs_on_the_same_cases_compare_and_different_ones_are_refused(self):
+        self.save()
+        spec = {"dataset": "main_set", "backend": "ollama", "base_url": "http://127.0.0.1:11434", "model": "m", "label": "",
+                "languages": [], "categories": [], "limit": 10, "concurrency": 1, "timeout_seconds": 30}
+        first = await self.runner.start("root", spec, None)
+        await self.finished(first["id"])
+        second = await self.runner.start("root", spec, None)
+        await self.finished(second["id"])
+        spec["languages"] = ["en"]
+        third = await self.runner.start("root", spec, None)
+        await self.finished(third["id"])
+        base = "/api/v5/reason-lab/runs"
+        same = self.client.get(f"{base}/{second['id']}/compare/{first['id']}").json()
+        self.assertEqual((same["comparable"], same["trend"]), (True, "unchanged"))
+        self.assertEqual(self.client.get(f"{base}/{third['id']}/compare/{first['id']}").json(), {"comparable": False})
+        self.assertEqual(self.client.get(f"{base}/{first['id']}/compare/..%2Fx").status_code, 404)
 
     def test_without_the_native_module_the_lab_reports_it_clearly(self):
         with mock.patch.object(lab, "native_core", mock.Mock(symbol=lambda name: None)):

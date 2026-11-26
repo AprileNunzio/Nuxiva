@@ -1,11 +1,16 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use reason_eval::{EvalError, EvalResult, Outcome, build, judge, parse_outcomes};
+use reason_eval::{
+    EvalError, EvalResult, Gates, Outcome, Report, build, compare as compare_reports, judge,
+    parse_outcomes,
+};
 use serde_json::{Value, json};
 
 use crate::backend::Backend;
 use crate::custom::{expand_custom, inspect, parse_scenarios};
 use crate::outcome::to_outcome;
+
+pub const MAX_REPORT_BYTES: usize = 256 * 1024;
 
 fn to_json<T: serde::Serialize>(value: &T) -> EvalResult<String> {
     Ok(serde_json::to_string(value)?)
@@ -83,6 +88,9 @@ pub fn rows(dataset: &[u8], outcomes: &[u8]) -> EvalResult<String> {
         .filter_map(|case| {
             let outcome = by_id.get(case.id.as_str())?;
             let verdict = judge(case, outcome);
+            let reward =
+                reason_reward::score(&[reason_reward::from_verdict(&verdict, outcome.completed)])
+                    .map_or(reason_reward::SCORE_MIN, |r| r.score_bps);
             Some(json!({
                 "case_id": case.id,
                 "lang": case.lang,
@@ -98,8 +106,18 @@ pub fn rows(dataset: &[u8], outcomes: &[u8]) -> EvalResult<String> {
                 "wrong_action": verdict.wrong_action,
                 "tokens": outcome.tokens,
                 "latency_ms": outcome.latency_ms,
+                "reward_bps": reward,
             }))
         })
         .collect();
     to_json(&rows)
+}
+
+pub fn compare(baseline: &[u8], candidate: &[u8]) -> EvalResult<String> {
+    if baseline.len() > MAX_REPORT_BYTES || candidate.len() > MAX_REPORT_BYTES {
+        return Err(EvalError::Invalid("report_size"));
+    }
+    let baseline: Report = serde_json::from_slice(baseline)?;
+    let candidate: Report = serde_json::from_slice(candidate)?;
+    to_json(&compare_reports(&baseline, &candidate, &Gates::default())?)
 }

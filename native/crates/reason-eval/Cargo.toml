@@ -18,6 +18,7 @@ path = "src/main.rs"
 workspace = true
 
 [dependencies]
+blake3 = "1"
 nuxiva-bench-core = { path = "../bench-core" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

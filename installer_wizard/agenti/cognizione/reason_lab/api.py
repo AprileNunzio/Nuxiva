@@ -239,6 +239,19 @@ async def rows(run_id: str, only: Literal["all", "failed", "wrong"] = "all", lan
     return json_response({"total": len(table), "rows": table[offset: offset + limit]})
 
 
+@admin_routes.get("/runs/{run_id}/compare/{other_id}", openapi_extra={"x-nuxiva-capabilities": READ})
+async def compare(run_id: str, other_id: str, user: str = Depends(require_admin)):
+    allow(user, "lab.read")
+    reports = []
+    for identifier in (other_id, run_id):
+        meta = store.load_run(identifier)
+        text = store.outcomes_text(identifier)
+        if not text.strip():
+            raise HTTPException(409, "no_results_yet")
+        reports.append(lab.report(scenarios_of(meta), text))
+    return json_response(lab.compare(reports[0], reports[1]))
+
+
 @admin_routes.get("/runs/{run_id}/download", openapi_extra={"x-nuxiva-capabilities": READ})
 async def download(run_id: str, kind: Literal["outcomes", "report", "csv"] = "outcomes", user: str = Depends(require_admin)):
     allow(user, "lab.read")

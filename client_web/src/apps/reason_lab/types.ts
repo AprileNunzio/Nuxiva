@@ -100,6 +100,7 @@ export interface Stats {
 }
 
 export interface Report {
+  dataset?: string;
   overall: Slice;
   by_language: Record<string, Slice>;
   by_category: Record<string, Slice>;
@@ -128,6 +129,7 @@ export interface Row {
   wrong_action: boolean;
   tokens: number;
   latency_ms: number;
+  reward_bps?: number;
 }
 
 export type BrainRole = 'main' | 'fast';
@@ -163,3 +165,21 @@ export interface RunSpec {
   concurrency: number;
   timeout_seconds: number;
 }
+
+export type Trend = 'improved' | 'unchanged' | 'regressed';
+
+export interface Delta {
+  baseline: number;
+  candidate: number;
+  change: number;
+}
+
+export interface Regression {
+  code: 'success_drop' | 'wrong_actions_up' | 'latency_up' | 'tokens_up' | 'slice_drop' | 'slice_missing';
+  scope: string;
+  delta: Delta;
+}
+
+export type Comparison =
+  | { comparable: false }
+  | { comparable: true; trend: Trend; success: Delta; regressions: Regression[] };

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Btn, Empty, Field, Loading, Panel, Pill, Stat, StatRow, Unreachable, inputClass } from '../shared/kit';
 import { useResource } from '../shared/useResource';
-import { downloadRun, reportUrl, rowsUrl } from './api';
-import type { Row, RunReport, Slice } from './types';
+import { compareUrl, downloadRun, reportUrl, rowsUrl } from './api';
+import type { Comparison, Regression, Row, RunReport, Slice, Trend } from './types';
 import type { LabModel } from './useLab';
 
 const PAGE = 50;
@@ -66,7 +66,7 @@ function RowsTable({ id, t }: { id: string; t: Translate }) {
       {resource.error ? <Unreachable label={t('unreachable')} /> : resource.loading && !resource.data ? <Loading label={t('loading')} /> : (resource.data?.rows.length ?? 0) === 0 ? <Empty>{t('no_rows')}</Empty> : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[32rem] text-left text-xs">
-            <thead><tr className="text-on-surface-variant"><th className="whitespace-nowrap py-1 pr-2">{t('case')}</th><th className="whitespace-nowrap pr-2">{t('request')}</th><th className="whitespace-nowrap pr-2">{t('expected')}</th><th className="whitespace-nowrap pr-2">{t('obtained')}</th><th className="whitespace-nowrap pr-2">{t('tokens')}</th><th>{t('latency')}</th></tr></thead>
+            <thead><tr className="text-on-surface-variant"><th className="whitespace-nowrap py-1 pr-2">{t('case')}</th><th className="whitespace-nowrap pr-2">{t('request')}</th><th className="whitespace-nowrap pr-2">{t('expected')}</th><th className="whitespace-nowrap pr-2">{t('obtained')}</th><th className="whitespace-nowrap pr-2">{t('tokens')}</th><th className="whitespace-nowrap pr-2">{t('latency')}</th><th>{t('reward')}</th></tr></thead>
             <tbody>{resource.data?.rows.map(row => (
               <tr key={row.case_id} className="border-t border-outline-variant align-top">
                 <td className="py-1 pr-2 font-mono">{row.case_id}</td>
@@ -77,7 +77,8 @@ function RowsTable({ id, t }: { id: string; t: Translate }) {
                   <span className="text-on-surface-variant">{row.effects.join(', ')}</span>
                 </td>
                 <td className="pr-2 font-mono">{row.tokens}</td>
-                <td className="font-mono">{row.latency_ms} ms</td>
+                <td className="pr-2 font-mono">{row.latency_ms} ms</td>
+                <td className={`font-mono ${(row.reward_bps ?? 0) > 0 ? 'text-success' : 'text-error'}`}>{row.reward_bps === undefined ? '-' : (row.reward_bps / 100).toFixed(0)}</td>
               </tr>
             ))}</tbody>
           </table>
@@ -87,6 +88,29 @@ function RowsTable({ id, t }: { id: string; t: Translate }) {
         <Btn disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - PAGE))}>{t('previous')}</Btn>
         <Btn disabled={offset + PAGE >= total} onClick={() => setOffset(offset + PAGE)}>{t('next')}</Btn>
       </div>
+    </Panel>
+  );
+}
+
+const TREND_TONE: Record<Trend, 'emerald' | 'rose' | 'slate'> = { improved: 'emerald', unchanged: 'slate', regressed: 'rose' };
+
+function regressionText(item: Regression, t: Translate) {
+  const [kind, value] = item.scope.split('.');
+  const scope = kind === 'category' ? t(`category_${value}`) : value ?? item.scope;
+  return t(`regression_${item.code}`, { points: Math.abs(item.delta.change).toFixed(1), scope });
+}
+
+function Verdict({ id, other, t }: { id: string; other: string; t: Translate }) {
+  const resource = useResource<Comparison>(compareUrl(id, other));
+  const result = resource.data;
+  if (!result) return null;
+  if (!result.comparable) return <Panel title={t('verdict')}><Pill tone="amber">{t('not_comparable')}</Pill></Panel>;
+  return (
+    <Panel title={t('verdict')}>
+      <div className="flex flex-wrap items-center gap-2"><Pill tone={TREND_TONE[result.trend]}>{t(`trend_${result.trend}`)}</Pill><Delta value={result.success.change} /></div>
+      {result.regressions.length === 0 ? <p className="mt-2 text-xs text-on-surface-variant">{t('regressions_none')}</p> : (
+        <ul className="mt-2 flex flex-col gap-1 text-xs">{result.regressions.map(item => <li key={`${item.code}-${item.scope}`} className="text-error">{regressionText(item, t)}</li>)}</ul>
+      )}
     </Panel>
   );
 }
@@ -106,6 +130,7 @@ function Compared({ id, base, t }: { id: string; base: RunReport; t: Translate }
           <Stat label={t('latency_p50')} value={<Delta value={base.report.latency_ms.p50 - report.latency_ms.p50} />} />
         </StatRow>
       </Panel>
+      <Verdict id={base.run.id} other={id} t={t} />
       <Breakdown title={t('by_language_compare')} rows={base.report.by_language} other={report.by_language} labelOf={labelOf} t={t} />
     </>
   );

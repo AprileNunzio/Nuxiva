@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "title": {
+    "it": "Laboratorio di prova: banco ripetibile con esito automatico e ricompensa per ogni risposta",
+    "en": "Test Lab: repeatable bench with an automatic verdict and a reward for every answer",
+    "fr": "Laboratoire d'essai : banc reproductible avec verdict automatique et récompense pour chaque réponse",
+    "es": "Laboratorio de pruebas: banco repetible con veredicto automático y recompensa por cada respuesta"
+  },
+  "features": [
+    {
+      "it": "Confrontando due esecuzioni, il Laboratorio dice se il modello è migliorato, invariato o in regressione ed elenca cosa è peggiorato: successo, azioni indesiderate, latenza, token, singole lingue o categorie.",
+      "en": "When two runs are compared, the Lab says whether the model improved, stayed the same or regressed and lists what got worse: success, unwanted actions, latency, tokens, single languages or categories.",
+      "fr": "En comparant deux exécutions, le Laboratoire indique si le modèle s'est amélioré, est resté stable ou a régressé et liste ce qui s'est dégradé : succès, actions indésirables, latence, jetons, langues ou catégories.",
+      "es": "Al comparar dos ejecuciones, el Laboratorio dice si el modelo mejoró, siguió igual o empeoró y enumera qué empeoró: éxito, acciones no deseadas, latencia, tokens, idiomas o categorías concretas."
+    },
+    {
+      "it": "Ogni rapporto porta l'impronta delle domande usate: se due esecuzioni non hanno esattamente le stesse domande, il Laboratorio avvisa che il confronto non è affidabile invece di mostrare numeri ingannevoli.",
+      "en": "Every report carries a fingerprint of the questions used: when two runs do not share exactly the same questions, the Lab warns that the comparison is not reliable instead of showing misleading numbers.",
+      "fr": "Chaque rapport porte l'empreinte des questions utilisées : si deux exécutions n'ont pas exactement les mêmes questions, le Laboratoire prévient que la comparaison n'est pas fiable au lieu d'afficher des chiffres trompeurs.",
+      "es": "Cada informe lleva la huella de las preguntas usadas: si dos ejecuciones no tienen exactamente las mismas preguntas, el Laboratorio avisa de que la comparación no es fiable en lugar de mostrar cifras engañosas."
+    },
+    {
+      "it": "Nel dettaglio dei risultati e nel CSV compare la ricompensa di ogni risposta, calcolata con le stesse regole verificabili che userà il motore per imparare.",
+      "en": "The results detail and the CSV show the reward of every answer, computed with the same verifiable rules the engine will use to learn.",
+      "fr": "Le détail des résultats et le CSV affichent la récompense de chaque réponse, calculée avec les mêmes règles vérifiables que le moteur utilisera pour apprendre.",
+      "es": "El detalle de resultados y el CSV muestran la recompensa de cada respuesta, calculada con las mismas reglas verificables que usará el motor para aprender."
+    }
+  ]
+}

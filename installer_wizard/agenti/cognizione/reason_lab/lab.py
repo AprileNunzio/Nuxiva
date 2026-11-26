@@ -14,7 +14,7 @@ TEMPLATE = [
      "texts": {"it": "cerca una foto di un San Bernardo e inviamela su Telegram", "en": "find a photo of a Saint Bernard and send it to me on Telegram"}},
 ]
 CSV_COLUMNS = ("case_id", "lang", "category", "expected_intent", "intent", "intent_match", "success", "wrong_action",
-               "completed", "tokens", "latency_ms")
+               "completed", "tokens", "latency_ms", "reward_bps")
 FORMULA_START = ("=", "+", "-", "@", "\t", "\r")
 
 
@@ -58,6 +58,19 @@ def report(scenarios: list, outcomes: str) -> dict:
 
 def rows(scenarios: list, outcomes: str) -> list:
     return call("reason_lab_rows", json.dumps(scenarios, ensure_ascii=False), outcomes)
+
+
+def compare(baseline: dict, candidate: dict) -> dict:
+    function = native_core.symbol("reason_lab_compare")
+    if function is None:
+        raise HTTPException(503, "native_outdated")
+    try:
+        result = json.loads(function(json.dumps(baseline, ensure_ascii=False), json.dumps(candidate, ensure_ascii=False)))
+    except ValueError as exc:
+        if "dataset_mismatch" in str(exc):
+            return {"comparable": False}
+        raise HTTPException(422, str(exc)) from exc
+    return {"comparable": True, **result}
 
 
 def safe_cell(value) -> str:

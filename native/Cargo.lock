@@ -2639,6 +2639,7 @@ dependencies = [
 name = "nuxiva-reason-eval"
 version = "5.8.25"
 dependencies = [
+ "blake3",
  "nuxiva-bench-core",
  "serde",
  "serde_json",
@@ -2672,6 +2673,7 @@ version = "5.8.25"
 dependencies = [
  "nuxiva-capability-registry",
  "nuxiva-reason-eval",
+ "nuxiva-reason-reward",
  "nuxiva-reason-understand",
  "serde",
  "serde_json",

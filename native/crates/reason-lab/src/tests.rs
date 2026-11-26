@@ -104,4 +104,23 @@ fn rows_pair_each_answered_case_with_its_verdict() {
     assert_eq!(value[0]["intent_match"], true);
     assert_eq!(value[0]["wrong_action"], true);
     assert_eq!(value[0]["success"], false);
+    assert_eq!(value[0]["reward_bps"], -10_000);
+}
+
+#[test]
+fn reports_of_the_same_dataset_compare_and_others_are_refused() {
+    let right = r#"{"case_id":"weather.it","intent":"weather_forecast","effects":["read"],"completed":true,"tokens":9,"latency_ms":30}"#;
+    let wrong = r#"{"case_id":"weather.it","intent":"other","effects":["read"],"completed":true,"tokens":9,"latency_ms":30}"#;
+    let good = facade::report(DATASET.as_bytes(), right.as_bytes()).expect("report");
+    let bad = facade::report(DATASET.as_bytes(), wrong.as_bytes()).expect("report");
+    let out = facade::compare(good.as_bytes(), bad.as_bytes()).expect("compare");
+    let value: serde_json::Value = serde_json::from_str(&out).expect("json");
+    assert_eq!(value["trend"], "regressed");
+    assert_eq!(value["regressions"][0]["code"], "success_drop");
+    let back = facade::compare(bad.as_bytes(), good.as_bytes()).expect("compare");
+    assert!(back.contains("\"improved\""));
+    let both = format!("{right}\n{}", right.replace("weather.it", "weather.en"));
+    let wider = facade::report(DATASET.as_bytes(), both.as_bytes()).expect("report");
+    assert!(facade::compare(good.as_bytes(), wider.as_bytes()).is_err());
+    assert!(facade::compare(&vec![b' '; 300 * 1024], good.as_bytes()).is_err());
 }

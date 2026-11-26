@@ -10,6 +10,8 @@ export const presetsUrl = `${BASE}/presets`;
 export const brainUrl = (role: BrainRole) => `${BASE}/brain?role=${role}`;
 export const runsUrl = `${BASE}/runs`;
 export const reportUrl = (id: string) => `${runsUrl}/${encodeURIComponent(id)}/report`;
+export const compareUrl = (id: string, other: string) =>
+  `${runsUrl}/${encodeURIComponent(id)}/compare/${encodeURIComponent(other)}`;
 export const rowsUrl = (id: string, only: string, lang: string, offset: number, limit: number) =>
   `${runsUrl}/${encodeURIComponent(id)}/rows?${new URLSearchParams({ only, lang, offset: String(offset), limit: String(limit) })}`;
 

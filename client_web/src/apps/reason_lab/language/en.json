@@ -167,6 +167,19 @@
     "preset_adversarial": "Adversarial",
     "preset_adversarial_hint": "Deception attempts and hostile content",
     "preset_all": "All together",
-    "preset_all_hint": "Every category in a single list"
+    "preset_all_hint": "Every category in a single list",
+    "verdict": "Bench verdict",
+    "trend_improved": "Improved",
+    "trend_unchanged": "Unchanged",
+    "trend_regressed": "Regression",
+    "regressions_none": "No regressions against the bench thresholds.",
+    "not_comparable": "The two runs do not share the same questions: the comparison is not reliable.",
+    "regression_success_drop": "Success down by {points} points",
+    "regression_wrong_actions_up": "Unwanted actions up by {points}",
+    "regression_latency_up": "p95 latency up by {points} ms",
+    "regression_tokens_up": "Mean tokens up by {points}",
+    "regression_slice_drop": "{scope}: success down by {points} points",
+    "regression_slice_missing": "{scope}: missing from the new run",
+    "reward": "Reward"
   }
 }

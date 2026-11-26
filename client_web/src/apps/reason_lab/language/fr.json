@@ -167,6 +167,19 @@
     "preset_adversarial": "Adverses",
     "preset_adversarial_hint": "Tentatives de tromperie et contenus hostiles",
     "preset_all": "Toutes ensemble",
-    "preset_all_hint": "Toutes les catégories dans une seule liste"
+    "preset_all_hint": "Toutes les catégories dans une seule liste",
+    "verdict": "Verdict du banc",
+    "trend_improved": "Amélioré",
+    "trend_unchanged": "Inchangé",
+    "trend_regressed": "Régression",
+    "regressions_none": "Aucune régression par rapport aux seuils du banc.",
+    "not_comparable": "Les deux exécutions n'ont pas les mêmes questions : la comparaison n'est pas fiable.",
+    "regression_success_drop": "Succès en baisse de {points} points",
+    "regression_wrong_actions_up": "Actions indésirables en hausse de {points}",
+    "regression_latency_up": "Latence p95 en hausse de {points} ms",
+    "regression_tokens_up": "Jetons moyens en hausse de {points}",
+    "regression_slice_drop": "{scope} : succès en baisse de {points} points",
+    "regression_slice_missing": "{scope} : absent de la nouvelle exécution",
+    "reward": "Récompense"
   }
 }

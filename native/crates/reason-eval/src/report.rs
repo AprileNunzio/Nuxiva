@@ -1,13 +1,15 @@
 use std::collections::{BTreeMap, HashMap};
 
 use bench_core::{Summary, summarize};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::error::{EvalError, EvalResult};
+use crate::fingerprint::fingerprint;
 use crate::model::{Case, Category, Outcome};
 use crate::score::judge;
 
-#[derive(Debug, Clone, Default, PartialEq, Serialize)]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Slice {
     pub cases: u64,
     pub intent_match: u64,
@@ -17,9 +19,12 @@ pub struct Slice {
     pub success_rate: f64,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Report {
     pub schema: u32,
+    #[serde(default)]
+    pub dataset: String,
     pub overall: Slice,
     pub by_language: BTreeMap<String, Slice>,
     pub by_category: BTreeMap<Category, Slice>,
@@ -93,6 +98,7 @@ pub fn build(cases: &[Case], outcomes: &[Outcome]) -> EvalResult<Report> {
     let worst = rates.iter().copied().fold(100.0_f64, f64::min);
     Ok(Report {
         schema: 1,
+        dataset: fingerprint(cases),
         overall,
         by_language: languages,
         by_category: categories,
