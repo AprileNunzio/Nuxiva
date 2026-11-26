@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "title": {
+    "it": "Studio di modelli locale: un ponte sicuro verso i servizi esterni che generano testo, immagini e voce",
+    "en": "Local model studio: a secure bridge to external services that generate text, images and voice",
+    "fr": "Studio de modèles local : un pont sécurisé vers les services externes qui génèrent texte, images et voix",
+    "es": "Estudio de modelos local: un puente seguro hacia los servicios externos que generan texto, imágenes y voz"
+  },
+  "features": [
+    {
+      "it": "Nuxiva può parlare con uno studio di modelli installato su un nodo della rete come servizio separato: chiede da sé quali funzioni offre leggendone lo schema e usa solo quelle dichiarate (conversazione, immagini, voce, incorporamenti).",
+      "en": "Nuxiva can talk to a model studio installed on a network node as a separate service: it asks on its own which functions it offers by reading its schema and uses only the declared ones (conversation, images, voice, embeddings).",
+      "fr": "Nuxiva peut dialoguer avec un studio de modèles installé sur un nœud du réseau comme service séparé : il demande seul quelles fonctions il propose en lisant son schéma et n'utilise que celles déclarées (conversation, images, voix, plongements).",
+      "es": "Nuxiva puede hablar con un estudio de modelos instalado en un nodo de la red como servicio separado: pregunta por sí misma qué funciones ofrece leyendo su esquema y usa solo las declaradas (conversación, imágenes, voz, incrustaciones)."
+    },
+    {
+      "it": "Sicurezza Zero-Trust: senza https solo indirizzi della rete locale, chiave protetta e mai stampata, strumenti del servizio (terminale, codice, ricerca web) sempre spenti, testi ripuliti e limitati, immagini e audio accettati solo se il contenuto è davvero un'immagine o un audio.",
+      "en": "Zero-Trust security: without https only local network addresses, protected key that is never printed, service tools (terminal, code, web search) always off, cleaned and bounded text, images and audio accepted only if the content really is an image or audio.",
+      "fr": "Sécurité Zero-Trust : sans https uniquement des adresses du réseau local, clé protégée et jamais affichée, outils du service (terminal, code, recherche web) toujours désactivés, textes nettoyés et limités, images et audio acceptés seulement si le contenu en est vraiment.",
+      "es": "Seguridad Zero-Trust: sin https solo direcciones de la red local, clave protegida y nunca impresa, herramientas del servicio (terminal, código, búsqueda web) siempre apagadas, textos limpiados y limitados, imágenes y audio aceptados solo si el contenido realmente lo es."
+    },
+    {
+      "it": "I nomi delle versioni compresse dei modelli, comprese quelle dinamiche, vengono riconosciuti e passati alla scelta automatica dei modelli per nodo; le versioni a un bit non vengono mai usate per agire.",
+      "en": "Names of compressed model versions, dynamic ones included, are recognised and passed to the automatic per-node model choice; one-bit versions are never used to act.",
+      "fr": "Les noms des versions compressées des modèles, y compris dynamiques, sont reconnus et transmis au choix automatique des modèles par nœud ; les versions à un bit ne servent jamais à agir.",
+      "es": "Los nombres de las versiones comprimidas de los modelos, incluidas las dinámicas, se reconocen y pasan a la elección automática de modelos por nodo; las versiones de un bit nunca se usan para actuar."
+    }
+  ]
+}

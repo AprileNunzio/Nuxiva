@@ -2331,6 +2331,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-local-studio"
+version = "5.8.25"
+dependencies = [
+ "base64 0.23.1",
+ "nuxiva-model-fit",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
+ "url",
+ "zeroize",
+]
+
+[[package]]
 name = "nuxiva-loop-core"
 version = "5.8.25"
 dependencies = [
