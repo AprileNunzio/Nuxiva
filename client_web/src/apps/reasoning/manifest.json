@@ -1,0 +1,40 @@
+{
+  "id": "reasoning",
+  "name": "Reasoning Engine",
+  "scope": "apps/reasoning",
+  "kind": "app",
+  "category": "system",
+  "target": "universal",
+  "icon3d": "./icon.png",
+  "version": "1.0.0",
+  "window": {
+    "defaultWidth": 1100,
+    "defaultHeight": 760,
+    "minWidth": 360,
+    "resizable": true,
+    "minHeight": 360,
+    "maximizable": true,
+    "singleton": true,
+    "mobileMode": "fullscreen"
+  },
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "9QHudN9uBhDv",
+    "url": "https://img.icons8.com/?size=240&id=9QHudN9uBhDv&format=png"
+  },
+  "featureIds": ["reasoning"],
+  "i18nScope": "reasoning",
+  "capabilities": ["reasoning.read", "reasoning.manage"],
+  "ui": {
+    "tabs": [
+      { "id": "overview", "labelKey": "tab_overview", "icon": "overview" },
+      { "id": "traces", "labelKey": "tab_traces", "icon": "diagnostics" },
+      { "id": "settings", "labelKey": "tab_settings", "icon": "settings" }
+    ],
+    "actions": [
+      { "id": "refresh", "labelKey": "os_refresh", "icon": "refresh-cw" }
+    ],
+    "statusBar": { "showConnectionState": true, "showItemCount": true }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "title": {
+    "it": "Nuova app Motore di ragionamento per governare ombra, attivazione e soglie",
+    "en": "New Reasoning engine app to govern shadow mode, activation and thresholds",
+    "fr": "Nouvelle app Moteur de raisonnement pour gouverner l'ombre, l'activation et les seuils",
+    "es": "Nueva app Motor de razonamiento para gobernar la sombra, la activación y los umbrales"
+  },
+  "features": [
+    {
+      "it": "La panoramica mostra modalità, cancello di passaggio con giorni, campioni, accordo e azioni indesiderate, inventario delle capacità e interruttore di emergenza.",
+      "en": "The overview shows mode, cutover gate with days, samples, agreement and unwanted actions, capability inventory and the emergency switch.",
+      "fr": "La vue d'ensemble montre le mode, la porte de passage avec jours, échantillons, accord et actions indésirables, l'inventaire des capacités et l'interrupteur d'urgence.",
+      "es": "El resumen muestra modo, puerta de paso con días, muestras, acuerdo y acciones no deseadas, inventario de capacidades e interruptor de emergencia."
+    },
+    {
+      "it": "Le ultime decisioni mostrano obiettivo, capacità scelte, costo e confronto con il percorso attuale, senza il testo delle richieste; le soglie si modificano dalle impostazioni.",
+      "en": "Latest decisions show goal, chosen capabilities, cost and comparison with the current path, without the request text; thresholds are edited in settings.",
+      "fr": "Les dernières décisions montrent l'objectif, les capacités choisies, le coût et la comparaison avec le chemin actuel, sans le texte des demandes ; les seuils se modifient dans les réglages.",
+      "es": "Las últimas decisiones muestran objetivo, capacidades elegidas, coste y comparación con el camino actual, sin el texto de las peticiones; los umbrales se cambian en los ajustes."
+    }
+  ],
+  "fixes": []
+}
