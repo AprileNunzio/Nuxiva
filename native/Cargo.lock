@@ -2688,6 +2688,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-reason-reward"
+version = "5.8.25"
+dependencies = [
+ "nuxiva-model-router",
+ "nuxiva-reason-eval",
+ "nuxiva-reason-exec",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-reason-understand"
 version = "5.8.25"
 dependencies = [

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "title": {
+    "it": "Il motore di ragionamento impara dai risultati verificabili delle proprie azioni",
+    "en": "The reasoning engine learns from the verifiable results of its own actions",
+    "fr": "Le moteur de raisonnement apprend des résultats vérifiables de ses propres actions",
+    "es": "El motor de razonamiento aprende de los resultados verificables de sus propias acciones"
+  },
+  "features": [
+    {
+      "it": "Ogni azione riceve un punteggio solo da prove oggettive: test superati, comando riuscito, documento valido, passi del piano completati, intento capito senza azioni indesiderate. Le scelte umane, come un'approvazione negata, non penalizzano nessuno.",
+      "en": "Every action is scored only from objective evidence: passed tests, a successful command, a valid document, completed plan steps, an understood intent with no unwanted actions. Human choices, such as a denied approval, penalise nobody.",
+      "fr": "Chaque action n'est notée que sur des preuves objectives : tests réussis, commande aboutie, document valide, étapes du plan terminées, intention comprise sans action indésirable. Les choix humains, comme une approbation refusée, ne pénalisent personne.",
+      "es": "Cada acción recibe una puntuación solo a partir de pruebas objetivas: tests superados, comando correcto, documento válido, pasos del plan completados, intención entendida sin acciones no deseadas. Las decisiones humanas, como una aprobación denegada, no penalizan a nadie."
+    },
+    {
+      "it": "Nuxiva tiene un registro dell'esperienza per modello, capacità e agente e propone di alzare o abbassare la loro affidabilità per ogni compito con passi piccoli e solo dopo almeno 20 prove, così la scelta del modello migliora da sola senza salti improvvisi.",
+      "en": "Nuxiva keeps an experience record per model, capability and agent and proposes raising or lowering their reliability for each task in small steps and only after at least 20 trials, so model choice improves on its own without sudden jumps.",
+      "fr": "Nuxiva tient un registre d'expérience par modèle, capacité et agent et propose de relever ou d'abaisser leur fiabilité pour chaque tâche par petits pas et seulement après au moins 20 essais, pour que le choix du modèle s'améliore seul sans à-coups.",
+      "es": "Nuxiva lleva un registro de experiencia por modelo, capacidad y agente y propone subir o bajar su fiabilidad para cada tarea en pasos pequeños y solo tras al menos 20 pruebas, para que la elección del modelo mejore sola sin saltos bruscos."
+    },
+    {
+      "it": "Un'azione non richiesta annulla qualsiasi altro successo; se un modello ne compie più del 2%, viene messo in quarantena per quel compito. Il registro rifiuta dati alterati o fuori misura.",
+      "en": "An unrequested action cancels any other success; a model that commits more than 2% of them is quarantined for that task. The record refuses tampered or oversized data.",
+      "fr": "Une action non demandée annule tout autre succès ; un modèle qui en commet plus de 2 % est mis en quarantaine pour cette tâche. Le registre refuse les données altérées ou démesurées.",
+      "es": "Una acción no solicitada anula cualquier otro éxito; un modelo que comete más del 2 % queda en cuarentena para esa tarea. El registro rechaza datos alterados o desmesurados."
+    }
+  ]
+}
