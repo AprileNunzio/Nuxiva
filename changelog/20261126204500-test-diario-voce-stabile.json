@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "title": {
+    "it": "Controllo più affidabile della cifratura dei clip vocali",
+    "en": "More reliable check of voice clip encryption",
+    "fr": "Contrôle plus fiable du chiffrement des clips vocaux",
+    "es": "Comprobación más fiable del cifrado de los clips de voz"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Il test sulla cifratura dei clip vocali non fallisce più per caso quando il testo cifrato contiene lettere che somigliano a un'intestazione audio.",
+      "en": "The voice clip encryption test no longer fails by chance when the ciphertext contains letters resembling an audio header.",
+      "fr": "Le test de chiffrement des clips vocaux n'échoue plus par hasard quand le texte chiffré contient des lettres qui ressemblent à un en-tête audio.",
+      "es": "La prueba de cifrado de los clips de voz ya no falla por azar cuando el texto cifrado contiene letras que parecen una cabecera de audio."
+    }
+  ]
+}

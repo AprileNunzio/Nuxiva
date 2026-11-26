@@ -162,7 +162,8 @@ class JournalTest(unittest.TestCase):
         raw = (Path(self.tmp.name) / "j" / "journal.db").read_bytes()
         self.assertNotIn(b"salotto", raw)
         clip = next((Path(self.tmp.name) / "j").glob("*.clip")).read_bytes()
-        self.assertNotIn(b"RIFF", clip)
+        self.assertFalse(clip.startswith(b"RIFF"))
+        self.assertNotIn(self.audio.tobytes()[:64], clip)
 
     def test_record_list_and_filters(self):
         self.log.record("command", "accendi la luce", "it", "anna", 0.8, True, 100, True, self.audio)
