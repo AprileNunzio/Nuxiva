@@ -1,0 +1,13 @@
+{
+  "name": "Motor de razonamiento",
+  "description": "Entiende cada petición en cualquier idioma, prepara un plan verificado y lo ejecuta: primero en sombra, luego en lugar del camino actual.",
+  "capabilities": [
+    "Las capacidades se actualizan solas desde herramientas, conectores y servidores MCP.",
+    "En sombra el motor decide junto al camino actual sin actuar y mide cuánto coincide.",
+    "El modo activo solo se abre cuando se supera la puerta de paso, salvo que el superadministrador lo fuerce.",
+    "El diario de ejecuciones está cifrado e impide envíos duplicados tras un reinicio."
+  ],
+  "messages": {
+    "partial": "Solo he completado una parte del plan: el resto necesita una revisión."
+  }
+}

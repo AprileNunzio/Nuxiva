@@ -1,0 +1,13 @@
+{
+  "name": "Motore di ragionamento",
+  "description": "Capisce ogni richiesta in qualsiasi lingua, prepara un piano verificato e lo esegue: prima in ombra, poi al posto del percorso attuale.",
+  "capabilities": [
+    "Le capacità si aggiornano da sole dagli strumenti, dai connettori e dai server MCP.",
+    "In ombra il motore decide accanto al percorso attuale senza agire e misura quanto concorda.",
+    "La modalità attiva si apre solo quando il cancello di passaggio è superato, salvo forzatura del super admin.",
+    "Il journal delle esecuzioni è cifrato e impedisce invii duplicati dopo un riavvio."
+  ],
+  "messages": {
+    "partial": "Ho completato solo una parte del piano: il resto richiede un controllo."
+  }
+}

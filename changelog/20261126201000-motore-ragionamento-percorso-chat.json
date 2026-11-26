@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "title": {
+    "it": "Il motore di ragionamento entra nella chat: prima osserva in ombra, poi agisce al posto del percorso attuale",
+    "en": "The reasoning engine joins the chat: it first watches in shadow, then acts in place of the current path",
+    "fr": "Le moteur de raisonnement entre dans le chat : il observe d'abord en ombre, puis agit à la place du chemin actuel",
+    "es": "El motor de razonamiento entra en el chat: primero observa en sombra y luego actúa en lugar del camino actual"
+  },
+  "features": [
+    {
+      "it": "Strumenti, connettori, server MCP e conversazione diventano capacità con contratto, aggiornate da sole ogni minuto.",
+      "en": "Tools, connectors, MCP servers and conversation become capabilities with a contract, refreshed on their own every minute.",
+      "fr": "Outils, connecteurs, serveurs MCP et conversation deviennent des capacités avec contrat, mises à jour toutes seules chaque minute.",
+      "es": "Herramientas, conectores, servidores MCP y conversación se convierten en capacidades con contrato, actualizadas solas cada minuto."
+    },
+    {
+      "it": "In ombra il motore decide accanto al percorso attuale senza agire e misura quanto concorda; in modalità attiva esegue il piano e torna al percorso attuale se non può completarlo in sicurezza.",
+      "en": "In shadow the engine decides next to the current path without acting and measures how much it agrees; in active mode it runs the plan and falls back to the current path when it cannot complete it safely.",
+      "fr": "En ombre, le moteur décide à côté du chemin actuel sans agir et mesure son accord ; en mode actif, il exécute le plan et revient au chemin actuel s'il ne peut pas le terminer en sécurité.",
+      "es": "En sombra el motor decide junto al camino actual sin actuar y mide cuánto coincide; en modo activo ejecuta el plan y vuelve al camino actual si no puede completarlo con seguridad."
+    },
+    {
+      "it": "Le azioni che richiedono conferma restano al percorso attuale con la sua richiesta di conferma; l'interruttore di emergenza NUXIVA_REASON_MODE=off spegne subito il motore.",
+      "en": "Actions that need confirmation stay on the current path with its confirmation request; the emergency switch NUXIVA_REASON_MODE=off turns the engine off at once.",
+      "fr": "Les actions qui demandent une confirmation restent sur le chemin actuel avec sa demande de confirmation ; l'interrupteur d'urgence NUXIVA_REASON_MODE=off éteint aussitôt le moteur.",
+      "es": "Las acciones que requieren confirmación siguen en el camino actual con su petición de confirmación; el interruptor de emergencia NUXIVA_REASON_MODE=off apaga el motor al instante."
+    },
+    {
+      "it": "Nuove API di governo per stato del cancello, modalità, soglie, ultime decisioni e segnalazione di azioni indesiderate.",
+      "en": "New governance APIs for gate status, mode, thresholds, latest decisions and reporting unwanted actions.",
+      "fr": "Nouvelles API de gouvernance pour l'état de la porte, le mode, les seuils, les dernières décisions et le signalement d'actions indésirables.",
+      "es": "Nuevas API de gobierno para estado de la puerta, modo, umbrales, últimas decisiones y aviso de acciones no deseadas."
+    }
+  ],
+  "fixes": []
+}

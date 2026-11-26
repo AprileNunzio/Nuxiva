@@ -1,0 +1,13 @@
+{
+  "name": "Moteur de raisonnement",
+  "description": "Comprend chaque demande dans n'importe quelle langue, prépare un plan vérifié et l'exécute : d'abord en ombre, puis à la place du chemin actuel.",
+  "capabilities": [
+    "Les capacités se mettent à jour seules depuis les outils, les connecteurs et les serveurs MCP.",
+    "En ombre, le moteur décide à côté du chemin actuel sans agir et mesure son accord.",
+    "Le mode actif ne s'ouvre qu'une fois la porte de passage franchie, sauf si le super administrateur le force.",
+    "Le journal des exécutions est chiffré et empêche les envois en double après un redémarrage."
+  ],
+  "messages": {
+    "partial": "Je n'ai terminé qu'une partie du plan : le reste demande une vérification."
+  }
+}

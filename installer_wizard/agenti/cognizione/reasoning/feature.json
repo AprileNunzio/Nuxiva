@@ -1,0 +1,21 @@
+{
+  "id": "reasoning",
+  "name": "Motore di ragionamento",
+  "icon": "🧭",
+  "category": "cognizione",
+  "description": "Capisce ogni richiesta in qualsiasi lingua, prepara un piano verificato con le capacità disponibili e lo esegue, prima in ombra accanto al percorso attuale e poi al suo posto.",
+  "capabilities": [
+    "Contratti generati dagli strumenti, dai connettori e dalla conversazione",
+    "Piano validato prima di qualsiasi azione, con una correzione e cache dei piani",
+    "Modalità spento, ombra e attivo con cancello di passaggio misurato",
+    "Esecuzione con journal cifrato, ripresa dopo un riavvio e nessun invio duplicato"
+  ],
+  "settings": [],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "9QHudN9uBhDv",
+    "url": "https://img.icons8.com/?size=240&id=9QHudN9uBhDv&format=png"
+  }
+}

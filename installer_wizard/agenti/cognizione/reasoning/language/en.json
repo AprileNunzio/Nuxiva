@@ -1,0 +1,13 @@
+{
+  "name": "Reasoning engine",
+  "description": "Understands every request in any language, prepares a verified plan and runs it: first in shadow, then in place of the current path.",
+  "capabilities": [
+    "Capabilities update themselves from tools, connectors and MCP servers.",
+    "In shadow the engine decides next to the current path without acting and measures how much it agrees.",
+    "Active mode opens only once the cutover gate is passed, unless the super admin forces it.",
+    "The execution journal is encrypted and prevents duplicate sends after a restart."
+  ],
+  "messages": {
+    "partial": "I completed only part of the plan: the rest needs a check."
+  }
+}
