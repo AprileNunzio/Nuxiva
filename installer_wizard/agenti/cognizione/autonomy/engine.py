@@ -20,7 +20,10 @@ REPORT_AGAIN = 6 * 3600
 DIGEST_HOUR = 21
 DIAGNOSE = ("Il componente «{label}» è in stato «{status}» da {minutes} minuti: {detail}. Diagnostica il problema usando "
             "SOLO comandi di sola lettura (systemctl status, journalctl -n 50, df -h, free -h, ls, cat dei log) e rispondi "
-            "in due o tre frasi: causa probabile e cosa fare. Non modificare nulla.")
+            "in due o tre frasi: causa probabile e cosa fare. Non modificare nulla. {unit}")
+UNITS = {"docker": "docker", "ollama": "ollama", "llm": "ollama", "core": "nuxiva-core"}
+UNIT_HINT = "Il servizio di sistema collegato è «{unit}»: i nomi di modelli o componenti non sono servizi systemd."
+NO_UNIT = "Questo componente non ha un servizio systemd dedicato: non cercare unità con il suo nome o con i nomi dei modelli."
 
 
 def enabled() -> bool:
@@ -109,8 +112,9 @@ class Autonomy:
                 continue
             self.reported[key] = now
             steps: list[dict] = []
+            unit = UNIT_HINT.format(unit=UNITS[key]) if key in UNITS else NO_UNIT
             prompt = DIAGNOSE.format(label=comp.get("label", key), status=status, detail=comp.get("detail", ""),
-                                     minutes=int((now - comp.get("since", now)) / 60))
+                                     minutes=int((now - comp.get("since", now)) / 60), unit=unit)
             async with self.lock:
                 result = await agent.run(prompt, steps, auto=f"Diagnosi: {comp.get('label', key)}", readonly=True)
             journal.write("diagnosi", comp.get("label", key), result, steps)

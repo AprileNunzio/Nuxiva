@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-27",
+  "title": {
+    "it": "Niente più falsi allarmi sulla «Rete linguistica» quando il modello locale è solo in attesa",
+    "en": "No more false «Language network» alarms when the local model is just idle",
+    "fr": "Plus de fausses alertes « Réseau linguistique » quand le modèle local est simplement en attente",
+    "es": "Se acabaron las falsas alarmas de «Red lingüística» cuando el modelo local solo está en espera"
+  },
+  "fixes": [
+    {
+      "it": "Un modello locale installato ma non caricato in memoria veniva segnalato come guasto dopo 10 minuti, anche quando era solo una riserva dei cervelli cloud. Ora è un guasto solo se manca in Ollama o se è il primo cervello della conversazione e non si carica.",
+      "en": "An installed local model that was not loaded in memory was reported as broken after 10 minutes, even when it was only a fallback for the cloud brains. It is now a fault only if it is missing from Ollama or if it is the first conversation brain and does not load.",
+      "fr": "Un modèle local installé mais non chargé en mémoire était signalé en panne après 10 minutes, même s'il n'était qu'une réserve des cerveaux cloud. Désormais c'est une panne seulement s'il manque dans Ollama ou s'il est le premier cerveau de conversation et ne se charge pas.",
+      "es": "Un modelo local instalado pero no cargado en memoria se señalaba como averiado a los 10 minutos, aunque fuera solo una reserva de los cerebros en la nube. Ahora es avería solo si falta en Ollama o si es el primer cerebro de la conversación y no se carga."
+    },
+    {
+      "it": "La diagnosi automatica riceve il nome del servizio di sistema collegato al componente (per esempio ollama), così non cerca più servizi inesistenti con il nome del modello come «qwen2.5.service».",
+      "en": "The automatic diagnosis receives the name of the system service linked to the component (for example ollama), so it no longer looks for non-existent services named after the model such as «qwen2.5.service».",
+      "fr": "Le diagnostic automatique reçoit le nom du service système lié au composant (par exemple ollama) et ne cherche plus de services inexistants portant le nom du modèle comme « qwen2.5.service ».",
+      "es": "El diagnóstico automático recibe el nombre del servicio del sistema ligado al componente (por ejemplo ollama), así ya no busca servicios inexistentes con el nombre del modelo como «qwen2.5.service»."
+    }
+  ]
+}

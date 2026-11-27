@@ -6,6 +6,7 @@ import time
 import httpx
 
 import ear_probe
+import llm_probe
 
 from config import CORE_URL, STATE_DIR, kiosk_log, ollama_remote, ollama_url, read_env
 from state import store
@@ -135,8 +136,7 @@ def mic_check(env: dict) -> dict | None:
     return {"status": "ok", "detail": f"In ascolto di \"Nuxiva\"{status}"}
 
 
-def norm_model(model: str) -> str:
-    return model if ":" in model else f"{model}:latest"
+norm_model = llm_probe.norm_model
 
 
 async def probe_all() -> dict:
@@ -164,14 +164,7 @@ async def probe_all() -> dict:
             if not llm:
                 results["llm"] = {"status": "ok", "detail": "Nessun modello di conversazione locale da verificare"}
             else:
-                try:
-                    response = await client.get(f"{ollama_url()}/api/ps")
-                    response.raise_for_status()
-                    loaded = [m.get("name") for m in response.json().get("models", [])]
-                    results["llm"] = {"status": "ok" if llm in loaded else "warn",
-                                      "detail": f"{llm} {'attivo in memoria' if llm in loaded else 'non caricato'}"}
-                except (httpx.HTTPError, ValueError):
-                    results["llm"] = {"status": "down", "detail": llm}
+                results["llm"] = await llm_probe.probe(client, ollama_url(), llm)
 
         try:
             r = await client.get(f"{CORE_URL}/health")
