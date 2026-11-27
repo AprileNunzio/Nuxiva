@@ -86,6 +86,7 @@ class NexusApiTest(unittest.TestCase):
         self.assertIn("editorViewLayer", policies)
         self.assertNotIn("*", policies)
         self.assertNotIn("'allow-duplicates'", policies)
+        self.assertEqual(directives["frame-src"], ["'self'", "blob:"])
         self.assertEqual(r.headers["x-frame-options"], "DENY")
         self.assertEqual(r.headers["referrer-policy"], "no-referrer")
         self.assertTrue("/static/nexus/app.js?v=" in r.text or '<div id="root">' in r.text)

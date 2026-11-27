@@ -4,8 +4,7 @@ import type { Artifact } from '../types';
 import { saveSmbFile, executeCode, type ExecutionResult } from '../api';
 import { MonacoCodeEditor } from './MonacoCodeEditor';
 import { Markdown } from './Markdown';
-
-import { sanitizeSvg } from '../sanitizeSvg';
+import { SandboxedHtmlPreview, SvgImagePreview } from './ArtifactPreviews';
 
 interface ArtifactCanvasProps {
   artifact: Artifact | null;
@@ -364,17 +363,9 @@ export const ArtifactCanvas: React.FC<ArtifactCanvasProps> = ({
       <div className="flex-1 overflow-auto bg-slate-950/60 p-4">
         {canPreview && activeTab === 'preview' ? (
           artifact.kind === 'html' ? (
-            <iframe
-              title={artifact.title}
-              sandbox="allow-scripts"
-              srcDoc={content}
-              className="w-full h-full min-h-[400px] rounded-xl border border-slate-800 bg-white"
-            />
+            <SandboxedHtmlPreview title={artifact.title} content={content} />
           ) : artifact.kind === 'svg' ? (
-            <div
-              className="w-full h-full min-h-[400px] flex items-center justify-center p-4 bg-slate-900 rounded-xl border border-slate-800"
-              dangerouslySetInnerHTML={{ __html: sanitizeSvg(content) }}
-            />
+            <SvgImagePreview title={artifact.title} content={content} />
           ) : artifact.kind === '3d' ? (
             <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center p-6 bg-slate-900 rounded-xl border border-slate-800 text-center gap-3">
               <span className="text-5xl">🧊</span>

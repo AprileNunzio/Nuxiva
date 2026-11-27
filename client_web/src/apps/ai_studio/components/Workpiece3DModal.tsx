@@ -58,7 +58,7 @@ export const Workpiece3DModal: React.FC<Workpiece3DModalProps> = ({
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.shadowMap.enabled = true;
-    container.innerHTML = '';
+    container.replaceChildren();
     container.appendChild(renderer.domElement);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-11-27",
+  "title": {
+    "it": "La pagina di amministrazione non si blocca più per l'errore TrustedHTML",
+    "en": "The admin page no longer breaks with the TrustedHTML error",
+    "fr": "La page d'administration ne plante plus avec l'erreur TrustedHTML",
+    "es": "La página de administración ya no falla con el error TrustedHTML"
+  },
+  "fixes": [
+    {
+      "it": "L'anteprima 3D dei pezzi in AI Studio svuota il contenitore con le API del DOM invece di innerHTML, che la politica Trusted Types della pagina rifiuta.",
+      "en": "The AI Studio 3D workpiece preview clears its container with DOM APIs instead of innerHTML, which the page's Trusted Types policy rejects.",
+      "fr": "L'aperçu 3D des pièces dans AI Studio vide son conteneur avec les API du DOM au lieu d'innerHTML, que la politique Trusted Types de la page refuse.",
+      "es": "La vista previa 3D de piezas en AI Studio vacía su contenedor con las API del DOM en lugar de innerHTML, que la política Trusted Types de la página rechaza."
+    },
+    {
+      "it": "Le anteprime SVG e HTML degli artefatti non usano più HTML in stringa: l'SVG ripulito si mostra come immagine, che non può eseguire codice, e l'HTML in un riquadro isolato caricato da un URL blob.",
+      "en": "Artifact SVG and HTML previews no longer use string HTML: the cleaned SVG is shown as an image, which cannot run code, and HTML in an isolated frame loaded from a blob URL.",
+      "fr": "Les aperçus SVG et HTML des artefacts n'utilisent plus de HTML en chaîne : le SVG nettoyé s'affiche comme image, qui ne peut pas exécuter de code, et le HTML dans un cadre isolé chargé depuis une URL blob.",
+      "es": "Las vistas previas SVG y HTML de los artefactos ya no usan HTML en cadena: el SVG depurado se muestra como imagen, que no puede ejecutar código, y el HTML en un marco aislado cargado desde una URL blob."
+    },
+    {
+      "it": "Un test blocca ogni nuova assegnazione di HTML o script in stringa nell'interfaccia; la CSP consente i riquadri solo dalla stessa origine e da URL blob locali.",
+      "en": "A test blocks any new string HTML or script sink in the interface; the CSP allows frames only from the same origin and local blob URLs.",
+      "fr": "Un test bloque toute nouvelle affectation de HTML ou de script en chaîne dans l'interface ; la CSP n'autorise les cadres que depuis la même origine et des URL blob locales.",
+      "es": "Una prueba bloquea cualquier nueva asignación de HTML o script en cadena en la interfaz; la CSP solo permite marcos del mismo origen y de URL blob locales."
+    }
+  ]
+}
