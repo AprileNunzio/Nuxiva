@@ -7,18 +7,21 @@ from unittest import mock
 
 import native_core
 
-from agenti.chat.checkin import compose, facts, service
-from agenti.chat.checkin.ledger import Ledger, shingles, similarity
+from agenti.chat.checkin import compose, facts, service, sources
+from agenti.chat.checkin.ledger import Affinity, Ledger, shingles, similarity
 
 READY = native_core.symbol("checkin_plan") is not None
+AGENTS = Path(__file__).resolve().parent.parent / "agenti"
+SPORT_LANGUAGE = AGENTS / "sport" / "sports" / "language"
+GOOGLE_LANGUAGE = AGENTS / "comunicazione" / "google" / "language"
 
 
 def sample() -> list[dict]:
-    match = facts.fact("sport_1", "sport", "interest", 60, 900, "sport_today",
-                       {"team": "Napoli", "rival": "Roma", "time": "20:45", "score": "0-0"},
-                       starts_at=time.time() + 3600, terms=["partita", "Napoli"])
+    match = dict(facts.fact("sport_1", "sport", "interest", 60, 900, "sport_today",
+                            {"team": "Napoli", "rival": "Roma", "time": "20:45", "score": "0-0"},
+                            starts_at=time.time() + 3600, terms=["partita", "Napoli"]), origin=str(SPORT_LANGUAGE))
     return [facts.fact("mesh_ok", "mesh", "ok", 30, 300, "mesh_ok", {"n": 4}, terms=facts.MESH_TERMS),
-            facts.fact("mail_none", "email", "ok", 25, 600, "mail_none"),
+            dict(facts.fact("mail_none", "email", "ok", 25, 600, "mail_none"), origin=str(GOOGLE_LANGUAGE)),
             match]
 
 
@@ -65,7 +68,10 @@ class CheckinTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.book = Ledger(Path(self.tmp.name) / "turns.json")
+        self.learned = Affinity(Path(self.tmp.name) / "affinity.json")
         self.patches = [mock.patch.object(service, "ledger", self.book),
+                        mock.patch.object(service, "affinity", self.learned),
+                        mock.patch.dict(service._pending, {"at": 0, "told": []}),
                         mock.patch.object(service, "_facts", mock.AsyncMock(return_value=sample()))]
         for p in self.patches:
             p.start()
@@ -104,8 +110,37 @@ class CheckinTests(unittest.TestCase):
         self.assertEqual(generate.await_count, 1)
         self.assertNotEqual(first, second)
 
+    def test_following_up_teaches_what_interests_the_user(self):
+        with mock.patch("agenti.brain.llm.generate", mock.AsyncMock(return_value="")):
+            asyncio.run(service.answer("come va?"))
+        learned = service.observe("a che ora gioca il Napoli?")
+        self.assertTrue(learned["counted"])
+        self.assertIn("sport", learned["engaged"])
+        saved = {(e["topic"], e["when"]): e["weight"] for e in self.learned.load()}
+        self.assertGreater(saved[("sport", "any")], 1.0)
+        self.assertIsNone(service.observe("e poi?"))
+
     def test_not_small_talk_returns_none(self):
         self.assertIsNone(asyncio.run(service.answer("che tempo fa domani a Roma?")))
+
+
+class SourcesTests(unittest.TestCase):
+
+    def test_modules_with_a_briefing_join_by_themselves(self):
+        names = {name for name, *_ in sources.discovered()}
+        self.assertTrue({"sports", "google"} <= names, names)
+
+    def test_malformed_facts_are_refused(self):
+        good = facts.fact("x", "t", "info", 10, 60, "news", {"title": "a"})
+        self.assertTrue(sources.valid(good))
+        self.assertFalse(sources.valid(dict(good, kind="panic")))
+        self.assertFalse(sources.valid(dict(good, params={"a": 1})))
+        self.assertFalse(sources.valid("x"))
+
+    def test_module_lines_come_from_the_module(self):
+        match = sample()[2]
+        for lang in compose.LANGUAGES:
+            self.assertIn("Napoli", compose.render(match, lang), lang)
 
 
 class FallbackTests(unittest.TestCase):

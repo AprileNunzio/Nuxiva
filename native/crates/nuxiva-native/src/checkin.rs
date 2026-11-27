@@ -1,4 +1,4 @@
-use checkin_core::{Request, detect, plan};
+use checkin_core::{Observe, Request, detect, observe, plan};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
@@ -33,8 +33,19 @@ fn checkin_plan(py: Python<'_>, request_json: &str) -> PyResult<String> {
     serde_json::to_string(&chosen).map_err(invalid)
 }
 
+#[pyfunction]
+fn checkin_observe(py: Python<'_>, request_json: &str) -> PyResult<String> {
+    if request_json.len() > MAX_REQUEST_BYTES {
+        return Err(PyValueError::new_err("checkin.too_large.request"));
+    }
+    let request: Observe = serde_json::from_str(request_json).map_err(invalid)?;
+    let learned = py.detach(|| observe(&request)).map_err(invalid)?;
+    serde_json::to_string(&learned).map_err(invalid)
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(checkin_detect, m)?)?;
     m.add_function(wrap_pyfunction!(checkin_plan, m)?)?;
+    m.add_function(wrap_pyfunction!(checkin_observe, m)?)?;
     Ok(())
 }

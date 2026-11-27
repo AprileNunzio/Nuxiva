@@ -28,6 +28,7 @@ fn request(hour: u8, facts: Vec<Fact>, history: Vec<Turn>) -> Request {
         focus: Vec::new(),
         voice: true,
         seed: 2,
+        affinity: Vec::new(),
     }
 }
 

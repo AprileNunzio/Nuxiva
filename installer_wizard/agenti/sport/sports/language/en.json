@@ -8,5 +8,10 @@
     "Voice questions: «how did Napoli do?», «Serie A table», «when is the next F1 race?»",
     "Widgets recalled when you come close to the screen if nothing more important is showing",
     "No key needed: public sources, cached data and no personal data sent"
-  ]
+  ],
+  "briefing": {
+    "sport_live": "{team} are playing {rival}: {score}.",
+    "sport_today": "{team} play {rival} today at {time}.",
+    "sport_result": "{team} played {rival}: it ended {score}."
+  }
 }

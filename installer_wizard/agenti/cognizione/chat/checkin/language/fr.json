@@ -10,13 +10,7 @@
     "hot_temp": "La température du serveur est de {value} degrés.",
     "security": "Le pare-feu a signalé {n} alertes graves ces dernières 24 heures.",
     "update": "Une mise à jour de Nuxiva est prête ({rev}).",
-    "news": "L'actualité principale : {title}.",
-    "sport_live": "{team} joue contre {rival} : {score}.",
-    "sport_today": "Aujourd'hui à {time}, {team} joue contre {rival}.",
-    "sport_result": "{team} a joué contre {rival} : score final {score}.",
-    "mail_none": "Aucun nouvel e-mail.",
-    "mail_unread": "Vous avez {n} e-mails non lus.",
-    "agenda": "À l'agenda : {title} {time}."
+    "news": "L'actualité principale : {title}."
   },
   "greeting": {
     "night": "Je veille, monsieur.",

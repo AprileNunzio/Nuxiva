@@ -8,5 +8,10 @@
     "Domande a voce: «com'è finito il Napoli?», «classifica Serie A», «quando corre la F1?»",
     "Widget richiamati quando ti avvicini allo schermo se non ci sono avvisi più importanti",
     "Nessuna chiave richiesta: fonti pubbliche, dati in cache e nessun dato personale inviato"
-  ]
+  ],
+  "briefing": {
+    "sport_live": "{team} sta giocando contro {rival}: {score}.",
+    "sport_today": "Oggi alle {time} gioca {team} contro {rival}.",
+    "sport_result": "{team} ha giocato contro {rival}: è finita {score}."
+  }
 }

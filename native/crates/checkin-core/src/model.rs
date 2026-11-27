@@ -78,6 +78,8 @@ pub struct Request {
     pub voice: bool,
     #[serde(default)]
     pub seed: u64,
+    #[serde(default)]
+    pub affinity: Vec<crate::affinity::Entry>,
 }
 
 fn bounded(value: &str, what: &'static str) -> CheckinResult<()> {
@@ -102,6 +104,9 @@ impl Request {
         }
         if self.focus.len() > MAX_FOCUS {
             return Err(CheckinError::TooLarge("focus"));
+        }
+        if self.affinity.len() > crate::affinity::MAX_ENTRIES {
+            return Err(CheckinError::TooLarge("affinity"));
         }
         if self.moment.hour > 23 {
             return Err(CheckinError::Invalid("hour".to_owned()));

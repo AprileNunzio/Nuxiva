@@ -13,9 +13,17 @@ def words(language: str) -> dict:
     return json.loads((Path(__file__).resolve().parent / "language" / f"{language}.json").read_text(encoding="utf-8"))
 
 
+@lru_cache(maxsize=64)
+def _module_lines(origin: str, language: str) -> dict:
+    language = language if language in LANGUAGES else "it"
+    path = Path(origin) / f"{language}.json"
+    return json.loads(path.read_text(encoding="utf-8")).get("briefing", {}) if path.is_file() else {}
+
+
 def render(fact: dict, language: str) -> str:
-    template = words(language)["lines"].get(fact["line"], "")
-    return template.format(**fact["params"]) if template else ""
+    lines = _module_lines(fact["origin"], language) if fact.get("origin") else words(language)["lines"]
+    template = lines.get(fact["line"], "")
+    return template.format_map({k: str(v) for k, v in fact["params"].items()}) if template else ""
 
 
 def _join(items: list[str], language: str) -> str:

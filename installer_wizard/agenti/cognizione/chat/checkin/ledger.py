@@ -10,6 +10,7 @@ from config import STATE_DIR
 
 MAX_TURNS = 64
 MAX_SHINGLES = 256
+MAX_AFFINITY = 256
 KEEP_FOR = 7 * 24 * 3600
 _lock = threading.Lock()
 
@@ -63,4 +64,30 @@ class Ledger:
         return any(similarity(mine, t.get("shingles") or []) >= limit for t in self.turns()[-last:])
 
 
+class Affinity:
+    def __init__(self, path: Path) -> None:
+        self.path = path
+
+    def load(self) -> list[dict]:
+        with _lock:
+            try:
+                raw = json.loads(self.path.read_text(encoding="utf-8"))
+            except FileNotFoundError:
+                return []
+            except (OSError, ValueError) as exc:
+                from state import store
+                store.event("WARN", f"Preferenze apprese del resoconto illeggibili, riparto da zero: {exc}", "checkin")
+                return []
+        return [e for e in raw.get("entries", []) if isinstance(e, dict)][:MAX_AFFINITY]
+
+    def save(self, entries: list[dict]) -> None:
+        with _lock:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            tmp = self.path.with_suffix(".tmp")
+            tmp.write_text(json.dumps({"entries": entries[:MAX_AFFINITY]}), encoding="utf-8")
+            os.chmod(tmp, 0o600)
+            tmp.replace(self.path)
+
+
 ledger = Ledger(STATE_DIR / "checkin" / "turns.json")
+affinity = Affinity(STATE_DIR / "checkin" / "affinity.json")

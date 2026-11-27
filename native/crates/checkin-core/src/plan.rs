@@ -134,10 +134,13 @@ fn utility(fact: &Fact, req: &Request, part: Daypart) -> (f64, bool) {
     let urgent = fact.kind == Kind::Alert && fact.priority >= URGENT;
     let novelty = if urgent { fresh.max(0.5) } else { fresh };
     let lead = if focused(fact, &req.focus) { 1.0 } else { 0.0 };
+    let learned = crate::affinity::weight(&req.affinity, &fact.topic, part);
+    let learned = if urgent { learned.max(1.0) } else { learned };
     let value = f64::from(fact.priority) / 100.0
         * novelty
         * timeliness(fact.kind, part)
-        * proximity(fact, now);
+        * proximity(fact, now)
+        * learned;
     (value + lead, fresh < 0.5)
 }
 

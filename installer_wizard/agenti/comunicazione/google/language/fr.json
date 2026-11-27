@@ -104,5 +104,10 @@
   "help": {
     "NUXIVA_GOOGLE_CLIENT_ID": "Se termine par .apps.googleusercontent.com. Dans Identifiants, ID client OAuth.",
     "NUXIVA_GOOGLE_CLIENT_SECRET": "Chaîne confidentielle commençant par GOCSPX-, affichée à côté de l'ID client."
+  },
+  "briefing": {
+    "mail_none": "Aucun nouvel e-mail.",
+    "mail_unread": "Vous avez {n} e-mails non lus.",
+    "agenda": "À l'agenda : {title} {time}."
   }
 }

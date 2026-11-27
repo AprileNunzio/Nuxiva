@@ -100,5 +100,10 @@
   "help": {
     "NUXIVA_GOOGLE_CLIENT_ID": "Ends with .apps.googleusercontent.com. Find it under Credentials, OAuth client ID.",
     "NUXIVA_GOOGLE_CLIENT_SECRET": "Private string starting with GOCSPX-, shown next to the Client ID."
+  },
+  "briefing": {
+    "mail_none": "No new email.",
+    "mail_unread": "You have {n} unread emails.",
+    "agenda": "On your calendar: {title} {time}."
   }
 }

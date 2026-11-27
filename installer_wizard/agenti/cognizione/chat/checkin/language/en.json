@@ -10,13 +10,7 @@
     "hot_temp": "The server temperature is {value} degrees.",
     "security": "The firewall reported {n} serious alerts in the last 24 hours.",
     "update": "A Nuxiva update is ready ({rev}).",
-    "news": "Top story: {title}.",
-    "sport_live": "{team} are playing {rival}: {score}.",
-    "sport_today": "{team} play {rival} today at {time}.",
-    "sport_result": "{team} played {rival}: it ended {score}.",
-    "mail_none": "No new email.",
-    "mail_unread": "You have {n} unread emails.",
-    "agenda": "On your calendar: {title} {time}."
+    "news": "Top story: {title}."
   },
   "greeting": {
     "night": "I'm awake, sir.",

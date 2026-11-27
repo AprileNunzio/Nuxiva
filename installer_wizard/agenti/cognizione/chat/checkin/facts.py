@@ -1,13 +1,13 @@
 import asyncio
-import hashlib
-import json
 import logging
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 
 import httpx
 
 from state import store
+
+from agenti.chat.checkin.contract import fact
 
 log = logging.getLogger("nuxiva.checkin")
 SOURCE_TIMEOUT = 2.5
@@ -16,16 +16,6 @@ FIREWALL_WINDOW = 24 * 3600
 HOT = 85
 MESH_TERMS = ["server", "servers", "satelliti", "satellite", "satellites", "nodi", "nodes", "rete", "mesh"]
 SYSTEM_TERMS = ["servizi", "services", "sistema", "system", "servizio", "server"]
-
-
-def fact(key: str, topic: str, kind: str, priority: int, ttl: int, line: str, params: dict | None = None,
-         starts_at: float | None = None, terms: list[str] | None = None) -> dict:
-    params = {k: str(v)[:120] for k, v in (params or {}).items()}
-    raw = json.dumps([key, line, params], sort_keys=True, ensure_ascii=False)
-    return {"key": key, "topic": topic, "kind": kind, "priority": max(0, min(100, int(priority))),
-            "signature": hashlib.sha256(raw.encode("utf-8")).hexdigest()[:32], "observed_at": int(time.time()),
-            "ttl": int(ttl), "starts_at": int(starts_at) if starts_at else None, "terms": (terms or [])[:16],
-            "line": line, "params": params}
 
 
 def _ts(entry: dict) -> float:
@@ -104,79 +94,8 @@ async def news() -> list[dict]:
     return [fact("news", "news", "info", 30, 1800, "news", {"title": items[0]["title"]}, terms=["notizie", "news", "novita"])]
 
 
-def _profile() -> dict | None:
-    from agenti.chat import context as request_context
-    from agenti.people import identity
-    return identity.current(request_context.voice.get()) or identity.owner()
-
-
-def _start(match: dict) -> float | None:
-    try:
-        return datetime.fromisoformat(match["start"].replace("Z", "+00:00")).timestamp()
-    except (KeyError, ValueError):
-        return None
-
-
-async def sports() -> list[dict]:
-    from agenti.sports.prefs import HOUSEHOLD, prefs
-    from agenti.sports.spotlight import team_card
-    profile = _profile()
-    teams = (prefs.get(profile["slug"]) if profile else {}).get("teams") or prefs.get(HOUSEHOLD).get("teams") or []
-    cards = await asyncio.gather(*(team_card(t) for t in teams[:3]))
-    out = []
-    for card in (c for c in cards if c and c["kind"] in ("live", "today", "result")):
-        m, team = card["match"], card["team"]
-        rival = m["away"] if m["home"]["id"] == team["id"] else m["home"]
-        at = _start(m)
-        local = datetime.fromtimestamp(at).strftime("%H:%M") if at else ""
-        score = f"{m['home'].get('score') or 0}-{m['away'].get('score') or 0}"
-        priority = {"live": 75, "today": 60, "result": 45}[card["kind"]]
-        out.append(fact(f"sport_{team['id']}", "sport", "interest", priority, 900, f"sport_{card['kind']}",
-                        {"team": team["name"], "rival": rival.get("name", ""), "time": local, "score": score},
-                        starts_at=at, terms=["partita", "match", "calcio", "football", team["name"]]))
-    return out
-
-
-async def mail() -> list[dict]:
-    from agenti.google.commands import _context
-    from agenti.google.constants import NotLinked
-    try:
-        ctx = _context("gmail", True)
-    except (LookupError, NotLinked):
-        return []
-    unread = await ctx.session.unread_threads(-1)
-    if unread < 0:
-        return []
-    if not unread:
-        return [fact("mail_none", "email", "ok", 25, 600, "mail_none", terms=["email", "mail", "posta"])]
-    return [fact("mail_unread", "email", "notice", 50 if unread < 10 else 55, 600, "mail_unread", {"n": unread},
-                 terms=["email", "mail", "posta"])]
-
-
-async def agenda() -> list[dict]:
-    from agenti.google.commands import _context
-    from agenti.google.constants import NotLinked
-    try:
-        ctx = _context("calendar", True)
-    except (LookupError, NotLinked):
-        return []
-    now = datetime.now(timezone.utc)
-    events = await ctx.session.events(now, now + timedelta(hours=12), 3)
-    out = []
-    for e in events[:2]:
-        try:
-            at = datetime.fromisoformat(str(e["start"]).replace("Z", "+00:00")).timestamp()
-        except ValueError:
-            at = None
-        when = datetime.fromtimestamp(at).strftime("%H:%M") if at and not e.get("all_day") else ""
-        out.append(fact(f"agenda_{hashlib.sha256(str(e.get('title')).encode()).hexdigest()[:8]}", "agenda", "agenda", 60, 900,
-                        "agenda", {"title": str(e.get("title") or "")[:80], "time": when}, starts_at=at,
-                        terms=["agenda", "impegni", "calendario", "appuntamenti"]))
-    return out
-
-
 SYNC = (systems, mesh, warnings, resources, security, update)
-ASYNC = (news, sports, mail, agenda)
+ASYNC = (news,)
 IO_ERRORS = (httpx.HTTPError, asyncio.TimeoutError, OSError, ValueError)
 
 
@@ -197,7 +116,9 @@ def _local(source) -> list[dict]:
 
 
 async def gather() -> list[dict]:
+    from agenti.chat.checkin import sources
     found = [f for source in SYNC for f in _local(source)]
-    for batch in await asyncio.gather(*(_bounded(s) for s in ASYNC)):
+    batches = await asyncio.gather(*(_bounded(s) for s in ASYNC), sources.gather())
+    for batch in batches:
         found.extend(batch)
     return found

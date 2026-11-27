@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-27",
+  "title": {
+    "it": "Il resoconto «come va» impara cosa ti interessa e accoglie da solo i moduli nuovi",
+    "en": "The \"how are you\" report learns what interests you and welcomes new modules on its own",
+    "fr": "Le point « ça va ? » apprend ce qui vous intéresse et accueille seul les nouveaux modules",
+    "es": "El resumen «¿qué tal?» aprende lo que te interesa y acoge solo los módulos nuevos"
+  },
+  "features": [
+    {
+      "it": "Dopo il resoconto Nuxiva osserva la tua reazione: se chiedi dettagli su un tema, per esempio la partita, quel tema sale; se lo lasci cadere, scende. Impara anche per fascia oraria, così di sera può darti più spazio allo sport e al mattino all'agenda. Gli allarmi restano sempre in cima.",
+      "en": "After the report Nuxiva watches how you react: ask for details on a topic, such as the match, and it rises; let it drop and it sinks. It also learns by time of day, so in the evening it can favour sport and in the morning your calendar. Alarms always stay on top.",
+      "fr": "Après le point, Nuxiva observe votre réaction : si vous demandez des détails sur un sujet, comme le match, il monte ; si vous l'ignorez, il descend. Elle apprend aussi selon l'heure, sport le soir, agenda le matin. Les alarmes restent toujours en tête.",
+      "es": "Tras el resumen Nuxiva observa tu reacción: si pides detalles de un tema, como el partido, ese tema sube; si lo dejas pasar, baja. También aprende por franja horaria, así por la noche puede dar más espacio al deporte y por la mañana a la agenda. Las alarmas siempre van primero."
+    },
+    {
+      "it": "Ogni modulo può portare i suoi fatti nel resoconto senza toccare il resto: sport e Google sono i primi, e i moduli futuri entreranno da soli.",
+      "en": "Every module can bring its own facts into the report without touching anything else: sport and Google are the first, and future modules will join on their own.",
+      "fr": "Chaque module peut apporter ses propres faits au point sans rien toucher d'autre : le sport et Google sont les premiers, les futurs modules s'ajouteront seuls.",
+      "es": "Cada módulo puede aportar sus propios datos al resumen sin tocar nada más: deporte y Google son los primeros, y los módulos futuros se sumarán solos."
+    }
+  ]
+}
