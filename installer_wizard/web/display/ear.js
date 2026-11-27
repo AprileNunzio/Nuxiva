@@ -198,6 +198,7 @@
       }
       const ev = JSON.parse(e.data);
       if (D.Captions) D.Captions.event(ev);
+      if (D.Anticipate) D.Anticipate.event(ev);
       if (ev.type === "rescue_prompt" && D.RescuePrompt) D.RescuePrompt.event(ev);
       if ((ev.type === "defense_view" || ev.type === "defense_state") && D.DefenseView) D.DefenseView.event(ev);
       if (ev.type === "ready" && ev.host_mic) { hostMicActive = true; if (state === "off") setState("idle"); }

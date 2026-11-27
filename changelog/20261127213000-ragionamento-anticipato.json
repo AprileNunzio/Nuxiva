@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "date": "2026-11-27",
+  "title": {
+    "it": "Nuxiva comincia a pensare mentre parli: ragionamento anticipato sulle parole già capite",
+    "en": "Nuxiva starts thinking while you speak: reasoning ahead on the words already understood",
+    "fr": "Nuxiva commence à réfléchir pendant que vous parlez : raisonnement anticipé sur les mots déjà compris",
+    "es": "Nuxiva empieza a pensar mientras hablas: razonamiento anticipado sobre las palabras ya entendidas"
+  },
+  "features": [
+    {
+      "it": "Mentre parli, le parole dei sottotitoli live avviano in anticipo i ragionamenti di sola lettura: a quale esperto affidare la richiesta e se serve cercare dati aggiornati. Nessuna azione viene eseguita in anticipo.",
+      "en": "While you speak, the live caption words start the read-only reasoning ahead of time: which expert should handle the request and whether up-to-date data must be looked up. No action is ever carried out ahead of time.",
+      "fr": "Pendant que vous parlez, les mots des sous-titres en direct lancent à l'avance les raisonnements en lecture seule : à quel expert confier la demande et s'il faut chercher des données à jour. Aucune action n'est exécutée à l'avance.",
+      "es": "Mientras hablas, las palabras de los subtítulos en vivo lanzan por adelantado los razonamientos de solo lectura: a qué experto confiar la petición y si hace falta buscar datos actualizados. Ninguna acción se ejecuta por adelantado."
+    },
+    {
+      "it": "Quando arriva la frase completa, se coincide con quella anticipata la risposta si aggancia al ragionamento già in corso invece di ripartire da zero; se è diversa, il ragionamento anticipato viene ignorato.",
+      "en": "When the full sentence arrives, if it matches the anticipated one the answer joins the reasoning already running instead of starting over; if it differs, the anticipated reasoning is ignored.",
+      "fr": "Quand la phrase complète arrive, si elle correspond à celle anticipée, la réponse rejoint le raisonnement déjà en cours au lieu de repartir de zéro ; sinon, le raisonnement anticipé est ignoré.",
+      "es": "Cuando llega la frase completa, si coincide con la anticipada la respuesta se une al razonamiento ya en curso en lugar de empezar de cero; si es distinta, el razonamiento anticipado se ignora."
+    },
+    {
+      "it": "Appena dici il nome, Nuxiva riapre le connessioni verso i cervelli cloud configurati, così la prima risposta dopo una pausa non paga la nuova connessione. La previsione della schermata non ritarda più l'invio della domanda.",
+      "en": "As soon as you say the name, Nuxiva reopens the connections to the configured cloud brains, so the first answer after a pause does not pay for a new connection. The screen prediction no longer delays sending the question.",
+      "fr": "Dès que vous dites le nom, Nuxiva rouvre les connexions vers les cerveaux cloud configurés, pour que la première réponse après une pause ne paie pas une nouvelle connexion. La prédiction de l'écran ne retarde plus l'envoi de la question.",
+      "es": "En cuanto dices el nombre, Nuxiva reabre las conexiones con los cerebros en la nube configurados, así la primera respuesta tras una pausa no paga una conexión nueva. La predicción de la pantalla ya no retrasa el envío de la pregunta."
+    },
+    {
+      "it": "L'anticipo ha un tetto di 8 ragionamenti e 4 riaperture al minuto per schermo ed è riservato al display autorizzato.",
+      "en": "Anticipation is capped at 8 reasonings and 4 reconnections per minute per screen and is reserved to the authorised display.",
+      "fr": "L'anticipation est plafonnée à 8 raisonnements et 4 reconnexions par minute et par écran, et réservée à l'écran autorisé.",
+      "es": "La anticipación tiene un tope de 8 razonamientos y 4 reconexiones por minuto por pantalla y está reservada a la pantalla autorizada."
+    }
+  ]
+}

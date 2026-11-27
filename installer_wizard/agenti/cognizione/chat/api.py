@@ -487,7 +487,9 @@ async def explain_assistant_mode(mode: str, request: Request):
 
 
 from agenti.chat.reflex_routes import router as reflex_router
+from agenti.chat.anticipate.routes import router as anticipate_router
 public_routes.include_router(reflex_router)
+public_routes.include_router(anticipate_router)
 
 
 

@@ -91,7 +91,7 @@
         if (ev.type === "brain_route") {
           window.dispatchEvent(new CustomEvent("nuxiva-brain-route", { detail: ev.route }));
         } else if (ev.type === "token") {
-          if (!voice) { voice = D.speakStream(lang); D.setMode("face"); }
+          if (!voice) { D.answeredAt = Date.now(); voice = D.speakStream(lang); D.setMode("face"); }
           said = cleanLive(said + ev.t);
           $("say").textContent = said;
           speakReady();
@@ -146,6 +146,7 @@
   }
 
   function show(text, d, spoken = false) {
+    D.answeredAt = Date.now();
     parseActions(d);
     showTiming(d);
     $("you").textContent = `« ${text} »`;
@@ -162,8 +163,9 @@
     if (ui.mode === "face" || ui.mode === "focus") setTimeout(() => D.refreshBrain(true), 1500);
   }
 
-  async function predict(text) {
+  async function predict(text, answering) {
     const pred = await fetch(`/api/assistant/predict?q=${encodeURIComponent(text)}`).then((r) => r.json()).catch(() => null);
+    if (answering()) return;
     if (pred && pred.skeleton && pred.skeleton.mode === "focus") { D.renderSkeleton(pred.skeleton); D.setMode("focus"); }
     else if (pred && pred.intent === "brain") D.setMode("brain");
   }
@@ -178,7 +180,8 @@
       showTiming(null);
     }
     try {
-      if (!heard.followup) await predict(text);
+      const askedAt = Date.now();
+      if (!heard.followup) predict(text, () => (D.answeredAt || 0) >= askedAt);
       const streamed = await askStream(text, lang, payload);
       if (streamed) {
         if (streamed.data.cancelled) return;
