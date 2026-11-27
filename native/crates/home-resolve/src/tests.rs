@@ -30,7 +30,7 @@ const HOME: &str = r#"{
 
 const BEDROOM: &[&str] = &["light.abat_jour", "light.plafoniera"];
 
-fn resolver() -> Resolver {
+pub(crate) fn resolver() -> Resolver {
     Resolver::from_json(HOME).expect("inventory")
 }
 

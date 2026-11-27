@@ -1,0 +1,52 @@
+{
+  "lines": {
+    "systems_down": "{n} servicios están parados: {names}.",
+    "systems_ok": "Los {n} servicios funcionan.",
+    "mesh_offline": "{n} de {total} nodos no responden: {names}.",
+    "mesh_ok": "Servidores y satélites, {n} en total, están conectados y en orden.",
+    "warnings": "En las últimas horas registré {n} avisos, {errors} de ellos errores.",
+    "hot_cpu": "El procesador está al {value}%.",
+    "hot_mem": "La memoria está al {value}%.",
+    "hot_temp": "La temperatura del servidor es de {value} grados.",
+    "security": "El cortafuegos señaló {n} alarmas graves en las últimas 24 horas.",
+    "update": "Hay una actualización de Nuxiva lista ({rev}).",
+    "news": "La noticia principal: {title}.",
+    "sport_live": "{team} está jugando contra {rival}: {score}.",
+    "sport_today": "Hoy a las {time} juega {team} contra {rival}.",
+    "sport_result": "{team} jugó contra {rival}: terminó {score}.",
+    "mail_none": "No hay correos nuevos.",
+    "mail_unread": "Tiene {n} correos sin leer.",
+    "agenda": "En la agenda: {title} {time}."
+  },
+  "greeting": {
+    "night": "Aquí estoy, señor.",
+    "morning": "Buenos días, señor.",
+    "afternoon": "Buenas tardes, señor.",
+    "evening": "Buenas noches, señor.",
+    "late": "Buenas noches, señor."
+  },
+  "openings": {
+    "soft": "Todo tranquilo.",
+    "brief": "En resumen:",
+    "direct": "Esta es la situación.",
+    "reassure": "Todo bajo control.",
+    "personal": "Todo bien, gracias.",
+    "curious": "Muy bien, y tengo algo que contarle.",
+    "playful": "Estupendamente, y mis circuitos lo agradecen."
+  },
+  "verified": "He comprobado {topics}: todo en orden.",
+  "verified_again": "Nada ha cambiado desde hace un momento.",
+  "nothing": "No tengo novedades que contarle.",
+  "unchanged": [
+    "Todo igual que hace unos minutos, señor: sin novedades.",
+    "Ningún cambio desde la última comprobación, señor.",
+    "Situación sin cambios, señor: yo vigilo."
+  ],
+  "topics": {
+    "systems": "los servicios",
+    "mesh": "servidores y satélites",
+    "email": "el correo",
+    "security": "la seguridad"
+  },
+  "and": "y"
+}

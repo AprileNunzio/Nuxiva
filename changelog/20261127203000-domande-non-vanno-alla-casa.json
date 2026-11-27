@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-27",
+  "title": {
+    "it": "«Come va?» ora ha una risposta vera e le domande normali non finiscono più a Home Assistant",
+    "en": "\"How are you?\" now gets a real answer and everyday questions no longer end up at Home Assistant",
+    "fr": "« Ça va ? » reçoit une vraie réponse et les questions ordinaires ne partent plus vers Home Assistant",
+    "es": "«¿Qué tal?» tiene ahora una respuesta real y las preguntas normales ya no acaban en Home Assistant"
+  },
+  "features": [
+    {
+      "it": "Quando chiedi «come va?», «tutto bene?» o simili in italiano, inglese, spagnolo o francese, Nuxiva controlla davvero servizi, server e satelliti, avvisi, sicurezza, posta, agenda, notizie e le partite delle squadre che segui, e ti racconta solo ciò che conta adesso.",
+      "en": "When you ask \"how are you?\", \"all good?\" or similar in Italian, English, Spanish or French, Nuxiva really checks services, servers and satellites, warnings, security, mail, calendar, news and the matches of the teams you follow, and tells you only what matters right now.",
+      "fr": "Quand vous demandez « ça va ? », « tout va bien ? » ou autre en italien, anglais, espagnol ou français, Nuxiva vérifie vraiment services, serveurs et satellites, alertes, sécurité, courrier, agenda, actualités et matchs de vos équipes, et ne dit que l'essentiel.",
+      "es": "Cuando preguntas «¿qué tal?», «¿todo bien?» o algo parecido en italiano, inglés, español o francés, Nuxiva comprueba de verdad servicios, servidores y satélites, avisos, seguridad, correo, agenda, noticias y los partidos de tus equipos, y cuenta solo lo importante."
+    },
+    {
+      "it": "La risposta non è mai monotona: ricorda cosa ti ha già detto e non lo ripete, cambia modo di aprire, adatta tono e lunghezza all'ora (di notte è breve e discreta), concede una battuta solo ogni tanto e mai con un allarme in corso. Se richiedi dopo pochi minuti risponde subito che non è cambiato nulla.",
+      "en": "The answer is never monotonous: it remembers what it already told you and does not repeat it, varies how it opens, adapts tone and length to the time of day (brief and discreet at night), allows a joke only now and then and never during an alarm. Ask again a few minutes later and it instantly says nothing changed.",
+      "fr": "La réponse n'est jamais monotone : elle se souvient de ce qu'elle a déjà dit, varie son entrée en matière, adapte ton et longueur à l'heure (brève et discrète la nuit), ne plaisante que de temps en temps et jamais pendant une alarme. Redemandez peu après : rien n'a changé.",
+      "es": "La respuesta nunca es monótona: recuerda lo que ya te dijo y no lo repite, cambia la forma de empezar, adapta tono y longitud a la hora (breve y discreta de noche), solo bromea de vez en cuando y nunca con una alarma activa. Si vuelves a preguntar al poco, responde al instante que nada cambió."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Frasi come «come va?» o «che ore sono?» ricevevano risposte di Home Assistant del tipo «non trovo nessun dispositivo che si chiama come». Ora Nuxiva valuta se la frase parla davvero di un dispositivo, una stanza o uno stato della casa e solo allora coinvolge la domotica; altrimenti risponde in conversazione.",
+      "en": "Phrases like \"how are you?\" or \"what time is it?\" got Home Assistant answers such as \"no device called how\". Nuxiva now checks whether the sentence really talks about a device, a room or a home state and only then involves home automation; otherwise it answers in conversation.",
+      "fr": "Des phrases comme « ça va ? » ou « quelle heure est-il ? » recevaient des réponses de Home Assistant comme « aucun appareil ne s'appelle comment ». Nuxiva vérifie maintenant si la phrase parle d'un appareil, d'une pièce ou d'un état de la maison avant d'utiliser la domotique ; sinon elle converse.",
+      "es": "Frases como «¿qué tal?» o «¿qué hora es?» recibían respuestas de Home Assistant del tipo «no encuentro ningún dispositivo llamado qué». Ahora Nuxiva valora si la frase habla de verdad de un dispositivo, una habitación o un estado de la casa y solo entonces usa la domótica; si no, responde en conversación."
+    },
+    {
+      "it": "Quando Home Assistant non trova nulla, il suo messaggio di errore non viene più letto come risposta: la richiesta passa alla conversazione.",
+      "en": "When Home Assistant finds nothing, its error message is no longer read out as an answer: the request moves on to conversation.",
+      "fr": "Quand Home Assistant ne trouve rien, son message d'erreur n'est plus lu comme une réponse : la demande passe à la conversation.",
+      "es": "Cuando Home Assistant no encuentra nada, su mensaje de error ya no se lee como respuesta: la petición pasa a la conversación."
+    }
+  ]
+}

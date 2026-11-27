@@ -14,6 +14,7 @@ mod bus;
 mod capture;
 mod ceo;
 mod chat;
+mod checkin;
 mod coderloop;
 mod collaudo;
 mod compute_lease;
@@ -176,6 +177,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     reason_lab::register(m)?;
     reason_engine::register(m)?;
     home_resolve::register(m)?;
+    checkin::register(m)?;
     seal::register(m)?;
     brain::register(m)?;
     mcp::register(m)?;

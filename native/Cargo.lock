@@ -1984,6 +1984,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-checkin-core"
+version = "5.8.25"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-collaudo-core"
 version = "5.8.25"
 dependencies = [
@@ -2483,6 +2491,7 @@ dependencies = [
  "nuxiva-bus-core",
  "nuxiva-capability-registry",
  "nuxiva-chat-core",
+ "nuxiva-checkin-core",
  "nuxiva-collaudo-core",
  "nuxiva-config-core",
  "nuxiva-context-core",

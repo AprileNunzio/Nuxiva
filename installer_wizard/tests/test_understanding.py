@@ -62,7 +62,8 @@ class ClaimsTest(unittest.TestCase):
             parse.return_value = plans["q"]
             self.assertEqual(claims.home(ctx("la porta è aperta?")), 0.8)
             parse.return_value = plans["x"]
-            self.assertEqual(claims.home(ctx("apri la lavagna")), 0.3)
+            self.assertEqual(claims.home(ctx("la porta è aperta?")), 0.3)
+            self.assertEqual(claims.home(ctx("apri la lavagna")), 0.0)
             parse.return_value = None
             self.assertEqual(claims.home(ctx("che ore sono")), 0.0)
         with mock.patch.dict(brain.catalog.entities, clear=True):

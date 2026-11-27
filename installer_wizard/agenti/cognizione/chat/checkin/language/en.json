@@ -1,0 +1,52 @@
+{
+  "lines": {
+    "systems_down": "{n} services are down: {names}.",
+    "systems_ok": "All {n} services are running.",
+    "mesh_offline": "{n} of {total} nodes are not responding: {names}.",
+    "mesh_ok": "Servers and satellites, {n} in total, are connected and healthy.",
+    "warnings": "In the last few hours I logged {n} warnings, {errors} of them errors.",
+    "hot_cpu": "The processor is at {value}%.",
+    "hot_mem": "Memory is at {value}%.",
+    "hot_temp": "The server temperature is {value} degrees.",
+    "security": "The firewall reported {n} serious alerts in the last 24 hours.",
+    "update": "A Nuxiva update is ready ({rev}).",
+    "news": "Top story: {title}.",
+    "sport_live": "{team} are playing {rival}: {score}.",
+    "sport_today": "{team} play {rival} today at {time}.",
+    "sport_result": "{team} played {rival}: it ended {score}.",
+    "mail_none": "No new email.",
+    "mail_unread": "You have {n} unread emails.",
+    "agenda": "On your calendar: {title} {time}."
+  },
+  "greeting": {
+    "night": "I'm awake, sir.",
+    "morning": "Good morning, sir.",
+    "afternoon": "Good afternoon, sir.",
+    "evening": "Good evening, sir.",
+    "late": "Good evening, sir."
+  },
+  "openings": {
+    "soft": "All quiet.",
+    "brief": "In short:",
+    "direct": "Here is where things stand.",
+    "reassure": "Everything is under control.",
+    "personal": "All good, thank you.",
+    "curious": "Very well, and I have something to tell you.",
+    "playful": "Splendid, and my circuits say thanks."
+  },
+  "verified": "I checked {topics}: everything is in order.",
+  "verified_again": "Nothing has changed since a moment ago.",
+  "nothing": "I have nothing new to report.",
+  "unchanged": [
+    "Same as a few minutes ago, sir: no news.",
+    "No change since the last check, sir.",
+    "Nothing has moved, sir: I'm keeping watch."
+  ],
+  "topics": {
+    "systems": "the services",
+    "mesh": "servers and satellites",
+    "email": "your mail",
+    "security": "security"
+  },
+  "and": "and"
+}

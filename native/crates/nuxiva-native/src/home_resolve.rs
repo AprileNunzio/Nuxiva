@@ -34,6 +34,17 @@ impl RustHomeResolver {
         serde_json::to_string(&resolution).map_err(invalid)
     }
 
+    fn relevance(&self, py: Python<'_>, request_json: &str) -> PyResult<String> {
+        if request_json.len() > MAX_REQUEST_BYTES {
+            return Err(PyValueError::new_err("home.resolve.too_large.request"));
+        }
+        let request: Request = serde_json::from_str(request_json).map_err(invalid)?;
+        let relevance = py
+            .detach(|| self.inner.relevance(&request))
+            .map_err(invalid)?;
+        serde_json::to_string(&relevance).map_err(invalid)
+    }
+
     #[staticmethod]
     fn thresholds() -> (f64, f64) {
         (home_resolve::EXECUTE, home_resolve::CONFIRM)

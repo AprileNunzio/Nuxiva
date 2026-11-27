@@ -215,6 +215,11 @@ async def _route(text: str, core_call, speech_lang: dict | None = None, hint=_no
                 "elapsed_ms": int((time.time() - started) * 1000)}
     except LookupError:
         pass
+    from agenti.chat.checkin import service as checkin
+    reported = await checkin.answer(text, (speech_lang or {}).get("lang", "it"), bool(request_context.voice.get()))
+    if reported:
+        return {"reply": reported[0], "ui": reported[1], "intent": "checkin", "agent": "resoconto",
+                "elapsed_ms": int((time.time() - started) * 1000)}
     try:
         from agenti.scene import voice as scene_voice
         from agenti.scene.service import scene

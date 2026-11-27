@@ -126,7 +126,17 @@ def parse(text: str, cat: Catalog) -> dict | None:
     return parse_command(text, cat) or parse_query(text, cat)
 
 
-def understand(text: str, cat: Catalog, here: str | None = None) -> dict | None:
+def judge(text: str, cat: Catalog) -> dict:
+    judged = resolver.relevance(text, cat)
+    if judged is not None:
+        return judged
+    home = bool(parse(text, cat)) or looks_like_home(text)
+    return {"home": home, "purpose": "other", "score": 1.0 if home else 0.0, "evidence": ["rules"]}
+
+
+def understand(text: str, cat: Catalog, here: str | None = None, judged: dict | None = None) -> dict | None:
+    if not (judged or judge(text, cat))["home"]:
+        return None
     rules = parse(text, cat)
     if rules and rules["kind"] == "query":
         return rules

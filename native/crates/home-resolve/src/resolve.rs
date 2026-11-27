@@ -129,6 +129,13 @@ impl Resolver {
         Self::new(inv)
     }
 
+    pub fn relevance(&self, request: &Request) -> ResolveResult<crate::intent::Relevance> {
+        if request.text.len() > MAX_TEXT_BYTES {
+            return Err(ResolveError::TooLarge("text"));
+        }
+        Ok(crate::intent::relevance(&self.index, &request.text))
+    }
+
     pub fn resolve(&self, request: &Request) -> ResolveResult<Resolution> {
         if request.text.len() > MAX_TEXT_BYTES {
             return Err(ResolveError::TooLarge("text"));

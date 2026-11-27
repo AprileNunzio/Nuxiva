@@ -11,7 +11,7 @@ from agenti.home_assistant.constants import (CANCEL_RE, CONFIRM_RE, CONFIRM_WIND
 from agenti.home_assistant.helpers import join_words
 from agenti.home_assistant.nlu.calls import is_sensitive
 from agenti.home_assistant.nlu.matching import match_areas, match_domains
-from agenti.home_assistant.nlu.parser import looks_like_home, understand
+from agenti.home_assistant.nlu.parser import judge, looks_like_home, understand
 from agenti.home_assistant.nlu.text import norm, stem
 from agenti.home_assistant.readings import messages
 from state import store
@@ -166,11 +166,14 @@ class HomeCommands:
                 return "Come desidera, non faccio nulla.", {"mode": "face"}, "casa"
         self.pending = None
         started = time.time()
-        plan = understand(text, self.catalog, self._here())
+        judged = judge(text, self.catalog)
+        plan = understand(text, self.catalog, self._here(), judged)
         source = "ragionamento" if plan and str(plan.get("how", "")).startswith("ragionamento") else "regole"
         if plan is None and (learned := self.learned.get(norm(text))):
             plan, source = learned, "memoria"
             self.stats["learned_hits"] += 1
+        if plan is None and not judged["home"]:
+            return None
         if plan is None and (armed := self._foreseen(text)):
             plan, source = armed, "previsione"
         if plan is None and looks_like_home(text) and self.online:

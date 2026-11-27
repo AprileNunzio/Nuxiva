@@ -1,0 +1,52 @@
+{
+  "lines": {
+    "systems_down": "{n} services sont arrêtés : {names}.",
+    "systems_ok": "Les {n} services fonctionnent.",
+    "mesh_offline": "{n} nœuds sur {total} ne répondent pas : {names}.",
+    "mesh_ok": "Serveurs et satellites, {n} au total, sont connectés et en ordre.",
+    "warnings": "Ces dernières heures j'ai enregistré {n} avertissements, dont {errors} erreurs.",
+    "hot_cpu": "Le processeur est à {value} %.",
+    "hot_mem": "La mémoire est à {value} %.",
+    "hot_temp": "La température du serveur est de {value} degrés.",
+    "security": "Le pare-feu a signalé {n} alertes graves ces dernières 24 heures.",
+    "update": "Une mise à jour de Nuxiva est prête ({rev}).",
+    "news": "L'actualité principale : {title}.",
+    "sport_live": "{team} joue contre {rival} : {score}.",
+    "sport_today": "Aujourd'hui à {time}, {team} joue contre {rival}.",
+    "sport_result": "{team} a joué contre {rival} : score final {score}.",
+    "mail_none": "Aucun nouvel e-mail.",
+    "mail_unread": "Vous avez {n} e-mails non lus.",
+    "agenda": "À l'agenda : {title} {time}."
+  },
+  "greeting": {
+    "night": "Je veille, monsieur.",
+    "morning": "Bonjour, monsieur.",
+    "afternoon": "Bon après-midi, monsieur.",
+    "evening": "Bonsoir, monsieur.",
+    "late": "Bonsoir, monsieur."
+  },
+  "openings": {
+    "soft": "Tout est calme.",
+    "brief": "En bref :",
+    "direct": "Voici la situation.",
+    "reassure": "Tout est sous contrôle.",
+    "personal": "Tout va bien, merci.",
+    "curious": "Très bien, et j'ai quelque chose à vous raconter.",
+    "playful": "À merveille, et mes circuits vous remercient."
+  },
+  "verified": "J'ai vérifié {topics} : tout est en ordre.",
+  "verified_again": "Rien n'a changé depuis tout à l'heure.",
+  "nothing": "Je n'ai rien de nouveau à signaler.",
+  "unchanged": [
+    "Comme il y a quelques minutes, monsieur : rien de nouveau.",
+    "Aucun changement depuis la dernière vérification, monsieur.",
+    "Situation inchangée, monsieur : je veille."
+  ],
+  "topics": {
+    "systems": "les services",
+    "mesh": "serveurs et satellites",
+    "email": "le courrier",
+    "security": "la sécurité"
+  },
+  "and": "et"
+}

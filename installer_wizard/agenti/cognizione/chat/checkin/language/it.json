@@ -1,0 +1,52 @@
+{
+  "lines": {
+    "systems_down": "{n} servizi sono fermi: {names}.",
+    "systems_ok": "Tutti i {n} servizi funzionano.",
+    "mesh_offline": "{n} nodi su {total} non rispondono: {names}.",
+    "mesh_ok": "Server e satelliti, {n} in tutto, sono collegati e regolari.",
+    "warnings": "Nelle ultime ore ho registrato {n} avvisi, di cui {errors} errori.",
+    "hot_cpu": "Il processore lavora al {value}%.",
+    "hot_mem": "La memoria è al {value}%.",
+    "hot_temp": "La temperatura del server è di {value} gradi.",
+    "security": "Il firewall ha segnalato {n} allarmi gravi nelle ultime 24 ore.",
+    "update": "È pronto un aggiornamento di Nuxiva ({rev}).",
+    "news": "La notizia principale: {title}.",
+    "sport_live": "{team} sta giocando contro {rival}: {score}.",
+    "sport_today": "Oggi alle {time} gioca {team} contro {rival}.",
+    "sport_result": "{team} ha giocato contro {rival}: è finita {score}.",
+    "mail_none": "Nessuna email nuova.",
+    "mail_unread": "Ha {n} email non lette.",
+    "agenda": "In agenda: {title} {time}."
+  },
+  "greeting": {
+    "night": "Sono qui, signore.",
+    "morning": "Buongiorno, signore.",
+    "afternoon": "Buon pomeriggio, signore.",
+    "evening": "Buonasera, signore.",
+    "late": "Buonasera, signore."
+  },
+  "openings": {
+    "soft": "Tutto tranquillo.",
+    "brief": "In breve:",
+    "direct": "Ecco la situazione.",
+    "reassure": "Tutto sotto controllo.",
+    "personal": "Tutto bene, grazie.",
+    "curious": "Bene, e ho qualcosa da raccontarle.",
+    "playful": "Benissimo, e i circuiti ringraziano."
+  },
+  "verified": "Ho controllato {topics}: è tutto regolare.",
+  "verified_again": "Rispetto a poco fa non è cambiato nulla.",
+  "nothing": "Non ho novità da segnalarle.",
+  "unchanged": [
+    "Tutto come pochi minuti fa, signore: nessuna novità.",
+    "Nessun cambiamento dall'ultimo controllo, signore.",
+    "Situazione invariata, signore: veglio io."
+  ],
+  "topics": {
+    "systems": "i servizi",
+    "mesh": "server e satelliti",
+    "email": "la posta",
+    "security": "la sicurezza"
+  },
+  "and": "e"
+}

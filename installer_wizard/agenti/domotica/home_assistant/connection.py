@@ -192,7 +192,7 @@ class HomeConnection:
                     resp = res.get("response") or {}
                     speech = ((resp.get("speech") or {}).get("plain") or {}).get("speech", "").strip()
                     code = (resp.get("data") or {}).get("code", "")
-                    if speech and code != "no_intent_match":
+                    if speech and resp.get("response_type") != "error" and code != "no_intent_match":
                         return {"ok": True, "speech": speech, "response": resp, "source": "ha_assist_ws"}
             except Exception as exc:
                 log.debug("Chiamata Assist via WebSocket non riuscita: %s", exc)
@@ -224,7 +224,7 @@ class HomeConnection:
                     resp = res.get("response") or {}
                     speech = ((resp.get("speech") or {}).get("plain") or {}).get("speech", "").strip()
                     code = (resp.get("data") or {}).get("code", "")
-                    if speech and code != "no_intent_match":
+                    if speech and resp.get("response_type") != "error" and code != "no_intent_match":
                         return {"ok": True, "speech": speech, "response": resp, "source": "ha_assist_http"}
             except Exception as exc:
                 log.debug("Chiamata Assist via HTTP REST non riuscita: %s", exc)

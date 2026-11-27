@@ -78,6 +78,17 @@ def resolve(text: str, cat, here: str | None = None) -> dict | None:
         return None
 
 
+def relevance(text: str, cat) -> dict | None:
+    resolver = engine(cat)
+    if resolver is None:
+        return None
+    try:
+        return json.loads(resolver.relevance(json.dumps({"text": _clip(text, MAX_TEXT_BYTES)})))
+    except ValueError as exc:
+        log.info("Pertinenza domotica non valutabile: %s", exc)
+        return None
+
+
 def _join(items: list[str], word: str) -> str:
     return items[0] if len(items) == 1 else f"{', '.join(items[:-1])} {word} {items[-1]}"
 
