@@ -1,1 +1,0 @@
-import"./rolldown-runtime-XKyaHtl9.js";import{r as e,s as t}from"./I18nContext-DNUZuzP0.js";import{View as n}from"./View-DlNRaKdI.js";t();var r=e(),i=()=>(0,r.jsx)(n,{});export{i as View,i as default};
