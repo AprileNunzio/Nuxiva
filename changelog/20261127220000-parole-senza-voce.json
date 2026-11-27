@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-27",
+  "title": {
+    "it": "Niente più parole inventate in coda alle frasi: ogni parola trascritta deve avere voce vera sotto",
+    "en": "No more invented words at the end of sentences: every transcribed word must have real voice under it",
+    "fr": "Plus de mots inventés en fin de phrase : chaque mot transcrit doit correspondre à une vraie voix",
+    "es": "Se acabaron las palabras inventadas al final de las frases: cada palabra transcrita debe tener voz real debajo"
+  },
+  "fixes": [
+    {
+      "it": "Nel silenzio o nel rumore dopo la frase il riconoscimento inventava parole, spesso prese dal vocabolario di casa (per esempio «Piano Piano» dai nomi dei piani). Ora il silenzio prima e dopo la voce viene tagliato prima della trascrizione.",
+      "en": "In the silence or noise after a sentence the recogniser invented words, often taken from the home vocabulary (for example «Piano Piano» from floor names). The silence before and after the voice is now cut before transcription.",
+      "fr": "Dans le silence ou le bruit après la phrase, la reconnaissance inventait des mots, souvent tirés du vocabulaire de la maison (par exemple « Piano Piano » d'après les noms d'étages). Le silence avant et après la voix est désormais coupé avant la transcription.",
+      "es": "En el silencio o el ruido tras la frase el reconocimiento inventaba palabras, a menudo del vocabulario de casa (por ejemplo «Piano Piano» de los nombres de las plantas). Ahora el silencio antes y después de la voz se corta antes de transcribir."
+    },
+    {
+      "it": "Dopo la trascrizione, ogni parola viene confrontata con i tratti in cui il rilevatore di voce ha sentito parlare: le parole che cadono dove non c'era voce vengono scartate e annotate nel registro, qualunque cosa dicano.",
+      "en": "After transcription, every word is checked against the stretches where the voice detector heard speech: words that fall where there was no voice are discarded and logged, whatever they say.",
+      "fr": "Après la transcription, chaque mot est comparé aux passages où le détecteur de voix a entendu parler : les mots situés là où il n'y avait pas de voix sont écartés et journalisés, quel que soit leur contenu.",
+      "es": "Tras la transcripción, cada palabra se compara con los tramos en los que el detector de voz oyó hablar: las palabras que caen donde no había voz se descartan y se registran, digan lo que digan."
+    }
+  ]
+}

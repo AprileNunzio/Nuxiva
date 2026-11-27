@@ -19,6 +19,7 @@ BACKEND = str(Path(__file__).resolve().parents[3] / "backend")
 if BACKEND not in sys.path:
     sys.path.append(BACKEND)
 
+import acoustic
 import langpick
 from learner import learner
 from words import WordFixer
@@ -130,6 +131,12 @@ def has_speech(audio: np.ndarray) -> bool:
     return bool(get_speech_timestamps(audio, VAD))
 
 
+def voiced_spans(audio: np.ndarray) -> list[tuple[float, float]]:
+    if get_speech_timestamps is None or VAD is None:
+        return []
+    return acoustic.spans(get_speech_timestamps(audio, VAD))
+
+
 def lid_model():
     if LID_FAST and wake_model is not None and WAKE_MODEL not in ("tiny", "tiny.en"):
         return wake_model
@@ -183,10 +190,15 @@ def transcribe(audio: np.ndarray, fast: bool = False, detect: bool = False, stag
                                             hotwords=_hotwords(lang))
         return " ".join(s.text.strip() for s in segments).strip(), lang
     prompt = " ".join(p for p in (_prompt(lang), FIXER.prompt_tail()) if p)
-    segments, _ = ACTIVE["model"].transcribe(audio, language=lang, beam_size=BEAM, vad_filter=False,
+    voiced = voiced_spans(audio)
+    clip, offset = acoustic.trim(audio, voiced)
+    segments, _ = ACTIVE["model"].transcribe(clip, language=lang, beam_size=BEAM, vad_filter=False,
                                              initial_prompt=prompt, condition_on_previous_text=False,
                                              hotwords=_hotwords(lang), word_timestamps=WORD_CHECK)
-    heard = FIXER.hear(list(segments), prompt, HALLUCINATIONS)
+    grounded, unvoiced = acoustic.ground(list(segments), voiced, offset)
+    if unvoiced:
+        log.info("Parole senza voce sotto, scartate: %s", ", ".join(unvoiced))
+    heard = FIXER.hear(grounded, prompt, HALLUCINATIONS)
     if heard.fixes:
         log.info("Parole corrette con il vocabolario di casa: %s",
                  ", ".join(f"{a} -> {b}" for a, b, _ in heard.fixes))
@@ -203,7 +215,8 @@ def transcribe(audio: np.ndarray, fast: bool = False, detect: bool = False, stag
 def live_transcribe(audio: np.ndarray, lang: str) -> str:
     if wake_model is None:
         return ""
-    segments, _ = wake_model.transcribe(audio, language=lang, beam_size=1, vad_filter=False,
+    clip, _ = acoustic.trim(audio, voiced_spans(audio))
+    segments, _ = wake_model.transcribe(clip, language=lang, beam_size=1, vad_filter=False,
                                         initial_prompt=_prompt(lang), condition_on_previous_text=False,
                                         hotwords=_hotwords(lang))
     text = " ".join(s.text.strip() for s in segments).strip()
